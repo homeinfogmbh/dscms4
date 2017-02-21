@@ -51,8 +51,8 @@ class Schedule(DSCMS4Model):
     """Date / time schedule
 
     Weekdays are a binary integer:
-        All week | Mon | Tue | Wed | Thu | Fri | Sat | Sun
-            2^7    2^6   2^5   2^4   2^3   2^2   2^1   2^0
+        Mon | Tue | Wed | Thu | Fri | Sat | Sun
+        2^6   2^5   2^4   2^3   2^2   2^1   2^0
     """
 
     begin = DateTimeField(null=True)
@@ -60,44 +60,44 @@ class Schedule(DSCMS4Model):
     weekdays = SmallIntegerField()
 
     @property
-    def all_week(self):
-        """Determines whether the schedule runs all week"""
-        return self.weekdays >= 128
-
-    @property
     def monday(self):
         """Determines whether the schedule runs on mondays"""
-        return self.all_week or self.match_day(0)
+        return self.match_day(0)
 
     @property
     def tuesday(self):
         """Determines whether the schedule runs on tuesdays"""
-        return self.all_week or self.match_day(1)
+        return self.match_day(1)
 
     @property
     def wednesday(self):
         """Determines whether the schedule runs on wednesdays"""
-        return self.all_week or self.match_day(2)
+        return self.match_day(2)
 
     @property
     def thursday(self):
         """Determines whether the schedule runs on thursdays"""
-        return self.all_week or self.match_day(3)
+        return self.match_day(3)
 
     @property
     def friday(self):
         """Determines whether the schedule runs on fridays"""
-        return self.all_week or self.match_day(4)
+        return self.match_day(4)
 
     @property
     def saturday(self):
         """Determines whether the schedule runs on saturdays"""
-        return self.all_week or self.match_day(5)
+        return self.match_day(5)
 
     @property
     def sunday(self):
         """Determines whether the schedule runs on sundays"""
-        return self.all_week or self.match_day(6)
+        return self.match_day(6)
+
+    @property
+    def all_week(self):
+        """Determines whether the schedule runs all week"""
+        return self.weekdays == 0b1111111
 
     @property
     def active(self):
