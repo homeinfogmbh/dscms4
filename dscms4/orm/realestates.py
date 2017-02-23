@@ -3,10 +3,22 @@
 from peewee import ForeignKeyField, CharField, BooleanField, SmallIntegerField
 
 from .common import DSCMS4Model
-from .charts import Chart
+from .charts import _Chart
 
 
-class RealEstateChart(Chart):
+class NoWhitelist(Exception):
+    """Indicates that no white list is available"""
+
+    pass
+
+
+class NoBlacklist(Exception):
+    """Indicates that no black list is available"""
+
+    pass
+
+
+class RealEstateChart(_Chart):
     """Real estate exposé chart"""
 
     class Meta:
