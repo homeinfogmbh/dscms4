@@ -85,6 +85,7 @@ class QuotesChart(_Chart):
     class Meta:
         db_table = 'quotes_chart'
 
+
 class VideoChart(_Chart):
     """A chart that may contain images and texts"""
 
