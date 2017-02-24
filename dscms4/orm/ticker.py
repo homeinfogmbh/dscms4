@@ -22,7 +22,7 @@ class TickerText(DSCMS4Model):
     class Meta:
         db_table = 'ticker_text'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker')
+    ticker = ForeignKeyField(Ticker, db_column='ticker', related_name='texts')
     text = TextField()
     index = SmallIntegerField()
 
@@ -33,6 +33,6 @@ class TickerURL(DSCMS4Model):
     class Meta:
         db_table = 'ticker_url'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker')
+    ticker = ForeignKeyField(Ticker, db_column='ticker', related_name='urls')
     url = CharField(255)
     index = SmallIntegerField()

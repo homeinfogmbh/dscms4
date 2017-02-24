@@ -97,7 +97,7 @@ class VideoChart(_Chart):
         db_table = 'video_chart'
 
     file = IntegerField()
-    video = FileProperty(file)
+    video = FileProperty(file, file_client='foo')
 
     def to_dict(self, file_name=None):
         """Returns a JSON compatible dictionary"""
@@ -129,7 +129,7 @@ class HTMLChart(_Chart):
         return dictionary
 
 
-class FacebookChart(_Chart):
+class Facebook(_Chart):
     """Facebook data chart"""
 
     class Meta:

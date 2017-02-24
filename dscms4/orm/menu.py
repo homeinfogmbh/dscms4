@@ -19,11 +19,8 @@ class Menu(DSCMS4Model):
     @property
     def members(self):
         """Yields the menu's members"""
-        for menu_item in MenuItem.select().where(MenuItem.menu == self):
-            yield menu_item.member
-
-        for chart_item in ChartItem.select().where(ChartItem.menu == self):
-            yield chart_item.member
+        yield from self.submenus
+        yield from self.charts
 
 
 class MenuItem(DSCMS4Model):
@@ -32,8 +29,9 @@ class MenuItem(DSCMS4Model):
     class Meta:
         db_table = 'menu_member'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
-    member = ForeignKeyField(Menu, db_column='member')
+    menu = ForeignKeyField(Menu, db_column='menu', related_name='submenus')
+    member = ForeignKeyField(
+        Menu, db_column='member', related_name='parents')
 
 
 class ChartItem(DSCMS4Model):
@@ -42,5 +40,6 @@ class ChartItem(DSCMS4Model):
     class Meta:
         db_table = 'chart_member'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
-    member = ForeignKeyField(BaseChart, db_column='member')
+    menu = ForeignKeyField(Menu, db_column='menu', related_name='charts')
+    member = ForeignKeyField(
+        BaseChart, db_column='member', related_name='menus')

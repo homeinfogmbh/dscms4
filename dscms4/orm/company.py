@@ -5,7 +5,9 @@ from homeinfo.crm import Address, Customer
 
 from .common import DSCMS4Model
 from .charts import BaseChart
-from .presentation import Menu, Configuration, Ticker
+from .menu import Menu
+from .configuration import Configuration
+from .ticker import Ticker
 from .assignments import GroupChart, BuildingChart, RentalUnitChart, \
     GroupMenu, BuildingMenu, RentalUnitMenu, \
     GroupConfiguration, BuildingConfiguration, RentalUnitConfiguration, \
