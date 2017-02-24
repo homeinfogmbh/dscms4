@@ -2,7 +2,22 @@
 
 from peewee import DoesNotExist, ForeignKeyField, CharField, SmallIntegerField
 from homeinfo.crm import Address, Customer
+
 from .common import DSCMS4Model
+from .charts import BaseChart
+from .presentation import Menu, Configuration, Ticker
+from .assignments import GroupChart, BuildingChart, RentalUnitChart, \
+    GroupMenu, BuildingMenu, RentalUnitMenu, \
+    GroupConfiguration, BuildingConfiguration, RentalUnitConfiguration, \
+    GroupTicker, BuildingTicker, RentalUnitTicker
+
+
+class InvalidItem(Exception):
+    """Indicates that an assignment of
+    an invalid item was attempted
+    """
+
+    pass
 
 
 class Building(DSCMS4Model):
@@ -12,6 +27,19 @@ class Building(DSCMS4Model):
     address = ForeignKeyField(Address, db_column='address')
     name = CharField(255, null=True, default=None)
     description = CharField(255, null=True, default=None)
+
+    def assign(self, item):
+        """Assigns an item (Chart, Ticker, etc.) to the rental unit"""
+        if isinstance(item, BaseChart):
+            BuildingChart.add(item)
+        elif isinstance(item, Ticker):
+            BuildingTicker.add(item)
+        elif isinstance(item, Menu):
+            BuildingMenu.add(item)
+        elif isinstance(item, Configuration):
+            BuildingConfiguration.add(item)
+        else:
+            raise InvalidItem()
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
@@ -36,6 +64,19 @@ class RentalUnit(DSCMS4Model):
     ident = CharField(255)
     floor = SmallIntegerField(null=True, default=None)
     orientation = CharField(255, null=True, default=None)
+
+    def assign(self, item):
+        """Assigns an item (Chart, Ticker, etc.) to the rental unit"""
+        if isinstance(item, BaseChart):
+            RentalUnitChart.add(item)
+        elif isinstance(item, Ticker):
+            RentalUnitTicker.add(item)
+        elif isinstance(item, Menu):
+            RentalUnitMenu.add(item)
+        elif isinstance(item, Configuration):
+            RentalUnitConfiguration.add(item)
+        else:
+            raise InvalidItem()
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
@@ -116,6 +157,19 @@ class Group(DSCMS4Model):
             for group_member in GroupMember.select().where(
                     GroupMember.group == self):
                 yield group_member.member
+
+    def assign(self, item):
+        """Assigns an item (Chart, Ticker, etc.) to the group"""
+        if isinstance(item, BaseChart):
+            GroupChart.add(item)
+        elif isinstance(item, Ticker):
+            GroupTicker.add(item)
+        elif isinstance(item, Menu):
+            GroupMenu.add(item)
+        elif isinstance(item, Configuration):
+            GroupConfiguration.add(item)
+        else:
+            raise InvalidItem()
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
