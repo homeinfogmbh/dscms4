@@ -8,7 +8,7 @@ from .charts import BaseChart
 from .menu import Menu
 from .configuration import Configuration
 from .ticker import Ticker
-from .assignments import GroupChart, BuildingChart, RentalUnitChart, \
+from .presentation import GroupChart, BuildingChart, RentalUnitChart, \
     GroupMenu, BuildingMenu, RentalUnitMenu, \
     GroupConfiguration, BuildingConfiguration, RentalUnitConfiguration, \
     GroupTicker, BuildingTicker, RentalUnitTicker
