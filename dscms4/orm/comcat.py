@@ -1,5 +1,6 @@
 """ComCat stuff"""
 
+# XXX: Outsource this to own HIS module
 from peewee import CharField, ForeignKeyField, BooleanField
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
