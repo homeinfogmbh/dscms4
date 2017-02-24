@@ -1,14 +1,13 @@
 """Common ORM models"""
 
 from datetime import datetime
-from peewee import ForeignKeyField, DateTimeField, SmallIntegerField
+from peewee import DateTimeField, SmallIntegerField
 
 from homeinfo.lib.log import Logger
-from homeinfo.crm import Customer
 from his.orm import module_model
 
 
-__all__ = ['DSCMS4Model', 'Configuration', 'Schedule']
+__all__ = ['DSCMS4Model', 'Schedule']
 
 
 class DSCMS4Model(module_model('dscms4')):
@@ -22,13 +21,6 @@ class DSCMS4Model(module_model('dscms4')):
             self.logger = Logger(self.__class__.__name__)
         else:
             self.logger = logger.inherit(self.__class__.__name__)
-
-
-class Configuration(DSCMS4Model):
-    """Customer configuration for charts"""
-
-    customer = ForeignKeyField(Customer, db_column='customer')
-    # TODO: Add configurations for all possible charts
 
 
 class Schedule(DSCMS4Model):

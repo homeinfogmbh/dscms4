@@ -51,8 +51,11 @@ class ComCatModel(module_model('comcat')):
             self.logger = logger.inherit(self.__class__.__name__)
 
 
-class Account(ComCatModel):
+class BaseAccount(ComCatModel):
     """Base account data"""
+
+    class Meta:
+        db_table = 'account'
 
     PASSWORD_HASHER = PasswordHasher()
 
@@ -68,7 +71,7 @@ class Account(ComCatModel):
         except DoesNotExist:
             account = cls()
             account.user == user
-            account.passwd = Account.PASSWORD_HASHER.hash(passwd)
+            account.passwd = cls.PASSWORD_HASHER.hash(passwd)
             account.locked = locked
             account.save()
             return account
@@ -99,12 +102,12 @@ class Account(ComCatModel):
 class _Account(ComCatModel):
     """Abstract account base for tenants and providers"""
 
-    account = ForeignKeyField(Account, db_column='account')
+    account = ForeignKeyField(BaseAccount, db_column='account')
 
     @classmethod
     def login(cls, user, passwd):
         """Logs in an account"""
-        account = Account.login(user, passwd)
+        account = BaseAccount.login(user, passwd)
 
         try:
             return cls.get(cls.account == account)
@@ -120,7 +123,7 @@ class Tenant(_Account):
     @classmethod
     def add(cls, rental_unit, user, passwd, locked=False):
         """Adds tenant account"""
-        account = Account.add(user, passwd, locked=locked)
+        account = BaseAccount.add(user, passwd, locked=locked)
         tenant = cls()
         tenant.account = account
         tenant.rental_unit = rental_unit
@@ -145,7 +148,7 @@ class ServiceProvider(_Account):
     @classmethod
     def add(cls, customer, user, passwd, locked=False):
         """Adds tenant account"""
-        account = Account.add(user, passwd, locked=locked)
+        account = BaseAccount.add(user, passwd, locked=locked)
         service_provider = cls()
         service_provider.account = account
         service_provider.customer = customer

@@ -13,6 +13,9 @@ from .common import DSCMS4Model, Schedule
 class BaseChart(DSCMS4Model):
     """Abstract information and message container"""
 
+    class Meta:
+        db_table = 'chart'
+
     customer = ForeignKeyField(Customer, db_column='customer')
     title = CharField(255, null=True, default=None)
     text = TextField(null=True, default=None)
@@ -47,11 +50,11 @@ class BaseChart(DSCMS4Model):
 class _Chart(DSCMS4Model):
     """Abstract chart class for extension"""
 
-    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
+    chart = ForeignKeyField(BaseChart, db_column='chart')
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
-        return self.base_chart.to_dict()
+        return self.chart.to_dict()
 
 
 class LPT(_Chart):
