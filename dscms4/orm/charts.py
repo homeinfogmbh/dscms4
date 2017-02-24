@@ -19,6 +19,7 @@ class BaseChart(DSCMS4Model):
     customer = ForeignKeyField(Customer, db_column='customer')
     title = CharField(255, null=True, default=None)
     text = TextField(null=True, default=None)
+    duration = SmallIntegerField(default=10)
     created = DateTimeField()
     schedule = ForeignKeyField(
         Schedule, db_column='schedule', null=True, default=None)

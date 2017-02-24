@@ -31,6 +31,7 @@ class Schedule(DSCMS4Model):
         2^6   2^5   2^4   2^3   2^2   2^1   2^0
     """
 
+    ALL_WEEK = 0b1111111
     STR_TEMP = (
         'Begin: {begin}\n'
         'End:   {end}\n'
@@ -41,9 +42,10 @@ class Schedule(DSCMS4Model):
 
     begin = DateTimeField(null=True)
     end = DateTimeField(null=True)
-    weekdays = SmallIntegerField(default=0b1111111)
+    weekdays = SmallIntegerField(default=ALL_WEEK)
 
     def __str__(self):
+        """Returns a human-readable representation of the schedule"""
         days = ['✓' if match else '✗' for match in (
             self.match_day(day) for day in range(7))]
         return self.STR_TEMP.format(*days, begin=self.begin, end=self.end)
@@ -121,7 +123,7 @@ class Schedule(DSCMS4Model):
     @property
     def all_week(self):
         """Determines whether the schedule runs all week"""
-        return self.weekdays == 0b1111111
+        return self.weekdays == self.ALL_WEEK
 
     @property
     def active(self):
@@ -132,7 +134,7 @@ class Schedule(DSCMS4Model):
         """Determines whether the schedule
         runs on the respective day
         """
-        return self.all_week or self.weekdays & (1 << 6 - day)
+        return self.weekdays & (1 << 6 - day)
 
     def set_day(self, day, value):
         """Set the respective day"""
@@ -152,3 +154,16 @@ class Schedule(DSCMS4Model):
                     return True
 
         return False
+
+    def to_dict(self):
+        """Returns a JSON compatible dictionary"""
+        dictionary = {
+            'weekdays': [bool(self.match_day(day)) for day in range(0, 7)]}
+
+        if self.begin is not None:
+            dictionary['begin'] = self.begin.isoformat()
+
+        if self.end is not None:
+            dictionary['end'] = self.end.isoformat()
+
+        return dictionary
