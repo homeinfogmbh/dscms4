@@ -17,6 +17,7 @@ class BaseChart(DSCMS4Model):
         db_table = 'chart'
 
     customer = ForeignKeyField(Customer, db_column='customer')
+    name = CharField(255, null=True, default=None)
     title = CharField(255, null=True, default=None)
     text = TextField(null=True, default=None)
     duration = SmallIntegerField(default=10)
