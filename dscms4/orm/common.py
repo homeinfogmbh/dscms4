@@ -46,8 +46,7 @@ class Schedule(DSCMS4Model):
 
     def __str__(self):
         """Returns a human-readable representation of the schedule"""
-        days = ['✓' if match else '✗' for match in (
-            self.match_day(day) for day in range(7))]
+        days = ['✓' if self.match_day(day) else '✗' for day in range(7)]
         return self.STR_TEMP.format(*days, begin=self.begin, end=self.end)
 
     @property
