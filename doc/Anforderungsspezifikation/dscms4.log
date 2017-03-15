@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2016.11.21)  9 MAR 2017 14:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2016.11.21)  15 MAR 2017 11:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -820,11 +820,11 @@ e
 
 \openout3 = `dscms4.ist'.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./dscms4.toc [2])
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./dscms4.toc)
 \tf@toc=\write5
 \openout5 = `dscms4.toc'.
 
- [3]
+ [2]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 64.
 
 (/usr/share/texmf-dist/tex/latex/base/omscmr.fd
@@ -832,130 +832,56 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 64.
- [4] [5]
+ [3] [4]
 Underfull \hbox (badness 4859) in paragraph at lines 131--132
 []  |\OT1/cmr/bx/n/10 1.2.1.2.1 Nach-rich-ten \OT1/cmr/m/n/10 Der Nachrichten-C
 hart zeigt in-ter-na-tio-na-le
  []
 
-[6]
+[5]
 Underfull \hbox (badness 10000) in paragraph at lines 165--167
 []  |\OT1/cmr/bx/n/10 1.2.1.2.8 []OPNV An-schl[]usse \OT1/cmr/m/n/10 Der []OPNV
 -Chart zeigt die
  []
 
-[7] [8] [9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 299--300
-[]\OT1/cmr/m/n/10 Informationen (\OT1/cmr/m/it/10 Charts\OT1/cmr/m/n/10 ) ein-s
-tel-len und den
+[6] [7] [8] [9]
+Underfull \hbox (badness 5667) in paragraph at lines 299--300
+[]\OT1/cmr/m/n/10 Verwaltung der Un-ter-neh-mens-struk-tur mit-tels
  []
 
 
-Overfull \hbox (15.0pt too wide) in paragraph at lines 292--304
+Overfull \hbox (15.0pt too wide) in paragraph at lines 293--311
 [][] 
  []
 
-[12] [13] <company_structure.png, id=51, 777.90625pt x 438.63875pt>
-File: company_structure.png Graphic file (type png)
+[10]
 
-<use company_structure.png>
-Package pdftex.def Info: company_structure.png used on input line 343.
-(pdftex.def)             Requested size: 369.88582pt x 208.56973pt.
+Package glossaries Warning: No \printglossary or \printglossaries found. 
+(Remove \makeglossaries if you don't want any glossaries.) 
+This document will not have a glossary.
 
-Overfull \hbox (24.88582pt too wide) in paragraph at lines 343--344
-[][] 
- []
-
-<charts.png, id=52, 985.6825pt x 503.8825pt>
-File: charts.png Graphic file (type png)
- <use charts.png>
-Package pdftex.def Info: charts.png used on input line 347.
-(pdftex.def)             Requested size: 369.88582pt x 189.08618pt.
-
-Overfull \hbox (24.88582pt too wide) in paragraph at lines 347--348
-[][] 
- []
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<presentation.png, id=53, 592.2125pt x 490.83376pt>
-File: presentation.png Graphic file (type png)
- <use presentation.png>
-Package pdftex.def Info: presentation.png used on input line 351.
-(pdftex.def)             Requested size: 284.52756pt x 235.8222pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<comcat.png, id=54, 810.02625pt x 354.32375pt>
-File: comcat.png Graphic file (type png)
- <use comcat.png>
-Package pdftex.def Info: comcat.png used on input line 355.
-(pdftex.def)             Requested size: 369.88582pt x 161.79605pt.
-
-Overfull \hbox (24.88582pt too wide) in paragraph at lines 355--356
-[][] 
- []
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<static_data.png, id=55, 446.66875pt x 223.83624pt>
-File: static_data.png Graphic file (type png)
- <use static_data.png>
-Package pdftex.def Info: static_data.png used on input line 359.
-(pdftex.def)             Requested size: 369.88582pt x 185.3605pt.
-
-Overfull \hbox (24.88582pt too wide) in paragraph at lines 359--360
-[][] 
- []
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[14 <./company_structure.png>] [15 <./charts.png> <./presentation.png>]
-[16 <./comcat.png> <./static_data.png>]
-Overfull \hbox (3.32506pt too wide) in paragraph at lines 413--418
-[][]
- []
-
-
-Overfull \hbox (5.54729pt too wide) in paragraph at lines 420--423
-[][]| 
- []
-
-
-Overfull \hbox (54.85878pt too wide) in paragraph at lines 390--428
-[][] 
- []
-
-[17
-
-] [18]
-No file dscms4.gls.
 \Changes@OutFile=\write6
 \openout6 = `dscms4.soc'.
 
-[19] (./dscms4.aux) ) 
+[11] (./dscms4.aux) ) 
 Here is how much of TeX's memory you used:
- 10312 strings out of 493013
- 168783 string characters out of 6139316
- 299738 words of memory out of 5000000
- 13616 multiletter control sequences out of 15000+600000
+ 10281 strings out of 493013
+ 168265 string characters out of 6139316
+ 297729 words of memory out of 5000000
+ 13592 multiletter control sequences out of 15000+600000
  8870 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 46i,18n,39p,1993b,453s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 46i,9n,37p,1993b,356s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx
 10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/s
 hare/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on dscms4.pdf (19 pages, 282386 bytes).
+Output written on dscms4.pdf (11 pages, 126897 bytes).
 PDF statistics:
- 99 PDF objects out of 1000 (max. 8388607)
- 65 compressed objects within 1 object stream
+ 68 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

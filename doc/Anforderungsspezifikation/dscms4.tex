@@ -234,6 +234,14 @@
 	\item Kategorie
 	\item Schlagworte
 	\end{itemize}
+	\paragraph{Konfigurationen}
+	Konfigurationen sind im Wesentlichen Einstellungen das Design der Digital Signage Anwendung betreffend.
+	Es können folgende Parameter konfiguriert werden:
+	\begin{itemize}
+	\item Schriftart
+	\item Schriftgröße
+	\item TODO: Vervollständigung durch Raphael!
+	\end{itemize}
 	\subsubsection{Zuweisung von Inhalten}
 	Inhalte können \emph{Mieteinheiten}, \emph{Standorten} und \emph{Gruppen} zugewiesen werden.
 	Wird ein Inhalt einer Mieteinheit zugewiesen, so ist der entsprechende Inhalt nur für diese Mieteinheit gültig. Wird ein Inhalt einem Standort zugewiesen, so ist dieser Inhalt für den entsprechenden Standort und alle zugehörigen Mieteinheiten gültig. Wird ein Inhalt einer Gruppe zugewiesen, so ist dieser Inhalt für alle Mitglieder der Gruppe (rekursiv) gültig.
@@ -247,6 +255,7 @@
 		
 	\subsection{Domäne}
 	Die Domäne beschränkt sich auf Digital Signage und ist spezialisiert auf die Wohnungswirtschaft und die Kommunikation zwischen Vermieter, Mieter und Dienstleister.
+	Das System soll jedoch ebenfalls von Kunden, welche nicht aus der Wohnungswirtschaftsbranche stammen genutzt werden können. Daher werden Mieteinheiten als ein optionales Feature implementiert.
 
 	\subsection{Maßnahmen zur Anforderungsanalyse}
 	Zur Anforderungsanalyse wurden alleine die \emph{Ideen} und \emph{Vorstellungen} des Geschäftsführers Herrn Gunkel genommen.
@@ -267,100 +276,46 @@
 			\hline
 			Mi., 22.02.2017 & Telefonkonferenz mit den Entwicklern Haupt und Neumann zur Analyse der Beziehungen der Entitäten. \\
 			\hline
-			Mi., 08.03.2017 & Meeting mit den Entwicklern Haupt und Neumann zur Feinabstimmung der Inhalte, Abbildung Unternehmensstruktur und Zuweisung von Inhalten. \\
+			Mi., 08.03.2017 & Meeting mit den Entwicklern Haupt und Neumann zur Feinabstimmung der Inhalte, Abbildung der Unternehmensstruktur und Zuweisung von Inhalten. \\
 			\hline	
 		\end{tabular}
 	\end{center}
 	
 	\pagebreak
 	\section{Rahmenbedingungen und Umfeld}
-	Zur Lösung des Problems sollen neue Datenbanken mit einem zugehörigen Content Management System (CMS) entwickelt werden, welches auf das HIS-Framework aufbaut.
-	Weiterhin soll eine Web-Anwendung und eine Smartphone Anwendung zur Bedienung durch den Mieter entwickelt werden, mithilfe derer dieser für sie/ihn bestimmte Informationen anzeigen lassen und Meldungen an den Vermieter senden kann.	
-	Dafür soll ein einheitliches ReST API zur Übertragung der Informationen im JSON-Format entwickelt werden.
+	Zur Lösung des Problems soll ein neues Content Management System, das DSCMS4, entwickelt werden, welches auf das HIS-Framework aufbauen soll um die geforderte Modularität und Erweiterbarkeit zu gewährleisten.
+	Frontend und Backend sollen über eine JSON-basierte ReST API gekoppelt werden.
+	Zur Sicherstellung der Integrität und Sicherheit der erhobenen Daten, sollen sowohl das Frontent, als auch das Backend ausschließlich über HTTPS betrieben werden.
 	\subsection{Einschränkungen und Vorgaben}
-	Der Entwurf ist auf das Client-Server-Modell beschränkt.
-	\subsubsection{ReST API}
-	Das ReST API dient als Rückgrat des Systems und als zentrale Stelle des Datenaustausches.
-	Es soll als WSGI-Anwendung in \emph{Python 3} implementiert werden und auf das bereits vorhandene Framework der \emph{Homeinfo Integrated Services} (\enquote{HIS}) zurückgreifen.
-	Das ReST API soll auf einem Linux-Server lauffähig und über das Internet erreichbar sein.
-	\subsubsection{Content Management System}
-	Das CMS soll als Website in \emph{HTML 5.0} entwickelt werden. Server-seitige Datenverarbeitung soll nicht zum Einsatz kommen. Diese soll als Teil des ReST API bereitgestellt werden.
+	Der Entwurf ist gemäß HTTP auf das Client-Server-Modell beschränkt.
 	
-	\pagebreak
-	\subsection{Anwender}
-	
+	\subsection{Anwender}	
 	\begin{tabular}{|p{\dimexpr 0.25\linewidth-2\tabcolsep}|p{\dimexpr 0.75\linewidth-2\tabcolsep}|}
 	\hline
 	Rolle & Fähigkeiten \\
 	\hline
-	Vermieter &
+	Kunde der Wohnungswirtschaft &
 		\begin{itemize}
-		\item Verwaltung der Unternehmensstruktur (Gebäude, Mieteinheiten, Gruppen).
-		\item Informationen (\emph{Charts}) einstellen und den Gebäuden (\emph{Building}), Mieteinheiten (\emph{RentalUnit}) oder Gruppen (\emph{Groups}) zuweisen.
-		\item Schadensmeldungen Dienstleistern zuweisen.
+		\item Verwaltung der Unternehmensstruktur mittels \emph{Mieteinheiten}, \emph{Standorten} und \emph{Gruppen}.
+		\item Inhalte erstellen und der Unternehmensstrukturelementen zuweisen.
 		\end{itemize} \\
+	\hline
+	Andere Kunden & 
+		\begin{itemize}
+		\item Verwaltung der \emph{Standorte} und \emph{Gruppen}.
+		\item Inhalte erstellen und den \emph{Standorten} und \emph{Gruppen} zuweisen.
+		\end{itemize}
+		Die Möglichkeit zur Verwaltung von Mieteinheiten ist zwar außerhalb der Wohnungswirtschaft nicht sinnvoll und wird daher hier nicht berücksichtigt, jedoch \emph{nicht explizit ausgeschlossen}. \\
 	\hline
 	\end{tabular}
 	\subsection{Schnittstellen und angrenzende Systeme}
 	Das System soll auf das \emph{HIS} Framework aufsetzen.
-	Zusätzliche Module sollen jederzeit über eine standardisiertes API aufgenommen werden können. werden.
+	Zusätzliche Sub-Module sollen jederzeit über eine standardisiertes API aufgenommen werden können. werden.
+	\pagebreak
 	
 	\section{Funktionale Anforderungen}
-	\subsection{Entitäten und Beziehungen}
-	Es soll eine Datenbank entworfen werden, welche die bisherigen Entitäten und Beziehungen der Datenbank des \emph{DSCMS3} abbildet und optimiert.
-	\begin{itemize}
-		\item Charts
-		\begin{itemize}
-			\item Öffentlicher Nahverkehr (\emph{PubTrans})
-			\item Nachrichten (\emph{News})
-			\item Zitate (\emph{Quotes})
-			\item Immobilien (\emph{RealEstates})
-			\item Video
-			\item Bild \& Text (\emph{HTML})
-				\begin{itemize}
-					\item Veranstaltung (\emph{Event})
-				\end{itemize}
-			\item Facebook
-			\item Bilderraten (\emph{GuessPic})
-			\item Text
-			\item Wetter (\emph{Weather})
-			\item Müllabfuhrtermine (\emph{GarbageCollection})
-		\end{itemize}
-		\item Konfigurationen (\emph{Configuration})
-		\item Menüs (\emph{Menu})
-	\end{itemize}
-	Ferner soll die Datenbank zusätzliche eine interne Struktur des Unternehmens widerspiegeln. Dazu werden folgende neue Entitäten eingeführt:
-	\begin{itemize}
-		\item Mieteinheit (\emph{RentalUnit})
-		\item Gebäude (\emph{Building})
-		\item Gruppe (\emph{Group})
-	\end{itemize}
-	Wobei Gruppen als Mitglieder Mieteinheiten, Gebäude oder andere Gruppen beinhalten können sollen.
-	\pagebreak
-	\subsubsection{ER Diagramme}
-	\begin{center}
-	\begin{figure}[h]
-		\includegraphics[width=130mm]{company_structure.png}
-		\caption{Firmenstruktur der Kunde}
-	\end{figure}
-	\begin{figure}[h]
-		\includegraphics[width=130mm]{charts.png}
-		\caption{Charts}
-	\end{figure}
-	\begin{figure}[h]
-		\includegraphics[width=100mm]{presentation.png}
-		\caption{Präsentationsdaten}
-	\end{figure}
-	\begin{figure}[h]
-		\includegraphics[width=130mm]{comcat.png}
-		\caption{ComCat}
-	\end{figure}
-	\begin{figure}[h]
-		\includegraphics[width=130mm]{static_data.png}
-		\caption{Statische Zusatzdaten}
-	\end{figure}
-	\end{center}
-	\FloatBarrier
+	Das DSCMS4 soll als Webanwendung von überall aus über das Internet erreichbar sein und auf allen gängigen Webbrowsern laufen.
+	Das Frontent soll dazu in HTML5, CSS3 und JavaScript implementiert werden.
 	\subsection{ReST API}
 	Das zentrale ReST API soll die \emph{Datenverarbeitung} des Systems übernehmen und als \emph{zentraler Server} von \enquote{ComCat} fungieren.
 	Daraus ergeben sich folgende funktionale Anforderungen:
@@ -375,72 +330,4 @@
 		\item Zuordnung von Inhalten zu Mietobjekten
 		\item Zuordnung von Meldungen zu Dienstleistern
 	\end{itemize}
-	\subsection{Smartphone App für Mieter}
-	Die Smartphone App soll als Client des ReST API fungieren.
-	\begin{itemize}
-		\item Abfrage von Inhalten zum Mietobjekt
-		\item Versand von Meldungen an den Vermieter
-	\end{itemize}
-	\subsection{Content Management System}
-	Das CMS soll auf allen gängigen Webbrowsern lauffähig sein.
-	\subsection{Use-Case-Diagramme}
-	\subsection{Use-Case Tabellen}
-	\subsubsection{Smartphone App}
-	\paragraph{Mieter App}
-	\begin{tabular}{|l|p{9cm}|}
-		\hline
-		\emph{Use Case Nr. 1} & Login \\
-		\hline
-		\emph{Umfeld} & Smartphone \\
-		\hline
-		\emph{Systemgrenzen} & ReST API \\
-		\hline
-		\emph{Ebene} & App \\
-		\hline
-		\emph{Hauptakteur} & Smartphone Benutzer \\
-		\hline
-		\emph{Stakeholder u. Interesse} & Mieter möchte sich in der \emph{Smartphone App} anmelden \\
-		\hline
-		\emph{Voraussetzung} & Aktive Netzwerkverbindung, App gestartet \\
-		\hline
-		\emph{Garantien} & – \\
-		\hline
-		\emph{Erfolgsfall} & Anmeldung erfolgreich und Anzeige aktueller Meldungen zum Wohnobjekt \\
-		\hline
-		\emph{Auslöser} & Betätigen der Schaltfläche \enquote{Anmelden} \\
-		\hline
-		\emph{Beschreibung} & 
-			\begin{tabular}{lp{8cm}}
-				1. & Eintippen den korrekten Chiffre im dafür vogesehenen Textfeld \\
-				2. & Betätigen der Schaltfläche \enquote{Anmelden}  \\
-			\end{tabular}  
-		WEITER: Use Case 2 \\
-		\hline
-		\emph{Erweiterungen} & 
-		\begin{tabular}{lp{8cm}}
-			2a & WENN die Anmeldung fehlschlägt,  DANN Warnmeldung anzeigen \\
-		\end{tabular} \\
-		\hline
-		\emph{Technologie} & HTTPS \\
-		\hline
-
-	\end{tabular}
-	
-	\pagebreak
-	
-	\section{Skizzen}
-	Im Folgenden werden Skizzen zur grafischen Benutzeroberfläche der \emph{Smartphone App} gezeigt, die als Vorlage für die spätere Implementierung dienen sollen.
-	\begin{figure}[H]
-		\centering
-	%	\includegraphics[width=0.7\linewidth]{./GUI/PET-Login}
-		\caption{Smartphone App Mockup}
-		\label{fig1}
-	\end{figure}
-	\subsection{Programmabläufe}
-	keine
-	
-	\section{Glossar}
-	% Glossar ausgeben
-	\printglossaries
-
 \end{document}
