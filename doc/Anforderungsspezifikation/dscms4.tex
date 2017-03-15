@@ -69,20 +69,21 @@
 	
 	\pagebreak
 	\section{Mission des Projekts}
-	Ziel ist es, ein Content Management System (\enquote{CMS}) Zur Verfügung zu stellen, in welchem die Kunden von HOMEINFO \emph{Mieteinheiten}, \emph{Standorte} und \emph{Gruppen} pflegen können.
-	Die bisherigen Funktionen des \enquote{Digital Signage Content Management Systems, Version 3} (\emph{DSCMS3}) sollen zum Teil vom neuen System übernommen und optimiert werden um das DSCMS3 ablösen.
+	Ziel ist es, ein Content Management System (\enquote{CMS}) Zur Verfügung zu stellen, in welchem die Kunden von HOMEINFO \emph{Benutzern} und \emph{Gruppen} pflegen können.
+	Die bisherigen Funktionen des \enquote{Digital Signage Content Management Systems, Version 3} (\emph{DSCMS3}) sollen zum Teil vom neuen System übernommen und optimiert werden um das DSCMS3 abzulösen.
 	Dies beinhaltet das Verwalten von sog. \enquote{Charts} und \emph{Konfigurationen}.
-	Diese Elemente sollen ebenfalls mit den Elementen der Unternehmensstruktur assoziiert werden können.
-	\subsection{Abbildung der Unternehmensstrukturen der Kunden}
-	Das DSCMS4 soll es den Kunden ermöglichen, ihre internen Strukturen abzubilden. Dies soll durch die Definition von \emph{Mieteinheiten}, \emph{Standorten} sowie \emph{Gruppen} erreicht werden.
-	\subsubsection{Mieteinheiten}
-	Mieteinheiten sind optional von Kunden, insbesondere solchen aus der Wohnungswirtschaft, nutzbar und sollen durch HOMEINFO für den Kunden aus deren Datenbeständen vorkonfiguriert werden können. Jede Mieteinheit ist genau einem Standort zugeordnet und besteht aus einer \emph{ID} sowie einer \emph{optionalen} Beschreibung. Mieteinheiten sollen die Schnittstelle zu den in \emph{ComCat} verwendeten Mieteraccounts bilden.
-	\subsubsection{Standorte}
-	Standorte stellen Tupel aus \emph{Name}, \emph{Beschreibung} und \emph{Adresse} dar. Sie sollen dazu dienen Standorte für Digital Signage \emph{Terminals} abzubilden sowie Kunden der Wohnungswirschaft die Möglichkeit zu bieten, Verwaltungseinheiten (\enquote{VE}) abzubilden.
+	Diese Elemente sollen ebenfalls mit den Elementen der jeweiligen Unternehmensstruktur assoziiert werden können.
+	\subsection{Strukturierung der Inhalte}
+	Das DSCMS4 soll es den Kunden ermöglichen, ihre internen Strukturen abzubilden. Dies soll durch die Definition von \emph{Benutzern} und \emph{Gruppen} erreicht werden.
+	\subsubsection{Benutzer}
+	Benutzer bilden (mit den Terminals aus der Terminaldatenbank) die unterste Schicht der Zielobjekte für Inhalte dar. Benutzer sollen die Schnittstelle zu den in \emph{ComCat} verwendeten Accounts bilden.
+	Benutzer sollen einen Namen haben und können mit beliebig vielen Tags versehen werden.
 	\subsubsection{Gruppen}
-	Gruppen sollen dem Kunden zur Abbildung seiner Unternehmensstruktur oder auch allgemein zur Organisation der Verwaltungseinheiten und Standorte dienen.
-	Gruppen können Mieteinheiten, Standorte oder andere Gruppen als Mitglieder haben, wobei Zyklen zu vermeiden sind.
-	Gruppen sollen einen Namen und eine optionale Beschreibung aufweisen.
+	Gruppen sollen dem Kunden zur Abbildung seiner Unternehmensstruktur oder auch allgemein zur Organisation der \emph{Benutzer} und \emph{Terminals} dienen.
+	Gruppen können Benutzer, Terminals oder andere Gruppen als Mitglieder haben, wobei Zyklen zu vermeiden sind.
+	Gruppen sollen einen Namen haben und können mit beliebig vielen Tags versehen werden.
+	\subsubsection{Tags}
+	Tags sind Zeichenketten, welche mit den oben genannten Entitäten assoziiert werden können um diese detaillierter zu identifizieren und über eine Suchfunktion filterbar zu machen.
 	\subsection{Erstellung und Verwaltung von Inhalten}
 	Inhalte bezeichnen im Sinne dieses Dokuments Informationen, welche der Kunde auf seinen Digital Signage Systemen anzeigen lassen möchte sowie solche Informationen, die an die Mieter-Apps des \emph{ComCat} Systems übertragen werden sollen.
 	\subsubsection{Verfügbare Inhalte}
@@ -98,27 +99,44 @@
 	\item Autor
 	\item Titel
 	\item Untertitel
+	\item Beschreibung
 	\item Anzeigedauer
 	\item Erstellungsdatum
 	\item Index
 	\item Zeitplan
+	\item Übergangseffekt
 	\end{itemize}
 	\subparagraph{HTML Chart}
 	Bei dem HTML-Chart handelt es sich um eine Erweiterung des Basis Charts, welche einen HTML Text und beliebig viele Bilder enthält.
 	\begin{itemize}
-	\item Text
+	\item Texte
+		\begin{itemize}
+		\item Text1
+		\item Text2
+		\item …
+		\end{itemize}
 	\item Bilder
 		\begin{itemize}
 		\item Bild1
 		\item Bild2
-		\item ...
+		\item …
 		\end{itemize}
+	\item Ken Burns Effekt
+	\item Vollbild
+	\item Schriftfarbe
+	\item Zufällige Reihenfolge der Bilder
+	\item Anzahl der zu zeigenden Bilder pro Durchlauf
 	\end{itemize}
 	Der HTML-Chart stellt eine Synthese der beiden ehemaligen Chart Typen \emph{BildTextChart} und \emph{PinChart} dar.
 	\subparagraph{Text Chart}
 	Der Text-Chart stellt eine einfachere Variante des HTML Charts dar und verfügt gegenüber dem Basis Chart lediglich über einen zusätzlichen Text.
 	\begin{itemize}
-	\item Text
+	\item Texte
+		\begin{itemize}
+		\item Text1
+		\item Text2
+		\item …
+		\end{itemize}
 	\end{itemize}
 	\subparagraph{Video Chart}
 	Der Video-Chart erweitert den Basis Chart lediglich um ein Video.
@@ -126,14 +144,20 @@
 	\item Video
 	\end{itemize}
 	\paragraph{Zusätzliche Charts}
-	Zusätzliche Charts leiten sich, sofern nicht anders beschreiben. ebenfalls vom o.g. generischen Chart ab, sollen jedoch nur verwendet werden können, sofern der entsprechende Dienst von Kunden bei HOMEINFO gebucht wurde.
+	Zusätzliche Charts leiten sich, sofern nicht anders beschrieben. ebenfalls vom o.g. generischen Chart ab, sollen jedoch nur verwendet werden können, sofern der entsprechende Dienst von Kunden bei HOMEINFO gebucht wurde.
 	\subparagraph{Nachrichten}
 	Der Nachrichten-Chart zeigt internationale Nachrichten des Dienstes \emph{Adversign} an. Er erweitert den generischen Chart um keine zusätzlichen Attribute.
 	\subparagraph{Lokale Nachrichten}
 	Der Chart für lokale Nachrichten soll Nachrichten einer entsprechenden Region anzeigen. Die Implementation einer entsprechenden Quelle steht noch aus. Der Chart für lokale Nachrichten erweitert den generischen Chart um das Attribut
 	\begin{itemize}
 	\item Lokalisation
+	\item Schriftgröße für Titel
+	\item Schriftgröße für Text
+	\item Schriftfarbe für Titel
+	\item Schriftfarbe für Text
+	\item Hintergrundfarbe für Text
 	\end{itemize}
+	\pagebreak
 	\subparagraph{Lokale Veranstaltungen}
 	Der Chart für lokale Veranstaltungen soll Veranstaltungen in und um den jeweiligen Standort anzeigen. Diese Daten werden einer noch zu entwickelnden Quelle entnommen werden.
 	\begin{itemize}
@@ -142,7 +166,12 @@
 	\item Einträge (max.)
 	\end{itemize}
 	\subparagraph{Zitate}
-	Der Zitate-Chart zeigt zufällig ausgewählte Zitate an. Er erweitert den generischen Chart um keine weiteren Attribute.
+	Der Zitate-Chart zeigt zufällig ausgewählte Zitate an. Er erweitert den generischen Chart um folgende Attribute:
+	\begin{itemize}
+	\item Schriftgröße für Text
+	\item Schriftfarbe für Text
+	\item Hintergrundfarbe für Text
+	\end{itemize}
 	\subparagraph{Facebook}
 	Der Facebook-Chart zeigt Facebookmeldungen des jeweiligen Kunden an.
 	Er erweitert den generischen Chart um folgende Attribute:
@@ -151,15 +180,36 @@
 	\item Beiträge (Anzahl der letzten Beiträge)
 	\item Facebook ID
 	\item Facebook Name
+	\item Schriftgröße für Titel
+	\item Schriftgröße für Text
+	\item Schriftfarbe für Titel
+	\item Schriftfarbe für Text
+	\item Hintergrundfarbe für Text
 	\end{itemize}
 	\subparagraph{Bilderraten}
 	Der Bilderraten-Chart zeigt zufällige, verdeckte Bilder, welche im Laufe der Zeit partiell aufgedeckt werden, bis das gesamte Bild zu sehen ist und zeigt am Ende die Bildbeschreibung als Auflösung an.
 	Der Bilderraten Chart erweitert den generischen Chart um keine weiteren Attribute.
+	\pagebreak
 	\subparagraph{Wetter}
 	Der Wetter-Chart zeigt die aktuelle, lokale Wettervorhersage an.
-	Er erweitert den generischen Chart um folgendes Attribut:
+	Er erweitert den generischen Chart um folgende Attribute:
 	\begin{itemize}
 	\item Ort
+	\item Hintergrundbilder
+		\begin{itemize}
+		\item Hintergrundbild1
+		\item Hintergrundbild1
+		\item …
+		\end{itemize}
+	\item Transparenz für den Vordergrund
+	\item Schriftfarbe für Text
+	\item Icon Farbe
+	\item Anpassung des Vordergrunds:
+		\begin{itemize}
+		\item Farbe1
+		\item Farbe2
+		\item Farbe3
+		\end{itemize}
 	\end{itemize}
 	\subparagraph{ÖPNV Anschlüsse}
 	Der ÖPNV-Chart zeigt die nächstgelegenen Haltestellen um Abfahrzeiten für öffentliche Verkehrsmittel.
@@ -173,12 +223,12 @@
 	\begin{itemize}
 	\item Standort
 	\end{itemize}
+	\pagebreak
 	\subparagraph{Immobilien}
 	Der Immobilien-Chart zeigt die Immobilien des jeweiligen Kunden an.
 	Er erweitert den generischen Chart um folgende Attribute:
 	\begin{itemize}
 	\item QR Code
-	\item Bilder Strecken
 	\item Stil
 	\item Kontaktbild
 	\item Übergangseffekt
@@ -195,14 +245,21 @@
 	\item Gewerbeobjekt
 	\item Anlage
 	\item Wohnen auf Zeit
+	\item Schriftfarbe für Titel
+	\item Schriftfarbe für Keywords
+	\item Schriftfarbe für Werte
+	\item Hintergrundfarbe
 	\end{itemize}
 	\subparagraph{Reinigungsplan}
 	Der Reinigungsplan-Chart zeigt an, wann welche Reinigungen erfolgt sind (s. Modul \emph{Reinigungsnachweise}).
 	Er erweitert den generischen Chart um keine weiteren Attribute.
+	\pagebreak
 	\paragraph{Menüs}
-	Menüs dienen der Navigation zu Charts auf interaktiven Systemen.
-	Menüs stellen eine Baumstruktur dar. Jeder Menübutton ist genau einem oder keinem (\enquote{\emph{root}}) übergeordneten Menübutton zugeordnet.
-	Ein Menübutton hat folgende Attribute:
+	Menüs bestehen aus einem bis beliebig vielen Root-Menüeinträgen.
+	\subparagraph{Menüeinträge}
+	Menüeinträge dienen der Navigation zu Charts auf interaktiven Systemen.
+	Menüeinträge stellen eine Baumstruktur dar. Jeder Menüeintrag ist genau einem oder keinem (\enquote{\emph{root}}) übergeordneten Menüeintrag zugeordnet.
+	Ein Menüeintrag hat folgende Attribute:
 	\begin{itemize}
 	\item Name
 	\item Bild
@@ -238,13 +295,28 @@
 	Konfigurationen sind im Wesentlichen Einstellungen das Design der Digital Signage Anwendung betreffend.
 	Es können folgende Parameter konfiguriert werden:
 	\begin{itemize}
-	\item Schriftart
-	\item Schriftgröße
-	\item TODO: Vervollständigung durch Raphael!
+	\item Name (string)
+	\item Beschreibung (string)
+	\item Schriftart (int)
+	\item Bild/Logo
+	\item Hintergrundbild(er)
+	\item Tickergeschwindigkeit (int)
+	\item Über Nacht abdunkeln (boolean)
+	\item Hintergrundfarbe
+	\item Textfarbe der Charts allgemein
+	\item Farbe des Tickers
+	\item Hintergrundfarbe des Tickers
+	\item Textfarbe der Kopfzeile
+	\item Hintergrundfarbe der Kopfzeile
+	\item Farbe der Uhrzeit
+	\item Format Hochkannt/Quer (boolean)
+	\item Touch Ja/nein (boolean)
+	\item Design (int)
+	\item Effekte (boolean)
 	\end{itemize}
 	\subsubsection{Zuweisung von Inhalten}
-	Inhalte können \emph{Mieteinheiten}, \emph{Standorten} und \emph{Gruppen} zugewiesen werden.
-	Wird ein Inhalt einer Mieteinheit zugewiesen, so ist der entsprechende Inhalt nur für diese Mieteinheit gültig. Wird ein Inhalt einem Standort zugewiesen, so ist dieser Inhalt für den entsprechenden Standort und alle zugehörigen Mieteinheiten gültig. Wird ein Inhalt einer Gruppe zugewiesen, so ist dieser Inhalt für alle Mitglieder der Gruppe (rekursiv) gültig.
+	Inhalte können \emph{Benutzern}, \emph{Terminals} und \emph{Gruppen} zugewiesen werden.
+	Wird ein Inhalt einem Benutzer zugewiesen, so ist der entsprechende Inhalt nur für diesen Benutzer gültig. Wird ein Inhalt einem Terminal zugewiesen, so ist dieser Inhalt nur für das entsprechenden Terminal gültig. Wird ein Inhalt einer Gruppe zugewiesen, so ist dieser Inhalt für alle Mitglieder der Gruppe (rekursiv) gültig.
 	\subsection{Wünsche und Prioritäten des Kunden}
 	\begin{itemize}
 		\item Einfache und intuitive Bedienung
@@ -254,9 +326,7 @@
 	\end{itemize}
 		
 	\subsection{Domäne}
-	Die Domäne beschränkt sich auf Digital Signage und ist spezialisiert auf die Wohnungswirtschaft und die Kommunikation zwischen Vermieter, Mieter und Dienstleister.
-	Das System soll jedoch ebenfalls von Kunden, welche nicht aus der Wohnungswirtschaftsbranche stammen genutzt werden können. Daher werden Mieteinheiten als ein optionales Feature implementiert.
-
+	Die Domäne beschränkt sich auf Digital Signage und ist nicht weiter spezialisiert.
 	\subsection{Maßnahmen zur Anforderungsanalyse}
 	Zur Anforderungsanalyse wurden alleine die \emph{Ideen} und \emph{Vorstellungen} des Geschäftsführers Herrn Gunkel genommen.
 	Konkrete Kunden sind nicht vorhanden und Anforderungen potentieller Kunden nicht bekannt.
@@ -296,16 +366,15 @@
 	\hline
 	Kunde der Wohnungswirtschaft &
 		\begin{itemize}
-		\item Verwaltung der Unternehmensstruktur mittels \emph{Mieteinheiten}, \emph{Standorten} und \emph{Gruppen}.
-		\item Inhalte erstellen und der Unternehmensstrukturelementen zuweisen.
+		\item Verwaltung der Unternehmensstruktur mittels \emph{Benutzern} und \emph{Gruppen}.
+		\item Inhalte erstellen und den Strukturelementen zuweisen.
 		\end{itemize} \\
 	\hline
 	Andere Kunden & 
 		\begin{itemize}
 		\item Verwaltung der \emph{Standorte} und \emph{Gruppen}.
 		\item Inhalte erstellen und den \emph{Standorten} und \emph{Gruppen} zuweisen.
-		\end{itemize}
-		Die Möglichkeit zur Verwaltung von Mieteinheiten ist zwar außerhalb der Wohnungswirtschaft nicht sinnvoll und wird daher hier nicht berücksichtigt, jedoch \emph{nicht explizit ausgeschlossen}. \\
+		\end{itemize} \\
 	\hline
 	\end{tabular}
 	\subsection{Schnittstellen und angrenzende Systeme}

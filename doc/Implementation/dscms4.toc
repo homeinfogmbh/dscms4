@@ -1,51 +1,7 @@
 \select@language {ngerman}
-\contentsline {section}{\numberline {1}Mission des Projekts}{5}
-\contentsline {subsection}{\numberline {1.1}Abbildung der Unternehmensstrukturen der Kunden}{5}
-\contentsline {subsubsection}{\numberline {1.1.1}Mieteinheiten}{5}
-\contentsline {subsubsection}{\numberline {1.1.2}Standorte}{5}
-\contentsline {subsubsection}{\numberline {1.1.3}Gruppen}{5}
-\contentsline {subsection}{\numberline {1.2}Erstellung und Verwaltung von Inhalten}{5}
-\contentsline {subsubsection}{\numberline {1.2.1}Verf\IeC {\"u}gbare Inhalte}{5}
-\contentsline {paragraph}{\numberline {1.2.1.1}Charts}{6}
-\contentsline {subparagraph}{\numberline {1.2.1.1.1}Generischer Chart}{6}
-\contentsline {subparagraph}{\numberline {1.2.1.1.2}HTML Chart}{6}
-\contentsline {subparagraph}{\numberline {1.2.1.1.3}Text Chart}{6}
-\contentsline {subparagraph}{\numberline {1.2.1.1.4}Video Chart}{6}
-\contentsline {paragraph}{\numberline {1.2.1.2}Zus\IeC {\"a}tzliche Charts}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.1}Nachrichten}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.2}Lokale Nachrichten}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.3}Lokale Veranstaltungen}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.4}Zitate}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.5}Facebook}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.6}Bilderraten}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.7}Wetter}{7}
-\contentsline {subparagraph}{\numberline {1.2.1.2.8}\IeC {\"O}PNV Anschl\IeC {\"u}sse}{8}
-\contentsline {subparagraph}{\numberline {1.2.1.2.9}Abfuhrtermine}{8}
-\contentsline {subparagraph}{\numberline {1.2.1.2.10}Immobilien}{8}
-\contentsline {subparagraph}{\numberline {1.2.1.2.11}Reinigungsplan}{8}
-\contentsline {paragraph}{\numberline {1.2.1.3}Men\IeC {\"u}s}{9}
-\contentsline {paragraph}{\numberline {1.2.1.4}Ticker}{9}
-\contentsline {paragraph}{\numberline {1.2.1.5}Reinigungsnachweis}{9}
-\contentsline {paragraph}{\numberline {1.2.1.6}Kontaktformular}{9}
-\contentsline {paragraph}{\numberline {1.2.1.7}Konfigurationen}{9}
-\contentsline {subsubsection}{\numberline {1.2.2}Zuweisung von Inhalten}{10}
-\contentsline {subsection}{\numberline {1.3}W\IeC {\"u}nsche und Priorit\IeC {\"a}ten des Kunden}{10}
-\contentsline {subsection}{\numberline {1.4}Dom\IeC {\"a}ne}{10}
-\contentsline {subsection}{\numberline {1.5}Ma\IeC {\ss }nahmen zur Anforderungsanalyse}{10}
-\contentsline {section}{\numberline {2}Rahmenbedingungen und Umfeld}{11}
-\contentsline {subsection}{\numberline {2.1}Einschr\IeC {\"a}nkungen und Vorgaben}{11}
-\contentsline {subsection}{\numberline {2.2}Anwender}{11}
-\contentsline {subsection}{\numberline {2.3}Schnittstellen und angrenzende Systeme}{11}
-\contentsline {section}{\numberline {3}Funktionale Anforderungen}{11}
-\contentsline {subsection}{\numberline {3.1}Entit\IeC {\"a}ten und Beziehungen}{11}
-\contentsline {subsubsection}{\numberline {3.1.1}ER Diagramme}{13}
-\contentsline {subsection}{\numberline {3.2}ReST API}{16}
-\contentsline {subsection}{\numberline {3.3}Smartphone App f\IeC {\"u}r Mieter}{16}
-\contentsline {subsection}{\numberline {3.4}Content Management System}{16}
-\contentsline {subsection}{\numberline {3.5}Use-Case-Diagramme}{17}
-\contentsline {subsection}{\numberline {3.6}Use-Case Tabellen}{17}
-\contentsline {subsubsection}{\numberline {3.6.1}Smartphone App}{17}
-\contentsline {paragraph}{\numberline {3.6.1.1}Mieter App}{17}
-\contentsline {section}{\numberline {4}Skizzen}{18}
-\contentsline {subsection}{\numberline {4.1}Programmabl\IeC {\"a}ufe}{18}
-\contentsline {section}{\numberline {5}Glossar}{18}
+\contentsline {section}{\numberline {1}Komponenten}{4}
+\contentsline {subsection}{\numberline {1.1}Frontend}{4}
+\contentsline {subsection}{\numberline {1.2}Backend}{4}
+\contentsline {subsubsection}{\numberline {1.2.1}Datenbanken}{4}
+\contentsline {subsubsection}{\numberline {1.2.2}Objektrelationales Mapping}{4}
+\contentsline {subsubsection}{\numberline {1.2.3}Controller}{4}
