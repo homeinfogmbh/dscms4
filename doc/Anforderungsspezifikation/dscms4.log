@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2016.11.21)  15 MAR 2017 15:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/Arch Linux) (preloaded format=pdflatex 2016.11.21)  16 MAR 2017 16:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -833,25 +833,25 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 64.
  [3] [4] [5]
-Underfull \hbox (badness 4859) in paragraph at lines 149--150
+Underfull \hbox (badness 4859) in paragraph at lines 139--140
 []  |\OT1/cmr/bx/n/10 1.2.1.2.1 Nach-rich-ten \OT1/cmr/m/n/10 Der Nachrichten-C
 hart zeigt in-ter-na-tio-na-le
  []
 
 [6] [7]
-Underfull \hbox (badness 10000) in paragraph at lines 215--217
+Underfull \hbox (badness 10000) in paragraph at lines 213--215
 []  |\OT1/cmr/bx/n/10 1.2.1.2.8 []OPNV An-schl[]usse \OT1/cmr/m/n/10 Der []OPNV
 -Chart zeigt die
  []
 
 [8] [9]
-Underfull \hbox (badness 5331) in paragraph at lines 260--263
+Underfull \hbox (badness 5331) in paragraph at lines 269--272
 []  |\OT1/cmr/bx/n/10 1.2.1.3.1 Men[]ueintr[]age \OT1/cmr/m/n/10 Men[]ueintr[]a
 ge die-nen der Na-vi-ga-ti-on zu
  []
 
 [10] [11] [12]
-Overfull \hbox (15.0pt too wide) in paragraph at lines 363--380
+Overfull \hbox (15.0pt too wide) in paragraph at lines 372--389
 [][] 
  []
 
@@ -868,7 +868,7 @@ This document will not have a glossary.
 Here is how much of TeX's memory you used:
  10282 strings out of 493013
  168281 string characters out of 6139316
- 298729 words of memory out of 5000000
+ 297729 words of memory out of 5000000
  13593 multiletter control sequences out of 15000+600000
  8870 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -879,7 +879,7 @@ hare/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on dscms4.pdf (14 pages, 128495 bytes).
+Output written on dscms4.pdf (14 pages, 128046 bytes).
 PDF statistics:
  78 PDF objects out of 1000 (max. 8388607)
  54 compressed objects within 1 object stream

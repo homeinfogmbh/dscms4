@@ -123,21 +123,11 @@
 		\end{itemize}
 	\item Ken Burns Effekt
 	\item Vollbild
-	\item Schriftfarbe
+	\item Texthintergrundfarbe
 	\item Zufällige Reihenfolge der Bilder
 	\item Anzahl der zu zeigenden Bilder pro Durchlauf
 	\end{itemize}
 	Der HTML-Chart stellt eine Synthese der beiden ehemaligen Chart Typen \emph{BildTextChart} und \emph{PinChart} dar.
-	\subparagraph{Text Chart}
-	Der Text-Chart stellt eine einfachere Variante des HTML Charts dar und verfügt gegenüber dem Basis Chart lediglich über einen zusätzlichen Text.
-	\begin{itemize}
-	\item Texte
-		\begin{itemize}
-		\item Text1
-		\item Text2
-		\item …
-		\end{itemize}
-	\end{itemize}
 	\subparagraph{Video Chart}
 	Der Video-Chart erweitert den Basis Chart lediglich um ein Video.
 	\begin{itemize}
@@ -146,9 +136,17 @@
 	\paragraph{Zusätzliche Charts}
 	Zusätzliche Charts leiten sich, sofern nicht anders beschrieben. ebenfalls vom o.g. generischen Chart ab, sollen jedoch nur verwendet werden können, sofern der entsprechende Dienst von Kunden bei HOMEINFO gebucht wurde.
 	\subparagraph{Nachrichten}
-	Der Nachrichten-Chart zeigt internationale Nachrichten des Dienstes \emph{Adversign} an. Er erweitert den generischen Chart um keine zusätzlichen Attribute.
+	Der Nachrichten-Chart zeigt internationale Nachrichten des Dienstes \emph{Adversign} an. Er erweitert den generischen Chart um die Attribute
+	\begin{itemize}
+	\item Lokalisation
+	\item Schriftgröße für Titel
+	\item Schriftgröße für Text
+	\item Schriftfarbe für Titel
+	\item Schriftfarbe für Text
+	\item Hintergrundfarbe für Text
+	\end{itemize}
 	\subparagraph{Lokale Nachrichten}
-	Der Chart für lokale Nachrichten soll Nachrichten einer entsprechenden Region anzeigen. Die Implementation einer entsprechenden Quelle steht noch aus. Der Chart für lokale Nachrichten erweitert den generischen Chart um das Attribut
+	Der Chart für lokale Nachrichten soll Nachrichten einer entsprechenden Region anzeigen. Die Implementation einer entsprechenden Quelle steht noch aus. Der Chart für lokale Nachrichten erweitert den generischen Chart um die Attribute
 	\begin{itemize}
 	\item Lokalisation
 	\item Schriftgröße für Titel
@@ -249,11 +247,22 @@
 	\item Schriftfarbe für Keywords
 	\item Schriftfarbe für Werte
 	\item Hintergrundfarbe
+	\item Zimmeranzahl
+		\begin{itemize}
+		\item 1
+		\item 2
+		\item 3
+		\item …n
+		\end{itemize}
+	\item Büro/ Praxen( boolean)
+	\item Grundstück (boolean)
+	\item haus (boolean)
+	\item Wohnung (boolean)
+	\item Zinshaus / Rrenditeobjekt (boolean)
 	\end{itemize}
 	\subparagraph{Reinigungsplan}
 	Der Reinigungsplan-Chart zeigt an, wann welche Reinigungen erfolgt sind (s. Modul \emph{Reinigungsnachweise}).
 	Er erweitert den generischen Chart um keine weiteren Attribute.
-	\pagebreak
 	\paragraph{Menüs}
 	Menüs bestehen aus einem bis beliebig vielen Root-Menüeinträgen.
 	\subparagraph{Menüeinträge}

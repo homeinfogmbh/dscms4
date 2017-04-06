@@ -3,7 +3,7 @@
 from datetime import datetime
 from peewee import DateTimeField, SmallIntegerField
 
-from homeinfo.lib.log import Logger
+from fancylog import Logger
 from his.orm import module_model
 
 
