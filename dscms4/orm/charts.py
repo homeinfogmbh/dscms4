@@ -1,6 +1,5 @@
 """Object Relational Mappings"""
 
-from datetime import datetime
 from peewee import ForeignKeyField, CharField, TextField, \
     DateTimeField, BooleanField, IntegerField, SmallIntegerField
 
@@ -8,6 +7,19 @@ from homeinfo.crm import Customer
 from filedb import FileProperty
 
 from .common import DSCMS4Model, Schedule
+
+
+__all__ = [
+    'BaseChart',
+    'Chart',
+    'LocalPublicTtransportChart',
+    'NewsChart',
+    'QuotesChart',
+    'VideoChart',
+    'HTMLChart',
+    'FacebookChart',
+    'GuessPictureChart',
+    'WeatherChart']
 
 
 class BaseChart(DSCMS4Model):
@@ -34,11 +46,17 @@ class BaseChart(DSCMS4Model):
         """Returns a JSON compatible dictionary"""
         dictionary = {'created': self.created.isoformat()}
 
+        if self.name is not None:
+            dictionary['name'] = self.name
+
         if self.title is not None:
             dictionary['title'] = self.title
 
         if self.text is not None:
             dictionary['text'] = self.text
+
+        if self.duration is not None:
+            dictionary['duration'] = self.duration
 
         if self.schedule is not None:
             dictionary['schedule'] = self.schedule.to_dict()
@@ -46,7 +64,7 @@ class BaseChart(DSCMS4Model):
         return dictionary
 
 
-class _Chart(DSCMS4Model):
+class Chart(DSCMS4Model):
     """Abstract chart class for extension"""
 
     chart = ForeignKeyField(BaseChart, db_column='chart')
@@ -55,15 +73,28 @@ class _Chart(DSCMS4Model):
         """Returns a JSON compatible dictionary"""
         return self.chart.to_dict()
 
+    def delete_instance(self, delete_basechart=True, **kwargs):
+        """Deletes the ORM instance from the database"""
+        result = super().delete_instance(**kwargs)
 
-class LPT(_Chart):
+        if delete_basechart:
+            self.chart.delete_instance(**kwargs)
+
+        return result
+
+
+class LocalPublicTtransportChart(Chart):
     """Local public transport chart"""
 
     class Meta:
-        db_table = 'lpt_chart'
+        db_table = 'local_public_transport_chart'
+
+    def to_dict(self):
+        """Returns a JSON compatible dictionary"""
+        return {}
 
 
-class NewsChart(_Chart):
+class NewsChart(Chart):
     """Chart to display news"""
 
     class Meta:
@@ -81,14 +112,14 @@ class NewsChart(_Chart):
         return dictionary
 
 
-class QuotesChart(_Chart):
+class QuotesChart(Chart):
     """Chart for quotations"""
 
     class Meta:
         db_table = 'quotes_chart'
 
 
-class VideoChart(_Chart):
+class VideoChart(Chart):
     """A chart that may contain images and texts"""
 
     class Meta:
@@ -104,7 +135,7 @@ class VideoChart(_Chart):
         return dictionary
 
 
-class HTMLChart(_Chart):
+class HTMLChart(Chart):
     """A chart that may contain images"""
 
     class Meta:
@@ -127,7 +158,7 @@ class HTMLChart(_Chart):
         return dictionary
 
 
-class Facebook(_Chart):
+class FacebookChart(Chart):
     """Facebook data chart"""
 
     class Meta:
@@ -148,29 +179,14 @@ class Facebook(_Chart):
         return dictionary
 
 
-class GuessPicture(_Chart):
+class GuessPictureChart(Chart):
     """Chart for guessing pictures"""
 
     class Meta:
-        db_table = 'quotes_chart'
+        db_table = 'guess_picture_chart'
 
 
-class Text(_Chart):
-    """Simple text chart"""
-
-    class Meta:
-        db_table = 'text_chart'
-
-    text = TextField()
-
-    def to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        dictionary = super().to_dict()
-        dictionary['text'] = self.text
-        return dictionary
-
-
-class WeatherChart(_Chart):
+class WeatherChart(Chart):
     """Weather data"""
 
     class Meta:
