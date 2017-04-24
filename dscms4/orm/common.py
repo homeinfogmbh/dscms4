@@ -1,9 +1,8 @@
 """Common ORM models"""
 
 from datetime import datetime
-from peewee import DateTimeField, SmallIntegerField
+from peewee import PrimaryKeyField, DateTimeField, SmallIntegerField
 
-from fancylog import Logger
 from his.orm import module_model
 
 
@@ -13,14 +12,7 @@ __all__ = ['DSCMS4Model', 'Schedule']
 class DSCMS4Model(module_model('dscms4')):
     """Basic ORM model for ComCat"""
 
-    def __init__(self, *args, logger=None, **kwargs):
-        """Adds a logger to the instance"""
-        super().__init__(*args, **kwargs)
-
-        if logger is None:
-            self.logger = Logger(self.__class__.__name__)
-        else:
-            self.logger = logger.inherit(self.__class__.__name__)
+    id = PrimaryKeyField()
 
 
 class Schedule(DSCMS4Model):
