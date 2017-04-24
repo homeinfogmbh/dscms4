@@ -28,10 +28,7 @@ class BaseChart(DSCMS4Model):
     @property
     def active(self):
         """Determines whether the chart is considered active"""
-        now = datetime.now()
-        match_begins = self.begins is None or self.begins <= now
-        match_expires = self.expires is None or self.expires >= now
-        return match_begins and match_expires
+        return self.schedule is None or self.schedule.active
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""

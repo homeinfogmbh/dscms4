@@ -46,7 +46,7 @@ class Schedule(DSCMS4Model):
 
     def __str__(self):
         """Returns a human-readable representation of the schedule"""
-        days = ['✓' if self.match_day(day) else '✗' for day in range(7)]
+        days = ('✓' if self.match_day(day) else '✗' for day in range(7))
         return self.STR_TEMP.format(*days, begin=self.begin, end=self.end)
 
     @property
@@ -127,7 +127,7 @@ class Schedule(DSCMS4Model):
     @property
     def active(self):
         """Determines whether the schedule is currently active"""
-        return self.matches(datetime.now())
+        return self.active_on(datetime.now())
 
     def match_day(self, day):
         """Determines whether the schedule
@@ -147,9 +147,9 @@ class Schedule(DSCMS4Model):
         """Determines whether the schedule is
         active on the given date or datetime
         """
-        if self.match_day(date.weekday()):
-            if self.begin is None or self.begin <= date:
-                if self.end is None or self.end >= date:
+        if self.begin is None or self.begin <= date:
+            if self.end is None or self.end >= date:
+                if self.match_day(date.weekday()):
                     return True
 
         return False
