@@ -42,7 +42,7 @@ class Menu(DSCMS4Model):
     @property
     def charts(self):
         """Yields charts"""
-        return ChartItem.select().where(ChartItem.parent == self)
+        return ChartItem.select().where(ChartItem.menu == self)
 
     def append(self, name, text=None):
         """Appends the node"""
