@@ -53,7 +53,7 @@ class Menu(DSCMS4Model):
         return node
 
     def to_dict(self, cascade=False):
-        """Converts the menu into a JSON compliant dictionary"""
+        """Converts the model into a JSON compliant dictionary"""
         dictionary = {'name': self.name}
 
         if self.text is not None:
@@ -81,3 +81,7 @@ class ChartItem(DSCMS4Model):
 
     menu = ForeignKeyField(Menu, db_column='menu')
     chart = ForeignKeyField(BaseChart, db_column='chart')
+
+    def to_dict(self, cascade=False):
+        """Converts the model into a JSON compliant dictionary"""
+        return self.chart.id
