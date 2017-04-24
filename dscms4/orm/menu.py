@@ -82,6 +82,12 @@ class ChartItem(DSCMS4Model):
     menu = ForeignKeyField(Menu, db_column='menu')
     chart = ForeignKeyField(BaseChart, db_column='chart')
 
+    @property
+    def path(self):
+        """Yields the path to this menu"""
+        yield from self.menu.path
+        yield self
+
     def to_dict(self, cascade=False):
         """Converts the model into a JSON compliant dictionary"""
         return self.chart.id
