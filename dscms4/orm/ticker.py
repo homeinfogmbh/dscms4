@@ -39,6 +39,7 @@ class Ticker(DSCMS4Model):
         ticker.customer = customer
         ticker.name = dictionary['name']
         ticker.save()
+        return ticker
 
     def to_dict(self, recursive=False):
         """Returns a JSON-compliant dictionary"""
@@ -79,6 +80,7 @@ class TickerText(DSCMS4Model):
         ticker_text.customer = customer
         ticker_text.text = dictionary['text']
         ticker_text.index = dictionary.get('index', 0)
+        ticker_text.save()
         return ticker_text
 
     def to_dict(self):
@@ -115,6 +117,7 @@ class TickerURL(DSCMS4Model):
         ticker_url.customer = customer
         ticker_url.url = dictionary['url']
         ticker_url.index = dictionary.get('index', 0)
+        ticker_url.save()
         return ticker_url
 
     def to_dict(self):
