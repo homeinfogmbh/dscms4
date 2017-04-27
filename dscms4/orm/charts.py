@@ -1,5 +1,7 @@
 """Object Relational Mappings"""
 
+from datetime import datetime
+
 from peewee import ForeignKeyField, CharField, TextField, \
     DateTimeField, BooleanField, IntegerField, SmallIntegerField
 
@@ -28,14 +30,39 @@ class BaseChart(DSCMS4Model):
     class Meta:
         db_table = 'chart'
 
+    DEFAULT_DURATION = 10
+
     customer = ForeignKeyField(Customer, db_column='customer')
     name = CharField(255, null=True, default=None)
     title = CharField(255, null=True, default=None)
     text = TextField(null=True, default=None)
-    duration = SmallIntegerField(default=10)
+    duration = SmallIntegerField(default=DEFAULT_DURATION)
     created = DateTimeField()
     schedule = ForeignKeyField(
         Schedule, db_column='schedule', null=True, default=None)
+
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a base chart from a dictionary
+        for the respective customer
+        """
+        base_chart = cls()
+        base_chart.customer = customer
+        base_chart.name = dictionary.get('name')
+        base_chart.title = dictionary.get('title')
+        base_chart.text = dictionary.get('text')
+        base_chart.duration = dictionary.get('duration', cls.DEFAULT_DURATION)
+        base_chart.created = datetime.now()
+
+        try:
+            schedule = dictionary['schedule']
+        except KeyError:
+            pass
+        else:
+            base_chart.schedule = Schedule.from_dict(schedule)
+
+        base_chart.save()
+        return base_chart
 
     @property
     def active(self):
@@ -69,6 +96,14 @@ class Chart(DSCMS4Model):
 
     chart = ForeignKeyField(BaseChart, db_column='chart')
 
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates the chart from the respective dictionary"""
+        chart = cls()
+        chart.chart = BaseChart.from_dict(customer, dictionary)
+        # Do not invoke save() since this is an abstract class
+        return chart
+
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
         return self.chart.to_dict()
@@ -89,9 +124,14 @@ class LocalPublicTtransportChart(Chart):
     class Meta:
         db_table = 'local_public_transport_chart'
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        return {}
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a new local public transport chart
+        from the dictionary for the respective customer
+        """
+        local_public_transport_chart = super().from_dict(customer, dictionary)
+        local_public_transport_chart.save()
+        return local_public_transport_chart
 
 
 class NewsChart(Chart):
@@ -101,6 +141,16 @@ class NewsChart(Chart):
         db_table = 'news_chart'
 
     localization = CharField(255, null=True, default=None)
+
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a new news chart from the
+        dictionary for the respective customer
+        """
+        news_chart = super().from_dict(customer, dictionary)
+        news_chart.localization = dictionary.get('localization')
+        news_chart.save()
+        return news_chart
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
