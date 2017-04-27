@@ -6,11 +6,13 @@ from peewee import PrimaryKeyField, DateTimeField, SmallIntegerField
 from his.orm import module_model
 
 
-__all__ = ['DSCMS4Model', 'Schedule']
+__all__ = [
+    'DSCMS4Model',
+    'Schedule']
 
 
 class DSCMS4Model(module_model('dscms4')):
-    """Basic ORM model for ComCat"""
+    """Basic ORM model for DSCMS4"""
 
     id = PrimaryKeyField()
 
@@ -25,12 +27,10 @@ class Schedule(DSCMS4Model):
 
     ALL_WEEK = 0b1111111
     STR_TEMP = (
-        'Begin: {begin}\n'
-        'End:   {end}\n'
-        '\n'
+        '{begin} - {end}\n\n'
         'Mon │ Tue │ Wed │ Thu │ Fri │ Sat │ Sun\n'
         '────┼─────┼─────┼─────┼─────┼─────┼────\n'
-        ' {}  │  {}  │  {}  │  {}  │  {}  │  {}  │  {}\n')
+        ' {}  │  {}  │  {}  │  {}  │  {}  │  {}  │  {}')
 
     begin = DateTimeField(null=True)
     end = DateTimeField(null=True)
