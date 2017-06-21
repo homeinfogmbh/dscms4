@@ -9,9 +9,9 @@ from .menu import Menu
 from .configuration import Configuration
 from .ticker import Ticker
 from .presentation import GroupChart, BuildingChart, RentalUnitChart, \
-    GroupMenu, BuildingMenu, RentalUnitMenu, \
-    GroupConfiguration, BuildingConfiguration, RentalUnitConfiguration, \
-    GroupTicker, BuildingTicker, RentalUnitTicker
+    GroupMenu, BuildingMenu, RentalUnitMenu, GroupConfiguration, \
+    BuildingConfiguration, RentalUnitConfiguration, GroupTicker, \
+    BuildingTicker, RentalUnitTicker
 
 
 class InvalidItem(Exception):

@@ -168,6 +168,15 @@ class QuotesChart(Chart):
     class Meta:
         db_table = 'quotes_chart'
 
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a new quotes chart from the
+        dictionary for the respective customer
+        """
+        quotes_chart = super().from_dict(customer, dictionary)
+        quotes_chart.save()
+        return quotes_chart
+
 
 class VideoChart(Chart):
     """A chart that may contain images and texts"""
@@ -177,6 +186,16 @@ class VideoChart(Chart):
 
     file = IntegerField()
     video = FileProperty(file, file_client='foo')
+
+    @classmethod
+    def from_dict(cls, customer, dictionary, video):
+        """Creates a new quotes chart from the
+        dictionary for the respective customer
+        """
+        video_chart = super().from_dict(customer, dictionary)
+        video_chart.video = video
+        video_chart.save()
+        return video_chart
 
     def to_dict(self, file_name=None):
         """Returns a JSON compatible dictionary"""

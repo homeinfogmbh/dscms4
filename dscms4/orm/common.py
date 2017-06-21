@@ -8,6 +8,7 @@ from his.orm import module_model
 
 __all__ = [
     'DSCMS4Model',
+    'CustomerModel',
     'Schedule']
 
 
@@ -17,7 +18,13 @@ class DSCMS4Model(module_model('dscms4')):
     id = PrimaryKeyField()
 
 
-class Schedule(DSCMS4Model):
+class CustomerModel(DSCMS4Model):
+    """Entity that relates to a customer"""
+
+    customer = ForeignKeyField(Customer, db_column='customer')
+
+
+class Schedule(CustomerModel):
     """Date / time schedule
 
     Weekdays are a binary integer:
