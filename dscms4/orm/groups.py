@@ -2,6 +2,8 @@
 
 from .common import CustomerModel
 
+__all__ = ['Group']
+
 
 class Group(CustomerModel):
     """Group model"""
