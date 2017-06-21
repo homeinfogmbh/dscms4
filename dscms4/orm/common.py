@@ -1,7 +1,10 @@
 """Common ORM models"""
 
 from datetime import datetime
-from peewee import PrimaryKeyField, DateTimeField, SmallIntegerField
+from peewee import PrimaryKeyField, ForeignKeyField, DateTimeField, \
+    SmallIntegerField
+
+from homeinfo.crm import Customer
 
 from his.orm import module_model
 
