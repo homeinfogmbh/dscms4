@@ -69,6 +69,22 @@ class Group(CustomerModel):
         """Removes a chart from the group"""
         return ChartGroup.remove(self, chart)
 
+    def add_menu(self, menu):
+        """Adds a menu to the group"""
+        return MenuGroup.add(self, menu)
+
+    def remove_menu(self, menu):
+        """Removes a menu from the group"""
+        return MenuGroup.remove(self, menu)
+
+    def add_ticker(self, ticker):
+        """Adds a ticker to the group"""
+        return TickerGroup.add(self, ticker)
+
+    def remove_ticker(self, ticker):
+        """Removes a ticker from the group"""
+        return TickerGroup.remove(self, ticker)
+
 
 class ClientGroup(CustomerModel):
     """Client members in groups"""
