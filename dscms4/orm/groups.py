@@ -78,7 +78,7 @@ class ClientGroup(CustomerModel):
 
     @classmethod
     def add(cls, group, client):
-        """Adds a new membership mapping"""
+        """Adds the client to the group"""
         try:
             return cls.get((cls.group == group) & (cls.client == client))
         except DoesNotExist:
@@ -93,7 +93,7 @@ class ClientGroup(CustomerModel):
         """Removes the client from the group"""
         for record in cls.select().where(
                 (cls.group == group) & (cls.client == client)):
-            # TODO: Delete references on the client group beforehand
+            # TODO: Delete references beforehand
             record.delete_instance()
 
 
@@ -105,7 +105,7 @@ class ChartGroup(CustomerModel):
 
     @classmethod
     def add(cls, group, chart):
-        """Adds a new membership mapping"""
+        """Adds the chart to the group"""
         try:
             return cls.get((cls.group == group) & (cls.chart == chart))
         except DoesNotExist:
@@ -120,7 +120,7 @@ class ChartGroup(CustomerModel):
         """Removes the chart from the group"""
         for record in cls.select().where(
                 (cls.group == group) & (cls.chart == chart)):
-            # TODO: Delete references on the chart group beforehand
+            # TODO: Delete references beforehand
             record.delete_instance()
 
 
@@ -132,7 +132,7 @@ class MenuGroup(CustomerModel):
 
     @classmethod
     def add(cls, group, menu):
-        """Adds a new membership mapping"""
+        """Adds the menu to the group"""
         try:
             return cls.get((cls.group == group) & (cls.menu == menu))
         except DoesNotExist:
@@ -147,5 +147,32 @@ class MenuGroup(CustomerModel):
         """Removes the menu from the group"""
         for record in cls.select().where(
                 (cls.group == group) & (cls.menu == menu)):
-            # TODO: Delete references on the menu group beforehand
+            # TODO: Delete references beforehand
+            record.delete_instance()
+
+
+class TickerGroup(CustomerModel):
+    """Ticket members in groups"""
+
+    group = ForeignKeyField(Group, db_column='group')
+    ticker = ForeignKeyField(Ticker, db_column='menu')
+
+    @classmethod
+    def add(cls, group, ticker):
+        """Adds the ticker to the group"""
+        try:
+            return cls.get((cls.group == group) & (cls.ticker == ticker))
+        except DoesNotExist:
+            record = cls()
+            record.group = group
+            record.ticker = ticker
+            record.save()
+            return record
+
+    @classmethod
+    def remove(cls, group, ticker):
+        """Removes the ticker from the group"""
+        for record in cls.select().where(
+                (cls.group == group) & (cls.ticker == ticker)):
+            # TODO: Delete references beforehand
             record.delete_instance()
