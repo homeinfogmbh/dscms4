@@ -6,6 +6,7 @@ from .charts import BaseChart
 from .client import Client
 from .common import CustomerModel
 from .menu import Menu
+from .ticker import Ticker
 
 __all__ = ['Group']
 
