@@ -1,5 +1,6 @@
 """Group models"""
 
+from contextlib import suppress
 from peewee import DoesNotExist, ForeignKeyField, CharField
 
 from .charts import BaseChart
@@ -11,6 +12,122 @@ from .ticker import Ticker
 __all__ = ['Group']
 
 
+class GroupProxy():
+    """Common, abstract group proxy"""
+
+    def __init__(self, group):
+        self.group = group
+
+
+class MemberProxy(GroupProxy):
+    """Proxies members"""
+
+    def __init__(self, group, mapping):
+        super().__init__(group)
+        self.mapping = mapping
+
+    def __iter__(self):
+        """Yields the members from the repsective mapping"""
+        for mapping in self.mapping.select().where(
+                self.mapping.group == self.group):
+            yield mapping.member
+
+    def add(self, member):
+        """Adds a new member"""
+        return self.mapping.add(self.group, member)
+
+    def remove(self, member, all=False):
+        """Removes a member from the group"""
+        if all:
+            for mapping in self.mapping.select().where(
+                    (self.mapping.group == self.group) &
+                    (self.mapping.member == member)):
+                mapping.delete_instance()
+        else:
+            try:
+                mapping = self.mapping.get(
+                    (self.mapping.group == self.group) &
+                    (self.mapping.member == member))
+            except DoesNotExist:
+                pass
+            else:
+                mapping.delete_instance()
+
+
+class MembersProxy(GroupProxy):
+    """Proxy to retrieve a group's members"""
+
+    def __iter__(self):
+        """Yields all types of members"""
+        yield from self.clients
+        yield from self.charts
+        yield from self.menus
+        yield from self.tickers
+
+    @property
+    def clients(self):
+        """Yields client members of the group"""
+        return MemberProxy(self.group, ClientGroup)
+
+    @property
+    def charts(self):
+        """Yields chart members of the group"""
+        return MemberProxy(self.group, ChartGroup)
+
+    @property
+    def menus(self):
+        """Yields menu members of the group"""
+        return MemberProxy(self.group, MenuGroup)
+
+    @property
+    def tickers(self):
+        """Yields ticker members of the group"""
+        return MemberProxy(self.group, TickerGroup)
+
+
+class AppendProxy(GroupProxy):
+    """Proxy to add different types of
+    members to the respective group
+    """
+
+    def client(self, client):
+        """Adds a client to the group"""
+        return ClientGroup.add(self.group, client)
+
+    def chart(self, chart):
+        """Adds a chart to the group"""
+        return ChartGroup.add(self.group, chart)
+
+    def menu(self, menu):
+        """Adds a menu to the group"""
+        return MenuGroup.add(self.group, menu)
+
+    def ticker(self, ticker):
+        """Adds a ticker to the group"""
+        return TickerGroup.add(self.group, ticker)
+
+
+class RemoveProxy(GroupProxy):
+    """Proxy to remove different types of
+    members to the respective group"""
+
+    def client(self, client):
+        """Removes a client from the group"""
+        return ClientGroup.remove(self.group, client)
+
+    def chart(self, chart):
+        """Removes a chart from the group"""
+        return ChartGroup.remove(self.group, chart)
+
+    def menu(self, menu):
+        """Removes a menu from the group"""
+        return MenuGroup.remove(self.group, menu)
+
+    def ticker(self, ticker):
+        """Removes a ticker from the group"""
+        return TickerGroup.remove(self.group, ticker)
+
+
 class Group(CustomerModel):
     """Group model"""
 
@@ -20,13 +137,13 @@ class Group(CustomerModel):
         'self', db_column='parent', null=True, default=None)
 
     @classmethod
-    def root_groups(cls):
-        """Yields root-level groups"""
+    def toplevel(cls):
+        """Yields top-level groups"""
         return cls.select().where(cls.parent >> None)
 
     @classmethod
     def _add(cls, customer, name, description=None, parent=None):
-        """Actually adds a new group"""
+        """Actually creates a new group"""
         record = cls()
         record.customer = customer
         record.name = name
@@ -37,61 +154,53 @@ class Group(CustomerModel):
 
     @classmethod
     def add(cls, customer, name, description=None, parent=None):
-        """Adds a new group"""
+        """Creates a new group iff not yet existing"""
         if parent is None:
-            try:
+            with suppress(DoesNotExist):
                 return cls.get((cls.customer == customer) & (cls.name == name))
-            except DoesNotExist:
-                return cls._add(
-                    customer, name, description=description, parent=parent)
         else:
-            try:
+            with suppress(DoesNotExist):
                 return cls.get(
                     (cls.customer == customer) &
                     (cls.name == name) &
                     (cls.parent == parent))
-            except DoesNotExist:
-                return cls._add(
-                    customer, name, description=description, parent=parent)
 
-    def add_client(self, client):
-        """Adds a client to the group"""
-        return ClientGroup.add(self, client)
+        return cls._create(
+            customer, name, description=description, parent=parent)
 
-    def remove_client(self, client):
-        """Removes a client from the group"""
-        return ClientGroup.remove(self, client)
+    @property
+    def children(self):
+        """Yields groups that have this group as parent"""
+        return self.__class__.select().where(self.__class__.parent == self)
 
-    def add_chart(self, chart):
-        """Adds a chart to the group"""
-        return ChartGroup.add(self, chart)
+    @property
+    def members(self):
+        """Returns a members proxy"""
+        return MembersProxy(self)
 
-    def remove_chart(self, chart):
-        """Removes a chart from the group"""
-        return ChartGroup.remove(self, chart)
-
-    def add_menu(self, menu):
-        """Adds a menu to the group"""
-        return MenuGroup.add(self, menu)
-
-    def remove_menu(self, menu):
-        """Removes a menu from the group"""
-        return MenuGroup.remove(self, menu)
-
-    def add_ticker(self, ticker):
-        """Adds a ticker to the group"""
-        return TickerGroup.add(self, ticker)
-
-    def remove_ticker(self, ticker):
-        """Removes a ticker from the group"""
-        return TickerGroup.remove(self, ticker)
+    def to_dict(self, cascade=False):
+        """Converts the group to a JSON-like dictionary"""
+        if not cascade:
+            return {
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'parent': self.parent.id}
+        else:
+            return {
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'children': [
+                    child.to_dict(cascade=cascade) for child in self.children],
+                'members': [member.to_dict() for member in self.members]}
 
 
 class ClientGroup(CustomerModel):
     """Client members in groups"""
 
     group = ForeignKeyField(Group, db_column='group')
-    client = ForeignKeyField(Client, db_column='client')
+    member = client = ForeignKeyField(Client, db_column='client')
 
     @classmethod
     def add(cls, group, client):
@@ -118,7 +227,7 @@ class ChartGroup(CustomerModel):
     """Mapping between groups and charts"""
 
     group = ForeignKeyField(Group, db_column='group')
-    chart = ForeignKeyField(BaseChart, db_column='chart')
+    member = chart = ForeignKeyField(BaseChart, db_column='chart')
 
     @classmethod
     def add(cls, group, chart):
@@ -145,7 +254,7 @@ class MenuGroup(CustomerModel):
     """Menu members in groups"""
 
     group = ForeignKeyField(Group, db_column='group')
-    menu = ForeignKeyField(Menu, db_column='menu')
+    member = menu = ForeignKeyField(Menu, db_column='menu')
 
     @classmethod
     def add(cls, group, menu):
@@ -172,7 +281,7 @@ class TickerGroup(CustomerModel):
     """Ticket members in groups"""
 
     group = ForeignKeyField(Group, db_column='group')
-    ticker = ForeignKeyField(Ticker, db_column='menu')
+    member = ticker = ForeignKeyField(Ticker, db_column='ticker')
 
     @classmethod
     def add(cls, group, ticker):
