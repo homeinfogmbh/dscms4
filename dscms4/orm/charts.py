@@ -5,10 +5,9 @@ from datetime import datetime
 from peewee import ForeignKeyField, CharField, TextField, \
     DateTimeField, BooleanField, IntegerField, SmallIntegerField
 
-from homeinfo.crm import Customer
 from filedb import FileProperty
 
-from .common import DSCMS4Model, Schedule
+from .common import DSCMS4Model, CustomerModel, Schedule
 
 
 __all__ = [
@@ -24,7 +23,7 @@ __all__ = [
     'WeatherChart']
 
 
-class BaseChart(DSCMS4Model):
+class BaseChart(CustomerModel):
     """Abstract information and message container"""
 
     class Meta:
@@ -32,7 +31,6 @@ class BaseChart(DSCMS4Model):
 
     DEFAULT_DURATION = 10
 
-    customer = ForeignKeyField(Customer, db_column='customer')
     name = CharField(255, null=True, default=None)
     title = CharField(255, null=True, default=None)
     text = TextField(null=True, default=None)
