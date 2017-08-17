@@ -3,129 +3,41 @@
 from contextlib import suppress
 from peewee import DoesNotExist, ForeignKeyField, CharField
 
-from .charts import BaseChart
-from .client import Client
 from .common import CustomerModel
-from .menu import Menu
-from .ticker import Ticker
 
-__all__ = ['Group']
+__all__ = ['Group', 'Member']
 
 
-class GroupProxy():
-    """Common, abstract group proxy"""
+class MembersProxy():
+    """Proxy to retrieve a group's members"""
 
     def __init__(self, group):
         self.group = group
 
-
-class MemberProxy(GroupProxy):
-    """Proxies members"""
-
-    def __init__(self, group, mapping):
-        super().__init__(group)
-        self.mapping = mapping
-
     def __iter__(self):
-        """Yields the members from the repsective mapping"""
-        for mapping in self.mapping.select().where(
-                self.mapping.group == self.group):
-            yield mapping.member
+        """Yields all types of members"""
+        yield from GroupMember
 
     def add(self, member):
         """Adds a new member"""
-        return self.mapping.add(self.group, member)
+        return GroupMember.add(self.group, member)
 
     def remove(self, member, all=False):
         """Removes a member from the group"""
         if all:
-            for mapping in self.mapping.select().where(
-                    (self.mapping.group == self.group) &
-                    (self.mapping.member == member)):
-                mapping.delete_instance()
+            for group_member in GroupMember.select().where(
+                    (GroupMember.group == self.group) &
+                    (GroupMember.member == member)):
+                group_member.delete_instance()
         else:
             try:
-                mapping = self.mapping.get(
-                    (self.mapping.group == self.group) &
-                    (self.mapping.member == member))
+                group_member = GroupMember.get(
+                    (GroupMember.group == self.group) &
+                    (GroupMember.member == member))
             except DoesNotExist:
                 pass
             else:
-                mapping.delete_instance()
-
-
-class MembersProxy(GroupProxy):
-    """Proxy to retrieve a group's members"""
-
-    def __iter__(self):
-        """Yields all types of members"""
-        yield from self.clients
-        yield from self.charts
-        yield from self.menus
-        yield from self.tickers
-
-    @property
-    def clients(self):
-        """Yields client members of the group"""
-        return MemberProxy(self.group, ClientGroup)
-
-    @property
-    def charts(self):
-        """Yields chart members of the group"""
-        return MemberProxy(self.group, ChartGroup)
-
-    @property
-    def menus(self):
-        """Yields menu members of the group"""
-        return MemberProxy(self.group, MenuGroup)
-
-    @property
-    def tickers(self):
-        """Yields ticker members of the group"""
-        return MemberProxy(self.group, TickerGroup)
-
-
-class AppendProxy(GroupProxy):
-    """Proxy to add different types of
-    members to the respective group
-    """
-
-    def client(self, client):
-        """Adds a client to the group"""
-        return ClientGroup.add(self.group, client)
-
-    def chart(self, chart):
-        """Adds a chart to the group"""
-        return ChartGroup.add(self.group, chart)
-
-    def menu(self, menu):
-        """Adds a menu to the group"""
-        return MenuGroup.add(self.group, menu)
-
-    def ticker(self, ticker):
-        """Adds a ticker to the group"""
-        return TickerGroup.add(self.group, ticker)
-
-
-class RemoveProxy(GroupProxy):
-    """Proxy to remove different types of
-    members to the respective group"""
-
-    def client(self, client):
-        """Removes a client from the group"""
-        return ClientGroup.remove(self.group, client)
-
-    def chart(self, chart):
-        """Removes a chart from the group"""
-        return ChartGroup.remove(self.group, chart)
-
-    def menu(self, menu):
-        """Removes a menu from the group"""
-        return MenuGroup.remove(self.group, menu)
-
-    def ticker(self, ticker):
-        """Removes a ticker from the group"""
-        return TickerGroup.remove(self.group, ticker)
+                group_member.delete_instance()
 
 
 class Group(CustomerModel):
@@ -196,109 +108,57 @@ class Group(CustomerModel):
                 'members': [member.to_dict() for member in self.members]}
 
 
-class ClientGroup(CustomerModel):
-    """Client members in groups"""
-
-    group = ForeignKeyField(Group, db_column='group')
-    member = client = ForeignKeyField(Client, db_column='client')
+class Member(CustomerModel):
+    """A group member"""
 
     @classmethod
-    def add(cls, group, client):
-        """Adds the client to the group"""
+    def add(cls):
+        """Adds a new member"""
+        member = cls()
+        member.save()
+        return member
+
+    @property
+    def groups(self):
+        """Yields groups this member is in"""
+        for group_member in GroupMember.select().where(
+                GroupMember.member == self):
+            yield group_member.group
+
+    def join(self, group):
+        """Joins a group"""
+        return GroupMember.add(group, self)
+
+    def leave(self, group):
+        """Leaves a group"""
+        return GroupMember.remove(group, self)
+
+
+class GroupMember(CustomerModel):
+    """Mapping between groups and members"""
+
+    class Meta:
+        db_table = 'group_member'
+
+    group = ForeignKeyField(Group, db_column='group')
+    member = ForeignKeyField(Member, db_column='member')
+
+    @classmethod
+    def add(cls, group, member):
+        """Adds the member to the group"""
         try:
-            return cls.get((cls.group == group) & (cls.client == client))
+            return cls.get((cls.group == group) & (cls.member == member))
         except DoesNotExist:
             record = cls()
             record.group = group
-            record.client = client
+            record.member = member
             record.save()
             return record
 
     @classmethod
-    def remove(cls, group, client):
-        """Removes the client from the group"""
+    def remove(cls, group, member):
+        """Removes the member from the group"""
         for record in cls.select().where(
-                (cls.group == group) & (cls.client == client)):
-            # TODO: Delete references beforehand
-            record.delete_instance()
-
-
-class ChartGroup(CustomerModel):
-    """Mapping between groups and charts"""
-
-    group = ForeignKeyField(Group, db_column='group')
-    member = chart = ForeignKeyField(BaseChart, db_column='chart')
-
-    @classmethod
-    def add(cls, group, chart):
-        """Adds the chart to the group"""
-        try:
-            return cls.get((cls.group == group) & (cls.chart == chart))
-        except DoesNotExist:
-            record = cls()
-            record.group = group
-            record.chart = chart
-            record.save()
-            return record
-
-    @classmethod
-    def remove(cls, group, chart):
-        """Removes the chart from the group"""
-        for record in cls.select().where(
-                (cls.group == group) & (cls.chart == chart)):
-            # TODO: Delete references beforehand
-            record.delete_instance()
-
-
-class MenuGroup(CustomerModel):
-    """Menu members in groups"""
-
-    group = ForeignKeyField(Group, db_column='group')
-    member = menu = ForeignKeyField(Menu, db_column='menu')
-
-    @classmethod
-    def add(cls, group, menu):
-        """Adds the menu to the group"""
-        try:
-            return cls.get((cls.group == group) & (cls.menu == menu))
-        except DoesNotExist:
-            record = cls()
-            record.group = group
-            record.menu = menu
-            record.save()
-            return record
-
-    @classmethod
-    def remove(cls, group, menu):
-        """Removes the menu from the group"""
-        for record in cls.select().where(
-                (cls.group == group) & (cls.menu == menu)):
-            # TODO: Delete references beforehand
-            record.delete_instance()
-
-
-class TickerGroup(CustomerModel):
-    """Ticket members in groups"""
-
-    group = ForeignKeyField(Group, db_column='group')
-    member = ticker = ForeignKeyField(Ticker, db_column='ticker')
-
-    @classmethod
-    def add(cls, group, ticker):
-        """Adds the ticker to the group"""
-        try:
-            return cls.get((cls.group == group) & (cls.ticker == ticker))
-        except DoesNotExist:
-            record = cls()
-            record.group = group
-            record.ticker = ticker
-            record.save()
-            return record
-
-    @classmethod
-    def remove(cls, group, ticker):
-        """Removes the ticker from the group"""
-        for record in cls.select().where(
-                (cls.group == group) & (cls.ticker == ticker)):
+                (cls.group == group) & (cls.member == member)):
             # TODO: Delete references beforehand
             record.delete_instance()
