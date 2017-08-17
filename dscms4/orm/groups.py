@@ -133,6 +133,17 @@ class Member(CustomerModel):
         """Leaves a group"""
         return GroupMember.remove(group, self)
 
+    def leave_all(self):
+        """Leaves all groups"""
+        for group_member in GroupMember.select().where(
+                GroupMember.member == self):
+            group_member.delete_instance()
+
+    def remove(self):
+        """Leaves all groups and deletes instance"""
+        self.leave_all()
+        self.delete_instance()
+
 
 class GroupMember(CustomerModel):
     """Mapping between groups and members"""
@@ -160,5 +171,4 @@ class GroupMember(CustomerModel):
         """Removes the member from the group"""
         for record in cls.select().where(
                 (cls.group == group) & (cls.member == member)):
-            # TODO: Delete references beforehand
             record.delete_instance()
