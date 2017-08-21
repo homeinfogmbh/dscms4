@@ -3,41 +3,11 @@
 from contextlib import suppress
 from peewee import DoesNotExist, ForeignKeyField, CharField
 
+from homeinfo.terminals.orm import Terminal
+
 from .common import CustomerModel
 
-__all__ = ['Group', 'Member']
-
-
-class MembersProxy():
-    """Proxy to retrieve a group's members"""
-
-    def __init__(self, group):
-        self.group = group
-
-    def __iter__(self):
-        """Yields all types of members"""
-        yield from GroupMember
-
-    def add(self, member):
-        """Adds a new member"""
-        return GroupMember.add(self.group, member)
-
-    def remove(self, member, all=False):
-        """Removes a member from the group"""
-        if all:
-            for group_member in GroupMember.select().where(
-                    (GroupMember.group == self.group) &
-                    (GroupMember.member == member)):
-                group_member.delete_instance()
-        else:
-            try:
-                group_member = GroupMember.get(
-                    (GroupMember.group == self.group) &
-                    (GroupMember.member == member))
-            except DoesNotExist:
-                pass
-            else:
-                group_member.delete_instance()
+__all__ = ['Group', 'TerminalMember']
 
 
 class Group(CustomerModel):
@@ -85,90 +55,41 @@ class Group(CustomerModel):
         """Yields groups that have this group as parent"""
         return self.__class__.select().where(self.__class__.parent == self)
 
-    @property
-    def members(self):
-        """Returns a members proxy"""
-        return MembersProxy(self)
-
     def to_dict(self, cascade=False):
         """Converts the group to a JSON-like dictionary"""
+        dictionary = {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description}
+
         if not cascade:
-            return {
-                'id': self.id,
-                'name': self.name,
-                'description': self.description,
-                'parent': self.parent.id}
+            dictionary['parent'] = self.parent.id
         else:
-            return {
-                'id': self.id,
-                'name': self.name,
-                'description': self.description,
-                'children': [
-                    child.to_dict(cascade=cascade) for child in self.children],
-                'members': [member.to_dict() for member in self.members]}
+            dictionary['children'] = [
+                child.to_dict(cascade=cascade) for child in self.children]
+
+        return dictionary
 
 
-class Member(CustomerModel):
-    """A group member"""
+class TerminalMember():
+    """Mapping between terminal members and groups"""
+
+    group = ForeignKeyField(Group, db_column='group')
+    terminal = ForeignKeyField(Terminal, db_column='terminal')
 
     @classmethod
-    def add(cls):
+    def _add(cls, group, terminal):
         """Adds a new member"""
         member = cls()
+        member.group = group
+        member.terminal = terminal
         member.save()
         return member
 
-    @property
-    def groups(self):
-        """Yields groups this member is in"""
-        for group_member in GroupMember.select().where(
-                GroupMember.member == self):
-            yield group_member.group
-
-    def join(self, group):
-        """Joins a group"""
-        return GroupMember.add(group, self)
-
-    def leave(self, group):
-        """Leaves a group"""
-        return GroupMember.remove(group, self)
-
-    def leave_all(self):
-        """Leaves all groups"""
-        for group_member in GroupMember.select().where(
-                GroupMember.member == self):
-            group_member.delete_instance()
-
-    def remove(self):
-        """Leaves all groups and deletes instance"""
-        self.leave_all()
-        self.delete_instance()
-
-
-class GroupMember(CustomerModel):
-    """Mapping between groups and members"""
-
-    class Meta:
-        db_table = 'group_member'
-
-    group = ForeignKeyField(Group, db_column='group')
-    member = ForeignKeyField(Member, db_column='member')
-
     @classmethod
-    def add(cls, group, member):
+    def add(cls, group, terminal):
         """Adds the member to the group"""
         try:
-            return cls.get((cls.group == group) & (cls.member == member))
+            return cls.get((cls.group == group) & (cls.terminal == terminal))
         except DoesNotExist:
-            record = cls()
-            record.group = group
-            record.member = member
-            record.save()
-            return record
-
-    @classmethod
-    def remove(cls, group, member):
-        """Removes the member from the group"""
-        for record in cls.select().where(
-                (cls.group == group) & (cls.member == member)):
-            record.delete_instance()
+            return cls._add(group, terminal)
