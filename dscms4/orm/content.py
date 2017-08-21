@@ -4,7 +4,7 @@ from peewee import Model, ForeignKeyField
 
 from homeinfo.terminals.orm import Terminal
 
-from .common import CustomerModel
+from .common import DSCMS4Model
 from .groups import Group
 from .charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
     VideoChart, HTMLChart, FacebookChart, GuessPictureChart, WeatherChart
@@ -12,7 +12,7 @@ from .charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
 __all__ = ['Content', 'TerminalContent', 'GroupContent', 'MODELS']
 
 
-class Content(CustomerModel):
+class Content(DSCMS4Model):
     """Content assigned to something"""
 
     local_public_transport_chart = ForeignKeyField(
@@ -81,7 +81,7 @@ class Content(CustomerModel):
             raise ValueError('Invalid chart type: {}.'.format(chart))
 
 
-class TerminalContent(Model, CustomerModel):
+class TerminalContent(Model, Content):
     """Content assigned to terminals"""
 
     class Meta:
@@ -99,7 +99,7 @@ class TerminalContent(Model, CustomerModel):
         return terminal_content
 
 
-class GroupContent(Model, CustomerModel):
+class GroupContent(Model, Content):
     """Content assigned to terminals"""
 
     class Meta:

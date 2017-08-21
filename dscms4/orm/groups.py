@@ -5,12 +5,12 @@ from peewee import DoesNotExist, ForeignKeyField, CharField
 
 from homeinfo.terminals.orm import Terminal
 
-from .common import CustomerModel
+from .common import DSCMS4Model
 
 __all__ = ['Group', 'TerminalMember']
 
 
-class Group(CustomerModel):
+class Group(Model, DSCMS4Model):
     """Group model"""
 
     name = CharField(255)
@@ -71,7 +71,7 @@ class Group(CustomerModel):
         return dictionary
 
 
-class TerminalMember():
+class TerminalMember(Model, DSCMS4Model):
     """Mapping between terminal members and groups"""
 
     group = ForeignKeyField(Group, db_column='group')

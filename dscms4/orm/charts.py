@@ -7,7 +7,7 @@ from peewee import Model, ForeignKeyField, CharField, TextField, \
 
 from filedb import FileProperty
 
-from .common import CustomerModel, Schedule
+from .common import DSCMS4Model, Schedule
 
 
 __all__ = [
@@ -22,7 +22,7 @@ __all__ = [
     'MODELS']
 
 
-class Chart(CustomerModel):
+class Chart(DSCMS4Model):
     """Abstract information and message container"""
 
     class Meta:

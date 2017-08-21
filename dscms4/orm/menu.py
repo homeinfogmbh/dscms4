@@ -10,7 +10,7 @@ __all__ = [
     'ChartItem']
 
 
-class Menu(DSCMS4Model):
+class Menu(Model, DSCMS4Model):
     """Menus tree nodes"""
 
     class Meta:
@@ -73,7 +73,7 @@ class Menu(DSCMS4Model):
         return dictionary
 
 
-class ChartItem(DSCMS4Model):
+class ChartItem(Model, DSCMS4Model):
     """Menu item mapping"""
 
     class Meta:
