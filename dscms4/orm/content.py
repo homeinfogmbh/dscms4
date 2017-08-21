@@ -117,4 +117,4 @@ class GroupContent(Model, CustomerModel):
         return group_content
 
 
-MODELS = ['TerminalContent', 'GroupContent']
+MODELS = [TerminalContent, GroupContent]
