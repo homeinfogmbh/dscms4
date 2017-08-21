@@ -9,6 +9,8 @@ from .groups import Group
 from .charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
     VideoChart, HTMLChart, FacebookChart, GuessPictureChart, WeatherChart
 
+__all__ = ['Content', 'TerminalContent', 'GroupContent', 'MODELS']
+
 
 class Content(CustomerModel):
     """Content assigned to something"""
@@ -113,3 +115,6 @@ class GroupContent(Model, CustomerModel):
         group_content.chart = chart
         group_content.save()
         return group_content
+
+
+MODELS = ['TerminalContent', 'GroupContent']
