@@ -1,16 +1,16 @@
 """Group models"""
 
 from contextlib import suppress
-from peewee import DoesNotExist, ForeignKeyField, CharField
+from peewee import DoesNotExist, Model, ForeignKeyField, CharField
 
 from homeinfo.terminals.orm import Terminal
 
-from .common import DSCMS4Model
+from .common import DSCMS4Model, CustomerModel
 
 __all__ = ['Group', 'TerminalMember']
 
 
-class Group(Model, DSCMS4Model):
+class Group(Model, CustomerModel):
     """Group model"""
 
     name = CharField(255)

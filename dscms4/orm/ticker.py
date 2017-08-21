@@ -3,10 +3,11 @@
 from sys import stderr
 from contextlib import suppress
 
-from peewee import ForeignKeyField, SmallIntegerField, CharField, TextField
+from peewee import Model, ForeignKeyField, SmallIntegerField, CharField, \
+    TextField
 from homeinfo.crm import Customer
 
-from .common import DSCMS4Model
+from .common import DSCMS4Model, CustomerModel
 
 __all__ = [
     'Ticker',
@@ -26,7 +27,7 @@ def create_tables():
             print('Could not create table for {}.'.format(model), file=stderr)
 
 
-class Ticker(DSCMS4Model):
+class Ticker(Model, CustomerModel):
     """Ticker"""
 
     customer = ForeignKeyField(Customer, db_column='customer')
@@ -63,7 +64,7 @@ class Ticker(DSCMS4Model):
         self.save()
 
 
-class TickerText(DSCMS4Model):
+class TickerText(Model, CustomerModel):
     """Text for a ticker"""
 
     class Meta:
@@ -100,7 +101,7 @@ class TickerText(DSCMS4Model):
         self.save()
 
 
-class TickerURL(DSCMS4Model):
+class TickerURL(Model, CustomerModel):
     """Text for a ticker"""
 
     class Meta:
@@ -137,7 +138,7 @@ class TickerURL(DSCMS4Model):
         self.save()
 
 
-class TickerTextMapping(DSCMS4Model):
+class TickerTextMapping(Model, DSCMS4Model):
     """Ticker-text mapping"""
 
     class Meta:
@@ -148,7 +149,7 @@ class TickerTextMapping(DSCMS4Model):
         TickerText, db_column='text', related_name='tickers')
 
 
-class TickerURLMapping(DSCMS4Model):
+class TickerURLMapping(Model, DSCMS4Model):
     """Ticker-URL mapping"""
 
     class Meta:

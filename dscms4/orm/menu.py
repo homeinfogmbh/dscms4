@@ -1,8 +1,8 @@
 """Menus"""
 
-from peewee import ForeignKeyField, CharField
+from peewee import Model, ForeignKeyField, CharField
 
-from .common import DSCMS4Model
+from .common import DSCMS4Model, CustomerModel
 from .charts import BaseChart
 
 __all__ = [
@@ -10,7 +10,7 @@ __all__ = [
     'ChartItem']
 
 
-class Menu(Model, DSCMS4Model):
+class Menu(Model, CustomerModel):
     """Menus tree nodes"""
 
     class Meta:

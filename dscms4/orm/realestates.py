@@ -1,9 +1,10 @@
 """Real estate charts data"""
 
-from peewee import ForeignKeyField, CharField, BooleanField, SmallIntegerField
+from peewee import Model, ForeignKeyField, CharField, BooleanField, \
+    SmallIntegerField
 
 from .common import DSCMS4Model
-from .charts import _Chart
+from .charts import Chart
 
 
 class NoWhitelist(Exception):
@@ -18,7 +19,7 @@ class NoBlacklist(Exception):
     pass
 
 
-class RealEstateChart(_Chart):
+class RealEstateChart(Model, Chart):
     """Real estate exposé chart"""
 
     class Meta:
@@ -81,30 +82,38 @@ class RealEstateChart(_Chart):
         return True
 
 
-class RealEstateZIPWhitelist(DSCMS4Model):
+class RealEstateChartItem(DSCMS4Model):
+    """Class that references a real estate chart"""
+
+    chart = ForeignKeyField(
+        RealEstateChart, db_column='chart',
+        realted_name='zip_whitelist')
+
+    @property
+    def customer(self):
+        """Returns the respective customer"""
+        return self.chart.customer
+
+
+class RealEstateZIPWhitelist(Model, RealEstateChartItem):
     """ZIP code white list for real estate charts"""
 
     class Meta:
         db_table = 'real_estate_zip_whitelist'
 
-    chart = ForeignKeyField(
-        RealEstateChart, db_column='chart',
-        realted_name='zip_whitelist')
     zip_code = CharField(255)
 
 
-class RealEstateZIPBlacklist(RealEstateZIPWhitelist):
+class RealEstateZIPBlacklist(Model, RealEstateChartItem):
     """ZIP code black list for real estate charts"""
 
     class Meta:
         db_table = 'real_estate_zip_blacklist'
 
-    chart = ForeignKeyField(
-        RealEstateChart, db_column='chart',
-        realted_name='zip_blacklist')
+    zip_code = CharField(255)
 
 
-class RealEstateUsageFilter(DSCMS4Model):
+class RealEstateUsageFilter(Model, RealEstateChartItem):
     """Usage type filter for real estates
 
     XXX: All filters for a chart must match.
@@ -113,9 +122,6 @@ class RealEstateUsageFilter(DSCMS4Model):
     class Meta:
         db_table = 'real_estate_usage_filter'
 
-    chart = ForeignKeyField(
-        RealEstateChart, db_column='chart',
-        related_name='_usage_filter')
     wohnen = BooleanField(null=True, default=None)
     gewerbe = BooleanField(null=True, default=None)
     anlage = BooleanField(null=True, default=None)
@@ -158,7 +164,7 @@ class RealEstateUsageFilter(DSCMS4Model):
         return True
 
 
-class RealEstateTypeFilter(DSCMS4Model):
+class RealEstateTypeFilter(Model, RealEstateChartItem):
     """Real estate type filter for real estates
 
     XXX: All filters for a chart must match.
@@ -167,9 +173,6 @@ class RealEstateTypeFilter(DSCMS4Model):
     class Meta:
         db_table = 'real_estate_type_filter'
 
-    chart = ForeignKeyField(
-        RealEstateChart, db_column='chart',
-        realted_name='_type_filter')
     klasse = CharField(28)
     typ = CharField(34, null=True, default=None)
 
@@ -183,15 +186,12 @@ class RealEstateTypeFilter(DSCMS4Model):
         return False
 
 
-class RealEstateSaleFilter(DSCMS4Model):
+class RealEstateSaleFilter(Model, RealEstateChartItem):
     """Sales type filter for real estate charts"""
 
     class Meta:
         db_table = 'real_estate_sale_filter'
 
-    chart = ForeignKeyField(
-        RealEstateChart, db_column='chart',
-        related_name='_sale_filter')
     kauf = BooleanField(null=True, default=None)
     miete_pacht = BooleanField(null=True, default=None)
     erbpacht = BooleanField(null=True, default=None)
@@ -215,7 +215,7 @@ class RealEstateSaleFilter(DSCMS4Model):
         return True
 
 
-class RealEstateAttributes(DSCMS4Model):
+class RealEstateAttributes(Model, RealEstateChartItem):
     """Real estate attributes to be
     shown within the respective chart
     """
@@ -223,5 +223,4 @@ class RealEstateAttributes(DSCMS4Model):
     class Meta:
         db_table = 'real_estate_attributes'
 
-    chart = ForeignKeyField(RealEstateChart, db_column='chart')
     attribute = CharField(255)
