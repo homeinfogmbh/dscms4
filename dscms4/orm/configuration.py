@@ -1,16 +1,14 @@
 """Configurations"""
 
-from peewee import ForeignKeyField
+from peewee import Model
 
-from homeinfo.crm import Customer
-
-from .common import DSCMS4Model
+from .common import CustomerModel
 
 __all__ = ['Configuration']
 
 
-class Configuration(DSCMS4Model):
+class Configuration(Model, CustomerModel):
     """Customer configuration for charts"""
 
-    customer = ForeignKeyField(Customer, db_column='customer')
     # TODO: Add configurations for all possible charts
+    pass
