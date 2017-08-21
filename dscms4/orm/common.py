@@ -13,12 +13,14 @@ __all__ = [
     'Schedule']
 
 
+# Do not derive from peewee.Model to prevent binding of fields
 class DSCMS4Model():
     """Basic ORM model for DSCMS4"""
 
     id = PrimaryKeyField()
 
 
+# Do not derive from peewee.Model to prevent binding of fields
 class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer"""
 
