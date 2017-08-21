@@ -1,12 +1,10 @@
 """Common ORM models"""
 
 from datetime import datetime
-from peewee import PrimaryKeyField, ForeignKeyField, DateTimeField, \
+from peewee import Model, PrimaryKeyField, ForeignKeyField, DateTimeField, \
     SmallIntegerField
 
 from homeinfo.crm import Customer
-
-from his.orm import module_model
 
 
 __all__ = [
@@ -15,7 +13,7 @@ __all__ = [
     'Schedule']
 
 
-class DSCMS4Model(module_model('dscms4')):
+class DSCMS4Model():
     """Basic ORM model for DSCMS4"""
 
     id = PrimaryKeyField()
@@ -27,7 +25,7 @@ class CustomerModel(DSCMS4Model):
     customer = ForeignKeyField(Customer, db_column='customer')
 
 
-class Schedule(CustomerModel):
+class Schedule(Model, CustomerModel):
     """Date / time schedule
 
     Weekdays are a binary integer:
