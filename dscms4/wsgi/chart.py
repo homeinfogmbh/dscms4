@@ -1,10 +1,11 @@
 """DSCMS4 WSGI handlers"""
 
-from .orm.charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
+from .common import AuthorizedJSONService
+from ..orm.charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
     VideoChart, HTMLChart, FacebookChart, GuessPictureChart, WeatherChart
 
 
-class Charts(AuthorizedService):
+class Charts(AuthorizedJSONService):
     """Manages charts"""
 
     CHARTS = {
@@ -84,3 +85,7 @@ class Charts(AuthorizedService):
             return JSON([chart.to_dict() for chart in self.charts])
         else:
             return JSON(self.chart.to_dict())
+
+    def post(self):
+        """Adds new charts"""
+        chart = self.chart_type.from_dict(self.json)
