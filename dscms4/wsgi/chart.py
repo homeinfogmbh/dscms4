@@ -18,12 +18,12 @@ class Charts(AuthorizedJSONService):
 
                 if chart_type:
                     try:
-                        yield self.CHARTS[chart_type.lower()]
+                        yield CHARTS[chart_type]
                     except KeyError:
                         raise InvalidChartType() from None
         else:
-            for chart_type in self.CHARTS:
-                yield self.CHARTS[chart_type]
+            for chart_type in CHARTS:
+                yield CHARTS[chart_type]
 
     @property
     def chart_type(self):
@@ -34,7 +34,7 @@ class Charts(AuthorizedJSONService):
             raise NoChartTypeSpecified() from None
         else:
             try:
-                return self.CHARTS[chart_type.lower()]
+                return CHARTS[chart_type]
             except KeyError:
                 raise InvalidChartType() from None
 
@@ -71,7 +71,7 @@ class Charts(AuthorizedJSONService):
     def get(self):
         """Lists charts or retrieves single chart"""
         if self.resource is None:
-            return JSON([chart.to_dict() for chart in self.charts])
+            return JSON([chart.to_dict() for chart in CHARTS])
         else:
             return JSON(self.chart.to_dict())
 
