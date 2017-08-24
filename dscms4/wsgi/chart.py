@@ -82,8 +82,10 @@ class Charts(AuthorizedJSONService):
         try:
             chart = self.chart_type.from_dict(self.json)
         except MissingData:
+            # TODO: implement
             pass
         except InvalidData:
+            # TODO: implement
             pass
         else:
             return ChartAdded(id=chart.id)
