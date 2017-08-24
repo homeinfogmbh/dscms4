@@ -1,6 +1,13 @@
 """DSCMS4 WSGI handlers"""
 
+from peewee import DoesNotExist
+
+from his.api.messages import InvalidId, InvalidData
+from wsgilib import JSON
+
 from .common import AuthorizedJSONService
+from .messages import MissingData, NoChartTypeSpecified, InvalidChartType, \
+    NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted
 from ..orm.charts import CHARTS
 
 
@@ -89,3 +96,18 @@ class Charts(AuthorizedJSONService):
             pass
         else:
             return ChartAdded(id=chart.id)
+
+    def delete(self):
+        """Deletes the specified chart"""
+        if self.resource is None:
+            raise NoChartIdSpecified() from None
+        else:
+            chart_type = self.chart_type
+
+            try:
+                chart = chart_type.get(chart_type.id == self.chart_id)
+            except DoesNotExist:
+                raise NoSuchChart() from None
+            else:
+                chart.remove()
+                return ChartDeleted()
