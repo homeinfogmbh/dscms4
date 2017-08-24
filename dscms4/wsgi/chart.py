@@ -7,6 +7,8 @@ from ..orm.charts import CHARTS
 class Charts(AuthorizedJSONService):
     """Manages charts"""
 
+    NODE = 'dscms4'
+
     @property
     def chart_types(self):
         """Yields selected chart types"""
