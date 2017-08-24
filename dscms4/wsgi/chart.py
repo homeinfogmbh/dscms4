@@ -1,22 +1,13 @@
 """DSCMS4 WSGI handlers"""
 
 from .common import AuthorizedJSONService
-from ..orm.charts import LocalPublicTtransportChart, NewsChart, QuotesChart, \
-    VideoChart, HTMLChart, FacebookChart, GuessPictureChart, WeatherChart
+from ..orm.charts import MODELS as CHARTS
 
 
 class Charts(AuthorizedJSONService):
     """Manages charts"""
 
-    CHARTS = {
-        'local_public_transport': LocalPublicTtransportChart,
-        'news': NewsChart,
-        'quotes': QuotesChart,
-        'video': VideoChart,
-        'html': HTMLChart,
-        'facebook': FacebookChart,
-        'guess_picture': GuessPictureChart,
-        'weather': WeatherChart}
+    CHARTS = {chart.__class__.__name__: chart for chart in CHARTS}
 
     @property
     def chart_types(self):
@@ -88,4 +79,11 @@ class Charts(AuthorizedJSONService):
 
     def post(self):
         """Adds new charts"""
-        chart = self.chart_type.from_dict(self.json)
+        try:
+            chart = self.chart_type.from_dict(self.json)
+        except MissingData:
+            pass
+        except InvalidData:
+            pass
+        else:
+            return ChartAdded(id=chart.id)

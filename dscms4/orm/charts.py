@@ -68,7 +68,10 @@ class Chart(CustomerModel):
 
     def to_dict(self):
         """Returns a JSON compatible dictionary"""
-        dictionary = {'created': self.created.isoformat()}
+        dictionary = {
+            'type': self.__class__.__name__,
+            'id': self.id,
+            'created': self.created.isoformat()}
 
         if self.name is not None:
             dictionary['name'] = self.name
@@ -167,7 +170,7 @@ class VideoChart(Model, Chart):
         video_chart.save()
         return video_chart
 
-    def to_dict(self, file_name=None):
+    def to_dict(self):
         """Returns a JSON compatible dictionary"""
         dictionary = super().to_dict()
         dictionary['file'] = self.file
