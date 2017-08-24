@@ -2,6 +2,15 @@
 
 from his.api.messages import locales, HISMessage
 
+__all__ = [
+    'MissingData',
+    'NoChartTypeSpecified',
+    'InvalidChartType',
+    'NoChartIdSpecified',
+    'NoSuchChart',
+    'ChartAdded',
+    'ChartDeleted']
+
 
 @locales('/etc/his.d/locale/dscms4.ini')
 class DSCMS4Message(HISMessage):
