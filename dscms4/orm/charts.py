@@ -19,7 +19,8 @@ __all__ = [
     'FacebookChart',
     'GuessPictureChart',
     'WeatherChart',
-    'MODELS']
+    'MODELS',
+    'CHARTS']
 
 
 class Chart(CustomerModel):
@@ -283,3 +284,4 @@ class WeatherChart(Chart):
 MODELS = [
     LocalPublicTtransportChart, NewsChart, QuotesChart, VideoChart, HTMLChart,
     FacebookChart, GuessPictureChart, WeatherChart]
+CHARTS = {chart.__class__.__name__: chart for chart in MODELS}

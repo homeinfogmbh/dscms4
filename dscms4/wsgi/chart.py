@@ -1,13 +1,11 @@
 """DSCMS4 WSGI handlers"""
 
 from .common import AuthorizedJSONService
-from ..orm.charts import MODELS as CHARTS
+from ..orm.charts import CHARTS
 
 
 class Charts(AuthorizedJSONService):
     """Manages charts"""
-
-    CHARTS = {chart.__class__.__name__: chart for chart in CHARTS}
 
     @property
     def chart_types(self):
