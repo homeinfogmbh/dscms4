@@ -8,6 +8,7 @@ from peewee import Model, ForeignKeyField, CharField, TextField, \
 from filedb import FileProperty
 
 from .common import CustomerModel, Schedule
+# from .exceptions import InvalidData, MissingData
 
 
 __all__ = [
@@ -44,23 +45,16 @@ class Chart(CustomerModel):
         """Creates a base chart from a dictionary
         for the respective customer
         """
-        base_chart = cls()
-        base_chart.customer = customer
-        base_chart.name = dictionary.get('name')
-        base_chart.title = dictionary.get('title')
-        base_chart.text = dictionary.get('text')
-        base_chart.duration = dictionary.get('duration', cls.DEFAULT_DURATION)
-        base_chart.created = datetime.now()
-
-        try:
-            schedule = dictionary['schedule']
-        except KeyError:
-            pass
-        else:
-            base_chart.schedule = Schedule.from_dict(schedule)
-
+        chart = cls()
+        chart.customer = customer
+        chart.name = dictionary.get('name')
+        chart.title = dictionary.get('title')
+        chart.text = dictionary.get('text')
+        chart.duration = dictionary.get('duration', cls.DEFAULT_DURATION)
+        chart.created = datetime.now()
+        chart.schedule = dictionary.get('schedule')
         # Do not ivoke save() here since implemented model may be incomplete
-        return base_chart
+        return chart
 
     @property
     def active(self):
@@ -87,7 +81,7 @@ class Chart(CustomerModel):
             dictionary['duration'] = self.duration
 
         if self.schedule is not None:
-            dictionary['schedule'] = self.schedule.to_dict()
+            dictionary['schedule'] = self.schedule.id
 
         return dictionary
 
@@ -185,7 +179,7 @@ class HTMLChart(Model, Chart):
         db_table = 'chart_html'
 
     random = BooleanField(default=False)
-    loop_limit = SmallIntegerField()
+    loop_limit = SmallIntegerField(null=True, default=None)
     scale = BooleanField(default=False)
     fullscreen = BooleanField(default=False)
     ken_burns = BooleanField(default=False)
@@ -196,11 +190,11 @@ class HTMLChart(Model, Chart):
         dictionary for the respective customer
         """
         html_chart = super().from_dict(customer, dictionary)
-        html_chart.random = dictionary['random']
-        html_chart.loop_limit = dictionary['loop_limit']
-        html_chart.scale = dictionary['scale']
-        html_chart.fullscreen = dictionary['fullscreen']
-        html_chart.ken_burns = dictionary['ken_burns']
+        html_chart.random = dictionary.get('random')
+        html_chart.loop_limit = dictionary.get('loop_limit')
+        html_chart.scale = dictionary.get('scale')
+        html_chart.fullscreen = dictionary.get('fullscreen')
+        html_chart.ken_burns = dictionary.get('ken_burns')
         html_chart.save()
         return html_chart
 
@@ -232,10 +226,10 @@ class FacebookChart(Model, Chart):
         dictionary for the respective customer
         """
         facebook_chart = super().from_dict(customer, dictionary)
-        facebook_chart.days = dictionary['days']
-        facebook_chart.limit = dictionary['limit']
-        facebook_chart.facebook_id = dictionary['facebook_id']
-        facebook_chart.facebook_name = dictionary['facebook_name']
+        facebook_chart.days = dictionary.get('days')
+        facebook_chart.limit = dictionary.get('limit')
+        facebook_chart.facebook_id = dictionary.get('facebook_id')
+        facebook_chart.facebook_name = dictionary.get('facebook_name')
         facebook_chart.save()
         return facebook_chart
 

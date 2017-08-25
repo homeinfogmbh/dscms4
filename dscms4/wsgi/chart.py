@@ -2,13 +2,15 @@
 
 from peewee import DoesNotExist
 
-from his.api.messages import InvalidId, InvalidData
+from his.api.messages import InvalidId
 from wsgilib import JSON
 
 from .common import AuthorizedJSONService
-from .messages import MissingData, NoChartTypeSpecified, InvalidChartType, \
-    NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted
+from .messages import ChartDataIncomplete, ChartDataInvalid, \
+    NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
+    NoSuchChart, ChartAdded, ChartDeleted
 from ..orm.charts import CHARTS
+from ..orm.exceptions import InvalidData, MissingData
 
 
 class Charts(AuthorizedJSONService):
@@ -77,23 +79,34 @@ class Charts(AuthorizedJSONService):
         except DoesNotExist:
             raise NoSuchChart() from None
 
+    def get_chart_type(self, chart_dict):
+        """Returns the chart type"""
+        try:
+            return self.chart_type
+        except NoChartTypeSpecified:
+            try:
+                return CHARTS[chart_dict['type']]
+            except KeyError:
+                raise NoChartTypeSpecified()
+
     def get(self):
         """Lists charts or retrieves single chart"""
         if self.resource is None:
-            return JSON([chart.to_dict() for chart in CHARTS])
+            return JSON([chart.to_dict() for chart in self.charts])
         else:
             return JSON(self.chart.to_dict())
 
     def post(self):
         """Adds new charts"""
+        chart_dict = self.json
+        chart_type = self.get_chart_type(chart_dict)
+
         try:
-            chart = self.chart_type.from_dict(self.json)
-        except MissingData:
-            # TODO: implement
-            pass
-        except InvalidData:
-            # TODO: implement
-            pass
+            chart = chart_type.from_dict(chart_dict)
+        except MissingData as missing_data:
+            raise ChartDataIncomplete(missing_data.missing) from None
+        except InvalidData as invalid_data:
+            raise ChartDataInvalid(invalid_data.invalid) from None
         else:
             return ChartAdded(id=chart.id)
 
@@ -111,3 +124,7 @@ class Charts(AuthorizedJSONService):
             else:
                 chart.remove()
                 return ChartDeleted()
+
+    def patch(self):
+        """Patches a chart"""
+        raise NotImplementedError()

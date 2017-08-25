@@ -3,7 +3,8 @@
 from his.api.messages import locales, HISMessage
 
 __all__ = [
-    'MissingData',
+    'ChartDataIncomplete',
+    'ChartDataInvalid',
     'NoChartTypeSpecified',
     'InvalidChartType',
     'NoChartIdSpecified',
@@ -19,8 +20,14 @@ class DSCMS4Message(HISMessage):
     pass
 
 
-class MissingData(DSCMS4Message):
+class ChartDataIncomplete(DSCMS4Message):
     """Indicates that necessary data is missing"""
+
+    STATUS = 400
+
+
+class ChartDataInvalid(DSCMS4Message):
+    """Indicates that some data is invalid"""
 
     STATUS = 400
 
