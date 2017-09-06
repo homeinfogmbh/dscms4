@@ -1,4 +1,4 @@
-"""DSCMS4 WSGI handlers"""
+"""DSCMS4 WSGI handlers for charts."""
 
 from peewee import DoesNotExist
 
@@ -12,8 +12,10 @@ from .messages import ChartDataIncomplete, ChartDataInvalid, \
 from ..orm.charts import CHARTS
 from ..orm.exceptions import InvalidData, MissingData
 
+__all__ = ['Chart']
 
-class Charts(AuthorizedJSONService):
+
+class Chart(AuthorizedJSONService):
     """Manages charts"""
 
     NODE = 'dscms4'
