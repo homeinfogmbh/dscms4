@@ -3,7 +3,8 @@
 from peewee import Model, ForeignKeyField, CharField
 
 from .common import DSCMS4Model, CustomerModel
-from .charts import BaseChart
+from .charts import Chart
+from .exceptions import MissingData
 
 __all__ = [
     'Menu',
@@ -44,6 +45,22 @@ class Menu(Model, CustomerModel):
         """Yields charts"""
         return ChartItem.select().where(ChartItem.menu == self)
 
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a new menu entry from the given dictionary."""
+        menu = cls()
+        menu.customer = customer
+        menu.parent = dictionary.get('parent')
+
+        try:
+            menu.name = dictionary['name']
+        except KeyError:
+            raise MissingData('name')
+
+        menu.text = dictionary.get('text')
+        menu.save()
+        return menu
+
     def append(self, name, text=None):
         """Appends the node"""
         node = self.__class__()
@@ -80,7 +97,7 @@ class ChartItem(Model, DSCMS4Model):
         db_table = 'menu_chart'
 
     menu = ForeignKeyField(Menu, db_column='menu')
-    chart = ForeignKeyField(BaseChart, db_column='chart')
+    chart = ForeignKeyField(Chart, db_column='chart')
 
     @property
     def path(self):
@@ -88,6 +105,6 @@ class ChartItem(Model, DSCMS4Model):
         yield from self.menu.path
         yield self
 
-    def to_dict(self, cascade=False):
+    def to_dict(self):
         """Converts the model into a JSON compliant dictionary"""
         return self.chart.id
