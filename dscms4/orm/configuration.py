@@ -6,7 +6,7 @@ from peewee import Model, ForeignKeyField, TimeField, DecimalField
 
 from .common import DSCMS4Model, CustomerModel
 
-__all__ = ['Configuration']
+__all__ = ['Configuration', 'Backlight']
 
 
 def percentage(value):
