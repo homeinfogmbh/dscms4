@@ -27,7 +27,7 @@ def stripped_time_str(time):
 
 
 class Configuration(Model, CustomerModel):
-    """Customer configuration for charts"""
+    """Customer configuration for charts."""
 
     # TODO: Add configurations for all possible charts
 
