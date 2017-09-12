@@ -1,21 +1,21 @@
-"""Common ORM model exceptions"""
+"""Common ORM model exceptions."""
 
 __all__ = ['InvalidData', 'MissingData']
 
 
 class InvalidData(Exception):
-    """indicates invalid ORM model data"""
+    """Indicates invalid ORM model data."""
 
     def __init__(self, invalid):
-        """Sets the invalid data"""
+        """Sets the invalid data."""
         super().__init__(invalid)
         self.invalid = invalid
 
 
 class MissingData(Exception):
-    """indicates missing ORM model data"""
+    """Indicates missing ORM model data."""
 
     def __init__(self, missing):
-        """Sets the missing data"""
+        """Sets the missing data fields."""
         super().__init__(missing)
         self.missing = missing
