@@ -51,6 +51,11 @@ class Group(Model, CustomerModel):
         for child in self.children:
             yield from child.tree
 
+    @property
+    def members(self):
+        """Returns a group members proxy."""
+        return MemberProxy(self)
+
     def to_dict(self):
         """Converts the group to a JSON-like dictionary."""
         return {

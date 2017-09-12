@@ -88,3 +88,49 @@ class MemberTenement(Model, GroupMember):
             return cls.get((cls.group == group) & (cls.tenement == tenement))
         except DoesNotExist:
             return cls._add(group, tenement)
+
+
+class MemberProxy():
+    """Proxy to tranparently handle a group's members."""
+
+    def __init__(self, group):
+        """Sets the respective group."""
+        self.group = group
+
+    def __iter__(self):
+        """Yields all members of the respective group."""
+        yield from MemberTerminal.select().where(
+            MemberTerminal.group == self.group)
+        yield from MemberComcatAccount.select().where(
+            MemberComcatAccount.group == self.group)
+        yield from MemberTenement.select().where(
+            MemberTenement.group == self.group)
+
+    def add(self, member):
+        """Adds a member to the respective group."""
+        if isinstance(member, Terminal):
+            return MemberTerminal.add(self.group, member)
+        elif isinstance(member, ComcatAccount):
+            return MemberComcatAccount.add(self.group, member)
+        elif isinstance(member, Tenement):
+            return MemberTenement.add(self.group, member)
+        else:
+            raise UnsupportedMember(member) from None
+
+    def remove(self, member):
+        """Removes the respective member from the group."""
+        if isinstance(member, Terminal):
+            for member_terminal in MemberTerminal.select.where(
+                    (MemberTerminal.group == self.group) &
+                    (MemberTerminal.terminal == member)):
+                member_terminal.delete_instance()
+        elif isinstance(member, ComcatAccount):
+            for member_comcat_account in MemberComcatAccount.select.where(
+                    (MemberComcatAccount.group == self.group) &
+                    (MemberComcatAccount.comcat_account == member)):
+                member_comcat_account.delete_instance()
+        elif isinstance(member, Tenement):
+            for member_tenement in MemberTenement.select.where(
+                    (MemberTenement.group == self.group) &
+                    (MemberTenement.tenement == member)):
+                member_tenement.delete_instance()
