@@ -1,4 +1,4 @@
-"""Configurations"""
+"""Configurations."""
 
 from contextlib import suppress
 
@@ -51,6 +51,25 @@ class Backlight(Model, DSCMS4Model):
     configuration = ForeignKeyField(Configuration, db_column='configuration')
     time = TimeField()
     value = DecimalField(3, 2)
+
+    @classmethod
+    def add(cls, configuration, time, value=None, percent=None):
+        """Adds a new backlight setting."""
+        record = cls()
+        record.configuration = configuration
+        record.time = time
+
+        if value is not None and percent is not None:
+            raise ValueError('Must specify either value or percent.')
+        elif value is not None:
+            record.value = value
+        elif percent is not None:
+            record.percent = percent
+        else:
+            raise ValueError('Must specify either value or percent.')
+
+        record.save()
+        return record
 
     @property
     def percent(self):
