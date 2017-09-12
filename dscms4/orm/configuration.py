@@ -1,14 +1,67 @@
 """Configurations"""
 
-from peewee import Model
+from contextlib import suppress
 
-from .common import CustomerModel
+from peewee import Model, ForeignKeyField, TimeField, DecimalField
+
+from .common import DSCMS4Model, CustomerModel
 
 __all__ = ['Configuration']
+
+
+def percentage(value):
+    """Returns the percentage of a decimal number."""
+
+    if 0 <= value <= 100:
+        return value
+
+    raise ValueError('Invalid percentage: {}/{}.'.format(value, type(value)))
+
+
+def stripped_time_str(time):
+    """Returns the hour and minute string
+    representation of the provided time.
+    """
+
+    return '{}:{}'.format(time.hour, time.minute)
 
 
 class Configuration(Model, CustomerModel):
     """Customer configuration for charts"""
 
     # TODO: Add configurations for all possible charts
-    pass
+
+    def to_dict(self):
+        """Converts the configuration into a JSON-like dictionary."""
+        dictionary = {}
+        backlight = {}
+
+        for backlight in Backlight.select().where(
+                Backlight.configuration == self):
+            with suppress(ValueError):
+                backlight.update(backlight.to_dict())
+
+        dictionary['backlight'] = backlight
+        return dictionary
+
+
+class Backlight(Model, DSCMS4Model):
+    """Backlight beightness settings of the respective configuration."""
+
+    configuration = ForeignKeyField(Configuration, db_column='configuration')
+    time = TimeField()
+    value = DecimalField(3, 2)
+
+    @property
+    def percent(self):
+        """Returns the percentage as an integer."""
+        return percentage(int(self.value * 100))
+
+    @percent.setter
+    def percent(self, value):
+        """Sets the percentage."""
+        self.value = percentage(value) / 100
+
+    def to_dict(self):
+        """Returns the backlight as dictionary."""
+        return {stripped_time_str(self.time): self.percent}
