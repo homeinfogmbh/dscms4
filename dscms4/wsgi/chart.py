@@ -100,7 +100,7 @@ class Chart(AuthorizedJSONService):
 
     def post(self):
         """Adds new charts"""
-        chart_dict = self.json
+        chart_dict = self.data.json
         chart_type = self.get_chart_type(chart_dict)
 
         try:
