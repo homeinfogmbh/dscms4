@@ -1,12 +1,20 @@
 """Configurations."""
 
-from contextlib import suppress
+from datetime import datetime
 
-from peewee import Model, ForeignKeyField, TimeField, DecimalField
+from peewee import ForeignKeyField, TimeField, DecimalField, IntegerField, \
+    SmallIntegerField, CharField, BooleanField, TextField
+
+from peeweeplus import JSONModel, EnumField
 
 from .common import DSCMS4Model, CustomerModel
 
-__all__ = ['Configuration', 'Backlight']
+__all__ = [
+    'create_tables',
+    'Colors',
+    'Configuration',
+    'Backlight',
+    'MODELS']
 
 
 def percentage(value):
@@ -15,7 +23,7 @@ def percentage(value):
     if 0 <= value <= 100:
         return value
 
-    raise ValueError('Invalid percentage: {}/{}.'.format(value, type(value)))
+    raise ValueError('Invalid percentage: {}.'.format(value))
 
 
 def stripped_time_str(time):
@@ -26,26 +34,112 @@ def stripped_time_str(time):
     return '{}:{}'.format(time.hour, time.minute)
 
 
-class Configuration(Model, CustomerModel):
+def create_tables(fail_silently=True):
+    """Creates the tables of this module."""
+
+    for model in MODELS:
+        model.create_table(fail_silently=fail_silently)
+
+
+class Colors(JSONModel, DSCMS4Model):
+    """Colors of a configuration."""
+
+    header = IntegerField()
+    header_background = IntegerField()
+    background_left = IntegerField()
+    background_right = IntegerField()
+    ticker = IntegerField()
+    ticker_background = IntegerField()
+    clock = IntegerField()
+    title = IntegerField()
+    text = IntegerField()
+    text_background = IntegerField()
+
+
+class Configuration(JSONModel, CustomerModel):
     """Customer configuration for charts."""
 
-    # TODO: Add configurations for all possible charts
+    name = CharField(255)
+    description = CharField(255, null=True, default=None)
+    font = CharField(16)
+    portrait = BooleanField(default=False)
+    touch = BooleanField()
+    design = CharField(8)
+    effects = BooleanField()
+    ticker_speed = SmallIntegerField()
+    colors = ForeignKeyField(Colors, db_column='colors')
+    title_size = SmallIntegerField()
+    text_size = SmallIntegerField()
+    logo = IntegerField()           # File
+    background = IntegerField()     # File
+    dummy_picture = IntegerField()  # File
+    hide_cursor = BooleanField(default=True)
+    rotation = SmallIntegerField(default=0)
+    email_form = BooleanField()
+    volume = SmallIntegerField()
+
+    @classmethod
+    def from_dict(cls, dictionary, customer):
+        """Creates a new configuration from the provided
+        dictionary for the respective customer.
+        """
+        record = super().from_dict(dictionary)
+        record.customer = customer
+        record.colors = Colors.from_dict(dictionary.get('colors', {}))
+        record.save()
+
+        for ticker in dictionary.get('tickers', []):
+            ticker = Ticker.from_dict(ticker, record)
+            ticker.save()
+
+        for backlight in Backlight.from_dict(
+                dictionary.get('backlight', {}), record):
+            backlight.save()
+
+        return record
 
     def to_dict(self):
         """Converts the configuration into a JSON-like dictionary."""
-        dictionary = {}
-        backlight = {}
-
-        for backlight in Backlight.select().where(
-                Backlight.configuration == self):
-            with suppress(ValueError):
-                backlight.update(backlight.to_dict())
-
-        dictionary['backlight'] = backlight
+        dictionary = super().to_dict(blacklist=ForeignKeyField)
+        dictionary['colors'] = self.colors.to_dict()
+        dictionary['tickers'] = Ticker.list_for(self)
+        dictionary['backlight'] = Backlight.dict_for(self)
         return dictionary
 
+    def delete_instance(self):
+        """Deletes this instance."""
+        self.colors.delete_instance()
 
-class Backlight(Model, DSCMS4Model):
+        for ticker in Ticker.by_configuration(self):
+            ticker.delete_instance()
+
+        for backlight in Backlight.by_configuration(self):
+            backlight.delete_instance()
+
+        return super().delete_instance()
+
+
+class Ticker(JSONModel, DSCMS4Model):
+    """Tickers of the respective configuration."""
+
+    configuration = ForeignKeyField(Configuration, db_column='configuration')
+    typ = EnumField(('text', 'RSS', 'stock prices'), db_column='type')
+    text = TextField()
+
+    @classmethod
+    def by_configuration(cls, configuration):
+        """Yields backlight settings for the respective configuration."""
+        return cls.select().where(cls.configuration == configuration)
+
+    @classmethod
+    def list_for(cls, configuration):
+        """Returns a list of ticker settings
+        for the respective configuration.
+        """
+        return [tkr.to_dict() for tkr in cls.by_configuration(configuration)]
+
+
+class Backlight(JSONModel, DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
@@ -71,6 +165,33 @@ class Backlight(Model, DSCMS4Model):
         record.save()
         return record
 
+    @classmethod
+    def by_configuration(cls, configuration):
+        """Yields backlight settings for the respective configuration."""
+        return cls.select().where(cls.configuration == configuration)
+
+    @classmethod
+    def from_dict(cls, dictionary, configuration):
+        """Yields new records from the provided dictionary."""
+        for timestamp, percent in dictionary.items():
+            record = cls()
+            record.configuration = configuration
+            record.time = datetime.strptime(timestamp, '%H:%M').time()
+            record.percent = percent
+            yield record
+
+    @classmethod
+    def dict_for(cls, configuration):
+        """Returns a dictionary of backlight settings
+        for the respective configuration.
+        """
+        dictionary = {}
+
+        for backlight in cls.by_configuration(configuration):
+            dictionary.update(backlight.to_dict())
+
+        return dictionary
+
     @property
     def percent(self):
         """Returns the percentage as an integer."""
@@ -84,3 +205,6 @@ class Backlight(Model, DSCMS4Model):
     def to_dict(self):
         """Returns the backlight as dictionary."""
         return {stripped_time_str(self.time): self.percent}
+
+
+MODELS = (Colors, Configuration, Ticker, Backlight)
