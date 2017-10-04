@@ -1,10 +1,13 @@
-"""Menus."""
+"""Menus, menu items and chart members."""
 
-from peewee import Model, ForeignKeyField, CharField
+from enum import Enum
+
+from peewee import ForeignKeyField, CharField, IntegerField
+
+from peeweeplus import JSONModel, EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import Chart
-from .exceptions import MissingData
 
 __all__ = [
     'Menu',
@@ -12,11 +15,28 @@ __all__ = [
     'MenuItemChart']
 
 
+class Icons(Enum):
+    """Valid icons."""
+
+    COOL_ICON = 'cool icon'
+
+
 class Menu(JSONModel, CustomerModel):
     """Menus trees."""
 
     name = CharField(255)
     description = CharField(255, null=True, default=None)
+
+    def to_dict(self, cascade=False):
+        """Returns the menu as a dictionary."""
+        dictionary = super().to_dict()
+
+        if cascade:
+            dictionary['items'] = [
+                menu_item.to_dict(cascade=cascade)
+                for menu_item in MenuItem.by_menu(self)]
+
+        return dictionary
 
 
 class MenuItem(JSONModel, DSCMS4Model):
@@ -29,9 +49,14 @@ class MenuItem(JSONModel, DSCMS4Model):
     parent = ForeignKeyField(
         'self', db_column='parent', null=True, default=None)
     name = CharField(255)
-    icon = EnumField(ICONS, nulll=True, default=None)
+    icon = EnumField(Icons, nulll=True, default=None)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
+
+    @classmethod
+    def by_menu(cls, menu):
+        """Yields menu items belonging to the respective menu."""
+        return cls.select().where(cls.menu == menu)
 
     @property
     def root(self):
@@ -72,6 +97,17 @@ class MenuItem(JSONModel, DSCMS4Model):
 
         return menu_item
 
+    def to_dict(self, cascade=False):
+        """Returns a dictionary representation for the respective menu."""
+        dictionary = super().to_dict()
+        dictionary['charts'] = [chart.id for chart in self.charts]
+
+        if cascade:
+            dictionary['items'] = [
+                item.to_dict(cascade=cascade) for item in self.submenus]
+
+        return dictionary
+
 
 class MenuItemChart(JSONModel, DSCMS4Model):
     """Menu item <> Chart mapping."""
@@ -79,17 +115,11 @@ class MenuItemChart(JSONModel, DSCMS4Model):
     class Meta:
         db_table = 'menu_item_chart'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
+    menu_item = ForeignKeyField(MenuItem, db_column='menu')
     chart = ForeignKeyField(Chart, db_column='chart')
 
     @classmethod
-    def charts_for(cls, menu):
+    def charts_for(cls, menu_item):
         """Yields charts for the specified menu."""
-        for menu_item_chart in cls.select().where(cls.menu == menu):
+        for menu_item_chart in cls.select().where(cls.menu_item == menu_item):
             yield menu_item_chart.chart
-
-    @property
-    def path(self):
-        """Yields the path to this menu."""
-        yield from self.menu.path
-        yield self
