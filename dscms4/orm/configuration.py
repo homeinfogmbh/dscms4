@@ -11,7 +11,6 @@ from peeweeplus import JSONModel, EnumField
 from .common import DSCMS4Model, CustomerModel
 
 __all__ = [
-    'create_tables',
     'Colors',
     'Configuration',
     'Backlight',
@@ -33,13 +32,6 @@ def stripped_time_str(time):
     """
 
     return '{}:{}'.format(time.hour, time.minute)
-
-
-def create_tables(fail_silently=True):
-    """Creates the tables of this module."""
-
-    for model in MODELS:
-        model.create_table(fail_silently=fail_silently)
 
 
 class TickerTypes(Enum):

@@ -1,6 +1,6 @@
 """Common ORM model exceptions."""
 
-__all__ = ['InvalidData', 'MissingData']
+__all__ = ['InvalidData', 'MissingData', 'UnsupportedMember']
 
 
 class InvalidData(Exception):
@@ -19,3 +19,12 @@ class MissingData(Exception):
         """Sets the missing data fields."""
         super().__init__(missing)
         self.missing = missing
+
+
+class UnsupportedMember(Exception):
+    """Indicates that the respective member type is unsupported."""
+
+    def __init__(self, member):
+        """Sets the respective member."""
+        super().__init__(member)
+        self.member = member

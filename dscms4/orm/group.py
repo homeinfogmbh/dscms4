@@ -1,13 +1,98 @@
 """ORM model to represent groups."""
 
+from itertools import chain
+
 from peewee import Model, ForeignKeyField, CharField, TextField
 
-from .common import CustomerModel
+from homeinfo.terminals.orm import Terminal
+from peeweeplus import JSONModel
+from tenements.orm import ApartmentBuilding
 
-__all__ = ['Group']
+try:
+    from his.comcat import ComCatAccount
+except ImportError:
+    class ComCatAccount(Model):
+        """Mockup."""
+        pass
+
+from .common import CustomerModel, DSCMS4Model
+from .exceptions import UnsupportedMember
+
+__all__ = [
+    'Group',
+    'GroupMemberTerminal',
+    'GroupMemberComCatAccount',
+    'GroupMemberApartmentBuilding',
+    'MODELS']
 
 
-class Group(Model, CustomerModel):
+class MemberProxy:
+    """Proxy to tranparently handle a group's members."""
+
+    def __init__(self, group):
+        """Sets the respective group."""
+        self.group = group
+
+    def __iter__(self):
+        """Yields all members of the respective group."""
+        return chain(self.terminals, self.comcat_accounts,
+                     self.apartment_buildings)
+
+    @property
+    def terminals(self):
+        """Yields terminals."""
+        for mapping in GroupMemberTerminal.select().where(
+                GroupMemberTerminal.group == self.group):
+            yield mapping.terminal
+
+    @property
+    def comcat_accounts(self):
+        """Yields ComCat accounts."""
+        for mapping in GroupMemberComCatAccount.select().where(
+                GroupMemberComCatAccount.group == self.group):
+            yield mapping.comcat_account
+
+    @property
+    def apartment_buildings(self):
+        """Yields apartment buildings."""
+        for mapping in GroupMemberApartmentBuilding.select().where(
+                GroupMemberApartmentBuilding.group == self.group):
+            yield mapping.apartment_building
+
+    def add(self, member):
+        """Adds a member to the respective group."""
+        if isinstance(member, Terminal):
+            member = GroupMemberTerminal.add(self.group, member)
+        elif isinstance(member, ComCatAccount):
+            member = GroupMemberComCatAccount.add(self.group, member)
+        elif isinstance(member, ApartmentBuilding):
+            member = GroupMemberApartmentBuilding.add(self.group, member)
+        else:
+            raise UnsupportedMember(member) from None
+
+        member.save()
+        return member
+
+    def remove(self, member):
+        """Removes the respective member from the group."""
+        if isinstance(member, Terminal):
+            for mapping in GroupMemberTerminal.select().where(
+                    (GroupMemberTerminal.group == self.group) &
+                    (GroupMemberTerminal.terminal == member)):
+                mapping.delete_instance()
+        elif isinstance(member, ComCatAccount):
+            for mapping in GroupMemberComCatAccount.select().where(
+                    (GroupMemberComCatAccount.group == self.group) &
+                    (GroupMemberComCatAccount.comcat_account == member)):
+                mapping.delete_instance()
+        elif isinstance(member, ApartmentBuilding):
+            for mapping in GroupMemberApartmentBuilding.select().where(
+                    (GroupMemberApartmentBuilding.group == self.group) &
+                    (GroupMemberApartmentBuilding.tenement == member)):
+                mapping.delete_instance()
+
+
+class Group(JSONModel, CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
     name = CharField(255)
@@ -49,7 +134,8 @@ class Group(Model, CustomerModel):
         yield self
 
         for child in self.children:
-            yield from child.tree
+            for element in child.tree:
+                yield element
 
     @property
     def members(self):
@@ -63,3 +149,75 @@ class Group(Model, CustomerModel):
             'customer': self.customer.id,
             'name': self.name,
             'description': self.description}
+
+
+class GroupMember(DSCMS4Model):
+    """An abstract group member model."""
+
+    group = ForeignKeyField(Group, db_column='group')
+
+    @classmethod
+    def by_group(cls, group):
+        """Yields members for the respective group."""
+        return cls.select().where(cls.group == group)
+
+
+class GroupMemberTerminal(JSONModel, GroupMember):
+    """Terminals as members in groups."""
+
+    class Meta:
+        """Meta information for the database model."""
+        db_table = 'group_member_terminal'
+
+    terminal = ForeignKeyField(Terminal, db_column='terminal')
+
+    @classmethod
+    def add(cls, group, terminal):
+        """Adds a new record."""
+        record = cls()
+        record.group = group
+        record.terminal = terminal
+        return record
+
+
+class GroupMemberComCatAccount(JSONModel, GroupMember):
+    """ComCat accounts as members in groups."""
+
+    class Meta:
+        """Meta information for the database model."""
+        db_table = 'group_member_comcat_account'
+
+    comcat_account = ForeignKeyField(
+        ComCatAccount, db_column='comcat_account')
+
+    @classmethod
+    def add(cls, group, comcat_account):
+        """Adds a new record."""
+        record = cls()
+        record.group = group
+        record.comcat_account = comcat_account
+        return record
+
+
+class GroupMemberApartmentBuilding(JSONModel, GroupMember):
+    """Apartment buildings as members in groups."""
+
+    class Meta:
+        """Meta information for the database model."""
+        db_table = 'group_member_apartment_building'
+
+    apartment_building = ApartmentBuilding(
+        Terminal, db_column='apartment_building')
+
+    @classmethod
+    def add(cls, group, apartment_building):
+        """Adds a new record."""
+        record = cls()
+        record.group = group
+        record.apartment_building = apartment_building
+        return record
+
+
+MODELS = (
+    Group, GroupMemberTerminal, GroupMemberComCatAccount,
+    GroupMemberApartmentBuilding)

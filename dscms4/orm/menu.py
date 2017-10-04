@@ -10,9 +10,11 @@ from .common import DSCMS4Model, CustomerModel
 from .charts import Chart
 
 __all__ = [
+    'Icons',
     'Menu',
     'MenuItem',
-    'MenuItemChart']
+    'MenuItemChart',
+    'MODELS']
 
 
 class Icons(Enum):
@@ -123,3 +125,6 @@ class MenuItemChart(JSONModel, DSCMS4Model):
         """Yields charts for the specified menu."""
         for menu_item_chart in cls.select().where(cls.menu_item == menu_item):
             yield menu_item_chart.chart
+
+
+MODELS = (Menu, MenuItem, MenuItemChart)
