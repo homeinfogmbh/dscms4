@@ -1,13 +1,12 @@
-"""Content assignments"""
+"""Group contents."""
 
 from peewee import DoesNotExist, Model, ForeignKeyField
 
-from .charts import BaseChart
-from .common import DSCMS4Model
-from .configuration import Configuration
-from .groups import Group
-from .menu import Menu
-from .ticker import Ticker
+from ..charts import BaseChart
+from ..common import DSCMS4Model
+from ..configuration import Configuration
+from ..group import Group
+from ..menu import Menu
 
 __all__ = ['GroupBaseChart', 'GroupConfiguration', 'GroupMenu', 'GroupTicker']
 
