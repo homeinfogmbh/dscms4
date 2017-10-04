@@ -1,6 +1,7 @@
-"""Configurations."""
+"""Configurations, colors, tickers and brightness settings."""
 
 from datetime import datetime
+from enum import Enum
 
 from peewee import ForeignKeyField, TimeField, DecimalField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
@@ -39,6 +40,14 @@ def create_tables(fail_silently=True):
 
     for model in MODELS:
         model.create_table(fail_silently=fail_silently)
+
+
+class TickerTypes(Enum):
+    """Valid ticker types."""
+
+    TEXT = 'text'
+    RSS = 'RSS'
+    STOCK_PRICES = 'stock prices'
 
 
 class Colors(JSONModel, DSCMS4Model):
@@ -123,7 +132,7 @@ class Ticker(JSONModel, DSCMS4Model):
     """Tickers of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
-    typ = EnumField(('text', 'RSS', 'stock prices'), db_column='type')
+    typ = EnumField(TickerTypes, db_column='type')
     text = TextField()
 
     @classmethod
