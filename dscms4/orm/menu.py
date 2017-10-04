@@ -1,4 +1,4 @@
-"""Menus"""
+"""Menus."""
 
 from peewee import Model, ForeignKeyField, CharField
 
@@ -8,103 +8,88 @@ from .exceptions import MissingData
 
 __all__ = [
     'Menu',
-    'ChartItem']
+    'MenuItem',
+    'MenuItemChart']
 
 
-class Menu(Model, CustomerModel):
-    """Menus tree nodes"""
+class Menu(JSONModel, CustomerModel):
+    """Menus trees."""
+
+    name = CharField(255)
+    description = CharField(255, null=True, default=None)
+
+
+class MenuItem(JSONModel, DSCMS4Model):
+    """A menu item."""
 
     class Meta:
-        db_table = 'node'
+        db_table = 'menu_item'
 
+    menu = ForeignKeyField(Menu, db_column='menu')
     parent = ForeignKeyField(
         'self', db_column='parent', null=True, default=None)
     name = CharField(255)
-    text = CharField(255, null=True, default=None)
+    icon = EnumField(ICONS, nulll=True, default=None)
+    text_color = IntegerField(default=0x000000)
+    background_color = IntegerField(default=0xffffff)
 
     @property
     def root(self):
-        """Determines whether this is a root node entry"""
+        """Determines whether this is a root node entry."""
         return self.parent is None
 
     @property
     def path(self):
-        """Yields the path to this menu"""
+        """Yields the path to this menu."""
         if not self.root:
-            yield from self.parent.path
+            for parent in self.parent.path:
+                yield parent
 
         yield self
 
     @property
     def submenus(self):
-        """Yields submenus"""
+        """Yields submenus."""
         return self.__class__.select().where(self.__class__.parent == self)
 
     @property
     def charts(self):
-        """Yields charts"""
-        return ChartItem.select().where(ChartItem.menu == self)
+        """Yields charts."""
+        return MenuItemChart.charts_for(self)
 
-    @classmethod
-    def from_dict(cls, customer, dictionary):
-        """Creates a new menu entry from the given dictionary."""
-        menu = cls()
-        menu.customer = customer
-        menu.parent = dictionary.get('parent')
+    def append(self, name, icon=None, text_color=None, background_color=None):
+        """Appends the node."""
+        menu_item = self.__class__()
+        menu_item.parent = self
+        menu_item.name = name
+        menu_item.icon = icon
 
-        try:
-            menu.name = dictionary['name']
-        except KeyError:
-            raise MissingData('name')
+        if text_color is not None:
+            menu_item.text_color = text_color
 
-        menu.text = dictionary.get('text')
-        menu.save()
-        return menu
+        if background_color is not None:
+            menu_item.background_color = background_color
 
-    def append(self, name, text=None):
-        """Appends the node"""
-        node = self.__class__()
-        node.parent = self
-        node.name = name
-        node.text = text
-        return node
-
-    def to_dict(self, cascade=False):
-        """Converts the model into a JSON compliant dictionary"""
-        dictionary = {'name': self.name}
-
-        if self.text is not None:
-            dictionary['text'] = self.text
-
-        charts = [chart.to_dict() for chart in self.charts]
-
-        if charts:
-            dictionary['charts'] = charts
-
-        if cascade:
-            submenus = [m.to_dict(cascade=cascade) for m in self.submenus]
-
-            if submenus:
-                dictionary['submenus'] = submenus
-
-        return dictionary
+        return menu_item
 
 
-class ChartItem(Model, DSCMS4Model):
-    """Menu item mapping"""
+class MenuItemChart(JSONModel, DSCMS4Model):
+    """Menu item <> Chart mapping."""
 
     class Meta:
-        db_table = 'menu_chart'
+        db_table = 'menu_item_chart'
 
     menu = ForeignKeyField(Menu, db_column='menu')
     chart = ForeignKeyField(Chart, db_column='chart')
 
+    @classmethod
+    def charts_for(cls, menu):
+        """Yields charts for the specified menu."""
+        for menu_item_chart in cls.select().where(cls.menu == menu):
+            yield menu_item_chart.chart
+
     @property
     def path(self):
-        """Yields the path to this menu"""
+        """Yields the path to this menu."""
         yield from self.menu.path
         yield self
-
-    def to_dict(self):
-        """Converts the model into a JSON compliant dictionary"""
-        return self.chart.id
