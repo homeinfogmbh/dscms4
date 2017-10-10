@@ -16,7 +16,7 @@ except ImportError:
         pass
 
 from .common import CustomerModel, DSCMS4Model
-from .exceptions import UnsupportedMember
+from .exceptions import UnsupportedMember, CircularPedigreeError
 
 __all__ = [
     'Group',
@@ -141,6 +141,15 @@ class Group(JSONModel, CustomerModel):
     def members(self):
         """Returns a group members proxy."""
         return MemberProxy(self)
+
+    def change_parent(self, parent):
+        """Changes the parent reference of the group."""
+        if parent in self.tree:
+            raise CircularPedigreeError()
+
+        self.parent = parent
+        self.save()
+        return self
 
     def to_dict(self):
         """Converts the group to a JSON-like dictionary."""

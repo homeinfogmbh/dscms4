@@ -1,12 +1,14 @@
 """Object Relational Mappings"""
 
 from datetime import datetime
+from enum import Enum
 from sys import stderr
 
 from peewee import Model, ForeignKeyField, CharField, TextField, \
     DateTimeField, BooleanField, IntegerField, SmallIntegerField
 
 from filedb import FileProperty
+from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .schedule import Schedule
@@ -14,6 +16,8 @@ from .schedule import Schedule
 
 
 __all__ = ['Chart']
+
+DEFAULT_DURATION = 10
 
 
 class NoTypeSpecified(Exception):
@@ -39,23 +43,119 @@ def create_tables(fail_silently=True):
                   file=stderr)
 
 
-class LocalPublicTtransportChart(Model, DSCMS4Model):
+class TransitionEffect(Enum):
+    """Effects available for chart transitions."""
+
+    FADE_IN = 'fade-in'
+    MOSAIK = 'mosaik'
+    SLIDE_IN = 'slide-in'
+    RANDOM = 'random'
+    NONE = None
+
+
+class BaseChart(Model, CustomerModel):
+    """Common basic chart data model."""
+
+    class Meta:
+        db_table = 'base_chart'
+
+    title = CharField(255)
+    description = TextField(null=True, default=None)
+    duration = SmallIntegerField(default=DEFAULT_DURATION)
+    created = DateTimeField()
+    schedule = ForeignKeyField(
+        Schedule, db_column='schedule', null=True, default=None)
+    transition_effect = EnumField(TransitionEffect)
+
+    @classmethod
+    def add(cls, customer, title, description=None, duration=None,
+            schedule=None, transition_effect=TransitionEffect.NONE):
+        """Adds a new chart."""
+        chart = cls()
+        chart.customer = customer
+        chart.title = title
+        chart.description = description
+        chart.duration = duration
+        chart.created = datetime.now()
+        chart.schedule = schedule
+        chart.transition_effect = transition_effect
+        chart.save()
+        return chart
+
+    @classmethod
+    def from_dict(cls, customer, dictionary):
+        """Creates a base chart from a dictionary
+        for the respective customer.
+        """
+        try:
+            schedule = Schedule.from_dict(dictionary['schedule'])
+        except KeyError:
+            schedule = None
+
+        return cls.add(
+            customer,
+            dictionary['title'],
+            description=dictionary.get('description'),
+            duration=dictionary.get('duration'),
+            schedule=schedule,
+            transition_effect=dictionary.get('description'))
+
+    @property
+    def active(self):
+        """Determines whether the chart is considered active."""
+        return self.schedule is None or self.schedule.active
+
+    @property
+    def chart(self):
+        """Returns the mapped implementation of this chart."""
+        # TODO: implement
+        pass
+
+    def to_dict(self, cascade=False):
+        """Returns a JSON compatible dictionary."""
+        dictionary = {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'duration': self.duration,
+            'created': self.created.isoformat(),
+            'transition_effect': self.transition_effect.value}
+
+        if self.schedule:
+            if cascade:
+                dictionary['schedule'] = self.schedule.to_dict()
+            else:
+                dictionary['schedule'] = self.schedule.id
+
+        return dictionary
+
+
+class Chart(DSCMS4Model):
+    """Abstract basic chart."""
+
+    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        """Creates a new chart from the respective dictionary."""
+        base_chart = BaseChart.from_dict(dictionary)
+        chart = cls()
+        chart.base_chart = base_chart
+        return chart
+
+    def to_dict(self):
+        """Converts the chart into a JSON compliant dictionary."""
+        return self.base_chart.to_dict()
+
+
+class LocalPublicTtransportChart(Model, Chart):
     """Local public transport chart."""
 
     class Meta:
         db_table = 'chart_local_public_transport'
 
-    @classmethod
-    def from_dict(cls, _):
-        """Creates a new local public transport chart
-        from the provided JSON compliant dictionary.
-        """
-        chart = cls()
-        chart.save()
-        return chart
 
-
-class NewsChart(Model, DSCMS4Model):
+class NewsChart(Model, Chart):
     """Chart to display news."""
 
     class Meta:
@@ -68,7 +168,7 @@ class NewsChart(Model, DSCMS4Model):
         """Creates a new news chart from the
         provided JSON compliant dictionary.
         """
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.localization = dictionary.get('localization')
         chart.save()
         return chart
@@ -83,22 +183,22 @@ class NewsChart(Model, DSCMS4Model):
         return dictionary
 
 
-class QuotesChart(Model, DSCMS4Model):
+class QuotesChart(Model, Chart):
     """Chart for quotations."""
 
     class Meta:
         db_table = 'chart_quotes'
 
     @classmethod
-    def from_dict(cls, _):
+    def from_dict(cls, dictionary):
         """Creates a new quotes chart."""
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.save()
         return chart
 
 
-class VideoChart(Model, DSCMS4Model):
-    """A chart that may contain images and texts"""
+class VideoChart(Model, Chart):
+    """A chart that may contain images and texts."""
 
     class Meta:
         db_table = 'chart_video'
@@ -109,9 +209,9 @@ class VideoChart(Model, DSCMS4Model):
     @classmethod
     def from_dict(cls, dictionary):
         """Creates a new quotes chart from the
-        dictionary for the respective customer
+        dictionary for the respective customer.
         """
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.video = dictionary['file']
         chart.save()
         return chart
@@ -123,44 +223,79 @@ class VideoChart(Model, DSCMS4Model):
         return dictionary
 
 
-class HTMLChart(Model, DSCMS4Model):
-    """A chart that may contain images"""
+class ImageTextChart(Model, Chart):
+    """A chart that may contain images and text."""
 
     class Meta:
         db_table = 'chart_html'
 
-    random = BooleanField(default=False)
-    loop_limit = SmallIntegerField(null=True, default=None)
-    scale = BooleanField(default=False)
-    fullscreen = BooleanField(default=False)
+    style = EnumField()
+    title = CharField(255)
+    font_size = SmallIntegerField(default=26)
+    title_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(default=False)
+    # TODO: {0..n} images as foreign keys.
 
     @classmethod
     def from_dict(cls, dictionary):
         """Creates a new quotes chart from the
-        dictionary for the respective customer
+        dictionary for the respective customer.
         """
-        chart = cls()
-        chart.random = dictionary.get('random')
-        chart.loop_limit = dictionary.get('loop_limit')
-        chart.scale = dictionary.get('scale')
-        chart.fullscreen = dictionary.get('fullscreen')
-        chart.ken_burns = dictionary.get('ken_burns')
-        chart.save()
-        return chart
+        image_text_chart = super().from_dict(dictionary)
+        image_text_chart.random = dictionary.get('random')
+        image_text_chart.loop_limit = dictionary.get('loop_limit')
+        image_text_chart.scale = dictionary.get('scale')
+        image_text_chart.fullscreen = dictionary.get('fullscreen')
+        image_text_chart.ken_burns = dictionary.get('ken_burns')
+        image_text_chart.save()
+
+        for text in dictionary.get('texts', tuple()):
+            ChartText.add(image_text_chart, text)
+
+        return image_text_chart
+
+    @property
+    def texts(self):
+        """Yields appropriate texts."""
+        for record in ChartText.select().where(
+                ChartText.image_text_chart == self):
+            yield record.text
 
     def to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        return {
+        """Returns a JSON compatible dictionary."""
+        dictionary = super().to_dict()
+        dictionary.update({
             'random': self.random,
             'loop_limit': self.loop_limit,
             'scale': self.scale,
             'fullscreen': self.fullscreen,
-            'ken_burns': self.ken_burns}
+            'ken_burns': self.ken_burns,
+            'texts': list(self.texts)})
+        return dictionary
 
 
-class FacebookChart(Model, DSCMS4Model):
-    """Facebook data chart"""
+class ChartText(Model):
+    """Text for an ImageTextChart."""
+
+    class Meta:
+        db_table = 'chart_text'
+
+    image_text_chart = ForeignKeyField(
+        ImageTextChart, db_column='image_text_chart')
+    text = TextField()
+
+    @classmethod
+    def add(cls, image_text_chart, text):
+        """Adds a new text for the respective ImageTextChart."""
+        record = cls()
+        record.image_text_chart = image_text_chart
+        record.text = text
+        record.save()
+        return record
+
+
+class FacebookChart(Model, Chart):
+    """Facebook data chart."""
 
     class Meta:
         db_table = 'chart_facebook'
@@ -173,9 +308,9 @@ class FacebookChart(Model, DSCMS4Model):
     @classmethod
     def from_dict(cls, dictionary):
         """Creates a new quotes chart from the
-        dictionary for the respective customer
+        dictionary for the respective customer.
         """
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.days = dictionary.get('days')
         chart.limit = dictionary.get('limit')
         chart.facebook_id = dictionary.get('facebook_id')
@@ -184,214 +319,51 @@ class FacebookChart(Model, DSCMS4Model):
         return chart
 
     def to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        return {
+        """Returns a JSON compatible dictionary."""
+        dictionary = super.to_dict()
+        dictionary.update({
             'days': self.days,
             'limit': self.limit,
             'facebook_id': self.facebook_id,
-            'facebook_name': self.facebook_name}
+            'facebook_name': self.facebook_name})
+        return dictionary
 
 
-class GuessPictureChart(Model, DSCMS4Model):
-    """Chart for guessing pictures"""
+class GuessPictureChart(Model, Chart):
+    """Chart for guessing pictures."""
 
     class Meta:
         db_table = 'chart_guess_picture'
 
     @classmethod
-    def from_dict(cls, _):
+    def from_dict(cls, dictionary):
         """Creates a new quotes chart from the
-        dictionary for the respective customer
+        dictionary for the respective customer.
         """
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.save()
         return chart
 
 
-class WeatherChart(Model, DSCMS4Model):
-    """Weather data"""
+class WeatherChart(Model, Chart):
+    """Weather data."""
 
     class Meta:
         db_table = 'chart_weather'
 
     @classmethod
-    def from_dict(cls, _):
-        """Creates a new quotes chart from the
-        dictionary for the respective customer
-        """
-        chart = cls()
-        chart.save()
-        return chart
-
-
-class TypeMap(Model, DSCMS4Model):
-    """Mappings between base chart and chart implementations."""
-
-    local_public_transport = ForeignKeyField(
-        LocalPublicTtransportChart, db_column='local_public_transport_chart')
-    news = ForeignKeyField(NewsChart, db_column='facebook_chart')
-    quotes = ForeignKeyField(QuotesChart, db_column='quotes_chart')
-    video = ForeignKeyField(VideoChart, db_column='video_chart')
-    html = ForeignKeyField(HTMLChart, db_column='html_chart')
-    facebook = ForeignKeyField(FacebookChart, db_column='facebook_chart')
-    guess_picture = ForeignKeyField(
-        GuessPictureChart, db_column='guess_picture_chart')
-    weather = ForeignKeyField(WeatherChart, db_column='weather_chart')
-
-    @classmethod
-    def add(cls, typ):
-        """Adds a type mapping to the respective type."""
-        type_map = cls()
-
-        if isinstance(typ, LocalPublicTtransportChart):
-            type_map.local_public_transport = typ
-        elif isinstance(typ, NewsChart):
-            type_map.news = typ
-        elif isinstance(typ, QuotesChart):
-            type_map.quotes = typ
-        elif isinstance(typ, VideoChart):
-            type_map.video = typ
-        elif isinstance(typ, HTMLChart):
-            type_map.html = typ
-        elif isinstance(typ, FacebookChart):
-            type_map.facebook = typ
-        elif isinstance(typ, GuessPictureChart):
-            type_map.guess_picture = typ
-        elif isinstance(typ, WeatherChart):
-            type_map.weather = typ
-        else:
-            raise UnsupportedType(typ) from None
-
-        type_map.save()
-        return type_map
-
-    @classmethod
     def from_dict(cls, dictionary):
-        """Creates the type mapping from the respective dictionary."""
-        try:
-            class_name = dictionary['type']
-        except KeyError:
-            raise NoTypeSpecified() from None
-        else:
-            try:
-                chart_class = TYPES[class_name]
-            except KeyError:
-                raise UnsupportedType(class_name) from None
-            else:
-                return cls.add(chart_class.from_dict(dictionary))
-
-    @property
-    def mappings(self):
-        """Yields the mapped charts."""
-        yield self.local_public_transport
-        yield self.news
-        yield self.quotes
-        yield self.video
-        yield self.html
-        yield self.facebook
-        yield self.guess_picture
-        yield self.weather
-
-    @property
-    def chart(self):
-        """Returns the mapped chart."""
-        for chart in self.mappings:
-            if chart is not None:
-                return chart
-
-
-class Chart(Model, CustomerModel):
-    """Common chart model."""
-
-    class Meta:
-        db_table = 'chart'
-
-    DEFAULT_DURATION = 10
-
-    typ = ForeignKeyField(TypeMap, db_column='type')
-    name = CharField(255, null=True, default=None)
-    title = CharField(255, null=True, default=None)
-    text = TextField(null=True, default=None)
-    duration = SmallIntegerField(default=DEFAULT_DURATION)
-    created = DateTimeField()
-    schedule = ForeignKeyField(
-        Schedule, db_column='schedule', null=True, default=None)
-
-    @classmethod
-    def add(cls, customer, typ, name=None, title=None, text=None,
-            duration=None, schedule=None):
-        """Adds a new chart."""
-        chart = cls()
-        chart.created = datetime.now()
-        chart.customer = customer
-        chart.typ = typ
-        chart.name = name
-        chart.title = title
-        chart.text = text
-        chart.duration = duration
-        chart.schedule = schedule
+        """Creates a new quotes chart from the
+        dictionary for the respective customer.
+        """
+        chart = super().from_dict(dictionary)
         chart.save()
         return chart
 
-    @classmethod
-    def from_dict(cls, customer, dictionary):
-        """Creates a base chart from a dictionary
-        for the respective customer.
-        """
-        type_map = TypeMap.from_dict(dictionary)
-        schedule = dictionary.get('schedule')
 
-        if schedule:
-            schedule = Schedule.from_dict(schedule)
-        else:
-            schedule = None
-
-        return cls.add(
-            customer,
-            type_map,
-            name=dictionary.get('name'),
-            title=dictionary.get('title'),
-            text=dictionary.get('text'),
-            duration=dictionary.get('duration'),
-            schedule=schedule)
-
-    @property
-    def active(self):
-        """Determines whether the chart is considered active"""
-        return self.schedule is None or self.schedule.active
-
-    @property
-    def implementation(self):
-        """Returns the mapped implementation of this chart."""
-        return self.typ.chart
-
-    def _to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        return {
-            'id': self.id,
-            'created': self.created.isoformat(),
-            'name': self.name,
-            'title': self.title,
-            'text': self.text,
-            'duration': self.duration,
-            'schedule': self.schedule.id}
-
-    def to_dict(self):
-        """Returns a JSON compatible dictionary"""
-        dictionary = self._to_dict()
-
-        try:
-            implementation_dict_method = self.implementation.to_dict
-        except AttributeError:
-            pass
-        else:
-            dictionary.update(implementation_dict_method())
-
-        return dictionary
-
-
-CHARTS = [
-    LocalPublicTtransportChart, NewsChart, QuotesChart, VideoChart, HTMLChart,
-    FacebookChart, GuessPictureChart, WeatherChart]
-TYPES = {chart.__class__.__name__: chart for chart in CHARTS}
-MODELS = CHARTS + [TypeMap, Chart]
+MODELS = (
+    BaseChart, LocalPublicTtransportChart, NewsChart, QuotesChart, VideoChart,
+    ImageTextChart, ChartText, FacebookChart, GuessPictureChart, WeatherChart)
+CHARTS = {
+    model._meta.db_table.lstrip('chart_'): model
+    for model in MODELS if issubclass(model, Chart)}

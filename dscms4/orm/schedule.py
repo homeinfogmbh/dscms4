@@ -8,6 +8,14 @@ from .common import CustomerModel
 __all__ = ['Schedule']
 
 
+ALL_WEEK = 0b1111111
+STR_TEMP = (
+    '{begin} - {end}\n\n'
+    'Mon │ Tue │ Wed │ Thu │ Fri │ Sat │ Sun\n'
+    '────┼─────┼─────┼─────┼─────┼─────┼────\n'
+    ' {}  │  {}  │  {}  │  {}  │  {}  │  {}  │  {}')
+
+
 class Schedule(Model, CustomerModel):
     """Date / time schedule
 
@@ -16,13 +24,6 @@ class Schedule(Model, CustomerModel):
         2^6   2^5   2^4   2^3   2^2   2^1   2^0
     """
 
-    ALL_WEEK = 0b1111111
-    STR_TEMP = (
-        '{begin} - {end}\n\n'
-        'Mon │ Tue │ Wed │ Thu │ Fri │ Sat │ Sun\n'
-        '────┼─────┼─────┼─────┼─────┼─────┼────\n'
-        ' {}  │  {}  │  {}  │  {}  │  {}  │  {}  │  {}')
-
     begin = DateTimeField(null=True)
     end = DateTimeField(null=True)
     weekdays = SmallIntegerField(default=ALL_WEEK)
@@ -30,7 +31,7 @@ class Schedule(Model, CustomerModel):
     def __str__(self):
         """Returns a human-readable representation of the schedule"""
         days = ('✓' if self.match_day(day) else '✗' for day in range(7))
-        return self.STR_TEMP.format(*days, begin=self.begin, end=self.end)
+        return STR_TEMP.format(*days, begin=self.begin, end=self.end)
 
     @property
     def monday(self):
@@ -105,7 +106,7 @@ class Schedule(Model, CustomerModel):
     @property
     def all_week(self):
         """Determines whether the schedule runs all week"""
-        return self.weekdays == self.ALL_WEEK
+        return self.weekdays == ALL_WEEK
 
     @property
     def active(self):
