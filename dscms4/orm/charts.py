@@ -11,6 +11,7 @@ from filedb import FileProperty, FileClient
 from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
+from .exceptions import OrphanedBaseChart
 from .schedule import Schedule
 # from .exceptions import InvalidData, MissingData
 
@@ -19,18 +20,6 @@ __all__ = ['Chart']
 
 DEFAULT_DURATION = 10
 FILE_CLIENT = FileClient('c33696ee-49bb-459d-a2c4-80574691de91')
-
-
-class NoTypeSpecified(Exception):
-    """Indicates that no chart typ has been specified."""
-
-    pass
-
-
-class UnsupportedType(Exception):
-    """Indicates that the specified chart type is not supported."""
-
-    pass
 
 
 def create_tables(fail_silently=True):
@@ -109,8 +98,11 @@ class BaseChart(Model, CustomerModel):
     @property
     def chart(self):
         """Returns the mapped implementation of this chart."""
-        # TODO: implement
-        pass
+        for _, cls in CHARTS.items():
+            with suppress(DoesNotExist):
+                return cls.get(cls.base_chart == self)
+
+        raise OrphanedBaseChart(self)
 
     def to_dict(self, cascade=False):
         """Returns a JSON compatible dictionary."""

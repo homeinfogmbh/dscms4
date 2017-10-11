@@ -4,7 +4,8 @@ __all__ = [
     'InvalidData',
     'MissingData',
     'UnsupportedMember',
-    'CircularPedigreeError']
+    'CircularPedigreeError',
+    'OrphanedBaseChart']
 
 
 class DSCMS4Error(Exception):
@@ -46,3 +47,12 @@ class CircularPedigreeError(DSCMS4Error):
     """
 
     pass
+
+
+class OrphanedBaseChart(DSCMS4Error):
+    """Indicates that the respective base chart is orphaned."""
+
+    def __init__(self, base_chart):
+        """Sets the base chart."""
+        super().__init__()
+        self.base_chart = base_chart
