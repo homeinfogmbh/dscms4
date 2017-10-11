@@ -7,7 +7,7 @@ from sys import stderr
 from peewee import Model, ForeignKeyField, CharField, TextField, \
     DateTimeField, BooleanField, IntegerField, SmallIntegerField
 
-from filedb import FileProperty
+from filedb import FileProperty, FileClient
 from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
@@ -18,6 +18,7 @@ from .schedule import Schedule
 __all__ = ['Chart']
 
 DEFAULT_DURATION = 10
+FILE_CLIENT = FileClient('c33696ee-49bb-459d-a2c4-80574691de91')
 
 
 class NoTypeSpecified(Exception):
@@ -204,7 +205,7 @@ class VideoChart(Model, Chart):
         db_table = 'chart_video'
 
     file = IntegerField()
-    video = FileProperty(file, file_client='foo')
+    video = FileProperty(file, file_client=FILE_CLIENT)
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -234,7 +235,6 @@ class ImageTextChart(Model, Chart):
     font_size = SmallIntegerField(default=26)
     title_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(default=False)
-    # TODO: {0..n} images as foreign keys.
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -252,14 +252,20 @@ class ImageTextChart(Model, Chart):
         for text in dictionary.get('texts', tuple()):
             ChartText.add(image_text_chart, text)
 
+        for image_id in dictionary.get('images', tuple()):
+            ChartImage.add(image_text_chart, image_id)
+
         return image_text_chart
 
     @property
     def texts(self):
         """Yields appropriate texts."""
-        for record in ChartText.select().where(
-                ChartText.image_text_chart == self):
-            yield record.text
+        return ChartText.select().where(ChartText.image_text_chart == self)
+
+    @property
+    def images(self):
+        """Yields appropriate images."""
+        return ChartImage.select().where(ChartImage.image_text_chart == self)
 
     def to_dict(self):
         """Returns a JSON compatible dictionary."""
@@ -270,11 +276,12 @@ class ImageTextChart(Model, Chart):
             'scale': self.scale,
             'fullscreen': self.fullscreen,
             'ken_burns': self.ken_burns,
-            'texts': list(self.texts)})
+            'texts': [text.text for text in self.texts],
+            'images': [image.image for image in self.images]})
         return dictionary
 
 
-class ChartText(Model):
+class ChartText(DSCMS4Model):
     """Text for an ImageTextChart."""
 
     class Meta:
@@ -290,6 +297,27 @@ class ChartText(Model):
         record = cls()
         record.image_text_chart = image_text_chart
         record.text = text
+        record.save()
+        return record
+
+
+class ChartImage(DSCMS4Model):
+    """Image for an ImageTextChart."""
+
+    class Meta:
+        db_table = 'chart_image'
+
+    image_text_chart = ForeignKeyField(
+        ImageTextChart, db_column='image_text_chart')
+    image = IntegerField()
+    bytes = FileProperty(image, file_client=FILE_CLIENT)
+
+    @classmethod
+    def add(cls, image_text_chart, image):
+        """Adds a new image for the respective ImageTextChart."""
+        record = cls()
+        record.image_text_chart = image_text_chart
+        record.image = image
         record.save()
         return record
 
