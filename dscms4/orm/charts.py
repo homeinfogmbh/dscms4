@@ -280,6 +280,17 @@ class ImageTextChart(Model, Chart):
             'images': [image.image for image in self.images]})
         return dictionary
 
+    def delete_instance(recursive=False, delete_nullable=False):
+        """Deletes related models and this model."""
+        for text in self.texts:
+            text.delete_instance()
+
+        for image in self.images:
+            image.delete_instance()
+
+        super().delete_instance(
+            recursive=recursive, delete_nullable=delete_nullable)
+
 
 class ChartText(DSCMS4Model):
     """Text for an ImageTextChart."""
