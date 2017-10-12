@@ -5,7 +5,8 @@ __all__ = [
     'MissingData',
     'UnsupportedMember',
     'CircularPedigreeError',
-    'OrphanedBaseChart']
+    'OrphanedBaseChart',
+    'QuotaExceeded']
 
 
 class DSCMS4Error(Exception):
@@ -54,5 +55,14 @@ class OrphanedBaseChart(DSCMS4Error):
 
     def __init__(self, base_chart):
         """Sets the base chart."""
-        super().__init__()
+        super().__init__(base_chart)
         self.base_chart = base_chart
+
+
+class QuotaExceeded(DSCMS4Error):
+    """Indicates the the user quota was exceeded."""
+
+    def __init__(self, quota):
+        """Sets the quota."""
+        super().__init__(quota)
+        self.quota = quota
