@@ -55,13 +55,8 @@ class CustomerModel(DSCMS4Model):
         """Yields records for the respective customer."""
         return cls.select().where(cls.customer == customer)
 
-    def to_dict(self, cascade=False):
+    def to_dict(self):
         """Returns a JSON compliant dictionary."""
         dictionary = super().to_dict()
-
-        if cascade:
-            dictionary['customer'] = self.customer.to_dict()
-        else:
-            dictionary['customer'] = self.customer.id
-
+        dictionary['customer'] = self.customer.id
         return dictionary

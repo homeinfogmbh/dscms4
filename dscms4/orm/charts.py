@@ -19,7 +19,6 @@ from .schedule import Schedule
 __all__ = ['Chart']
 
 DEFAULT_DURATION = 10
-FILE_CLIENT = FileClient('c33696ee-49bb-459d-a2c4-80574691de91')
 
 
 def create_tables(fail_silently=True):
@@ -104,21 +103,20 @@ class BaseChart(Model, CustomerModel):
 
         raise OrphanedBaseChart(self)
 
-    def to_dict(self, cascade=False):
+    def to_dict(self):
         """Returns a JSON compatible dictionary."""
-        dictionary = {
-            'id': self.id,
+        dictionary = super().to_dict()
+        dictionary.update({
             'title': self.title,
             'description': self.description,
             'duration': self.duration,
             'created': self.created.isoformat(),
-            'transition_effect': self.transition_effect.value}
+            'transition_effect': self.transition_effect.value})
 
         if self.schedule:
-            if cascade:
-                dictionary['schedule'] = self.schedule.to_dict()
-            else:
-                dictionary['schedule'] = self.schedule.id
+            dictionary['schedule'] = self.schedule.to_dict()
+        else:
+            dictionary['schedule'] = None
 
         return dictionary
 
@@ -131,14 +129,15 @@ class Chart(DSCMS4Model):
     @classmethod
     def from_dict(cls, dictionary):
         """Creates a new chart from the respective dictionary."""
-        base_chart = BaseChart.from_dict(dictionary)
         chart = cls()
-        chart.base_chart = base_chart
+        chart.base_chart = BaseChart.from_dict(dictionary['base_chart'])
         return chart
 
-    def to_dict(self):
+    def to_dict(self, cascade=False):
         """Converts the chart into a JSON compliant dictionary."""
-        return self.base_chart.to_dict()
+        dictionary = super().to_dict()
+        dictionary['base_chart'] = self.base_chart.to_dict()
+        return dictionary
 
 
 class LocalPublicTtransportChart(Model, Chart):
@@ -205,7 +204,7 @@ class VideoChart(Model, Chart):
         dictionary for the respective customer.
         """
         chart = super().from_dict(dictionary)
-        chart.video = dictionary['file']
+        chart.file = dictionary['file']
         chart.save()
         return chart
 
@@ -250,35 +249,39 @@ class ImageTextChart(Model, Chart):
         return image_text_chart
 
     @property
-    def texts(self):
+    def chart_texts(self):
         """Yields appropriate texts."""
         return ChartText.select().where(ChartText.image_text_chart == self)
 
     @property
-    def images(self):
+    def chart_images(self):
         """Yields appropriate images."""
         return ChartImage.select().where(ChartImage.image_text_chart == self)
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary."""
-        dictionary = super().to_dict()
-        dictionary.update({
+    def _to_dict(self):
+        """Returns the dictionary representation of this chart's fields."""
+        return {
             'random': self.random,
             'loop_limit': self.loop_limit,
             'scale': self.scale,
             'fullscreen': self.fullscreen,
             'ken_burns': self.ken_burns,
-            'texts': [text.text for text in self.texts],
-            'images': [image.image for image in self.images]})
+            'texts': [chart_text.text for chart_text in self.chart_texts],
+            'images': [chart_image.image for chart_image in self.chart_images]}
+
+    def to_dict(self):
+        """Returns a JSON compatible dictionary."""
+        dictionary = super().to_dict()
+        dictionary.update(self._to_dict())
         return dictionary
 
-    def delete_instance(recursive=False, delete_nullable=False):
+    def delete_instance(self, recursive=False, delete_nullable=False):
         """Deletes related models and this model."""
-        for text in self.texts:
-            text.delete_instance()
+        for chart_text in self.chart_texts:
+            chart_text.delete_instance()
 
-        for image in self.images:
-            image.delete_instance()
+        for chart_image in self.chart_images:
+            chart_image.delete_instance()
 
         super().delete_instance(
             recursive=recursive, delete_nullable=delete_nullable)
@@ -312,15 +315,15 @@ class ChartImage(DSCMS4Model):
 
     image_text_chart = ForeignKeyField(
         ImageTextChart, db_column='image_text_chart')
-    image = IntegerField()
-    bytes = FileProperty(image, file_client=FILE_CLIENT)
+    file = IntegerField()
+    image = FileProperty(image, file_client=FILE_CLIENT)
 
     @classmethod
-    def add(cls, image_text_chart, image):
+    def add(cls, image_text_chart, file):
         """Adds a new image for the respective ImageTextChart."""
         record = cls()
         record.image_text_chart = image_text_chart
-        record.image = image
+        record.file = file
         record.save()
         return record
 
@@ -349,14 +352,18 @@ class FacebookChart(Model, Chart):
         chart.save()
         return chart
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary."""
-        dictionary = super.to_dict()
-        dictionary.update({
+    def _to_dict(self):
+        """Returns a JSON compliant dictionary of this chart's fields."""
+        return {
             'days': self.days,
             'limit': self.limit,
             'facebook_id': self.facebook_id,
-            'facebook_name': self.facebook_name})
+            'facebook_name': self.facebook_name}
+
+    def to_dict(self):
+        """Returns a JSON compatible dictionary."""
+        dictionary = super.to_dict()
+        dictionary.update(self._to_dict())
         return dictionary
 
 

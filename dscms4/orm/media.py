@@ -1,11 +1,15 @@
 """Media file manager."""
 
-from peewee import Model, IntegerField
+from contextlib import suppress
+from hashlib import sha256
 
-from filedb import FileClient, FileProperty
+from filedb import File, FileClient, FileProperty
+from peewee import DoesNotExist, Model, IntegerField
 
 from .common import CustomerModel
 from .exceptions import QuotaExceeded
+
+__all__ = ['MediaSettings', 'MediaFile']
 
 
 BINARY_FACTOR = 1024
@@ -19,32 +23,14 @@ FILE_CLIENT = FileClient('5bb119d7-5cd8-499c-a485-2e93a6333e12')
 PARAMETER_ERROR = TypeError('Must specify either file_id or bytes.')
 
 
-def check_free(free, obj):
-    """Checks whether free space suffices for storing the provided object.
-
-    :free: Free space in bytes.
-    :obj: int for file ID or bytes.
-    """
-
-    if isinstance(obj, bytes):
-        return free >= len(bytes)
-    elif isinstance(obj, int):
-        file = FILE_CLIENT.get(obj)
-        return free >= file.size
-
-    raise TypeError('Unsupported type: {} ({}).'.format(obj, type(obj)))
-
-
-def check_quota(customer, obj):
-    """Checks whether customer quota suffices for the respective object.
-
-    :customer: The respective customer.
-    :obj: int for file ID or bytes.
+def check_quota(customer, bytes_):
+    """Checks whether customer quota suffices
+    for storing the respective bytes.
     """
 
     media_settings = MediaSettings.by_customer(customer)
 
-    if check_free(media_settings.free, obj):
+    if media_settings.free >= len(bytes_):
         return True
 
     raise QuotaExceeded(media_settings.quota)
@@ -53,7 +39,7 @@ def check_quota(customer, obj):
 class MediaSettings(Model, CustomerModel):
     """Media settings for a customer."""
 
-    quota = IntegerField(default=DEFAULT_QUOTA)
+    quota = IntegerField(default=DEFAULT_QUOTA)     # Customer quota in bytes.
 
     @classmethod
     def by_customer(cls, customer):
@@ -67,7 +53,7 @@ class MediaSettings(Model, CustomerModel):
 
     @property
     def files(self):
-        """Yields files the customer uses."""
+        """Yields instances of filedb.File the customer uses."""
         for media_file in self.media_files:
             yield media_file.file
 
@@ -98,33 +84,25 @@ class MediaFile(Model, CustomerModel):
     file = FileProperty(file_id, file_client=FILE_CLIENT)
 
     @classmethod
-    def add_file(cls, customer, file_id, force=False):
-        """Adds a file."""
-        if force or check_quota(customer, file_id):
+    def add(cls, customer, bytes_, ignore_quota=False):
+        """Adds a new media file by bytes."""
+        with suppress(DoesNotExist):
+            file = File.get(File.sha256sum == sha256(bytes_).hexdigest())
+            return cls.get(cls.file == file)
+
+        if ignore_quota or check_quota(customer, bytes_):
             record = cls()
-            record.file_id = file_id
+            record.customer = customer
+            record.file = bytes_
             record.save()
             return record
 
-    @classmethod
-    def add_bytes(cls, customer, bytes, force=False):
-        """Adds bytes."""
-        if force or check_quota(customer, bytes):
-            record = cls()
-            record.file = bytes
-            record.save()
-            return record
-
-        raise QuotaExceeded()
-
-    @classmethod
-    def add(cls, customer, *, file_id=None, bytes=None, force=False):
-        """Adds file ID or bytes."""
-        if file_id is not None and bytes is not None:
-            raise PARAMETER_ERROR
-        elif file_id is not None:
-            return cls.add_file(customer, file_id, force=force)
-        elif bytes is not None:
-            return cls.add_bytes(customer, bytes, force=force)
-        else:
-            raise PARAMETER_ERROR
+    def to_dict(self):
+        """Returns a JSON compliant dictionary of the file's meta data."""
+        dictionary = super().to_dict()
+        file = self.file
+        dictionary.update({
+            'mimetype': file.mimetype,
+            'sha256sum': file.sha256sum,
+            'size': file.size})
+        return dictionary
