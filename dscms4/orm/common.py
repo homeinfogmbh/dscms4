@@ -36,6 +36,10 @@ class DSCMS4Model:
         """Yields records for the respective ID."""
         return cls.get(cls.id == ident)
 
+    def to_dict(self):
+        """Returns a JSON compliant dictionary."""
+        return {'id': self.id}
+
 
 # Do not derive from peewee.Model to prevent binding of fields
 class CustomerModel(DSCMS4Model):
@@ -50,3 +54,14 @@ class CustomerModel(DSCMS4Model):
     def by_customer(cls, customer):
         """Yields records for the respective customer."""
         return cls.select().where(cls.customer == customer)
+
+    def to_dict(self, cascade=False):
+        """Returns a JSON compliant dictionary."""
+        dictionary = super().to_dict()
+
+        if cascade:
+            dictionary['customer'] = self.customer.to_dict()
+        else:
+            dictionary['customer'] = self.customer.id
+
+        return dictionary
