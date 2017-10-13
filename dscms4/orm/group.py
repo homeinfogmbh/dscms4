@@ -4,9 +4,9 @@ from itertools import chain
 
 from peewee import Model, ForeignKeyField, CharField, TextField
 
-from homeinfo.terminals.orm import Terminal
 from peeweeplus import JSONModel
 from tenements.orm import ApartmentBuilding
+from terminallib import Terminal
 
 try:
     from his.comcat import ComCatAccount
