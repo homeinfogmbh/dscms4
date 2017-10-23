@@ -6,6 +6,7 @@ __all__ = [
     'UnsupportedMember',
     'CircularPedigreeError',
     'OrphanedBaseChart',
+    'AmbiguousBaseChart',
     'QuotaExceeded']
 
 
@@ -57,6 +58,18 @@ class OrphanedBaseChart(DSCMS4Error):
         """Sets the base chart."""
         super().__init__(base_chart)
         self.base_chart = base_chart
+
+
+class AmbiguousBaseChart(DSCMS4Error):
+    """Indicates that the respective base chart
+    is referenced by more than one chart.
+    """
+
+    def __init__(self, base_chart, references):
+        """Sets the respective base chart and referencing charts."""
+        super().__init__(base_chart, references)
+        self.base_chart = base_chart
+        self.references = references
 
 
 class QuotaExceeded(DSCMS4Error):

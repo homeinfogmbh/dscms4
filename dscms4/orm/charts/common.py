@@ -80,17 +80,6 @@ class BaseChart(Model, CustomerModel):
         """Determines whether the chart is considered active."""
         return self.schedule is None or self.schedule.active
 
-    @property
-    def chart(self):
-        """Returns the mapped implementation of this chart."""
-        from dscms4.orm.charts import CHARTS
-
-        for _, cls in CHARTS.items():
-            with suppress(DoesNotExist):
-                return cls.get(cls.base_chart == self)
-
-        raise OrphanedBaseChart(self)
-
     def to_dict(self):
         """Returns a JSON compatible dictionary."""
         dictionary = super().to_dict()
