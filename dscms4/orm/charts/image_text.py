@@ -11,6 +11,8 @@ from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.media import MediaFile
 
+__all__ = ['ImageText', 'Image', 'Text']
+
 
 class Style(Enum):
     """Chart styles."""
@@ -19,7 +21,7 @@ class Style(Enum):
     PIN_CHART = 'pin chart'
 
 
-class ImageTextChart(Model, Chart):
+class ImageText(Model, Chart):
     """A chart that may contain images and text."""
 
     class Meta:
@@ -36,45 +38,41 @@ class ImageTextChart(Model, Chart):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
-        image_text_chart = super().from_dict(dictionary)
-        image_text_chart.random = dictionary.get('random')
-        image_text_chart.loop_limit = dictionary.get('loop_limit')
-        image_text_chart.scale = dictionary.get('scale')
-        image_text_chart.fullscreen = dictionary.get('fullscreen')
-        image_text_chart.ken_burns = dictionary.get('ken_burns')
-        image_text_chart.save()
+        chart = super().from_dict(dictionary)
+        chart.style = dictionary.get('style')
+        chart.title = dictionary.get('title')
+        chart.font_size = dictionary.get('font_size')
+        chart.title_color = dictionary.get('title_color')
+        chart.ken_burns = dictionary.get('ken_burns')
+        yield chart
 
-        for text in dictionary.get('texts', tuple()):
-            ImageTextChartText.add(image_text_chart, text)
+        for image_id in dictionary.get('images', ()):
+            yield Image.add(chart, image_id)
 
-        for image_id in dictionary.get('images', tuple()):
-            ImageTextChartImage.add(image_text_chart, image_id)
-
-        return image_text_chart
+        for text in dictionary.get('texts', ()):
+            yield Text.add(chart, text)
 
     @property
-    def image_text_chart_texts(self):
-        """Yields appropriate text mappings."""
-        return ImageTextChartText.select().where(
-            ImageTextChartText.image_text_chart == self)
-
-    @property
-    def image_text_chart_images(self):
+    def image_models(self):
         """Yields appropriate image mappings."""
-        return ImageTextChartImage.select().where(
-            ImageTextChartImage.image_text_chart == self)
+        return Image.select().where(Image.chart == self)
 
     @property
-    def texts(self):
-        """Yields appropriate texts."""
-        for image_text_chart_text in self.image_text_chart_texts:
-            yield image_text_chart_text.text
+    def text_models(self):
+        """Yields appropriate text mappings."""
+        return Text.select().where(Text.chart == self)
 
     @property
     def images(self):
         """Yields appropriate images."""
-        for image_text_chart_image in self.image_text_chart_images:
-            yield image_text_chart_image.image
+        for image_model in self.image_models:
+            yield image_model.image
+
+    @property
+    def texts(self):
+        """Yields appropriate texts."""
+        for text_model in self.text_models:
+            yield text_model.text
 
     @property
     def dictionary(self):
@@ -85,8 +83,8 @@ class ImageTextChart(Model, Chart):
             'scale': self.scale,
             'fullscreen': self.fullscreen,
             'ken_burns': self.ken_burns,
-            'texts': list(self.texts),
-            'images': list(self.images)}
+            'texts': tuple(self.texts),
+            'images': tuple(self.images)}
 
     def to_dict(self):
         """Returns a JSON compatible dictionary."""
@@ -106,41 +104,37 @@ class ImageTextChart(Model, Chart):
             recursive=recursive, delete_nullable=delete_nullable)
 
 
-class ImageTextChartText(DSCMS4Model):
-    """Text for an ImageTextChart."""
-
-    class Meta:
-        db_table = 'chart_image_text_text'
-
-    image_text_chart = ForeignKeyField(
-        ImageTextChart, db_column='image_text_chart')
-    text = TextField()
-
-    @classmethod
-    def add(cls, image_text_chart, text):
-        """Adds a new text for the respective ImageTextChart."""
-        record = cls()
-        record.image_text_chart = image_text_chart
-        record.text = text
-        record.save()
-        return record
-
-
-class ImageTextChartImage(DSCMS4Model):
+class Image(Model, DSCMS4Model):
     """Image for an ImageTextChart."""
 
     class Meta:
         db_table = 'chart_image_text_image'
 
-    image_text_chart = ForeignKeyField(
-        ImageTextChart, db_column='image_text_chart')
+    chart = ForeignKeyField(ImageText, db_column='image_text_chart')
     image = ForeignKeyField(MediaFile, db_column='image')
 
     @classmethod
-    def add(cls, image_text_chart, image):
+    def add(cls, chart, image):
         """Adds a new image for the respective ImageTextChart."""
         record = cls()
-        record.image_text_chart = image_text_chart
+        record.chart = chart
         record.image = image
-        record.save()
+        return record
+
+
+class Text(Model, DSCMS4Model):
+    """Text for an ImageTextChart."""
+
+    class Meta:
+        db_table = 'chart_image_text_text'
+
+    chart = ForeignKeyField(ImageText, db_column='image_text_chart')
+    text = TextField()
+
+    @classmethod
+    def add(cls, chart, text):
+        """Adds a new text for the respective ImageTextChart."""
+        record = cls()
+        record.chart = chart
+        record.text = text
         return record

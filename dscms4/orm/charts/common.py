@@ -1,30 +1,24 @@
 """Common chart models."""
 
-from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 
-from peewee import DoesNotExist, Model, ForeignKeyField, CharField, \
-    TextField, DateTimeField, SmallIntegerField
+from peewee import Model, ForeignKeyField, CharField, TextField, \
+    DateTimeField, SmallIntegerField
 
 from peeweeplus import EnumField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
-from dscms4.orm.exceptions import OrphanedBaseChart
 from dscms4.orm.schedule import Schedule
 
 
-__all__ = [
-    'DEFAULT_DURATION',
-    'TransitionEffect',
-    'BaseChart',
-    'Chart']
+__all__ = ['BaseChart', 'Chart']
 
 DEFAULT_DURATION = 10
 
 
-class TransitionEffect(Enum):
-    """Effects available for chart transitions."""
+class Transitions(Enum):
+    """Effects available for chart transition effects."""
 
     FADE_IN = 'fade-in'
     MOSAIK = 'mosaik'
@@ -45,35 +39,37 @@ class BaseChart(Model, CustomerModel):
     created = DateTimeField()
     schedule = ForeignKeyField(
         Schedule, db_column='schedule', null=True, default=None)
-    transition_effect = EnumField(TransitionEffect)
+    transition = EnumField(Transitions)
 
     @classmethod
-    def add(cls, customer, title, description=None, duration=None,
-            schedule=None, transition_effect=TransitionEffect.NONE):
-        """Adds a new chart."""
-        chart = cls()
-        chart.customer = customer
-        chart.title = title
-        chart.description = description
-        chart.duration = duration
-        chart.created = datetime.now()
-        chart.schedule = schedule
-        chart.transition_effect = transition_effect
-        chart.save()
-        return chart
-
-    @classmethod
-    def from_dict(cls, customer, dictionary, schedule=None):
+    def from_dict(cls, dictionary):
         """Creates a base chart from a dictionary
         for the respective customer.
         """
-        return cls.add(
-            customer,
-            dictionary['title'],
-            description=dictionary.get('description'),
-            duration=dictionary.get('duration'),
-            schedule=schedule,
-            transition_effect=dictionary.get('description'))
+        chart = cls()
+        chart.title = dictionary['title']
+        chart.description = dictionary.get('description')
+        chart.duration = dictionary.get('duration')
+        chart.created = datetime.now()
+        transition_ = dictionary.get('transition')
+
+        for transition in Transitions:
+            if transition.value == transition_:
+                break
+        else:
+            transition = Transitions.NONE
+
+        chart.transition = transition
+
+        try:
+            schedule = dictionary['schedule']
+        except KeyError:
+            schedule = None
+        else:
+            schedule = Schedule.from_dict(schedule)
+
+        chart.schedule = schedule
+        return chart
 
     @property
     def active(self):
@@ -101,17 +97,32 @@ class BaseChart(Model, CustomerModel):
 class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
-    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
+    base = ForeignKeyField(BaseChart, db_column='base')
 
     @classmethod
     def from_dict(cls, dictionary):
         """Creates a new chart from the respective dictionary."""
         chart = cls()
-        chart.base_chart = BaseChart.from_dict(dictionary['base_chart'])
+        chart.base = BaseChart.from_dict(dictionary['base'])
         return chart
 
-    def to_dict(self, cascade=False):
+    @property
+    def customer(self):
+        """Returns the base chart's customer."""
+        return self.base.customer
+
+    @customer.setter
+    def customer(self, customer):
+        """Sets the base chart's customer."""
+        self.base.customer = customer
+
+    def to_dict(self):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict()
-        dictionary['base_chart'] = self.base_chart.id
+        dictionary['base'] = self.base.id
         return dictionary
+
+    def save(self):
+        """Saves itself and its base chart."""
+        Model.save(self)
+        self.base.save()

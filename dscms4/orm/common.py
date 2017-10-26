@@ -6,7 +6,12 @@ from peeweeplus import MySQLDatabase
 from homeinfo.crm import Customer
 
 
-__all__ = ['DATABASE', 'create_tables', 'DSCMS4Model', 'CustomerModel']
+__all__ = [
+    'DATABASE',
+    'create_tables',
+    'save',
+    'DSCMS4Model',
+    'CustomerModel']
 
 
 DATABASE = MySQLDatabase('dscms4')
@@ -17,6 +22,12 @@ def create_tables(models, fail_silently=True):
 
     for model in models:
         model.create_table(fail_silently=fail_silently)
+
+
+def save(models):
+    """Saves an iterable of models."""
+    for model in models:
+        model.save()
 
 
 class DSCMS4Model:
