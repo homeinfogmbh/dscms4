@@ -100,3 +100,8 @@ class RealEstate(Model, Chart):
     flat = BooleanField(default=True)
     room = BooleanField(default=True)
     income_property = BooleanField(default=True)
+    # Sale type:
+    emphyteusis = BooleanField(default=True)    # Erbpacht.
+    leasing = BooleanField(default=True)
+    rent = BooleanField(default=True)
+    sale = BooleanField(default=True)
