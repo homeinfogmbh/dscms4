@@ -1,10 +1,15 @@
 """Real estate chart ORM."""
 
+from collections import defaultdict
 from enum import Enum
 
-from peewee import Model, BooleanField, SmallIntegerField, IntegerField
+from peewee import Model, BooleanField, SmallIntegerField, IntegerField, \
+    ForeignKeyField, CharField
+
+from openimmodb import Immobilie
 from peeweeplus import EnumField
 
+from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
 
 
@@ -121,7 +126,92 @@ class RealEstates(Model, Chart):
     def from_dict(cls, dictionary):
         """Creates a new chart from the respective dictionary."""
         chart = super().from_dict(dictionary)
-        # TODO: implement.
+        chart.display_format = dictionary.get('display_format')
+        chart.ken_burns = dictionary.get('ken_burns')
+        chart.scaling = dictionary.get('scaling')
+        chart.slideshow = dictionary.get('slideshow')
+        chart.qr_codes = dictionary.get('qr_codes')
+        chart.show_contact = dictionary.get('show_contact')
+        chart.contact_picture = dictionary.get('contact_picture')
+        chart.font_size = dictionary.get('font_size')
+        chart.font_color = dictionary.get('font_color')
+        # Data field selections:
+        chart.amenities = dictionary.get('amenities')
+        chart.construction = dictionary.get('construction')
+        chart.courtage = dictionary.get('courtage')
+        chart.floor = dictionary.get('floor')
+        chart.area = dictionary.get('area')
+        chart.free_from = dictionary.get('free_from')
+        chart.coop_share = dictionary.get('coop_share')
+        chart.total_area = dictionary.get('total_area')
+        chart.plot_area = dictionary.get('plot_area')
+        chart.cold_rent = dictionary.get('cold_rent')
+        chart.purchase_price = dictionary.get('purchase_price')
+        chart.security_deposit = dictionary.get('security_deposit')
+        chart.service_charge = dictionary.get('service_charge')
+        chart.object_id = dictionary.get('object_id')
+        chart.description = dictionary.get('description')
+        chart.warm_rent = dictionary.get('warm_rent')
+        chart.rooms = dictionary.get('rooms')
+        # Amenities tags:
+        chart.lift = dictionary.get('lift')
+        chart.bathtub = dictionary.get('bathtub')
+        chart.balcony = dictionary.get('balcony')
+        chart.accessibility = dictionary.get('accessibility')
+        chart.assited_living = dictionary.get('assited_living')
+        chart.carport = BooleanField(default=True)
+        chart.floorboards = BooleanField(default=True)
+        chart.duplex = BooleanField(default=True)
+        chart.shower = BooleanField(default=True)
+        chart.builtin_kitchen = BooleanField(default=True)
+        chart.screed = BooleanField(default=True)     # Estrich.
+        chart.tiles = BooleanField(default=True)
+        chart.outdoor_parking = BooleanField(default=True)
+        chart.garage = BooleanField(default=True)
+        chart.cable_sat_tv = BooleanField(default=True)
+        chart.fireplace = BooleanField(default=True)
+        chart.basement = BooleanField(default=True)
+        chart.plastic = BooleanField(default=True)
+        chart.furnished = BooleanField(default=True)
+        chart.parquet = BooleanField(default=True)
+        chart.car_park = BooleanField(default=True)
+        chart.wheelchair_accessible = BooleanField(default=True)
+        chart.sauna = BooleanField(default=True)
+        chart.stone = BooleanField(default=True)
+        chart.swimming_pool = BooleanField(default=True)
+        chart.carpet = BooleanField(default=True)
+        chart.uderground_carpark = BooleanField(default=True)
+        chart.lavatory = BooleanField(default=True)
+        # Rooms selector:
+        chart.rooms_1 = BooleanField(default=True)
+        chart.rooms_2 = BooleanField(default=True)
+        chart.rooms_3 = BooleanField(default=True)
+        chart.rooms_4 = BooleanField(default=True)
+        chart.rooms_5 = BooleanField(default=True)
+        chart.rooms_5_or_more = BooleanField(default=True)
+        # Real estate type:
+        chart.finance_project = BooleanField(default=True)
+        chart.business_realty = BooleanField(default=True)
+        chart.short_term_accommocation = BooleanField(default=True)
+        chart.living_realty = BooleanField(default=True)
+        # Subtypes:
+        chart.office = BooleanField(default=True)
+        chart.retail = BooleanField(default=True)
+        chart.recreational = BooleanField(default=True)
+        chart.hospitality_industry = BooleanField(default=True)
+        chart.plot = BooleanField(default=True)
+        chart.hall_warehouse_production = BooleanField(default=True)
+        chart.house = BooleanField(default=True)
+        chart.agriculture_forestry = BooleanField(default=True)
+        chart.miscellaneous = BooleanField(default=True)
+        chart.flat = BooleanField(default=True)
+        chart.room = BooleanField(default=True)
+        chart.income_property = BooleanField(default=True)
+        # Sale type:
+        chart.emphyteusis = BooleanField(default=True)    # Erbpacht.
+        chart.leasing = BooleanField(default=True)
+        chart.rent = BooleanField(default=True)
+        chart.sale = BooleanField(default=True)
         yield chart
         filters = dictionary.get('filters', {})
 
@@ -130,6 +220,29 @@ class RealEstates(Model, Chart):
 
         for zip_code_filter in filters.get('zip_code', ()):
             yield ZipCodeFilter.from_dict(zip_code_filter, chart=chart)
+
+    @property
+    def id_filters(self):
+        """Yields ID filters of this chart."""
+        return IdFilter.select().where(IdFilter.chart == self)
+
+    @property
+    def zip_code_whitelist(self):
+        """Yields ZIP code whitelist filters."""
+        return ZipCodeFilter.select().where(
+            (ZipCodeFilter.chart == self) & (ZipCodeFilter.blacklist == 0))
+
+    @property
+    def zip_code_blacklist(self):
+        """Yields ZIP code blacklist filters."""
+        return ZipCodeFilter.select().where(
+            (ZipCodeFilter.chart == self) & (ZipCodeFilter.blacklist == 1))
+
+    @property
+    def real_estates(self):
+        """Yields filtered real estates for this chart."""
+        return self.filter_real_estates(Immobilie.select().where(
+            Immobilie.customer == self.customer))
 
     @property
     def dictionary(self):
@@ -235,6 +348,36 @@ class RealEstates(Model, Chart):
                 ZipCodeFilter.chart == self):
             dictionary['filters']['zip_code'].append(zip_code_filter.to_dict())
 
+    def match(self, real_estate):
+        """Matches the respective real estate
+        against the configures filters.
+        """
+        # Discard blacklisted real estates.
+        if any(fltr(real_estate) for fltr in self.zip_code_blacklist):
+            return False
+
+        zip_code_whitelist = tuple(self.zip_code_whitelist)
+
+        if zip_code_whitelist:
+            # Discard non-whitelisted real estates
+            # iff ZIP code whitelist has entries.
+            if not any(fltr(real_estate) for fltr in zip_code_whitelist):
+                return False
+
+        id_filters = tuple(self.id_filters)
+
+        if id_filters:
+            # Discard non-whitelisted real estates#
+            # iff ID whitelist has entries.
+            if not any(fltr(real_estate) for fltr in id_filters):
+                return False
+
+        return True
+
+    def filter_real_estates(self, real_estates):
+        """Yields filtered real estates."""
+        return filter(self.match, real_estates)
+
 
 class IdFilter(Model, DSCMS4Model):
     """Filter for the object IDs."""
@@ -242,7 +385,7 @@ class IdFilter(Model, DSCMS4Model):
     class Meta:
         db_table = 'filter_id'
 
-    chart = ForeignKeyField(RealEstate, db_column='chart')
+    chart = ForeignKeyField(RealEstates, db_column='chart')
     value = CharField(255)
     typ = EnumField(IdTypes, db_column='types')
 
@@ -258,7 +401,7 @@ class IdFilter(Model, DSCMS4Model):
             raise ValueError('Unexpected ID type.')
 
     @classmethod
-    def from_dict(self, dictionary, chart=None):
+    def from_dict(cls, dictionary, chart=None):
         """Creates a new entry from the
         dictionary for the respective chart.
         """
@@ -283,6 +426,13 @@ class ZipCodeFilter(Model, DSCMS4Model):
     zip_code = CharField(255)
     # True: blacklist, False: whitelist.
     blacklist = BooleanField(default=False)
+
+    def __call__(self, real_estate):
+        """Checks the filter against the respective real estate."""
+        if self.blacklist:
+            return real_estate.plz != self.zip_code
+
+        return real_estate.plz == self.zip_code
 
     @classmethod
     def from_dict(cls, dictionary, chart=None):
