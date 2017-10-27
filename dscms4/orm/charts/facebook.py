@@ -41,7 +41,7 @@ class Facebook(Model, Chart):
 
         for account in dictionary.get('accounts', ()):
             try:
-                yield Account.from_dict(chart, account)
+                yield Account.from_dict(account, chart=chart)
             except KeyError:
                 cls.logger.error(
                     'Could not create account:', str(account), sep='\n')
@@ -73,19 +73,19 @@ class Account(Model, DSCMS4Model):
     class Meta:
         db_table = 'facebook_account'
 
-    facebook_chart = ForeignKeyField(FacebookChart, db_column='facebook_chart')
+    chart = ForeignKeyField(Facebook, db_column='facebook_chart')
     facebook_id = IntegerField()
     recent_days = SmallIntegerField(default=DEFAULT_RECENT_DAYS)
     max_posts = SmallIntegerField(default=DEFAULT_MAX_POSTS)
     name = CharField(255, null=True, default=None)
 
     @classmethod
-    def from_dict(cls, facebook_chart, dictionary):
+    def from_dict(cls, dictionary, chart=None):
         """Creates a new facebook account for the provided
         facebook chart from the respective distionary.
         """
         account = cls()
-        account.facebook_chart = facebook_chart
+        account.chart = chart
         account.facebook_id = dictionary['facebook_id']
         account.recent_days = dictionary.get(
             'recent_days', DEFAULT_RECENT_DAYS)
@@ -97,7 +97,6 @@ class Account(Model, DSCMS4Model):
     def dictionary(self):
         """Returns a JSON-ish dictionary of the record's fields."""
         return {
-            'facebook_chart': self.facebook_chart.id,
             'facebook_id': self.facebook_id,
             'recent_days': self.recent_days,
             'max_posts': self.max_posts,
