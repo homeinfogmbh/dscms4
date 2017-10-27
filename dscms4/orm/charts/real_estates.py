@@ -126,92 +126,97 @@ class RealEstates(Model, Chart):
     def from_dict(cls, dictionary):
         """Creates a new chart from the respective dictionary."""
         chart = super().from_dict(dictionary)
-        chart.display_format = dictionary.get('display_format')
-        chart.ken_burns = dictionary.get('ken_burns')
-        chart.scaling = dictionary.get('scaling')
-        chart.slideshow = dictionary.get('slideshow')
-        chart.qr_codes = dictionary.get('qr_codes')
-        chart.show_contact = dictionary.get('show_contact')
-        chart.contact_picture = dictionary.get('contact_picture')
-        chart.font_size = dictionary.get('font_size')
-        chart.font_color = dictionary.get('font_color')
+        chart.display_format = dictionary.get('display_format', True)
+        chart.ken_burns = dictionary.get('ken_burns', True)
+        chart.scaling = dictionary.get('scaling', True)
+        chart.slideshow = dictionary.get('slideshow', True)
+        chart.qr_codes = dictionary.get('qr_codes', True)
+        chart.show_contact = dictionary.get('show_contact', True)
+        chart.contact_picture = dictionary.get('contact_picture', True)
+        chart.font_size = dictionary.get('font_size', True)
+        chart.font_color = dictionary.get('font_color', True)
         # Data field selections:
-        chart.amenities = dictionary.get('amenities')
-        chart.construction = dictionary.get('construction')
-        chart.courtage = dictionary.get('courtage')
-        chart.floor = dictionary.get('floor')
-        chart.area = dictionary.get('area')
-        chart.free_from = dictionary.get('free_from')
-        chart.coop_share = dictionary.get('coop_share')
-        chart.total_area = dictionary.get('total_area')
-        chart.plot_area = dictionary.get('plot_area')
-        chart.cold_rent = dictionary.get('cold_rent')
-        chart.purchase_price = dictionary.get('purchase_price')
-        chart.security_deposit = dictionary.get('security_deposit')
-        chart.service_charge = dictionary.get('service_charge')
-        chart.object_id = dictionary.get('object_id')
-        chart.description = dictionary.get('description')
-        chart.warm_rent = dictionary.get('warm_rent')
-        chart.rooms = dictionary.get('rooms')
+        chart.amenities = dictionary.get('amenities', True)
+        chart.construction = dictionary.get('construction', True)
+        chart.courtage = dictionary.get('courtage', True)
+        chart.floor = dictionary.get('floor', True)
+        chart.area = dictionary.get('area', True)
+        chart.free_from = dictionary.get('free_from', True)
+        chart.coop_share = dictionary.get('coop_share', True)
+        chart.total_area = dictionary.get('total_area', True)
+        chart.plot_area = dictionary.get('plot_area', True)
+        chart.cold_rent = dictionary.get('cold_rent', True)
+        chart.purchase_price = dictionary.get('purchase_price', True)
+        chart.security_deposit = dictionary.get('security_deposit', True)
+        chart.service_charge = dictionary.get('service_charge', True)
+        chart.object_id = dictionary.get('object_id', True)
+        chart.description = dictionary.get('description', True)
+        chart.warm_rent = dictionary.get('warm_rent', True)
+        chart.rooms = dictionary.get('rooms', True)
         # Amenities tags:
-        chart.lift = dictionary.get('lift')
-        chart.bathtub = dictionary.get('bathtub')
-        chart.balcony = dictionary.get('balcony')
-        chart.accessibility = dictionary.get('accessibility')
-        chart.assited_living = dictionary.get('assited_living')
-        chart.carport = BooleanField(default=True)
-        chart.floorboards = BooleanField(default=True)
-        chart.duplex = BooleanField(default=True)
-        chart.shower = BooleanField(default=True)
-        chart.builtin_kitchen = BooleanField(default=True)
-        chart.screed = BooleanField(default=True)     # Estrich.
-        chart.tiles = BooleanField(default=True)
-        chart.outdoor_parking = BooleanField(default=True)
-        chart.garage = BooleanField(default=True)
-        chart.cable_sat_tv = BooleanField(default=True)
-        chart.fireplace = BooleanField(default=True)
-        chart.basement = BooleanField(default=True)
-        chart.plastic = BooleanField(default=True)
-        chart.furnished = BooleanField(default=True)
-        chart.parquet = BooleanField(default=True)
-        chart.car_park = BooleanField(default=True)
-        chart.wheelchair_accessible = BooleanField(default=True)
-        chart.sauna = BooleanField(default=True)
-        chart.stone = BooleanField(default=True)
-        chart.swimming_pool = BooleanField(default=True)
-        chart.carpet = BooleanField(default=True)
-        chart.uderground_carpark = BooleanField(default=True)
-        chart.lavatory = BooleanField(default=True)
+        chart.lift = dictionary.get('lift', True)
+        chart.bathtub = dictionary.get('bathtub', True)
+        chart.balcony = dictionary.get('balcony', True)
+        chart.accessibility = dictionary.get('accessibility', True)
+        chart.assited_living = dictionary.get('assited_living', True)
+        chart.carport = dictionary.get('carport', True)
+        chart.floorboards = dictionary.get('floorboards', True)
+        chart.duplex = dictionary.get('duplex', True)
+        chart.shower = dictionary.get('shower', True)
+        chart.builtin_kitchen = dictionary.get('builtin_kitchen', True)
+        chart.screed = dictionary.get('screed', True)
+        chart.tiles = dictionary.get('tiles', True)
+        chart.outdoor_parking = dictionary.get('outdoor_parking', True)
+        chart.garage = dictionary.get('garage', True)
+        chart.cable_sat_tv = dictionary.get('cable_sat_tv', True)
+        chart.fireplace = dictionary.get('fireplace', True)
+        chart.basement = dictionary.get('basement', True)
+        chart.plastic = dictionary.get('plastic', True)
+        chart.furnished = dictionary.get('furnished', True)
+        chart.parquet = dictionary.get('parquet', True)
+        chart.car_park = dictionary.get('car_park', True)
+        chart.wheelchair_accessible = dictionary.get(
+            'wheelchair_accessible', True)
+        chart.sauna = dictionary.get('sauna', True)
+        chart.stone = dictionary.get('stone', True)
+        chart.swimming_pool = dictionary.get('swimming_pool', True)
+        chart.carpet = dictionary.get('carpet', True)
+        chart.uderground_carpark = dictionary.get('uderground_carpark', True)
+        chart.lavatory = dictionary.get('lavatory', True)
         # Rooms selector:
-        chart.rooms_1 = BooleanField(default=True)
-        chart.rooms_2 = BooleanField(default=True)
-        chart.rooms_3 = BooleanField(default=True)
-        chart.rooms_4 = BooleanField(default=True)
-        chart.rooms_5 = BooleanField(default=True)
-        chart.rooms_5_or_more = BooleanField(default=True)
+        chart.rooms_1 = dictionary.get('rooms_1', True)
+        chart.rooms_2 = dictionary.get('rooms_2', True)
+        chart.rooms_3 = dictionary.get('rooms_3', True)
+        chart.rooms_4 = dictionary.get('rooms_4', True)
+        chart.rooms_5 = dictionary.get('rooms_5', True)
+        chart.rooms_5_or_more = dictionary.get('rooms_5_or_more', True)
         # Real estate type:
-        chart.finance_project = BooleanField(default=True)
-        chart.business_realty = BooleanField(default=True)
-        chart.short_term_accommocation = BooleanField(default=True)
-        chart.living_realty = BooleanField(default=True)
+        chart.finance_project = dictionary.get('finance_project', True)
+        chart.business_realty = dictionary.get('business_realty', True)
+        chart.short_term_accommocation = dictionary.get(
+            'short_term_accommocation', True)
+        chart.living_realty = dictionary.get('living_realty', True)
         # Subtypes:
-        chart.office = BooleanField(default=True)
-        chart.retail = BooleanField(default=True)
-        chart.recreational = BooleanField(default=True)
-        chart.hospitality_industry = BooleanField(default=True)
-        chart.plot = BooleanField(default=True)
-        chart.hall_warehouse_production = BooleanField(default=True)
-        chart.house = BooleanField(default=True)
-        chart.agriculture_forestry = BooleanField(default=True)
-        chart.miscellaneous = BooleanField(default=True)
-        chart.flat = BooleanField(default=True)
-        chart.room = BooleanField(default=True)
-        chart.income_property = BooleanField(default=True)
+        chart.office = dictionary.get('office', True)
+        chart.retail = dictionary.get('retail', True)
+        chart.recreational = dictionary.get('recreational', True)
+        chart.hospitality_industry = dictionary.get(
+            'hospitality_industry', True)
+        chart.plot = dictionary.get('plot', True)
+        chart.hall_warehouse_production = dictionary.get(
+            'hall_warehouse_production', True)
+        chart.house = dictionary.get('house', True)
+        chart.agriculture_forestry = dictionary.get(
+            'agriculture_forestry', True)
+        chart.miscellaneous = dictionary.get('miscellaneous', True)
+        chart.flat = dictionary.get('flat', True)
+        chart.room = dictionary.get('room', True)
+        chart.income_property = dictionary.get('income_property', True)
         # Sale type:
-        chart.emphyteusis = BooleanField(default=True)    # Erbpacht.
-        chart.leasing = BooleanField(default=True)
-        chart.rent = BooleanField(default=True)
-        chart.sale = BooleanField(default=True)
+        chart.emphyteusis = dictionary.get('emphyteusis', True)
+        chart.leasing = dictionary.get('leasing', True)
+        chart.rent = dictionary.get('rent', True)
+        chart.sale = dictionary.get('sale', True)
         yield chart
         filters = dictionary.get('filters', {})
 
@@ -286,7 +291,7 @@ class RealEstates(Model, Chart):
             'duplex': self.duplex,
             'shower': self.shower,
             'builtin_kitchen': self.builtin_kitchen,
-            'screed': self.screed,     # Estrich.
+            'screed': self.screed,
             'tiles': self.tiles,
             'outdoor_parking': self.outdoor_parking,
             'garage': self.garage,
@@ -348,7 +353,7 @@ class RealEstates(Model, Chart):
                 ZipCodeFilter.chart == self):
             dictionary['filters']['zip_code'].append(zip_code_filter.to_dict())
 
-    def match(self, real_estate):
+    def match_real_estate(self, real_estate):
         """Matches the respective real estate
         against the configures filters.
         """
@@ -367,7 +372,7 @@ class RealEstates(Model, Chart):
         id_filters = tuple(self.id_filters)
 
         if id_filters:
-            # Discard non-whitelisted real estates#
+            # Discard non-whitelisted real estates
             # iff ID whitelist has entries.
             if not any(fltr(real_estate) for fltr in id_filters):
                 return False
@@ -376,7 +381,7 @@ class RealEstates(Model, Chart):
 
     def filter_real_estates(self, real_estates):
         """Yields filtered real estates."""
-        return filter(self.match, real_estates)
+        return filter(self.match_real_estate, real_estates)
 
 
 class IdFilter(Model, DSCMS4Model):
