@@ -1,9 +1,14 @@
 """New charts."""
 
-from peewee import Model
+from peewee import Model, IntegerField, SmallIntegerField, BooleanField
+
 from dscms4.orm.charts.common import Chart
 
 __all__ = ['News']
+
+
+DEFAULT_FONT_SIZE = 8
+DEFAULT_COLOR = 0x000000
 
 
 class News(Model, Chart):
@@ -12,7 +17,11 @@ class News(Model, Chart):
     class Meta:
         db_table = 'chart_news'
 
-    localization = CharField(255, null=True, default=None)
+    font_size_title = SmallIntegerField(default=DEFAULT_FONT_SIZE)
+    title_color = IntegerField(default=DEFAULT_COLOR)
+    font_size_text = SmallIntegerField(default=DEFAULT_FONT_SIZE)
+    text_color = IntegerField(default=DEFAULT_COLOR)
+    ken_burns = BooleanField(null=True, default=None)
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -20,8 +29,14 @@ class News(Model, Chart):
         provided JSON compliant dictionary.
         """
         chart = super().from_dict(dictionary)
-        chart.localization = dictionary.get('localization')
-        yield chart
+        chart.font_size_title = dictionary.get(
+            'font_size_title', DEFAULT_FONT_SIZE)
+        chart.title_color = dictionary.get('title_color', DEFAULT_COLOR)
+        chart.font_size_text = dictionary.get(
+            'font_size_text', DEFAULT_FONT_SIZE)
+        chart.text_color = dictionary.get('text_color', DEFAULT_COLOR)
+        chart.ken_burns = dictionary.get('ken_burns')
+        return chart
 
     def to_dict(self):
         """Converts the chart record into a JSON compliant dictionary."""

@@ -11,8 +11,3 @@ class PublicTransport(Model, Chart):
 
     class Meta:
         db_table = 'chart_public_transport'
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Yields the chart."""
-        yield super().from_dict(dictionary)

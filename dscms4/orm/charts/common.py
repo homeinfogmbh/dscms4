@@ -101,7 +101,10 @@ class Chart(DSCMS4Model):
 
     @classmethod
     def from_dict(cls, dictionary):
-        """Creates a new chart from the respective dictionary."""
+        """Creates a new chart from the respective dictionary.
+
+        This will NOT set the required customer.
+        """
         chart = cls()
         chart.base = BaseChart.from_dict(dictionary['base'])
         return chart

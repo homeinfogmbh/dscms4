@@ -11,8 +11,3 @@ class GuessPicture(Model, Chart):
 
     class Meta:
         db_table = 'chart_guess_picture'
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Yields the chart."""
-        yield super().from_dict(dictionary)

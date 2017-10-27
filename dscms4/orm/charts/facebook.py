@@ -1,5 +1,6 @@
 """Facebook charts and associated data."""
 
+from fancylog import logging
 from peewee import Model, ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
 
@@ -16,6 +17,7 @@ DEFAULT_RECENT_DAYS = 14
 DEFAULT_MAX_POSTS = 10
 
 
+@logging()
 class Facebook(Model, Chart):
     """Facebook data chart."""
 
@@ -41,8 +43,8 @@ class Facebook(Model, Chart):
             try:
                 yield Account.from_dict(chart, account)
             except KeyError:
-                # TODO: handle
-                pass
+                cls.logger.error(
+                    'Could not create account:', str(account), sep='\n')
 
     @property
     def accounts(self):
