@@ -35,7 +35,8 @@ class RealEstates(Model, Chart):
     class Meta:
         db_table = 'chart_real_estates'
 
-    display_format = EnumField(DisplayFormat)
+    display_format = EnumField(
+        DisplayFormat, default=DisplayFormat.BIG_PICTURE)
     ken_burns = BooleanField(default=False)
     scaling = BooleanField(default=False)
     slideshow = BooleanField(default=True)
@@ -126,15 +127,16 @@ class RealEstates(Model, Chart):
     def from_dict(cls, dictionary):
         """Creates a new chart from the respective dictionary."""
         chart = super().from_dict(dictionary)
-        chart.display_format = dictionary.get('display_format', True)
-        chart.ken_burns = dictionary.get('ken_burns', True)
-        chart.scaling = dictionary.get('scaling', True)
+        chart.display_format = dictionary.get(
+            'display_format', DisplayFormat.BIG_PICTURE)
+        chart.ken_burns = dictionary.get('ken_burns', False)
+        chart.scaling = dictionary.get('scaling', False)
         chart.slideshow = dictionary.get('slideshow', True)
-        chart.qr_codes = dictionary.get('qr_codes', True)
+        chart.qr_codes = dictionary.get('qr_codes', False)
         chart.show_contact = dictionary.get('show_contact', True)
         chart.contact_picture = dictionary.get('contact_picture', True)
-        chart.font_size = dictionary.get('font_size', True)
-        chart.font_color = dictionary.get('font_color', True)
+        chart.font_size = dictionary.get('font_size', 8)
+        chart.font_color = dictionary.get('font_color', 0x000000)
         # Data field selections:
         chart.amenities = dictionary.get('amenities', True)
         chart.construction = dictionary.get('construction', True)
