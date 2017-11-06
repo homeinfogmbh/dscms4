@@ -3,7 +3,7 @@
 from contextlib import suppress
 from hashlib import sha256
 
-from filedb import File, FileClient, FileProperty
+from filedb import File, FileProperty
 from peewee import DoesNotExist, Model, IntegerField
 
 from .common import CustomerModel
@@ -19,7 +19,6 @@ GIBIBATE = BINARY_FACTOR * MEBIBYTE
 
 DEFAULT_QUOTA = 5 * GIBIBATE    # 5.0 GiB.
 
-FILE_CLIENT = FileClient('5bb119d7-5cd8-499c-a485-2e93a6333e12')
 PARAMETER_ERROR = TypeError('Must specify either file_id or bytes.')
 
 
@@ -81,7 +80,7 @@ class MediaFile(Model, CustomerModel):
     """A media file of the respective customer."""
 
     file_id = IntegerField()
-    file = FileProperty(file_id, file_client=FILE_CLIENT)
+    file = FileProperty(file_id)
 
     @classmethod
     def add(cls, customer, bytes_, ignore_quota=False):
