@@ -26,8 +26,7 @@ class Video(Model, Chart):
         chart.video = dictionary['video']
         return chart
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary."""
-        dictionary = super().to_dict()
-        dictionary['video'] = self.video.id
-        return dictionary
+    @property
+    def dictionary(self):
+        """Returns a JSON-ish dictionary."""
+        return {'video': self.video.id}

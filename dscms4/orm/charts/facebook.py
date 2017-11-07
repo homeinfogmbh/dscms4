@@ -101,9 +101,3 @@ class Account(Model, DSCMS4Model):
             'recent_days': self.recent_days,
             'max_posts': self.max_posts,
             'name': self.name}
-
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
-        dictionary.update(self.dictionary)
-        return dictionary

@@ -38,11 +38,7 @@ class News(Model, Chart):
         chart.ken_burns = dictionary.get('ken_burns')
         return chart
 
-    def to_dict(self):
+    @property
+    def dictionary(self):
         """Converts the chart record into a JSON compliant dictionary."""
-        dictionary = super().to_dict()
-
-        if self.localization is not None:
-            dictionary['localization'] = self.localization
-
-        return dictionary
+        return {'localization': self.localization}

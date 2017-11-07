@@ -86,12 +86,6 @@ class ImageText(Model, Chart):
             'texts': tuple(self.texts),
             'images': tuple(self.images)}
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary."""
-        dictionary = super().to_dict()
-        dictionary.update(self.dictionary)
-        return dictionary
-
     def delete_instance(self, recursive=False, delete_nullable=False):
         """Deletes related models and this model."""
         for chart_text in self.chart_texts:

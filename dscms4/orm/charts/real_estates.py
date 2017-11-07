@@ -252,6 +252,19 @@ class RealEstates(Model, Chart):
             Immobilie.customer == self.customer))
 
     @property
+    def filters_dictionary(self):
+        """Dictionary of filters."""
+        filters = defaultdict(list)
+
+        for fltr in IdFilter.select().where(IdFilter.chart == self):
+            filters['id'].append(fltr.to_dict())
+
+        for fltr in ZipCodeFilter.select().where(ZipCodeFilter.chart == self):
+            filters['zip_code'].append(fltr.to_dict())
+
+        return filters
+
+    @property
     def dictionary(self):
         """Returns a JSON-ish dictionary of the record's properties."""
         return {
@@ -340,20 +353,9 @@ class RealEstates(Model, Chart):
             'emphyteusis': self.emphyteusis,
             'leasing': self.leasing,
             'rent': self.rent,
-            'sale': self.sale}
-
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
-        dictionary.update(self.dictionary)
-        dictionary['filters'] = defaultdict(list)
-
-        for id_filter in IdFilter.select().where(IdFilter.chart == self):
-            dictionary['filters']['id'].append(id_filter.to_dict())
-
-        for zip_code_filter in ZipCodeFilter.select().where(
-                ZipCodeFilter.chart == self):
-            dictionary['filters']['zip_code'].append(zip_code_filter.to_dict())
+            'sale': self.sale,
+            # Filters:
+            'filters': self.filters_dictionary}
 
     def match_real_estate(self, real_estate):
         """Matches the respective real estate

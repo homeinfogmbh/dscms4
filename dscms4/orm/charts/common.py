@@ -1,5 +1,6 @@
 """Common chart models."""
 
+from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 
@@ -123,6 +124,10 @@ class Chart(DSCMS4Model):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict()
         dictionary['base'] = self.base.id
+
+        with suppress(AttributeError):
+            dictionary.update(self.dictionary)
+
         return dictionary
 
     def save(self):
