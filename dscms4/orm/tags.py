@@ -1,6 +1,12 @@
 """Entity tags."""
 
+from collections import defaultdict
+
 from peewee import ForeignKeyField, CharField
+
+from tenements import ApartmentBuilding
+from terminallib import Terminal
+from comcat import ComCatAccount
 
 from .common import CustomerModel
 
@@ -54,7 +60,7 @@ def find_with_matches(tags):
     and entity for each matched entity.
     """
 
-    for entity, matches in find_matches(tags).items():
+    for entity, matches in find_and_count(tags).items():
         yield (matches, entity)
 
 
