@@ -8,6 +8,7 @@ from ..charts import BaseChart
 from ..common import DSCMS4Model
 from ..configuration import Configuration
 from ..menu import Menu
+from ..ticker import Ticker
 
 __all__ = [
     'TerminalBaseChart',
@@ -36,7 +37,9 @@ class TerminalContent(DSCMS4Model):
         a terminal iff it does not yet exist.
         """
         try:
-            return cls.get((cls.terminal == terminal) & (cls.content == content))
+            return cls.get(
+                (cls.terminal == terminal)
+                & (cls.content == content))
         except DoesNotExist:
             return cls._add(terminal, content)
 
