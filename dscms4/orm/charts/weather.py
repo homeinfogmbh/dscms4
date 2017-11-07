@@ -11,8 +11,3 @@ class Weather(Model, Chart):
 
     class Meta:
         db_table = 'chart_weather'
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Yields the chart."""
-        yield super().from_dict(dictionary)
