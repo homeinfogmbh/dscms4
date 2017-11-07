@@ -5,7 +5,6 @@ from enum import Enum
 from peewee import Model, TextField, SmallIntegerField, IntegerField
 from peeweeplus import EnumField
 
-from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
 
 __all__ = ['Mode', 'Cleaning']
