@@ -7,6 +7,7 @@ from ..common import DSCMS4Model
 from ..configuration import Configuration
 from ..group import Group
 from ..menu import Menu
+from ..ticker import Ticker
 
 __all__ = ['GroupBaseChart', 'GroupConfiguration', 'GroupMenu', 'GroupTicker']
 
