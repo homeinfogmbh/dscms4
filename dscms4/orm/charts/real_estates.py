@@ -268,7 +268,7 @@ class RealEstates(Model, Chart):
     def dictionary(self):
         """Returns a JSON-ish dictionary of the record's properties."""
         return {
-            'display_format': self.display_format,
+            'display_format': self.display_format.value,
             'ken_burns': self.ken_burns,
             'scaling': self.scaling,
             'slideshow': self.slideshow,
@@ -422,7 +422,7 @@ class IdFilter(Model, DSCMS4Model):
 
     def to_dict(self):
         """Converts the record into a JSON-ish dictionary."""
-        return {'value': self.value, 'type': self.typ}
+        return {'value': self.value, 'type': self.typ.value}
 
 
 class ZipCodeFilter(Model, DSCMS4Model):

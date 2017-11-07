@@ -78,10 +78,10 @@ class ImageText(Model, Chart):
     def dictionary(self):
         """Returns the dictionary representation of this chart's fields."""
         return {
-            'random': self.random,
-            'loop_limit': self.loop_limit,
-            'scale': self.scale,
-            'fullscreen': self.fullscreen,
+            'style': self.style.value,
+            'title': self.title,
+            'font_size': self.font_size,
+            'title_color': self.title_color,
             'ken_burns': self.ken_burns,
             'texts': tuple(self.texts),
             'images': tuple(self.images)}
