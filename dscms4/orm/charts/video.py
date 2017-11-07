@@ -24,7 +24,7 @@ class Video(Model, Chart):
         """
         chart = super().from_dict(dictionary)
         chart.video = dictionary['video']
-        yield chart
+        return chart
 
     def to_dict(self):
         """Returns a JSON compatible dictionary."""
