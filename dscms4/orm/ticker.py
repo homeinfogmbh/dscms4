@@ -1,4 +1,4 @@
-"""Tickers"""
+"""Tickers."""
 
 from sys import stderr
 from contextlib import suppress
@@ -18,7 +18,7 @@ __all__ = [
 
 
 def create_tables():
-    """Creates database tables"""
+    """Creates database tables."""
 
     for model in MODELS:
         try:
@@ -28,14 +28,14 @@ def create_tables():
 
 
 class Ticker(Model, CustomerModel):
-    """Ticker"""
+    """Ticker."""
 
     customer = ForeignKeyField(Customer, db_column='customer')
     name = CharField(255)
 
     @classmethod
     def from_dict(cls, customer, dictionary):
-        """Creates a new ticker from the respective dictionary"""
+        """Creates a new ticker from the respective dictionary."""
         ticker = cls()
         ticker.customer = customer
         ticker.name = dictionary['name']
@@ -43,7 +43,7 @@ class Ticker(Model, CustomerModel):
         return ticker
 
     def to_dict(self, recursive=False):
-        """Returns a JSON-compliant dictionary"""
+        """Returns a JSON-compliant dictionary."""
         dictionary = {'name': self.name}
 
         if recursive:
@@ -57,7 +57,7 @@ class Ticker(Model, CustomerModel):
         return dictionary
 
     def patch(self, dictionary):
-        """Patches the ticker with the given dictionary"""
+        """Patches the ticker with the given dictionary."""
         with suppress(KeyError):
             self.name = dictionary['name']
 
@@ -65,7 +65,7 @@ class Ticker(Model, CustomerModel):
 
 
 class TickerText(Model, CustomerModel):
-    """Text for a ticker"""
+    """Text for a ticker."""
 
     class Meta:
         db_table = 'ticker_text'
@@ -76,7 +76,7 @@ class TickerText(Model, CustomerModel):
 
     @classmethod
     def from_dict(cls, customer, dictionary):
-        """Creates a ticker text from the given dictionary"""
+        """Creates a ticker text from the given dictionary."""
         ticker_text = cls()
         ticker_text.customer = customer
         ticker_text.text = dictionary['text']
@@ -85,13 +85,13 @@ class TickerText(Model, CustomerModel):
         return ticker_text
 
     def to_dict(self):
-        """Returns a JSON-compliant dictionary"""
+        """Returns a JSON-compliant dictionary."""
         return {
             'text': self.text,
             'index': self.index}
 
     def patch(self, dictionary):
-        """Patches the ticker text with the given dictionary"""
+        """Patches the ticker text with the given dictionary."""
         with suppress(KeyError):
             self.text = dictionary['text']
 
@@ -102,7 +102,7 @@ class TickerText(Model, CustomerModel):
 
 
 class TickerURL(Model, CustomerModel):
-    """Text for a ticker"""
+    """Text for a ticker."""
 
     class Meta:
         db_table = 'ticker_url'
@@ -113,7 +113,7 @@ class TickerURL(Model, CustomerModel):
 
     @classmethod
     def from_dict(cls, customer, dictionary):
-        """Creates a ticker URL from the given dictionary"""
+        """Creates a ticker URL from the given dictionary."""
         ticker_url = cls()
         ticker_url.customer = customer
         ticker_url.url = dictionary['url']
@@ -122,13 +122,13 @@ class TickerURL(Model, CustomerModel):
         return ticker_url
 
     def to_dict(self):
-        """Returns a JSON-compliant dictionary"""
+        """Returns a JSON-compliant dictionary."""
         return {
             'url': self.url,
             'index': self.index}
 
     def patch(self, dictionary):
-        """Patches the ticker text with the given dictionary"""
+        """Patches the ticker text with the given dictionary."""
         with suppress(KeyError):
             self.url = dictionary['url']
 
@@ -139,7 +139,7 @@ class TickerURL(Model, CustomerModel):
 
 
 class TickerTextMapping(Model, DSCMS4Model):
-    """Ticker-text mapping"""
+    """Ticker-text mapping."""
 
     class Meta:
         db_table = 'ticker_texts'
@@ -150,7 +150,7 @@ class TickerTextMapping(Model, DSCMS4Model):
 
 
 class TickerURLMapping(Model, DSCMS4Model):
-    """Ticker-URL mapping"""
+    """Ticker-URL mapping."""
 
     class Meta:
         db_table = 'ticker_urls'

@@ -1,1 +1,1 @@
-"""Object relatinal mapping"""
+"""Object relatinal mappings."""
