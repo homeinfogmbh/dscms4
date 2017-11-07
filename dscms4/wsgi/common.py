@@ -1,4 +1,4 @@
-"""Common WSGI service base"""
+"""Common WSGI service base."""
 
 from json import loads
 
@@ -6,11 +6,11 @@ from his.api.handlers import AuthorizedService
 
 from ..messages import NoDataProvided, InvalidText, InvalidJSON
 
-__all__ = ['AuthorizedJSONService']
+__all__ = ['DSCMS4Service']
 
 
-class AuthorizedJSONService(AuthorizedService):
-    """Authorizes service handling JSON data"""
+class DSCMS4Service(AuthorizedService):
+    """Authorizes service handling JSON data."""
 
     ERRORS = {
         'NO_DATA_PROVIDED': NoDataProvided(),

@@ -5,7 +5,7 @@ from peewee import DoesNotExist
 from his.api.messages import InvalidId
 from wsgilib import JSON
 
-from .common import AuthorizedJSONService
+from .common import DSCMS4Service
 from .messages import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted
@@ -15,7 +15,7 @@ from ..orm.exceptions import InvalidData, MissingData
 __all__ = ['Chart']
 
 
-class Chart(AuthorizedJSONService):
+class Chart(DSCMS4Service):
     """Manages charts"""
 
     NODE = 'dscms4'
@@ -89,7 +89,7 @@ class Chart(AuthorizedJSONService):
             try:
                 return CHARTS[chart_dict['type']]
             except KeyError:
-                raise NoChartTypeSpecified()
+                raise NoChartTypeSpecified() from None
 
     def get(self):
         """Lists charts or retrieves single chart"""
@@ -116,16 +116,16 @@ class Chart(AuthorizedJSONService):
         """Deletes the specified chart"""
         if self.resource is None:
             raise NoChartIdSpecified() from None
-        else:
-            chart_type = self.chart_type
 
-            try:
-                chart = chart_type.get(chart_type.id == self.chart_id)
-            except DoesNotExist:
-                raise NoSuchChart() from None
-            else:
-                chart.remove()
-                return ChartDeleted()
+        chart_type = self.chart_type
+
+        try:
+            chart = chart_type.get(chart_type.id == self.chart_id)
+        except DoesNotExist:
+            raise NoSuchChart() from None
+        else:
+            chart.remove()
+            return ChartDeleted()
 
     def patch(self):
         """Patches a chart"""
