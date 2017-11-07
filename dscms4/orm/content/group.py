@@ -23,6 +23,7 @@ class GroupContent(DSCMS4Model):
         mapping = cls()
         mapping.group = group
         mapping.content = content
+        return mapping
 
     @classmethod
     def add(cls, group, content):
