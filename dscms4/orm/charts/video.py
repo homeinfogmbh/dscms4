@@ -16,17 +16,3 @@ class Video(Model, Chart):
 
     video = ForeignKeyField(
         MediaFile, db_column='video', null=True, default=None)
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Creates a new quotes chart from the
-        dictionary for the respective customer.
-        """
-        chart = super().from_dict(dictionary)
-        chart.video = dictionary['video']
-        return chart
-
-    @property
-    def dictionary(self):
-        """Returns a JSON-ish dictionary."""
-        return {'video': self.video.id}

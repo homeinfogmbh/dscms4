@@ -39,17 +39,12 @@ class ImageText(Model, Chart):
         dictionary for the respective customer.
         """
         chart = super().from_dict(dictionary)
-        chart.style = dictionary.get('style')
-        chart.title = dictionary.get('title')
-        chart.font_size = dictionary.get('font_size')
-        chart.title_color = dictionary.get('title_color')
-        chart.ken_burns = dictionary.get('ken_burns')
         yield chart
 
-        for image_id in dictionary.get('images', ()):
+        for image_id in dictionary.get('images', tuple()):
             yield Image.add(chart, image_id)
 
-        for text in dictionary.get('texts', ()):
+        for text in dictionary.get('texts', tuple()):
             yield Text.add(chart, text)
 
     @property
@@ -74,17 +69,12 @@ class ImageText(Model, Chart):
         for text_model in self.text_models:
             yield text_model.text
 
-    @property
-    def dictionary(self):
+    def to_dict(self):
         """Returns the dictionary representation of this chart's fields."""
-        return {
-            'style': self.style.value,
-            'title': self.title,
-            'font_size': self.font_size,
-            'title_color': self.title_color,
-            'ken_burns': self.ken_burns,
-            'texts': tuple(self.texts),
-            'images': tuple(self.images)}
+        dictionary = super().to_dict()
+        dictionary['texts'] = tuple(self.texts)
+        dictionary['images'] = tuple(self.images)
+        return dictionary
 
     def delete_instance(self, recursive=False, delete_nullable=False):
         """Deletes related models and this model."""

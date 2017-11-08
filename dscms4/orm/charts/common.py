@@ -27,6 +27,15 @@ class Transitions(Enum):
     RANDOM = 'random'
     NONE = None
 
+    @classmethod
+    def by_value(cls, value):
+        """Returns the appropriate enumeration for the provided value."""
+        for transition in cls:
+            if transition.value == value:
+                return transition
+
+        raise ValueError('No such transition.')
+
 
 class BaseChart(Model, CustomerModel):
     """Common basic chart data model."""
@@ -37,62 +46,25 @@ class BaseChart(Model, CustomerModel):
     title = CharField(255)
     description = TextField(null=True, default=None)
     duration = SmallIntegerField(default=DEFAULT_DURATION)
-    created = DateTimeField()
-    schedule = ForeignKeyField(
-        Schedule, db_column='schedule', null=True, default=None)
+    display_from = DateTimeField(null=True, default=None)
+    display_until = DateTimeField(null=True, default=None)
     transition = EnumField(Transitions)
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Creates a base chart from a dictionary
-        for the respective customer.
-        """
-        chart = cls()
-        chart.title = dictionary['title']
-        chart.description = dictionary.get('description')
-        chart.duration = dictionary.get('duration')
-        chart.created = datetime.now()
-        transition_ = dictionary.get('transition')
-
-        for transition in Transitions:
-            if transition.value == transition_:
-                break
-        else:
-            transition = Transitions.NONE
-
-        chart.transition = transition
-
-        try:
-            schedule = dictionary['schedule']
-        except KeyError:
-            schedule = None
-        else:
-            schedule = Schedule.from_dict(schedule)
-
-        chart.schedule = schedule
-        return chart
+    created = DateTimeField(default=datetime.now)
 
     @property
     def active(self):
         """Determines whether the chart is considered active."""
-        return self.schedule is None or self.schedule.active
+        now = datetime.now()
 
-    def to_dict(self):
-        """Returns a JSON compatible dictionary."""
-        dictionary = super().to_dict()
-        dictionary.update({
-            'title': self.title,
-            'description': self.description,
-            'duration': self.duration,
-            'created': self.created.isoformat(),
-            'transition_effect': self.transition_effect.value})
+        if self.display_from is not None:
+            if self.display_from > now:
+                return False
 
-        if self.schedule:
-            dictionary['schedule'] = self.schedule.id
-        else:
-            dictionary['schedule'] = None
+        if self.display_until is not None:
+            if self.display_until < now:
+                return False
 
-        return dictionary
+        return True
 
 
 class Chart(DSCMS4Model):
@@ -106,7 +78,7 @@ class Chart(DSCMS4Model):
 
         This will NOT set the required customer.
         """
-        chart = cls()
+        chart = super().from_dict(dictionary)
         chart.base = BaseChart.from_dict(dictionary['base'])
         return chart
 
@@ -120,14 +92,19 @@ class Chart(DSCMS4Model):
         """Sets the base chart's customer."""
         self.base.customer = customer
 
+    def patch(self, dictionary):
+        """Pathes the chart with the provided dictionary."""
+        base_dictionary = dictionary.get('base')
+
+        if base_dictionary:
+            yield self.base.patch(base_dictionary)
+
+        yield super().patch(dictionary)
+
     def to_dict(self):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict()
         dictionary['base'] = self.base.id
-
-        with suppress(AttributeError):
-            dictionary.update(self.dictionary)
-
         return dictionary
 
     def save(self):

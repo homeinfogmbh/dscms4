@@ -34,14 +34,11 @@ class Facebook(Model, Chart):
         dictionary for the respective customer.
         """
         chart = super().from_dict(dictionary)
-        chart.font_size = dictionary.get('font_size', DEFAULT_FONT_SIZE)
-        chart.title_color = dictionary.get('title_color', DEFAULT_TITLE_COLOR)
-        chart.ken_burns = dictionary.get('ken_burns', DEFAULT_KEN_BURNS)
         yield chart
 
-        for account in dictionary.get('accounts', ()):
+        for account in dictionary.get('accounts', tuple()):
             try:
-                yield Account.from_dict(account, chart=chart)
+                yield Account.from_dict(chart, account)
             except KeyError:
                 cls.logger.error(
                     'Could not create account:', str(account), sep='\n')
@@ -51,19 +48,10 @@ class Facebook(Model, Chart):
         """Yields accounts configured for this chart."""
         return Account.select().where(Account.facebook_chart == self)
 
-    @property
-    def dictionary(self):
-        """Returns a JSON-ish dictionary of the record's fields."""
-        return {
-            'font_size': self.font_size,
-            'title_color': self.title_color,
-            'ken_burns': self.ken_burns,
-            'accounts': tuple(self.accounts)}
-
     def to_dict(self):
         """Returns a JSON-ish dictionary."""
         dictionary = super.to_dict()
-        dictionary.update(self.dictionary)
+        dictionary['accounts'] = tuple(self.accounts)
         return dictionary
 
 
@@ -80,24 +68,10 @@ class Account(Model, DSCMS4Model):
     name = CharField(255, null=True, default=None)
 
     @classmethod
-    def from_dict(cls, dictionary, chart=None):
+    def from_dict(cls, chart, dictionary):
         """Creates a new facebook account for the provided
         facebook chart from the respective distionary.
         """
-        account = cls()
+        account = super().from_dict(dictionary)
         account.chart = chart
-        account.facebook_id = dictionary['facebook_id']
-        account.recent_days = dictionary.get(
-            'recent_days', DEFAULT_RECENT_DAYS)
-        account.max_posts = dictionary.get('max_posts', DEFAULT_MAX_POSTS)
-        account.name = dictionary.get('name')
         return account
-
-    @property
-    def dictionary(self):
-        """Returns a JSON-ish dictionary of the record's fields."""
-        return {
-            'facebook_id': self.facebook_id,
-            'recent_days': self.recent_days,
-            'max_posts': self.max_posts,
-            'name': self.name}

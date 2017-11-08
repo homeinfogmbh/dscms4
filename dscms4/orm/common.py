@@ -2,7 +2,7 @@
 
 from peewee import PrimaryKeyField, ForeignKeyField
 
-from peeweeplus import MySQLDatabase
+from peeweeplus import MySQLDatabase, JSONSerializable
 from homeinfo.crm import Customer
 
 
@@ -30,7 +30,7 @@ def save(models):
         model.save()
 
 
-class DSCMS4Model:
+class DSCMS4Model(JSONSerializable):
     """Basic ORM model for DSCMS4.
 
      Not derived from peewee.Model to prevent binding of fields.

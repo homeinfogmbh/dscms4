@@ -18,12 +18,3 @@ class Quotes(Model, Chart):
 
     font_color = IntegerField(DEFAULT_COLOR)
     background_color = IntegerField(DEFAULT_COLOR)
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Yields the chart."""
-        chart = super().from_dict(dictionary)
-        chart.font_color = dictionary.get('font_color', DEFAULT_COLOR)
-        chart.background_color = dictionary.get(
-            'background_color', DEFAULT_COLOR)
-        return chart
