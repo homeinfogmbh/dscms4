@@ -15,45 +15,48 @@ from ..orm.exceptions import InvalidData, MissingData
 __all__ = ['Chart']
 
 
+def parse_chart_types(string, sep=','):
+    """Parses the chart type names from the respective string."""
+
+    return filter(None, map(lambda item: item.strip(), string.split(sep)))
+
+
 class Chart(DSCMS4Service):
-    """Manages charts"""
+    """Manages charts."""
 
     NODE = 'dscms4'
 
     @property
     def chart_types(self):
-        """Yields selected chart types"""
-        chart_types = self.query.get('types')
-
-        if chart_types is not None:
-            for chart_type in chart_types.split():
-                chart_type = chart_type.strip()
-
-                if chart_type:
-                    try:
-                        yield CHARTS[chart_type]
-                    except KeyError:
-                        raise InvalidChartType() from None
+        """Yields selected chart types."""
+        try:
+            chart_types = self.query['types']
+        except KeyError:
+            for _, chart_type in CHARTS.items():
+                yield chart_type
         else:
-            for chart_type in CHARTS:
-                yield CHARTS[chart_type]
+            for chart_type in parse_chart_types(chart_types):
+                try:
+                    yield CHARTS[chart_type]
+                except KeyError:
+                    raise InvalidChartType() from None
 
     @property
     def chart_type(self):
-        """Returns the selected chart type"""
+        """Returns the selected chart type."""
         try:
             chart_type = self.query['type']
         except KeyError:
             raise NoChartTypeSpecified() from None
-        else:
-            try:
-                return CHARTS[chart_type]
-            except KeyError:
-                raise InvalidChartType() from None
+
+        try:
+            return CHARTS[chart_type]
+        except KeyError:
+            raise InvalidChartType() from None
 
     @property
     def chart_id(self):
-        """Returns the specified chart ID"""
+        """Returns the specified chart ID."""
         try:
             return int(self.resource)
         except TypeError:
@@ -63,7 +66,7 @@ class Chart(DSCMS4Service):
 
     @property
     def charts(self):
-        """Lists the available charts"""
+        """Lists the available charts."""
         for chart_type in self.chart_types:
             for chart in chart_type.select().where(
                     chart_type.customer == self.customer):
@@ -71,7 +74,7 @@ class Chart(DSCMS4Service):
 
     @property
     def chart(self):
-        """Returns the selected chart"""
+        """Returns the selected chart."""
         chart_type = self.chart_type
 
         try:
@@ -82,7 +85,7 @@ class Chart(DSCMS4Service):
             raise NoSuchChart() from None
 
     def get_chart_type(self, chart_dict):
-        """Returns the chart type"""
+        """Returns the chart type."""
         try:
             return self.chart_type
         except NoChartTypeSpecified:
@@ -92,14 +95,14 @@ class Chart(DSCMS4Service):
                 raise NoChartTypeSpecified() from None
 
     def get(self):
-        """Lists charts or retrieves single chart"""
+        """Lists charts or retrieves single chart."""
         if self.resource is None:
             return JSON([chart.to_dict() for chart in self.charts])
-        else:
-            return JSON(self.chart.to_dict())
+
+        return JSON(self.chart.to_dict())
 
     def post(self):
-        """Adds new charts"""
+        """Adds new charts."""
         chart_dict = self.data.json
         chart_type = self.get_chart_type(chart_dict)
 
@@ -113,7 +116,7 @@ class Chart(DSCMS4Service):
             return ChartAdded(id=chart.id)
 
     def delete(self):
-        """Deletes the specified chart"""
+        """Deletes the specified chart."""
         if self.resource is None:
             raise NoChartIdSpecified() from None
 
@@ -128,5 +131,6 @@ class Chart(DSCMS4Service):
             return ChartDeleted()
 
     def patch(self):
-        """Patches a chart"""
-        raise NotImplementedError()
+        """Patches a chart."""
+        self.chart.patch(self.data.json)
+        return ChartPatched()
