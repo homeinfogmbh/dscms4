@@ -1,7 +1,5 @@
 """Common WSGI service base."""
 
-from json import loads
-
 from his.api.handlers import AuthorizedService
 
 from ..messages import NoDataProvided, InvalidText, InvalidJSON

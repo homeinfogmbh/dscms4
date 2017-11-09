@@ -1,7 +1,13 @@
 """DSCMS4 WSGI handlers for menus."""
 
+from peewee import DoesNotExist
+from wsgilib import JSON
 
-class Menu(AuthorizedJSONService):
+from dscms4.wsgi.common import DSCMS4Service
+from dscms4.wsgi.messages import NoIdSpecified, InvalidId, NoSuchMenu
+
+
+class Menu(DSCMS4Service):
     """Handles the menus."""
 
     @property

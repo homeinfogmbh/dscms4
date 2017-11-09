@@ -4,7 +4,6 @@ from itertools import chain
 
 from peewee import Model, ForeignKeyField, CharField, TextField
 
-from peeweeplus import JSONModel
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
@@ -92,7 +91,7 @@ class MemberProxy:
                 mapping.delete_instance()
 
 
-class Group(JSONModel, CustomerModel):
+class Group(Model, CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
     name = CharField(255)
@@ -171,7 +170,7 @@ class GroupMember(DSCMS4Model):
         return cls.select().where(cls.group == group)
 
 
-class GroupMemberTerminal(JSONModel, GroupMember):
+class GroupMemberTerminal(Model, GroupMember):
     """Terminals as members in groups."""
 
     class Meta:
@@ -189,7 +188,7 @@ class GroupMemberTerminal(JSONModel, GroupMember):
         return record
 
 
-class GroupMemberComCatAccount(JSONModel, GroupMember):
+class GroupMemberComCatAccount(Model, GroupMember):
     """ComCat accounts as members in groups."""
 
     class Meta:
@@ -208,7 +207,7 @@ class GroupMemberComCatAccount(JSONModel, GroupMember):
         return record
 
 
-class GroupMemberApartmentBuilding(JSONModel, GroupMember):
+class GroupMemberApartmentBuilding(Model, GroupMember):
     """Apartment buildings as members in groups."""
 
     class Meta:

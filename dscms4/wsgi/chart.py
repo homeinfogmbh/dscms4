@@ -5,12 +5,12 @@ from peewee import DoesNotExist
 from his.api.messages import InvalidId
 from wsgilib import JSON
 
-from .common import DSCMS4Service
-from .messages import ChartDataIncomplete, ChartDataInvalid, \
+from dscms4.wsgi.common import DSCMS4Service
+from dscms4.wsgi.messages import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
-    NoSuchChart, ChartAdded, ChartDeleted
-from ..orm.charts import CHARTS
-from ..orm.exceptions import InvalidData, MissingData
+    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
+from dscms4.orm.charts import CHARTS
+from dscms4.orm.exceptions import InvalidData, MissingData
 
 __all__ = ['Chart']
 

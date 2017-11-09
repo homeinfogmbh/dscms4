@@ -1,6 +1,5 @@
 """Common chart models."""
 
-from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 
@@ -10,7 +9,6 @@ from peewee import Model, ForeignKeyField, CharField, TextField, \
 from peeweeplus import EnumField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
-from dscms4.orm.schedule import Schedule
 
 
 __all__ = ['BaseChart', 'Chart']

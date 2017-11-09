@@ -2,9 +2,9 @@
 
 from enum import Enum
 
-from peewee import ForeignKeyField, CharField, IntegerField
+from peewee import Model, ForeignKeyField, CharField, IntegerField
 
-from peeweeplus import JSONModel, EnumField
+from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import Chart
@@ -23,25 +23,25 @@ class Icons(Enum):
     COOL_ICON = 'cool icon'
 
 
-class Menu(JSONModel, CustomerModel):
+class Menu(Model, CustomerModel):
     """Menus trees."""
 
     name = CharField(255)
     description = CharField(255, null=True, default=None)
 
-    def to_dict(self, cascade=False):
+    @property
+    def items(self):
+        """Yields this menu's items."""
+        return MenuItem.by_menu(self)
+
+    def to_dict(self):
         """Returns the menu as a dictionary."""
         dictionary = super().to_dict()
-
-        if cascade:
-            dictionary['items'] = [
-                menu_item.to_dict(cascade=cascade)
-                for menu_item in MenuItem.by_menu(self)]
-
+        dictionary['items'] = [item.to_dict() for item in self.items]
         return dictionary
 
 
-class MenuItem(JSONModel, DSCMS4Model):
+class MenuItem(Model, DSCMS4Model):
     """A menu item."""
 
     class Meta:
@@ -99,19 +99,17 @@ class MenuItem(JSONModel, DSCMS4Model):
 
         return menu_item
 
-    def to_dict(self, cascade=False):
+    def to_dict(self):
         """Returns a dictionary representation for the respective menu."""
-        dictionary = super().to_dict()
+        dictionary = super().to_dict(
+            ignore=(self.__class__.menu, self.__class__.parent))
         dictionary['charts'] = [chart.id for chart in self.charts]
-
-        if cascade:
-            dictionary['items'] = [
-                item.to_dict(cascade=cascade) for item in self.submenus]
+        dictionary['items'] = [item.to_dict() for item in self.submenus]
 
         return dictionary
 
 
-class MenuItemChart(JSONModel, DSCMS4Model):
+class MenuItemChart(Model, DSCMS4Model):
     """Menu item <> Chart mapping."""
 
     class Meta:

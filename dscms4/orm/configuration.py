@@ -1,12 +1,11 @@
 """Configurations, colors, tickers and brightness settings."""
 
-from datetime import datetime
 from enum import Enum
 
-from peewee import ForeignKeyField, TimeField, DecimalField, IntegerField, \
+from peewee import Model, ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
-from peeweeplus import JSONModel, EnumField
+from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 
@@ -19,6 +18,8 @@ __all__ = [
 
 def percentage(value):
     """Returns the percentage of a decimal number."""
+
+    value = round(value)
 
     if 0 <= value <= 100:
         return value
@@ -34,6 +35,22 @@ def stripped_time_str(time):
     return '{}:{}'.format(time.hour, time.minute)
 
 
+class Font(Enum):
+    """Available fonts."""
+
+    VERDANA = 'verdana'
+    ARIAL = 'arial'
+    LATO = 'lato'
+    SPARKASSE = 'sparkasse'
+    NETTOO = 'nettoo'
+
+
+class Design(Enum):
+    """Available designs."""
+
+    THREE_D = '3d'
+
+
 class TickerTypes(Enum):
     """Valid ticker types."""
 
@@ -42,7 +59,7 @@ class TickerTypes(Enum):
     STOCK_PRICES = 'stock prices'
 
 
-class Colors(JSONModel, DSCMS4Model):
+class Colors(Model, DSCMS4Model):
     """Colors of a configuration."""
 
     header = IntegerField()
@@ -57,15 +74,15 @@ class Colors(JSONModel, DSCMS4Model):
     text_background = IntegerField()
 
 
-class Configuration(JSONModel, CustomerModel):
+class Configuration(Model, CustomerModel):
     """Customer configuration for charts."""
 
     name = CharField(255)
     description = CharField(255, null=True, default=None)
-    font = CharField(16)
+    font = EnumField(Font)
     portrait = BooleanField(default=False)
     touch = BooleanField()
-    design = CharField(8)
+    design = EnumField(Design)
     effects = BooleanField()
     ticker_speed = SmallIntegerField()
     colors = ForeignKeyField(Colors, db_column='colors')
@@ -80,28 +97,25 @@ class Configuration(JSONModel, CustomerModel):
     volume = SmallIntegerField()
 
     @classmethod
-    def from_dict(cls, dictionary, customer):
+    def from_dict(cls, dictionary, customer=None):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
-        record = super().from_dict(dictionary)
-        record.customer = customer
-        record.colors = Colors.from_dict(dictionary.get('colors', {}))
-        record.save()
+        configuration = super().from_dict(dictionary)
+        configuration.customer = customer
+        configuration.colors = Colors.from_dict(dictionary.get('colors', {}))
+        yield configuration
 
-        for ticker in dictionary.get('tickers', []):
-            ticker = Ticker.from_dict(ticker, record)
-            ticker.save()
+        for ticker_dict in dictionary.get('tickers', ()):
+            yield Ticker.from_dict(ticker_dict, configuration=configuration)
 
         for backlight in Backlight.from_dict(
-                dictionary.get('backlight', {}), record):
-            backlight.save()
-
-        return record
+                dictionary.get('backlight', {}), configuration=configuration):
+            yield backlight
 
     def to_dict(self):
         """Converts the configuration into a JSON-like dictionary."""
-        dictionary = super().to_dict(blacklist=ForeignKeyField)
+        dictionary = super().to_dict(ignore=self.__class__.colors)
         dictionary['colors'] = self.colors.to_dict()
         dictionary['tickers'] = Ticker.list_for(self)
         dictionary['backlight'] = Backlight.dict_for(self)
@@ -120,12 +134,21 @@ class Configuration(JSONModel, CustomerModel):
         return super().delete_instance()
 
 
-class Ticker(JSONModel, DSCMS4Model):
+class Ticker(Model, DSCMS4Model):
     """Tickers of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
     typ = EnumField(TickerTypes, db_column='type')
     text = TextField()
+
+    @classmethod
+    def from_dict(cls, dictionary, configuration=None):
+        """Creates a new ticker for the respective
+        configuration from the provided dictionary.
+        """
+        ticker = super().from_dict(dictionary)
+        ticker.configuration = configuration
+        return ticker
 
     @classmethod
     def by_configuration(cls, configuration):
@@ -140,46 +163,25 @@ class Ticker(JSONModel, DSCMS4Model):
         return [tkr.to_dict() for tkr in cls.by_configuration(configuration)]
 
 
-class Backlight(JSONModel, DSCMS4Model):
+class Backlight(Model, DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
     time = TimeField()
-    value = DecimalField(3, 2)
+    value = SmallIntegerField()     # Brightness in percent.
 
     @classmethod
-    def add(cls, configuration, time, value=None, percent=None):
-        """Adds a new backlight setting."""
-        record = cls()
-        record.configuration = configuration
-        record.time = time
-
-        if value is not None and percent is not None:
-            raise ValueError('Must specify either value or percent.')
-        elif value is not None:
-            record.value = value
-        elif percent is not None:
-            record.percent = percent
-        else:
-            raise ValueError('Must specify either value or percent.')
-
-        record.save()
-        return record
+    def from_dict(cls, dictionary, configuration=None):
+        """Yields new records from the provided dictionary."""
+        for timestamp, percent in dictionary.items():
+            record = super().from_dict({'time': timestamp, 'value': percent})
+            record.configuration = configuration
+            yield record
 
     @classmethod
     def by_configuration(cls, configuration):
         """Yields backlight settings for the respective configuration."""
         return cls.select().where(cls.configuration == configuration)
-
-    @classmethod
-    def from_dict(cls, dictionary, configuration):
-        """Yields new records from the provided dictionary."""
-        for timestamp, percent in dictionary.items():
-            record = cls()
-            record.configuration = configuration
-            record.time = datetime.strptime(timestamp, '%H:%M').time()
-            record.percent = percent
-            yield record
 
     @classmethod
     def dict_for(cls, configuration):
@@ -196,12 +198,12 @@ class Backlight(JSONModel, DSCMS4Model):
     @property
     def percent(self):
         """Returns the percentage as an integer."""
-        return percentage(int(self.value * 100))
+        return percentage(self.value)
 
     @percent.setter
     def percent(self, value):
         """Sets the percentage."""
-        self.value = percentage(value) / 100
+        self.value = percentage(value)
 
     def to_dict(self):
         """Returns the backlight as dictionary."""
