@@ -1,15 +1,19 @@
-"""Group contents."""
+"""Content assigned to groups."""
 
 from peewee import DoesNotExist, Model, ForeignKeyField
 
-from ..charts import BaseChart
-from ..common import DSCMS4Model
-from ..configuration import Configuration
-from ..group import Group
-from ..menu import Menu
-from ..ticker import Ticker
+from dscms4.orm.charts import BaseChart
+from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.configuration import Configuration
+from dscms4.orm.group import Group
+from dscms4.orm.menu import Menu
+from dscms4.orm.ticker import Ticker
 
-__all__ = ['GroupBaseChart', 'GroupConfiguration', 'GroupMenu', 'GroupTicker']
+__all__ = [
+    'GroupBaseChart',
+    'GroupConfiguration',
+    'GroupMenu',
+    'GroupTicker']
 
 
 class GroupContent(DSCMS4Model):

@@ -1,14 +1,14 @@
-"""Terminal contents."""
+"""Content assigned to Terminals."""
 
 from peewee import DoesNotExist, Model, ForeignKeyField
 
 from terminallib import Terminal
 
-from ..charts import BaseChart
-from ..common import DSCMS4Model
-from ..configuration import Configuration
-from ..menu import Menu
-from ..ticker import Ticker
+from dscms4.orm.charts import BaseChart
+from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.configuration import Configuration
+from dscms4.orm.menu import Menu
+from dscms4.orm.ticker import Ticker
 
 __all__ = [
     'TerminalBaseChart',

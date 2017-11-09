@@ -1,8 +1,10 @@
-"""Chart ORM models."""
+"""Chart ORM models.
+
+This package provides ORM models
+of the "chart" types of the CMS.
+"""
 
 from sys import stderr
-
-from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
 from dscms4.orm.charts.common import BaseChart, Chart
 from dscms4.orm.charts.facebook import Facebook, Account
@@ -13,6 +15,8 @@ from dscms4.orm.charts.public_transport import PublicTransport
 from dscms4.orm.charts.quotes import Quotes
 from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Weather
+
+from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
 
 __all__ = [

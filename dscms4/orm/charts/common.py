@@ -1,4 +1,8 @@
-"""Common chart models."""
+"""Common chart models.
+
+This module provides the base class "Chart"
+for chart model implementation.
+"""
 
 from datetime import datetime
 from enum import Enum
@@ -64,6 +68,10 @@ class BaseChart(Model, CustomerModel):
 
         return True
 
+    def to_dict(self, id=True):
+        """Returns a JSON-ish dictionary."""
+        return super().to_dict(ignore=None if id else self.__class__.id)
+
 
 class Chart(DSCMS4Model):
     """Abstract basic chart."""
@@ -71,13 +79,10 @@ class Chart(DSCMS4Model):
     base = ForeignKeyField(BaseChart, db_column='base')
 
     @classmethod
-    def from_dict(cls, dictionary):
-        """Creates a new chart from the respective dictionary.
-
-        This will NOT set the required customer.
-        """
+    def from_dict(cls, dictionary, customer=None):
+        """Creates a new chart from the respective dictionary."""
         chart = super().from_dict(dictionary)
-        chart.base = BaseChart.from_dict(dictionary['base'])
+        chart.base = BaseChart.from_dict(dictionary['base'], customer=customer)
         return chart
 
     @property
@@ -102,10 +107,17 @@ class Chart(DSCMS4Model):
     def to_dict(self):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict()
-        dictionary['base'] = self.base.id
+        dictionary['base'] = self.base.to_dict(id=False)
         return dictionary
 
     def save(self):
         """Saves itself and its base chart."""
-        Model.save(self)
         self.base.save()
+        super().save()
+
+    def delete_instance(self):
+        """Deletes this chart."""
+        base = self.base
+        result = super().delete_instance()
+        base.delete_instance()
+        return result

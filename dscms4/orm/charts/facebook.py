@@ -29,11 +29,11 @@ class Facebook(Model, Chart):
     ken_burns = BooleanField(default=DEFAULT_KEN_BURNS)
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary, customer=None):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
-        chart = super().from_dict(dictionary)
+        chart = super().from_dict(dictionary, customer=customer)
         yield chart
 
         for account in dictionary.get('accounts', tuple()):

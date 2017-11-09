@@ -1,4 +1,4 @@
-"""Common ORM models"""
+"""Common ORM models."""
 
 from peewee import PrimaryKeyField, ForeignKeyField
 
@@ -47,10 +47,6 @@ class DSCMS4Model(JSONSerializable):
         """Yields records for the respective ID."""
         return cls.get(cls.id == ident)
 
-    def to_dict(self):
-        """Returns a JSON compliant dictionary."""
-        return {'id': self.id}
-
 
 class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer.
@@ -61,12 +57,13 @@ class CustomerModel(DSCMS4Model):
     customer = ForeignKeyField(Customer, db_column='customer')
 
     @classmethod
+    def from_dict(cls, dictionary, customer=None):
+        """Creates a new record from the provided dictionary and customer."""
+        record = super().from_dict(dictionary)
+        record.customer = customer
+        return record
+
+    @classmethod
     def by_customer(cls, customer):
         """Yields records for the respective customer."""
         return cls.select().where(cls.customer == customer)
-
-    def to_dict(self):
-        """Returns a JSON compliant dictionary."""
-        dictionary = super().to_dict()
-        dictionary['customer'] = self.customer.id
-        return dictionary

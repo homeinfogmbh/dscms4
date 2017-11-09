@@ -124,9 +124,9 @@ class RealEstates(Model, Chart):
     sale = BooleanField(default=True)
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary, customer=None):
         """Creates a new chart from the respective dictionary."""
-        chart = super().from_dict(dictionary)
+        chart = super().from_dict(dictionary, customer=customer)
         yield chart
         filters = dictionary.get('filters', {})
 

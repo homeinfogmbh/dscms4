@@ -34,11 +34,11 @@ class ImageText(Model, Chart):
     ken_burns = BooleanField(default=False)
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary, customer=None):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
-        chart = super().from_dict(dictionary)
+        chart = super().from_dict(dictionary, customer=customer)
         yield chart
 
         for image_id in dictionary.get('images', tuple()):
