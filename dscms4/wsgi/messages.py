@@ -3,6 +3,7 @@
 from his.api.messages import locales, HISMessage
 
 __all__ = [
+    # Chart messages.
     'ChartDataIncomplete',
     'ChartDataInvalid',
     'NoChartTypeSpecified',
@@ -10,7 +11,11 @@ __all__ = [
     'NoChartIdSpecified',
     'NoSuchChart',
     'ChartAdded',
-    'ChartDeleted']
+    'ChartDeleted',
+    # Menu messages.
+    'NoIdSpecified',
+    'InvalidId',
+    'NoSuchMenu']
 
 
 @locales('/etc/his.d/locale/dscms4.ini')
@@ -72,3 +77,21 @@ class ChartPatched(DSCMS4Message):
     """Indicates that a chart was successfully patched."""
 
     STATUS = 200
+
+
+class NoIdSpecified(DSCMS4Message):
+    """Indicates that an ID was missing."""
+
+    STATUS = 422
+
+
+class InvalidId(DSCMS4Message):
+    """Indicates that a specified ID had an invalid value."""
+
+    STATUS = 406
+
+
+class NoSuchMenu(DSCMS4Message):
+    """Indicates that the requested menu does not exist."""
+
+    STATUS = 404

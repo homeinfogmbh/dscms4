@@ -2,13 +2,12 @@
 
 from peewee import DoesNotExist
 
-from his.api.messages import InvalidId
 from wsgilib import JSON
 
 from dscms4.wsgi.common import DSCMS4Service
 from dscms4.wsgi.messages import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
-    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
+    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched, InvalidId
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 

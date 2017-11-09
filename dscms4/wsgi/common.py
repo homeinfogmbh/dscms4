@@ -2,7 +2,7 @@
 
 from his.api.handlers import AuthorizedService
 
-from ..messages import NoDataProvided, InvalidText, InvalidJSON
+from dscms4.wsgi.messages import NoDataProvided, InvalidText, InvalidJSON
 
 __all__ = ['DSCMS4Service']
 
