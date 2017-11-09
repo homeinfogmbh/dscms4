@@ -17,7 +17,11 @@ __all__ = ['Chart']
 def parse_chart_types(string, sep=','):
     """Parses the chart type names from the respective string."""
 
-    return filter(None, map(lambda item: item.strip(), string.split(sep)))
+    for item in string.split(sep):
+        item = item.strip()
+
+        if item:
+            yield item
 
 
 class Chart(DSCMS4Service):

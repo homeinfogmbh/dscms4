@@ -156,7 +156,7 @@ class RealEstates(Model, Chart):
     @property
     def real_estates(self):
         """Yields filtered real estates for this chart."""
-        return self.filter_real_estates(Immobilie.select().where(
+        return self.filter(Immobilie.select().where(
             Immobilie.customer == self.customer))
 
     @property
@@ -172,7 +172,7 @@ class RealEstates(Model, Chart):
 
         return filters
 
-    def match_real_estate(self, real_estate):
+    def match(self, real_estate):
         """Matches the respective real estate
         against the configures filters.
         """
@@ -198,7 +198,7 @@ class RealEstates(Model, Chart):
 
         return True
 
-    def filter_real_estates(self, real_estates):
+    def filter(self, real_estates):
         """Yields filtered real estates."""
         return filter(self.match_real_estate, real_estates)
 
