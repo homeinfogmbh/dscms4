@@ -1,1 +1,1 @@
-"""DSCMS 4 backend"""
+"""DSCMS 4 web application backend."""
