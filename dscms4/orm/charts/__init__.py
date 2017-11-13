@@ -23,6 +23,7 @@ __all__ = [
     'MODELS',
     'CHARTS',
     'create_tables',
+    'charts_of',
     'chart_of']
 
 
@@ -45,21 +46,22 @@ def create_tables(fail_silently=True):
                   file=stderr)
 
 
+def charts_of(base_chart):
+    """Yields all charts that associate this base chart."""
+
+    for _, cls in CHARTS.items():
+        yield from cls.select().where(cls.base_chart == base_chart)
+
+
 def chart_of(base_chart):
     """Returns the mapped implementation of the respective base chart."""
 
-    matches = []
-
-    for _, cls in CHARTS.items():
-        for chart in cls.select().where(cls.base_chart == base_chart):
-            matches.append(chart)
-
     try:
-        match, *superfluous = matches
+        match, *superfluous = charts_of(base_chart)
     except ValueError:
-        raise OrphanedBaseChart(base_chart) from None
-    else:
-        if superfluous:
-            raise AmbiguousBaseChart(base_chart, matches) from None
+        raise OrphanedBaseChart(base_chart)
 
-        return match
+    if superfluous:
+        raise AmbiguousBaseChart(base_chart, [match] + superfluous)
+
+    return match
