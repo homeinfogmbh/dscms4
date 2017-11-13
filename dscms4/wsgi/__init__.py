@@ -1,19 +1,19 @@
 """WSGI handlers."""
 
 from .chart import HANDLERS as CHART_HANDLERS
-from .configuration import Configuration
+from .configuration import ConfigurationHandler
 from .group import HANDLERS as GROUP_HANDLERS
-from .media import Media
-from .menu import Menu
-from .ticker import Ticker
+from .media import MediaHandler
+from .menu import MenuHandler
+from .ticker import TickerHandler
 
 __all__ = ['HANDLERS']
 
 
 HANDLERS = {
     'chart': CHART_HANDLERS,
-    'configuration': Configuration,
+    'configuration': ConfigurationHandler,
     'group': GROUP_HANDLERS,
-    'media': Media,
-    'menu': Menu,
-    'ticker': Ticker}
+    'media': MediaHandler,
+    'menu': MenuHandler,
+    'ticker': TickerHandler}
