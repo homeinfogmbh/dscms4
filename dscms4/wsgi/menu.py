@@ -3,13 +3,15 @@
 from functools import lru_cache
 
 from peewee import DoesNotExist
-from wsgilib import JSON
+from wsgilib import routed, JSON
 
+from dscms4.messages.menu import NoMenuSpecified, NoSuchMenu, InvalidMenuData,\
+    MenuAdded, MenuDeleted, NoMenuItemSpecified, NoSuchMenuItem, \
+    MenuItemAdded, MenuItemDeleted
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.exceptions import NoSuchChart
 from dscms4.orm.menu import Menu, MenuItem
 from dscms4.wsgi.common import DSCMS4Service
-from dscms4.wsgi.messages import NoIdSpecified, InvalidId, NoSuchMenu
 
 __all__ = ['MenuHandler']
 
@@ -62,7 +64,8 @@ def menu_item_chart(dictionary, customer):
         raise NoSuchChart() from None
 
 
-@ROUTER.route('/menu/[id:int]')
+@service('dscms4')
+@routed('/menu/[id:int]')
 class MenuHandler(DSCMS4Service):
     """Handles the menus."""
 
@@ -92,7 +95,7 @@ class MenuHandler(DSCMS4Service):
             raise InvalidMenuData() from None
         else:
             menu.save()
-            return MenuAdded()
+            return MenuAdded(id=menu.id)
 
     def delete(self):
         """Deletes a menu or menu item."""
@@ -103,7 +106,8 @@ class MenuHandler(DSCMS4Service):
         return MenuDeleted()
 
 
-@ROUTER.route('/menu/<menu_id:int>/[id:int]')
+@service('dscms4')
+@routed('/menu/<menu_id:int>/[id:int]')
 class MenuItemHandler(DSCMS4Service):
     """Handles the menus."""
 
@@ -141,13 +145,13 @@ class MenuItemHandler(DSCMS4Service):
         try:
             menu_item = Menu.from_dict(
                 self.data.json, menu=self.menu,
-                parent=parent_menu_item(dictionary, self.menu),
-                chart=menu_item_chart(dictionary, self.customer))
+                parent=parent_menu_item(self.data.json, self.menu),
+                chart=menu_item_chart(self.data.json, self.customer))
         except ValueError:
             raise InvalidMenuData() from None
         else:
             menu_item.save()
-            return MenuItemAdded()
+            return MenuItemAdded(id=menu_item.id)
 
     def delete(self):
         """Deletes a menu or menu item."""
