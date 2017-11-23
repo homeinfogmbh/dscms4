@@ -3,7 +3,6 @@
 This package provides ORM models
 of the "chart" types of the CMS.
 """
-
 from sys import stderr
 
 from dscms4.orm.charts.common import BaseChart, Chart
@@ -16,15 +15,8 @@ from dscms4.orm.charts.quotes import Quotes
 from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Weather
 
-from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
-
-__all__ = [
-    'MODELS',
-    'CHARTS',
-    'create_tables',
-    'charts_of',
-    'chart_of']
+__all__ = ['MODELS', 'CHARTS', 'create_tables']
 
 
 MODELS = (
@@ -44,24 +36,3 @@ def create_tables(fail_silently=True):
         except Exception:
             print('Could not create table for model "{}".'.format(model),
                   file=stderr)
-
-
-def charts_of(base_chart):
-    """Yields all charts that associate this base chart."""
-
-    for _, cls in CHARTS.items():
-        yield from cls.select().where(cls.base_chart == base_chart)
-
-
-def chart_of(base_chart):
-    """Returns the mapped implementation of the respective base chart."""
-
-    try:
-        match, *superfluous = charts_of(base_chart)
-    except ValueError:
-        raise OrphanedBaseChart(base_chart)
-
-    if superfluous:
-        raise AmbiguousBaseChart(base_chart, [match] + superfluous)
-
-    return match
