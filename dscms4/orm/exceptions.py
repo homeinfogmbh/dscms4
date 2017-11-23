@@ -7,7 +7,8 @@ __all__ = [
     'CircularPedigreeError',
     'OrphanedBaseChart',
     'AmbiguousBaseChart',
-    'QuotaExceeded']
+    'QuotaExceeded',
+    'MissingItemError']
 
 
 class DSCMS4Error(Exception):
@@ -89,3 +90,9 @@ class QuotaExceeded(DSCMS4Error):
         """Sets the quota."""
         super().__init__(quota)
         self.quota = quota
+
+
+class NoSuchTerminal(DSCMS4Error):
+    """Indicates that the requested terminal does not exist."""
+
+    pass

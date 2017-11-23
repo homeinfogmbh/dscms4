@@ -6,7 +6,7 @@ from wsgilib import JSON
 
 from his.api.handlers import AuthorizedService
 
-from dscms4.orm.group import Group
+from dscms4.orm.group import Group, GROUP_MEMBERS
 
 
 @routed('/group/[id:int]')

@@ -2,7 +2,7 @@
 
 from itertools import chain
 
-from peewee import Model, ForeignKeyField, CharField, TextField
+from peewee import DoesNotExist, Model, ForeignKeyField, CharField, TextField
 
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
@@ -14,8 +14,9 @@ except ImportError:
         """Mockup."""
         pass
 
-from .common import CustomerModel, DSCMS4Model
-from .exceptions import UnsupportedMember, CircularPedigreeError
+from dscms4.orm.common import CustomerModel, DSCMS4Model
+from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
+    MissingData, NoSuchTerminal
 
 __all__ = [
     'Group',
@@ -210,6 +211,22 @@ class GroupMemberTerminal(Model, GroupMember):
         record.terminal = terminal
         return record
 
+    @classmethod
+    def from_dict(cls, dictionary, group):
+        """Creates a new record from the provided dictionary."""
+        tid = dictionary.get('tid')
+
+        if tid is None:
+            raise MissingData('tid') from None
+
+        try:
+            terminal = Terminal.get(
+                (Terminal.customer == group.customer) & (Terminal.tid == tid))
+        except DoesNotExist:
+            raise NoSuchTerminal() from None
+
+        return cls.add(group, terminal)
+
 
 class GroupMemberComCatAccount(Model, GroupMember):
     """ComCat accounts as members in groups."""
@@ -229,6 +246,23 @@ class GroupMemberComCatAccount(Model, GroupMember):
         record.comcat_account = comcat_account
         return record
 
+    @classmethod
+    def from_dict(cls, dictionary, group):
+        """Creates a new record from the provided dictionary."""
+        ident = dictionary.get('id')
+
+        if ident is None:
+            raise MissingData('id') from None
+
+        try:
+            comcat_account = ComCatAccount.get(
+                (ComCatAccount.customer == group.customer)
+                & (ComCatAccount.id == ident))
+        except DoesNotExist:
+            raise NoSuchComCatAccount() from None
+
+        return cls.add(group, comcat_account)
+
 
 class GroupMemberApartmentBuilding(Model, GroupMember):
     """Apartment buildings as members in groups."""
@@ -247,6 +281,23 @@ class GroupMemberApartmentBuilding(Model, GroupMember):
         record.group = group
         record.apartment_building = apartment_building
         return record
+
+    @classmethod
+    def from_dict(cls, dictionary, group=None):
+        """Creates a new record from the provided dictionary."""
+        ident = dictionary.get('id')
+
+        if ident is None:
+            raise MissingData('id') from None
+
+        try:
+            apartment_building = ApartmentBuilding.get(
+                (ApartmentBuilding.customer == group.customer)
+                & (ApartmentBuilding.id == ident))
+        except DoesNotExist:
+            raise NoSuchApartment() from None
+
+        return cls.add(group, apartment_building)
 
 
 GROUP_MEMBERS = {
