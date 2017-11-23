@@ -78,6 +78,10 @@ class Chart(DSCMS4Model):
 
     base = ForeignKeyField(BaseChart, db_column='base')
 
+    def __str__(self):
+        """Generic string representation of the respective chart."""
+        return '{}@{}'.format(self.id, self.__class__.__name__)
+
     @classmethod
     def from_dict(cls, dictionary, customer=None):
         """Creates a new chart from the respective dictionary."""

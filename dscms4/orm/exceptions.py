@@ -59,6 +59,10 @@ class OrphanedBaseChart(DSCMS4Error):
         super().__init__(base_chart)
         self.base_chart = base_chart
 
+    def __str__(self):
+        """Returns an appropriate message."""
+        return 'Base chart {} is orphaned.'.format(self.base_chart.id)
+
 
 class AmbiguousBaseChart(DSCMS4Error):
     """Indicates that the respective base chart
@@ -70,6 +74,12 @@ class AmbiguousBaseChart(DSCMS4Error):
         super().__init__(base_chart, references)
         self.base_chart = base_chart
         self.references = references
+
+    def __str__(self):
+        """Returns an appropriate message."""
+        return 'Base chart #{} is ambiguous: {}.'.format(
+            self.base_chart.id, ', '.join(
+                str(chart) for chart in self.references))
 
 
 class QuotaExceeded(DSCMS4Error):
