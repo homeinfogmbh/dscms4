@@ -22,6 +22,7 @@ __all__ = [
     'GroupMemberTerminal',
     'GroupMemberComCatAccount',
     'GroupMemberApartmentBuilding',
+    'GROUP_MEMBERS',
     'MODELS']
 
 
@@ -100,9 +101,13 @@ class Group(Model, CustomerModel):
         'self', db_column='parent', null=True, default=None)
 
     @classmethod
-    def toplevel(cls):
+    def toplevel(cls, customer=None):
         """Yields root-level groups."""
-        return cls.select().where(cls.parent >> None)
+        if customer is None:
+            return cls.select().where(cls.parent >> None)
+
+        return cls.select().where(
+            (cls.customer == customer) & (cls.parent >> None))
 
     @classmethod
     def add(cls, customer, name, description=None, parent=None):
@@ -114,6 +119,11 @@ class Group(Model, CustomerModel):
         record.parent = parent
         record.save()
         return record
+
+    @classmethod
+    def tree_for(cls, customer):
+        """Returns JSON-ish groups tree for the respective customer."""
+        return [group.dict_tree for group in cls.toplevel(customer=customer)]
 
     @property
     def root(self):
@@ -137,6 +147,13 @@ class Group(Model, CustomerModel):
                 yield element
 
     @property
+    def dict_tree(self):
+        """Returns the tree for this group."""
+        dictionary = self.to_dict(parent=False)
+        dictionary['children'] = [group.dict_tree for group in self.children]
+        return dictionary
+
+    @property
     def members(self):
         """Returns a group members proxy."""
         return MemberProxy(self)
@@ -150,13 +167,19 @@ class Group(Model, CustomerModel):
         self.save()
         return self
 
-    def to_dict(self):
+    def to_dict(self, parent=True):
         """Converts the group to a JSON-like dictionary."""
-        return {
+        dictionary = {
             'id': self.id,
             'customer': self.customer.id,
             'name': self.name,
             'description': self.description}
+
+        if parent:
+            dictionary['parent'] = self.parent
+
+        return dictionary
+
 
 
 class GroupMember(DSCMS4Model):
@@ -225,6 +248,11 @@ class GroupMemberApartmentBuilding(Model, GroupMember):
         record.apartment_building = apartment_building
         return record
 
+
+GROUP_MEMBERS = {
+    'terminal': GroupMemberTerminal,
+    'ccacc': GroupMemberComCatAccount,
+    'building': GroupMemberApartmentBuilding}
 
 MODELS = (
     Group, GroupMemberTerminal, GroupMemberComCatAccount,

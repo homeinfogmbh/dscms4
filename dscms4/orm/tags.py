@@ -81,7 +81,7 @@ class Tag(CustomerModel):
         return {'id': self.id, 'customer': self.customer.id}
 
 
-class TerminalTag(Tag):
+class TerminalTag(Model, Tag):
     """Tags for terminals."""
 
     class Meta:
@@ -108,7 +108,7 @@ class TerminalTag(Tag):
         return dictionary
 
 
-class ComCatAccountTag(Tag):
+class ComCatAccountTag(Model, Tag):
     """Tags for ComCat accounts."""
 
     class Meta:
@@ -135,7 +135,7 @@ class ComCatAccountTag(Tag):
         return dictionary
 
 
-class ApartmentBuildingTag(Tag):
+class ApartmentBuildingTag(Model, Tag):
     """Tags for apartment buildings."""
 
     class Meta:
