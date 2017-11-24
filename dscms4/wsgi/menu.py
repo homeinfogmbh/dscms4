@@ -143,7 +143,7 @@ class MenuItemHandler(DSCMS4Service):
     def post(self):
         """Adds a new menu or menu item."""
         try:
-            menu_item = Menu.from_dict(
+            menu_item = MenuItem.from_dict(
                 self.data.json, menu=self.menu,
                 parent=parent_menu_item(self.data.json, self.menu),
                 chart=menu_item_chart(self.data.json, self.customer))
