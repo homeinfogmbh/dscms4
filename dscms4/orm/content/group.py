@@ -28,7 +28,7 @@ class GroupBaseChart(Model, GroupContent):
     class Meta:
         db_table = 'group_base_chart'
 
-    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
+    content = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
 class GroupConfiguration(Model, GroupContent):
@@ -37,7 +37,7 @@ class GroupConfiguration(Model, GroupContent):
     class Meta:
         db_table = 'group_configuration'
 
-    configuration = ForeignKeyField(Configuration, db_column='configuration')
+    content = ForeignKeyField(Configuration, db_column='configuration')
 
 
 class GroupMenu(Model, GroupContent):
@@ -46,7 +46,7 @@ class GroupMenu(Model, GroupContent):
     class Meta:
         db_table = 'group_menu'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
+    content = ForeignKeyField(Menu, db_column='menu')
 
 
 class GroupTicker(Model, GroupContent):
@@ -55,4 +55,4 @@ class GroupTicker(Model, GroupContent):
     class Meta:
         db_table = 'group_ticker'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker')
+    content = ForeignKeyField(Ticker, db_column='ticker')

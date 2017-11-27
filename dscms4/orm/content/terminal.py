@@ -29,7 +29,7 @@ class TerminalBaseChart(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_base_chart'
 
-    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
+    content = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
 class TerminalConfiguration(Model, TerminalContent):
@@ -38,7 +38,7 @@ class TerminalConfiguration(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_configuration'
 
-    configuration = ForeignKeyField(Configuration, db_column='configuration')
+    content = ForeignKeyField(Configuration, db_column='configuration')
 
 
 class TerminalMenu(Model, TerminalContent):
@@ -47,7 +47,7 @@ class TerminalMenu(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_menu'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
+    content = ForeignKeyField(Menu, db_column='menu')
 
 
 class TerminalTicker(Model, TerminalContent):
@@ -56,4 +56,4 @@ class TerminalTicker(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_ticker'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker')
+    content = ForeignKeyField(Ticker, db_column='ticker')
