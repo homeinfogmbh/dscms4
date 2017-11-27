@@ -20,25 +20,6 @@ class GroupContent(DSCMS4Model):
     """Common abstract content mapping."""
 
     group = ForeignKeyField(Group, db_column='group')
-    content = None
-
-    @classmethod
-    def _add(cls, group, content):
-        """Adds a new association of content with a group."""
-        mapping = cls()
-        mapping.group = group
-        mapping.content = content
-        return mapping
-
-    @classmethod
-    def add(cls, group, content):
-        """Adds a new association of content with
-        a group iff it does not yet exist.
-        """
-        try:
-            return cls.get((cls.group == group) & (cls.content == content))
-        except DoesNotExist:
-            return cls._add(group, content)
 
 
 class GroupBaseChart(Model, GroupContent):
@@ -47,7 +28,7 @@ class GroupBaseChart(Model, GroupContent):
     class Meta:
         db_table = 'group_base_chart'
 
-    content = ForeignKeyField(BaseChart, db_column='base_chart')
+    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
 class GroupConfiguration(Model, GroupContent):
@@ -56,7 +37,7 @@ class GroupConfiguration(Model, GroupContent):
     class Meta:
         db_table = 'group_configuration'
 
-    content = ForeignKeyField(Configuration, db_column='configuration')
+    configuration = ForeignKeyField(Configuration, db_column='configuration')
 
 
 class GroupMenu(Model, GroupContent):
@@ -65,7 +46,7 @@ class GroupMenu(Model, GroupContent):
     class Meta:
         db_table = 'group_menu'
 
-    content = ForeignKeyField(Menu, db_column='menu')
+    menu = ForeignKeyField(Menu, db_column='menu')
 
 
 class GroupTicker(Model, GroupContent):
@@ -74,4 +55,4 @@ class GroupTicker(Model, GroupContent):
     class Meta:
         db_table = 'group_ticker'
 
-    content = ForeignKeyField(Ticker, db_column='ticker')
+    ticker = ForeignKeyField(Ticker, db_column='ticker')
