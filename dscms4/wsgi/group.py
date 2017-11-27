@@ -2,8 +2,9 @@
 
 from functools import lru_cache
 
-from wsgilib import JSON
+from peewee import DoesNotExist
 
+from wsgilib import JSON
 from his.api.handlers import AuthorizedService
 
 from dscms4.orm.group import Group, GROUP_MEMBERS
