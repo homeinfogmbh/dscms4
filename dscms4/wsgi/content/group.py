@@ -174,6 +174,42 @@ class GroupContent(AuthorizedService):
 
         return TickerAdded()
 
+    def delete_base_chart(self):
+        """Deletes the respective base chart from the group."""
+        for record in GroupBaseChart.select().where(
+                (GroupBaseChart.group == self.group)
+                & (GroupBaseChart.base_chart == self.content_id)):
+            record.delete_instance()
+
+        return BaseChartDeleted()
+
+    def delete_configuration(self):
+        """Deletes the respective configuration from the group."""
+        for record in GroupConfiguration.select().where(
+                (GroupConfiguration.group == self.group)
+                & (GroupConfiguration.configuration == self.content_id)):
+            record.delete_instance()
+
+        return ConfigurationDeleted()
+
+    def delete_menu(self):
+        """Deletes the respective menu from the group."""
+        for record in GroupMenu.select().where(
+                (GroupMenu.group == self.group)
+                & (GroupMenu.menu == self.content_id)):
+            record.delete_instance()
+
+        return MenuDeleted()
+
+    def delete_ticker(self):
+        """Deletes the respective menu from the group."""
+        for record in GroupTicker.select().where(
+                (GroupTicker.group == self.group)
+                & (GroupTicker.ticker == self.content_id)):
+            record.delete_instance()
+
+        return TickerDeleted()
+
     def get(self):
         """Lists the content associated with the respective group."""
         if self.vars['type'] is None:
@@ -201,3 +237,20 @@ class GroupContent(AuthorizedService):
             return self.add_menu()
         elif self.vars['type'] == 'ticker':
             return self.add_ticker()
+
+        raise InvalidContentType() from None
+
+    def delete(self):
+        """Deletes content from the respective group."""
+        if self.vars['type'] is None:
+            raise NoTypeSpecified() from None
+        elif self.vars['type'] == 'chart':
+            return self.delete_base_chart()
+        elif self.vars['type'] == 'configuration':
+            return self.delete_configuration()
+        elif self.vars['type'] == 'menu':
+            return self.delete_menu()
+        elif self.vars['type'] == 'ticker':
+            return self.delete_ticker()
+
+        raise InvalidContentType() from None
