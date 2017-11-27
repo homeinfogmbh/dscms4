@@ -21,27 +21,6 @@ class ComCatAccountContent(DSCMS4Model):
     """Common abstract content mapping."""
 
     comcat_account = ForeignKeyField(Account, db_column='comcat_account')
-    content = None
-
-    @classmethod
-    def _add(cls, comcat_account, content):
-        """Adds a new association of content with a ComCat account."""
-        mapping = cls()
-        mapping.comcat_account = comcat_account
-        mapping.content = content
-        return mapping
-
-    @classmethod
-    def add(cls, comcat_account, content):
-        """Adds a new association of content with
-        a ComCat account iff it does not yet exist.
-        """
-        try:
-            return cls.get(
-                (cls.comcat_account == comcat_account)
-                & (cls.content == content))
-        except DoesNotExist:
-            return cls._add(comcat_account, content)
 
 
 class ComCatAccountBaseChart(Model, ComCatAccountContent):
