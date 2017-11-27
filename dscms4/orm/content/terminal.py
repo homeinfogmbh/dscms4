@@ -21,27 +21,6 @@ class TerminalContent(DSCMS4Model):
     """Common abstract content mapping."""
 
     terminal = ForeignKeyField(Terminal, db_column='terminal')
-    content = None
-
-    @classmethod
-    def _add(cls, terminal, content):
-        """Adds a new association of content with a terminal."""
-        mapping = cls()
-        mapping.terminal = terminal
-        mapping.content = content
-        return mapping
-
-    @classmethod
-    def add(cls, terminal, content):
-        """Adds a new association of content with
-        a terminal iff it does not yet exist.
-        """
-        try:
-            return cls.get(
-                (cls.terminal == terminal)
-                & (cls.content == content))
-        except DoesNotExist:
-            return cls._add(terminal, content)
 
 
 class TerminalBaseChart(Model, TerminalContent):
@@ -50,7 +29,7 @@ class TerminalBaseChart(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_base_chart'
 
-    content = ForeignKeyField(BaseChart, db_column='base_chart')
+    base_chart = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
 class TerminalConfiguration(Model, TerminalContent):
@@ -59,7 +38,7 @@ class TerminalConfiguration(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_configuration'
 
-    content = ForeignKeyField(Configuration, db_column='configuration')
+    configuration = ForeignKeyField(Configuration, db_column='configuration')
 
 
 class TerminalMenu(Model, TerminalContent):
@@ -68,7 +47,7 @@ class TerminalMenu(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_menu'
 
-    content = ForeignKeyField(Menu, db_column='menu')
+    menu = ForeignKeyField(Menu, db_column='menu')
 
 
 class TerminalTicker(Model, TerminalContent):
@@ -77,4 +56,4 @@ class TerminalTicker(Model, TerminalContent):
     class Meta:
         db_table = 'terminal_ticker'
 
-    content = ForeignKeyField(Ticker, db_column='ticker')
+    ticker = ForeignKeyField(Ticker, db_column='ticker')
