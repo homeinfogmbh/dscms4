@@ -8,7 +8,7 @@ from datetime import datetime
 from enum import Enum
 
 from peewee import Model, ForeignKeyField, CharField, TextField, \
-    DateTimeField, SmallIntegerField
+    DateTimeField, SmallIntegerField, BooleanField
 
 from peeweeplus import EnumField
 
