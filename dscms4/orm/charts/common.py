@@ -52,6 +52,7 @@ class BaseChart(Model, CustomerModel):
     display_until = DateTimeField(null=True, default=None)
     transition = EnumField(Transitions)
     created = DateTimeField(default=datetime.now)
+    trashed = BooleanField(default=False)
 
     @property
     def active(self):
