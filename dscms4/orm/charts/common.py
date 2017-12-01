@@ -13,6 +13,9 @@ from peewee import Model, ForeignKeyField, CharField, TextField, \
 from peeweeplus import EnumField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
+#from dscms4.orm.content.comcat_account import ComCatAccountBaseChart
+from dscms4.orm.content.group import GroupBaseChart
+from dscms4.orm.content.terminal import TerminalBaseChart
 
 
 __all__ = ['BaseChart', 'Chart']
