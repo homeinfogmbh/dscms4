@@ -5,6 +5,7 @@ from functools import lru_cache
 from peewee import DoesNotExist
 from wsgilib import routed, JSON
 
+from dscms4.messages.chart import NoSuchChart
 from dscms4.messages.menu import NoMenuSpecified, NoSuchMenu, InvalidMenuData,\
     MenuAdded, MenuDeleted, NoMenuItemSpecified, NoSuchMenuItem, \
     MenuItemAdded, MenuItemDeleted
@@ -64,7 +65,6 @@ def menu_item_chart(dictionary, customer):
         raise NoSuchChart() from None
 
 
-@service('dscms4')
 @routed('/menu/[id:int]')
 class MenuHandler(DSCMS4Service):
     """Handles the menus."""
@@ -106,7 +106,6 @@ class MenuHandler(DSCMS4Service):
         return MenuDeleted()
 
 
-@service('dscms4')
 @routed('/menu/<menu_id:int>/[id:int]')
 class MenuItemHandler(DSCMS4Service):
     """Handles the menus."""
@@ -134,11 +133,11 @@ class MenuItemHandler(DSCMS4Service):
             raise NoSuchMenuItem() from None
 
     def get(self):
-        """Lists menus or returns the selected menu."""
+        """Lists menus or returns the selected menu item."""
         if self.resource is None:
-            return JSON([menu.to_dict() for menu in self.menus])
+            return JSON([menu_item.to_dict() for menu_item in self.menu_items])
 
-        return JSON(self.menu.to_dict())
+        return JSON(self.menu_item.to_dict())
 
     def post(self):
         """Adds a new menu or menu item."""

@@ -1,7 +1,11 @@
 """User's media files."""
 
+from wsgilib import routed, JSON
 
-@service('dscms4')
+from dscms4.orm.media import MediaFile
+from dscms4.wsgi.common import DSCMS4Service
+
+
 @routed('/media/[id:int]')
 class MediaHandler(DSCMS4Service):
     """Handles user's media files."""

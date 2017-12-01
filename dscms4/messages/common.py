@@ -11,3 +11,15 @@ class DSCMS4Message(HISMessage):
     """Basic real estates message."""
 
     pass
+
+
+class InvalidId(DSCMS4Message):
+    """Indicates that the respective ID is invalid."""
+
+    STATUS = 400
+
+
+class NoIdSpecified(DSCMS4Message):
+    """Indicates that no ID was specified."""
+
+    STATUS = 400

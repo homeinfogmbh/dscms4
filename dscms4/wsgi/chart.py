@@ -24,7 +24,6 @@ def parse_chart_types(string, sep=','):
             yield item
 
 
-@service('dscms4')
 @routed('/charts/[id:int]')
 class ChartHandler(DSCMS4Service):
     """Manages charts."""
