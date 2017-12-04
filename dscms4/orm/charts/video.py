@@ -3,7 +3,7 @@
 from peewee import ForeignKeyField
 
 from dscms4.orm.charts.common import Chart
-from dscms4.orm.common DSCMS4Model
+from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.media import MediaFile
 
 __all__ = ['Video']
