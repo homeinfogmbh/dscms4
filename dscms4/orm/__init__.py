@@ -13,6 +13,7 @@ from dscms4.orm.content import ComCatAccountBaseChart, \
 from dscms4.orm.configuration import Colors, Configuration, Backlight
 from dscms4.orm.group import Group, GroupMemberTerminal, \
     GroupMemberComCatAccount, GroupMemberApartmentBuilding
+from dscms4.orm.media import MediaFile
 from dscms4.orm.menu import Menu, MenuItem
 from dscms4.orm.mockups import ComCatAccount
 from dscms4.orm.ticker import Ticker, TickerText, TickerURL, \
@@ -21,9 +22,9 @@ from dscms4.orm.ticker import Ticker, TickerText, TickerURL, \
 
 # Order matters here.
 MODELS = (
-    ComCatAccount, BaseChart, Facebook, Account, GuessPicture, ImageText,
-    Image, Text, News, PublicTransport, Quotes, Video, Weather, Colors,
-    Configuration, Backlight, Group, GroupMemberTerminal,
+    ComCatAccount, MediaFile, BaseChart, Facebook, Account, GuessPicture,
+    ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather,
+    Colors, Configuration, Backlight, Group, GroupMemberTerminal,
     GroupMemberComCatAccount, GroupMemberApartmentBuilding, Menu, MenuItem,
     Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping,
     ComCatAccountBaseChart, ComCatAccountConfiguration, ComCatAccountMenu,
