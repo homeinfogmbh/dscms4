@@ -51,7 +51,7 @@ class MenuItem(Model, DSCMS4Model):
     parent = ForeignKeyField(
         'self', db_column='parent', null=True, default=None)
     name = CharField(255)
-    icon = EnumField(Icons, nulll=True, default=None)
+    icon = EnumField(Icons, null=True, default=None)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
