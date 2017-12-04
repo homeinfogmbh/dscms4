@@ -2,10 +2,9 @@
 
 from enum import Enum
 
-from peewee import Model, ForeignKeyField, IntegerField, SmallIntegerField, \
+from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 
-from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
@@ -21,7 +20,7 @@ class Style(Enum):
     PIN_CHART = 'pin chart'
 
 
-class ImageText(Model, Chart):
+class ImageText(DSCMS4Model, Chart):
     """A chart that may contain images and text."""
 
     class Meta:
@@ -88,7 +87,7 @@ class ImageText(Model, Chart):
             recursive=recursive, delete_nullable=delete_nullable)
 
 
-class Image(Model, DSCMS4Model):
+class Image(DSCMS4Model):
     """Image for an ImageTextChart."""
 
     class Meta:
@@ -106,7 +105,7 @@ class Image(Model, DSCMS4Model):
         return record
 
 
-class Text(Model, DSCMS4Model):
+class Text(DSCMS4Model):
     """Text for an ImageTextChart."""
 
     class Meta:

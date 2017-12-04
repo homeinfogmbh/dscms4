@@ -1,12 +1,12 @@
 """Garbage collection chart."""
 
-from peewee import Model
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['GarbageCollection']
 
 
-class GarbageCollection(Model, Chart):
+class GarbageCollection(DSCMS4Model, Chart):
     """Chart for garbage collection."""
 
     class Meta:

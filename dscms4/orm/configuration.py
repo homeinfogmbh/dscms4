@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from peewee import Model, ForeignKeyField, TimeField, IntegerField, \
+from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
 from peeweeplus import EnumField
@@ -59,7 +59,7 @@ class TickerTypes(Enum):
     STOCK_PRICES = 'stock prices'
 
 
-class Colors(Model, DSCMS4Model):
+class Colors(DSCMS4Model):
     """Colors of a configuration."""
 
     header = IntegerField()
@@ -74,7 +74,7 @@ class Colors(Model, DSCMS4Model):
     text_background = IntegerField()
 
 
-class Configuration(Model, CustomerModel):
+class Configuration(DSCMS4Model, CustomerModel):
     """Customer configuration for charts."""
 
     name = CharField(255)
@@ -134,7 +134,7 @@ class Configuration(Model, CustomerModel):
         return super().delete_instance()
 
 
-class Ticker(Model, DSCMS4Model):
+class Ticker(DSCMS4Model, BaseModel):
     """Tickers of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
@@ -163,7 +163,7 @@ class Ticker(Model, DSCMS4Model):
         return [tkr.to_dict() for tkr in cls.by_configuration(configuration)]
 
 
-class Backlight(Model, DSCMS4Model):
+class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')

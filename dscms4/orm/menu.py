@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from peewee import Model, ForeignKeyField, CharField, IntegerField
+from peewee import ForeignKeyField, CharField, IntegerField
 
 from peeweeplus import ForeignKeyConstraint, EnumField
 
@@ -23,7 +23,7 @@ class Icons(Enum):
     COOL_ICON = 'cool icon'
 
 
-class Menu(Model, CustomerModel):
+class Menu(DSCMS4Model, CustomerModel):
     """Menus trees."""
 
     name = CharField(255)
@@ -41,7 +41,7 @@ class Menu(Model, CustomerModel):
         return dictionary
 
 
-class MenuItem(Model, DSCMS4Model):
+class MenuItem(DSCMS4Model):
     """A menu item."""
 
     class Meta:

@@ -1,6 +1,6 @@
 """Content assigned to Terminals."""
 
-from peewee import DoesNotExist, Model, ForeignKeyField
+from peewee import DoesNotExist, ForeignKeyField
 
 from terminallib import Terminal
 
@@ -17,13 +17,13 @@ __all__ = [
     'TerminalTicker']
 
 
-class TerminalContent(DSCMS4Model):
+class TerminalContent:
     """Common abstract content mapping."""
 
     terminal = ForeignKeyField(Terminal, db_column='terminal')
 
 
-class TerminalBaseChart(Model, TerminalContent):
+class TerminalBaseChart(DSCMS4Model, TerminalContent):
     """Association of a base chart with a terminal."""
 
     class Meta:
@@ -32,7 +32,7 @@ class TerminalBaseChart(Model, TerminalContent):
     content = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
-class TerminalConfiguration(Model, TerminalContent):
+class TerminalConfiguration(DSCMS4Model, TerminalContent):
     """Association of a configuration with a terminal."""
 
     class Meta:
@@ -41,7 +41,7 @@ class TerminalConfiguration(Model, TerminalContent):
     content = ForeignKeyField(Configuration, db_column='configuration')
 
 
-class TerminalMenu(Model, TerminalContent):
+class TerminalMenu(DSCMS4Model, TerminalContent):
     """Association of a menu with a terminal."""
 
     class Meta:
@@ -50,7 +50,7 @@ class TerminalMenu(Model, TerminalContent):
     content = ForeignKeyField(Menu, db_column='menu')
 
 
-class TerminalTicker(Model, TerminalContent):
+class TerminalTicker(DSCMS4Model, TerminalContent):
     """Association of a ticker with a terminal."""
 
     class Meta:

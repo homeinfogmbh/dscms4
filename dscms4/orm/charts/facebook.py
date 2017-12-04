@@ -1,11 +1,11 @@
 """Facebook charts and associated data."""
 
 from fancylog import logging
-from peewee import Model, ForeignKeyField, IntegerField, SmallIntegerField, \
+from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
 
-from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Facebook', 'Account']
 
@@ -18,7 +18,7 @@ DEFAULT_MAX_POSTS = 10
 
 
 @logging()
-class Facebook(Model, Chart):
+class Facebook(DSCMS4Model, Chart):
     """Facebook data chart."""
 
     class Meta:
@@ -55,7 +55,7 @@ class Facebook(Model, Chart):
         return dictionary
 
 
-class Account(Model, DSCMS4Model):
+class Account(DSCMS4Model):
     """Facebook account settings."""
 
     class Meta:

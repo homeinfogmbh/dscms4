@@ -2,10 +2,10 @@
 
 from enum import Enum
 
-from peewee import Model
 from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Type', 'Form']
 
@@ -17,7 +17,7 @@ class Type(Enum):
     TENANT_TO_TENANT = 'tenant2tenant'
 
 
-class Form(Model, Chart):
+class Form(DSCMS4Model, Chart):
     """A form chart."""
 
     class Meta:

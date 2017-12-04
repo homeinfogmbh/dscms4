@@ -7,8 +7,8 @@ for chart model implementation.
 from datetime import datetime
 from enum import Enum
 
-from peewee import Model, ForeignKeyField, CharField, TextField, \
-    DateTimeField, SmallIntegerField, BooleanField
+from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
+    SmallIntegerField, BooleanField
 
 from peeweeplus import EnumField
 
@@ -39,7 +39,7 @@ class Transitions(Enum):
         raise ValueError('No such transition.')
 
 
-class BaseChart(Model, CustomerModel):
+class BaseChart(DSCMS4Model, CustomerModel):
     """Common basic chart data model."""
 
     class Meta:
@@ -74,7 +74,7 @@ class BaseChart(Model, CustomerModel):
         return super().to_dict(ignore=None if id else self.__class__.id)
 
 
-class Chart(DSCMS4Model):
+class Chart:
     """Abstract basic chart."""
 
     base = ForeignKeyField(BaseChart, db_column='base')

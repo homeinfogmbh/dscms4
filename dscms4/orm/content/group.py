@@ -1,6 +1,6 @@
 """Content assigned to groups."""
 
-from peewee import DoesNotExist, Model, ForeignKeyField
+from peewee import DoesNotExist, ForeignKeyField
 
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model
@@ -16,13 +16,13 @@ __all__ = [
     'GroupTicker']
 
 
-class GroupContent(DSCMS4Model):
+class GroupContent:
     """Common abstract content mapping."""
 
     group = ForeignKeyField(Group, db_column='group')
 
 
-class GroupBaseChart(Model, GroupContent):
+class GroupBaseChart(DSCMS4Model, GroupContent):
     """Association of a base chart with a group."""
 
     class Meta:
@@ -31,7 +31,7 @@ class GroupBaseChart(Model, GroupContent):
     content = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
-class GroupConfiguration(Model, GroupContent):
+class GroupConfiguration(DSCMS4Model, GroupContent):
     """Association of a configuration with a group."""
 
     class Meta:
@@ -40,7 +40,7 @@ class GroupConfiguration(Model, GroupContent):
     content = ForeignKeyField(Configuration, db_column='configuration')
 
 
-class GroupMenu(Model, GroupContent):
+class GroupMenu(DSCMS4Model, GroupContent):
     """Association of a menu with a group."""
 
     class Meta:
@@ -49,7 +49,7 @@ class GroupMenu(Model, GroupContent):
     content = ForeignKeyField(Menu, db_column='menu')
 
 
-class GroupTicker(Model, GroupContent):
+class GroupTicker(DSCMS4Model, GroupContent):
     """Association of a ticker with a group."""
 
     class Meta:

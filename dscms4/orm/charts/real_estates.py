@@ -3,7 +3,7 @@
 from collections import defaultdict
 from enum import Enum
 
-from peewee import Model, BooleanField, SmallIntegerField, IntegerField, \
+from peewee import BooleanField, SmallIntegerField, IntegerField, \
     ForeignKeyField, CharField
 
 from openimmodb import Immobilie
@@ -29,7 +29,7 @@ class IdTypes(Enum):
     OPENIMMO = 'openimmo_obid'
 
 
-class RealEstates(Model, Chart):
+class RealEstates(DSCMS4Model, Chart):
     """Chart for real estate displaying."""
 
     class Meta:
@@ -209,7 +209,7 @@ class RealEstates(Model, Chart):
         return dictionary
 
 
-class IdFilter(Model, DSCMS4Model):
+class IdFilter(DSCMS4Model):
     """Filter for the object IDs."""
 
     class Meta:
@@ -240,7 +240,7 @@ class IdFilter(Model, DSCMS4Model):
         return record
 
 
-class ZipCodeFilter(Model, DSCMS4Model):
+class ZipCodeFilter(DSCMS4Model):
     """Filter for real estate ZIP codes."""
 
     class Meta:

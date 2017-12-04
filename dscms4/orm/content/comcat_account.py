@@ -1,6 +1,6 @@
 """Content assigned to ComCat accounts."""
 
-from peewee import DoesNotExist, Model, ForeignKeyField
+from peewee import DoesNotExist, ForeignKeyField
 
 try:
     from comcat import ComCatAccount
@@ -20,13 +20,13 @@ __all__ = [
     'ComCatAccountTicker']
 
 
-class ComCatAccountContent(DSCMS4Model):
+class ComCatAccountContent:
     """Common abstract content mapping."""
 
     comcat_account = ForeignKeyField(ComCatAccount, db_column='comcat_account')
 
 
-class ComCatAccountBaseChart(Model, ComCatAccountContent):
+class ComCatAccountBaseChart(DSCMS4Model, ComCatAccountContent):
     """Association of a base chart with a ComCat account."""
 
     class Meta:
@@ -35,7 +35,7 @@ class ComCatAccountBaseChart(Model, ComCatAccountContent):
     content = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
-class ComCatAccountConfiguration(Model, ComCatAccountContent):
+class ComCatAccountConfiguration(DSCMS4Model, ComCatAccountContent):
     """Association of a configuration with a ComCat account."""
 
     class Meta:
@@ -44,7 +44,7 @@ class ComCatAccountConfiguration(Model, ComCatAccountContent):
     content = ForeignKeyField(Configuration, db_column='configuration')
 
 
-class ComCatAccountMenu(Model, ComCatAccountContent):
+class ComCatAccountMenu(DSCMS4Model, ComCatAccountContent):
     """Association of a menu with a ComCat account."""
 
     class Meta:
@@ -53,7 +53,7 @@ class ComCatAccountMenu(Model, ComCatAccountContent):
     content = ForeignKeyField(Menu, db_column='menu')
 
 
-class ComCatAccountTicker(Model, ComCatAccountContent):
+class ComCatAccountTicker(DSCMS4Model, ComCatAccountContent):
     """Association of a ticker with a ComCat account."""
 
     class Meta:

@@ -1,14 +1,15 @@
 """Video charts."""
 
-from peewee import Model, ForeignKeyField
+from peewee import ForeignKeyField
 
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common DSCMS4Model
 from dscms4.orm.media import MediaFile
 
 __all__ = ['Video']
 
 
-class Video(Model, Chart):
+class Video(DSCMS4Model, Chart):
     """A chart that may contain images and texts."""
 
     class Meta:

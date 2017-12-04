@@ -1,8 +1,9 @@
 """New charts."""
 
-from peewee import Model, IntegerField, SmallIntegerField, BooleanField
+from peewee import IntegerField, SmallIntegerField, BooleanField
 
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['News']
 
@@ -11,7 +12,7 @@ DEFAULT_FONT_SIZE = 8
 DEFAULT_COLOR = 0x000000
 
 
-class News(Model, Chart):
+class News(DSCMS4Model, Chart):
     """Chart to display news."""
 
     class Meta:

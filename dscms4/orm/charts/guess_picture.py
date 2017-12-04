@@ -1,12 +1,12 @@
 """Oicture guessing chart."""
 
-from peewee import Model
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['GuessPicture']
 
 
-class GuessPicture(Model, Chart):
+class GuessPicture(DSCMS4Model, Chart):
     """Chart for guessing pictures."""
 
     class Meta:

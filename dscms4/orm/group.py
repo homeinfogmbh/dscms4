@@ -2,7 +2,7 @@
 
 from itertools import chain
 
-from peewee import DoesNotExist, Model, ForeignKeyField, CharField, TextField
+from peewee import DoesNotExist, ForeignKeyField, CharField, TextField
 
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
@@ -12,7 +12,7 @@ try:
 except ImportError:
     from dscms4.orm.mockups import ComCatAccount
 
-from dscms4.orm.common import CustomerModel, DSCMS4Model
+from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
     MissingData, NoSuchTerminal, NoSuchComCatAccount, NoSuchApartment
 
@@ -91,7 +91,7 @@ class MemberProxy:
                 mapping.delete_instance()
 
 
-class Group(Model, CustomerModel):
+class Group(DSCMS4Model, CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
     name = CharField(255)
@@ -181,7 +181,7 @@ class Group(Model, CustomerModel):
 
 
 
-class GroupMember(DSCMS4Model):
+class GroupMember:
     """An abstract group member model."""
 
     group = ForeignKeyField(Group, db_column='group')
@@ -192,7 +192,7 @@ class GroupMember(DSCMS4Model):
         return cls.select().where(cls.group == group)
 
 
-class GroupMemberTerminal(Model, GroupMember):
+class GroupMemberTerminal(DSCMS4Model, GroupMember):
     """Terminals as members in groups."""
 
     class Meta:
@@ -226,7 +226,7 @@ class GroupMemberTerminal(Model, GroupMember):
         return cls.add(group, terminal)
 
 
-class GroupMemberComCatAccount(Model, GroupMember):
+class GroupMemberComCatAccount(DSCMS4Model, GroupMember):
     """ComCat accounts as members in groups."""
 
     class Meta:
@@ -262,7 +262,7 @@ class GroupMemberComCatAccount(Model, GroupMember):
         return cls.add(group, comcat_account)
 
 
-class GroupMemberApartmentBuilding(Model, GroupMember):
+class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
     """Apartment buildings as members in groups."""
 
     class Meta:
