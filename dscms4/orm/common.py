@@ -51,7 +51,7 @@ class DSCMS4Model(Model):
         return cls.get(cls.id == ident)
 
 
-class CustomerModel(DSCMS4Model):
+class CustomerModel:
     """Entity that relates to a customer.
 
      Not derived from peewee.Model to prevent binding of fields.
