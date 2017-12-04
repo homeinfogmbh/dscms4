@@ -2,7 +2,10 @@
 
 from peewee import DoesNotExist, Model, ForeignKeyField
 
-from comcat import Account
+try:
+    from comcat import Account
+except ImportError:
+    from dscms4.orm.mockups import ComCatAccount
 
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model

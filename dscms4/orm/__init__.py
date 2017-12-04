@@ -13,19 +13,22 @@ from dscms4.orm.configuration import Colors, Configuration, Backlight
 from dscms4.orm.group import Group, GroupMemberTerminal, \
     GroupMemberComCatAccount, GroupMemberApartmentBuilding
 from dscms4.orm.menu import Menu, MenuItem
+from dscms4.orm.mockups import ComCatAccount
 from dscms4.orm.ticker import Ticker, TickerText, TickerURL, \
     TickerTextMapping, TickerURLMapping
 
 
-MODELS = [
-    BaseChart, Facebook, Account, GuessPicture, ImageText, Image, Text, News,
-    PublicTransport, Quotes, Video, Weather, ComCatAccountBaseChart,
-    ComCatAccountConfiguration, ComCatAccountMenu, ComCatAccountTicker,
-    GroupBaseChart, GroupConfiguration, GroupMenu, GroupTicker,
-    TerminalBaseChart, TerminalConfiguration, TerminalMenu, TerminalTicker,
-    Colors, Configuration, Backlight, Group, GroupMemberTerminal,
+# Order matters here.
+MODELS = (
+    ComCatAccount, BaseChart, Facebook, Account, GuessPicture, ImageText,
+    Image, Text, News, PublicTransport, Quotes, Video, Weather, Colors,
+    Configuration, Backlight, Group, GroupMemberTerminal,
     GroupMemberComCatAccount, GroupMemberApartmentBuilding, Menu, MenuItem,
-    Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping]
+    Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping,
+    ComCatAccountBaseChart, ComCatAccountConfiguration, ComCatAccountMenu,
+    ComCatAccountTicker, GroupBaseChart, GroupConfiguration, GroupMenu,
+    GroupTicker, TerminalBaseChart, TerminalConfiguration, TerminalMenu,
+    TerminalTicker)
 
 
 def create_tables(fail_silently=True):
