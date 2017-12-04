@@ -3,8 +3,6 @@
 This package provides ORM models
 of the "chart" types of the CMS.
 """
-from sys import stderr
-
 from dscms4.orm.charts.common import BaseChart, Chart
 from dscms4.orm.charts.facebook import Facebook, Account
 from dscms4.orm.charts.guess_picture import GuessPicture
