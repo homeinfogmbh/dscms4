@@ -2,6 +2,7 @@
 
 This package provides the CMS's database models.
 """
+from sys import stderr
 
 from dscms4.orm.charts import BaseChart, Facebook, Account, GuessPicture, \
     ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather
