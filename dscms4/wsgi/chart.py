@@ -134,5 +134,8 @@ class ChartHandler(DSCMS4Service):
 
     def patch(self):
         """Patches a chart."""
-        self.chart.patch(self.data.json)
+        chart = self.chart.patch(self.data.json)
+        if chart.trashed:
+            delete_from_contents(chart)
+
         return ChartPatched()
