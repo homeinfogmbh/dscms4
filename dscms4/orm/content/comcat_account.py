@@ -3,7 +3,7 @@
 from peewee import DoesNotExist, Model, ForeignKeyField
 
 try:
-    from comcat import Account
+    from comcat import ComCatAccount
 except ImportError:
     from dscms4.orm.mockups import ComCatAccount
 
@@ -23,7 +23,7 @@ __all__ = [
 class ComCatAccountContent(DSCMS4Model):
     """Common abstract content mapping."""
 
-    comcat_account = ForeignKeyField(Account, db_column='comcat_account')
+    comcat_account = ForeignKeyField(ComCatAccount, db_column='comcat_account')
 
 
 class ComCatAccountBaseChart(Model, ComCatAccountContent):
