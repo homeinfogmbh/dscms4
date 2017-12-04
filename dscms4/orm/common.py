@@ -5,6 +5,8 @@ from peewee import PrimaryKeyField, ForeignKeyField
 from peeweeplus import MySQLDatabase, JSONSerializable
 from homeinfo.crm import Customer
 
+from dscms4.config import CONFIG
+
 
 __all__ = [
     'DATABASE',
@@ -14,7 +16,11 @@ __all__ = [
     'CustomerModel']
 
 
-DATABASE = MySQLDatabase('dscms4')
+DATABASE = MySQLDatabase(
+    CONFIG['db']['db'],
+    host=CONFIG['db']['host'],
+    user=CONFIG['db']['user'],
+    passwd=CONFIG['db']['passwd'])
 
 
 def create_tables(models, fail_silently=True):
