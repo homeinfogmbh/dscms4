@@ -38,6 +38,6 @@ def create_tables(fail_silently=True):
     for model in MODELS:
         try:
             model.create_table(fail_silently=fail_silently)
-        except Exception:
-            print('Could not create table for model "{}".'.format(model),
-                  file=stderr)
+        except Exception as error:
+            print('Could not create table for model "{}":\n{}.'.format(
+                model, error), file=stderr)
