@@ -55,7 +55,7 @@ class MenuItem(Model, DSCMS4Model):
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
-        BaseChart, null=True, default=None, db_column='chart',
+        BaseChart, default=None, db_column='chart',
         on_delete=ForeignKeyConstraint.SET_NULL)
 
     @classmethod
