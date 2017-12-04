@@ -199,7 +199,7 @@ class GroupMemberTerminal(Model, GroupMember):
         """Meta information for the database model."""
         db_table = 'group_member_terminal'
 
-    #terminal = ForeignKeyField(Terminal, db_column='terminal')
+    terminal = ForeignKeyField(Terminal, db_column='terminal')
 
     @classmethod
     def add(cls, group, terminal):
