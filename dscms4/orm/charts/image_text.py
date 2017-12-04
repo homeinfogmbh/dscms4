@@ -4,7 +4,7 @@ from enum import Enum
 
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
-
+from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
