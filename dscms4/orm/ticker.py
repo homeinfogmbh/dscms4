@@ -30,7 +30,6 @@ def create_tables():
 class Ticker(Model, CustomerModel):
     """Ticker."""
 
-    customer = ForeignKeyField(Customer, db_column='customer')
     name = CharField(255)
 
     @classmethod
@@ -70,7 +69,6 @@ class TickerText(Model, CustomerModel):
     class Meta:
         db_table = 'ticker_text'
 
-    customer = ForeignKeyField(Customer, db_column='customer')
     text = TextField()
     index = SmallIntegerField()
 
@@ -107,7 +105,6 @@ class TickerURL(Model, CustomerModel):
     class Meta:
         db_table = 'ticker_url'
 
-    customer = ForeignKeyField(Customer, db_column='customer')
     url = CharField(255)
     index = SmallIntegerField()
 

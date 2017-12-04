@@ -8,7 +8,9 @@ __all__ = [
     'OrphanedBaseChart',
     'AmbiguousBaseChart',
     'QuotaExceeded',
-    'MissingItemError']
+    'NoSuchTerminal',
+    'NoSuchComCatAccount',
+    'NoSuchApartment']
 
 
 class DSCMS4Error(Exception):
@@ -94,5 +96,17 @@ class QuotaExceeded(DSCMS4Error):
 
 class NoSuchTerminal(DSCMS4Error):
     """Indicates that the requested terminal does not exist."""
+
+    pass
+
+
+class NoSuchComCatAccount(DSCMS4Error):
+    """Indicates that the respective ComCat account does not exist."""
+
+    pass
+
+
+class NoSuchApartment(DSCMS4Error):
+    """Indicates that the respective apartment does not exist."""
 
     pass

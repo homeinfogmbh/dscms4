@@ -14,7 +14,7 @@ except ImportError:
 
 from dscms4.orm.common import CustomerModel, DSCMS4Model
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
-    MissingData, NoSuchTerminal
+    MissingData, NoSuchTerminal, NoSuchComCatAccount, NoSuchApartment
 
 __all__ = [
     'Group',
