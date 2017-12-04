@@ -10,9 +10,7 @@ from terminallib import Terminal
 try:
     from his.comcat import ComCatAccount
 except ImportError:
-    class ComCatAccount(Model):
-        """Mockup."""
-        pass
+    from dscms4.mockups import ComCatAccount
 
 from dscms4.orm.common import CustomerModel, DSCMS4Model
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \

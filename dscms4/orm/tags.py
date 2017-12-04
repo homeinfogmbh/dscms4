@@ -6,7 +6,11 @@ from peewee import ForeignKeyField, CharField
 
 from tenements import ApartmentBuilding
 from terminallib import Terminal
-from comcat import ComCatAccount
+
+try:
+    from comcat import ComCatAccount
+except ImportError:
+    from dscms4.orm.mockups import ComCatAccount
 
 from .common import CustomerModel
 
