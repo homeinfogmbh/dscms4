@@ -134,7 +134,7 @@ class Configuration(DSCMS4Model, CustomerModel):
         return super().delete_instance()
 
 
-class Ticker(DSCMS4Model, BaseModel):
+class Ticker(DSCMS4Model):
     """Tickers of the respective configuration."""
 
     configuration = ForeignKeyField(Configuration, db_column='configuration')
