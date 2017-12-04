@@ -15,5 +15,8 @@ setup(
         'dscms4',
         'dscms4.messages',
         'dscms4.orm',
-        'dscms4.wsgi'],
+        'dscms4.orm.charts',
+        'dscms4.orm.content',
+        'dscms4.wsgi',
+        'dscms4.wsgi.content'],
     description='HOMEINFO Digital Signage Content Management System v4.')
