@@ -1,7 +1,11 @@
 """WSGI application routes."""
 
+from wsgilib import Application
+
 from dscms4.wsgi.charts import get_charts, get_chart, add_chart, delete_chart,\
     patch_chart
+
+__all__ = ['APPLICATION']
 
 
 APPLICATION = Application('DSCMS4')
