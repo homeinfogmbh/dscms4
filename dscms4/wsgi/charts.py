@@ -11,7 +11,12 @@ from dscms4.wsgi.messages import ChartDataIncomplete, ChartDataInvalid, \
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 
-__all__ = ['Chart']
+__all__ = [
+    'get_charts',
+    'get_chart',
+    'add_chart',
+    'delete_chart',
+    'patch_chart']
 
 
 def _parse_chart_types(string, sep=','):

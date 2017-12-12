@@ -28,7 +28,7 @@ class GroupBaseChart(DSCMS4Model, GroupContent):
     class Meta:
         db_table = 'group_base_chart'
 
-    content = ForeignKeyField(BaseChart, db_column='base_chart')
+    chart = ForeignKeyField(BaseChart, db_column='base_chart')
 
 
 class GroupConfiguration(DSCMS4Model, GroupContent):
@@ -37,7 +37,7 @@ class GroupConfiguration(DSCMS4Model, GroupContent):
     class Meta:
         db_table = 'group_configuration'
 
-    content = ForeignKeyField(Configuration, db_column='configuration')
+    configuration = ForeignKeyField(Configuration, db_column='configuration')
 
 
 class GroupMenu(DSCMS4Model, GroupContent):
@@ -46,7 +46,7 @@ class GroupMenu(DSCMS4Model, GroupContent):
     class Meta:
         db_table = 'group_menu'
 
-    content = ForeignKeyField(Menu, db_column='menu')
+    menu = ForeignKeyField(Menu, db_column='menu')
 
 
 class GroupTicker(DSCMS4Model, GroupContent):
@@ -55,4 +55,4 @@ class GroupTicker(DSCMS4Model, GroupContent):
     class Meta:
         db_table = 'group_ticker'
 
-    content = ForeignKeyField(Ticker, db_column='ticker')
+    ticker = ForeignKeyField(Ticker, db_column='ticker')

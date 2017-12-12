@@ -1,13 +1,23 @@
 """Group Controllers."""
 
-from functools import lru_cache
-
 from peewee import DoesNotExist
 
 from wsgilib import JSON
 from his.api.handlers import AuthorizedService
 
 from dscms4.orm.group import Group, GROUP_MEMBERS
+from dscms4.messages.group import NoSuchGroup
+
+__all__ = ['get_group']
+
+
+def get_group(gid):
+    """Returns the respective group."""
+
+    try:
+        return Group.get((Group.id == gid) & (Group.customer == CUSTOMER.id))
+    except DoesNotExist:
+        raise NoSuchGroup()
 
 
 @routed('/group/[id:int]')

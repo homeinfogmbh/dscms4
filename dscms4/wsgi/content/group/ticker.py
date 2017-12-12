@@ -1,0 +1,53 @@
+"""Management of tickers in groups."""
+
+from peewee import DoesNotExist
+
+from wsgilib import JSON
+
+from dscms4.messages.content.group import NoSuchGroupTicker, \
+    TickerAddedToGroup, TickerAlreadyInGroup, TickerDeletedFromGroup
+from dscms4.orm.content.group import GroupTicker
+from dscms4.wsgi.group import _get_group
+from dscms4.wsgi.ticker import _get_ticker
+
+__all__ = ['get_group_tickers', 'add_group_ticker']
+
+
+def get_group_tickers(gid):
+    """Returns a list of IDs of the menus in the respective group."""
+
+    return JSON([
+        group_ticker.ticker.id for group_ticker in GroupTicker.select().where(
+            GroupTicker.group == _get_group(gid))])
+
+
+def add_group_ticker(gid, ident):
+    """Adds the menu to the respective group."""
+
+    group = _get_group(gid)
+    ticker = _get_ticker(ident)
+
+    try:
+        GroupTicker.get(
+            (GroupTicker.group == group) & (GroupTicker.ticker == ticker))
+    except DoesNotExist:
+        group_ticker = GroupTicker()
+        group_ticker.group = group
+        group_ticker.ticker = ticker
+        group_ticker.save()
+        return TickerAddedToGroup()
+
+    return TickerAlreadyInGroup()
+
+
+def delete_group_menu(gid, ident):
+    """Deletes the menu from the respective group."""
+
+    try:
+        group_ticker = GroupTicker.get(
+            (GroupTicker.group == _get_group(gid)) & (GroupTicker.id == ident))
+    except DoesNotExist:
+        raise NoSuchGroupTicker()
+
+    group_ticker.delete_instance()
+    return TickerDeletedFromGroup()
