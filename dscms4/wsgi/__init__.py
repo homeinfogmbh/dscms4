@@ -2,37 +2,36 @@
 
 from wsgilib import Application
 
-from dscms4.wsgi.charts import get_charts, get_chart, add_chart, delete_chart,\
-    patch_chart
-from dscms4.wsgi.content.group.charts import get_group_charts, \
-    add_group_chart, delete_group_chart
-from dscms4.wsgi.content.group.configuration import get_group_configurations, \
-    add_group_configuration, delete_group_configuration
+from dscms4.wsgi import content, charts, group, media, menu, terminal
 
 __all__ = ['APPLICATION']
 
 
 APPLICATION = Application('DSCMS4')
+ROUTING_TABLE = (
+    # Charts endpoint.
+    ('/charts', 'GET', charts.list),
+    ('/charts/<int:ident>', 'GET', charts.get),
+    ('/charts', 'POST', charts.add),
+    ('/charts/<int:ident>', 'DELETE', charts.delete),
+    ('/charts/<int:ident>', 'PATCH', charts.patch),
+    # Content endpoint.
+    ('/content/group/<int:gid>/chart', 'GET', content.group.chart.list),
+    ('/content/group/<int:gid>/chart', 'POST', content.group.chart.add),
+    ('/content/group/<int:gid>/chart/<int:ident>', 'DELETE',
+     content.group.chart.delete),
+    ('/content/group/<int:gid>/configuration', 'GET',
+     content.group.configuration.list),
+    ('/content/group/<int:gid>/configuration', 'POST',
+     content.group.configuration.add),
+    ('/content/group/<int:gid>/configuration/<int:ident>', 'DELETE',
+     content.group.configuration.delete),
+    # TODO: continue to implement.
+    # Terminal endpoint.
+    ('/terminals', 'GET', terminal.list),
+    ('/terminals/<int:tid>', 'GET', terminal.get))
 
-# Charts endpoint.
-APPLICATION.route('/charts', methods=['GET'])(get_charts)
-APPLICATION.route('/charts/<int:ident>', methods=['GET'])(get_chart)
-APPLICATION.route('/charts', methods=['POST'])(add_chart)
-APPLICATION.route('/charts/<int:ident>', methods=['DELETE'])(delete_chart)
-APPLICATION.route('/charts/<int:ident>', methods=['PATCH'])(patch_chart)
 
-# Content endpoint.
-APPLICATION.route('/content/group/<int:gid>/chart', methods=['GET'])(
-    get_group_charts)
-APPLICATION.route('/content/group/<int:gid>/chart', methods=['POST'])(
-    add_group_chart)
-APPLICATION.route(
-    '/content/group/<int:gid>/chart/<int:ident>', methods=['DELETE'])(
-    delete_group_chart)
-APPLICATION.route('/content/group/<int:gid>/configuration', methods=['GET'])(
-    get_group_configurations)
-APPLICATION.route('/content/group/<int:gid>/configuration', methods=['POST'])(
-    add_group_configuration)
-APPLICATION.route(
-    '/content/group/<int:gid>/configuration/<int:ident>', methods=['DELETE'])(
-    delete_group_configuration)
+# Apply all routes to the application.
+for route, method, function in ROUTING_TABLE:
+    APPLICATION.route(route, methods=[method])(function)

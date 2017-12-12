@@ -11,12 +11,7 @@ from dscms4.wsgi.messages import ChartDataIncomplete, ChartDataInvalid, \
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 
-__all__ = [
-    'get_charts',
-    'get_chart',
-    'add_chart',
-    'delete_chart',
-    'patch_chart']
+__all__ = ['list', 'get', 'add', 'delete', 'patch']
 
 
 def _parse_chart_types(string, sep=','):
@@ -95,19 +90,19 @@ def _delete_from_contents(chart):
     pass    # TODO: implement.
 
 
-def get_charts():
+def list():
     """Lists charts or retrieves single chart."""
 
     return JSON([chart.to_dict() for chart in _get_charts()])
 
 
-def get_chart(ident):
+def get(ident):
     """Lists charts or retrieves single chart."""
 
     return JSON(_get_chart())
 
 
-def add_chart():
+def add():
     """Adds new charts."""
 
     chart_dict = DATA.json
@@ -123,7 +118,7 @@ def add_chart():
     return ChartAdded(id=chart.id)
 
 
-def delete_chart(ident):
+def delete(ident):
     """Deletes the specified chart."""
 
     typ = _get_chart_type()
@@ -137,7 +132,7 @@ def delete_chart(ident):
     return ChartDeleted()
 
 
-def patch_chart(ident):
+def patch(ident):
     """Patches a chart."""
 
     chart = _get_chart(ident)

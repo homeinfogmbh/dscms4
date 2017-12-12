@@ -1,1 +1,5 @@
-"""DSCMS 4 web application backend."""
+"""DSCMS 4.
+
+Web application backend for the
+Digital Signage Content Management System version 4.
+"""

@@ -11,20 +11,17 @@ from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.terminal import _get_terminal
 
-__all__ = [
-    'get_terminal_charts',
-    'add_terminal_chart',
-    'delete_terminal_chart']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_terminal_charts(tid):
+def list(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
     return JSON([tbc.chart.id for tbc in TerminalBaseChart.select().where(
         TerminalBaseChart.terminal == _get_terminal(tid))])
 
 
-def add_terminal_chart(tid, ident):
+def add(tid, ident):
     """Adds the chart to the respective terminal."""
 
     terminal = _get_terminal(tid)
@@ -44,7 +41,7 @@ def add_terminal_chart(tid, ident):
     return ChartAlreadyInTerminal()
 
 
-def delete_terminal_chart(tid, ident):
+def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
     try:

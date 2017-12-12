@@ -12,12 +12,12 @@ from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.terminal import _get_terminal
 
 __all__ = [
-    'get_terminal_configurations',
-    'add_terminal_configuration',
-    'delete_terminal_configuration']
+    'list',
+    'add',
+    'delete']
 
 
-def get_terminal_configurations(gid):
+def list(gid):
     """Returns a list of IDs of the configurations
     in the respective terminal.
     """
@@ -28,7 +28,7 @@ def get_terminal_configurations(gid):
             TerminalConfiguration.terminal == _get_terminal(gid))])
 
 
-def add_terminal_configuration(gid, ident):
+def add(gid, ident):
     """Adds the configuration to the respective terminal."""
 
     terminal = _get_terminal(gid)
@@ -48,7 +48,7 @@ def add_terminal_configuration(gid, ident):
     return ConfigurationAlreadyInTerminal()
 
 
-def delete_terminal_configuration(gid, ident):
+def delete(gid, ident):
     """Deletes the configuration from the respective terminal."""
 
     try:

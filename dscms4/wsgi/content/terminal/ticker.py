@@ -10,10 +10,10 @@ from dscms4.orm.content.terminal import TerminalTicker
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.ticker import _get_ticker
 
-__all__ = ['get_terminal_tickers', 'add_terminal_ticker']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_terminal_tickers(gid):
+def list(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
@@ -22,7 +22,7 @@ def get_terminal_tickers(gid):
             TerminalTicker.terminal == _get_terminal(gid))])
 
 
-def add_terminal_ticker(gid, ident):
+def add(gid, ident):
     """Adds the menu to the respective terminal."""
 
     terminal = _get_terminal(gid)
@@ -42,7 +42,7 @@ def add_terminal_ticker(gid, ident):
     return TickerAlreadyInTerminal()
 
 
-def delete_terminal_menu(gid, ident):
+def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
     try:

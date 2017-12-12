@@ -10,17 +10,17 @@ from dscms4.orm.content.group import GroupBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.group import _get_group
 
-__all__ = ['get_group_charts', 'add_group_chart', 'delete_group_chart']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_group_charts(gid):
+def list(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
     return JSON([gbc.chart.id for gbc in GroupBaseChart.select().where(
         GroupBaseChart.group == _get_group(gid))])
 
 
-def add_group_chart(gid, ident):
+def add(gid, ident):
     """Adds the chart to the respective group."""
 
     group = _get_group(gid)
@@ -39,7 +39,7 @@ def add_group_chart(gid, ident):
     return ChartAlreadyInGroup()
 
 
-def delete_group_chart(gid, ident):
+def delete(gid, ident):
     """Deletes the chart from the respective group."""
 
     try:

@@ -10,10 +10,10 @@ from dscms4.orm.content.group import GroupTicker
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.ticker import _get_ticker
 
-__all__ = ['get_group_tickers', 'add_group_ticker']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_group_tickers(gid):
+def list(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
     return JSON([
@@ -21,7 +21,7 @@ def get_group_tickers(gid):
             GroupTicker.group == _get_group(gid))])
 
 
-def add_group_ticker(gid, ident):
+def add(gid, ident):
     """Adds the menu to the respective group."""
 
     group = _get_group(gid)
@@ -40,7 +40,7 @@ def add_group_ticker(gid, ident):
     return TickerAlreadyInGroup()
 
 
-def delete_group_menu(gid, ident):
+def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
     try:

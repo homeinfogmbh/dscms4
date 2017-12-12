@@ -10,10 +10,10 @@ from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.menu import _get_menu
 
-__all__ = ['get_terminal_menus', 'add_terminal_menu', 'delete_terminal_menu']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_terminal_menus(gid):
+def list(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
@@ -21,7 +21,7 @@ def get_terminal_menus(gid):
         TerminalMenu.terminal == _get_terminal(gid))])
 
 
-def add_terminal_menu(gid, ident):
+def add(gid, ident):
     """Adds the menu to the respective terminal."""
 
     terminal = _get_terminal(gid)
@@ -40,7 +40,7 @@ def add_terminal_menu(gid, ident):
     return MenuAlreadyInTerminal()
 
 
-def delete_terminal_menu(gid, ident):
+def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
     try:

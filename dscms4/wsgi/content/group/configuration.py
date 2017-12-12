@@ -11,13 +11,10 @@ from dscms4.orm.content.group import GroupConfiguration
 from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.group import _get_group
 
-__all__ = [
-    'get_group_configurations',
-    'add_group_configuration',
-    'delete_group_configuration']
+__all__ = ['list', 'add', 'delete']
 
 
-def get_group_configurations(gid):
+def list(gid):
     """Returns a list of IDs of the configurations in the respective group."""
 
     return JSON([
@@ -26,7 +23,7 @@ def get_group_configurations(gid):
             GroupConfiguration.group == _get_group(gid))])
 
 
-def add_group_configuration(gid, ident):
+def add(gid, ident):
     """Adds the configuration to the respective group."""
 
     group = _get_group(gid)
@@ -46,7 +43,7 @@ def add_group_configuration(gid, ident):
     return ConfigurationAlreadyInGroup()
 
 
-def delete_group_configuration(gid, ident):
+def delete(gid, ident):
     """Deletes the configuration from the respective group."""
 
     try:
