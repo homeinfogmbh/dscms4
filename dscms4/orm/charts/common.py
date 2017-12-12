@@ -77,7 +77,7 @@ class BaseChart(DSCMS4Model, CustomerModel):
 class Chart:
     """Abstract basic chart."""
 
-    base = ForeignKeyField(BaseChart, db_column='base')
+    base = ForeignKeyField(BaseChart, db_column='base', on_delete='CASCADE')
 
     def __str__(self):
         """Generic string representation of the respective chart."""
@@ -122,7 +122,4 @@ class Chart:
 
     def delete_instance(self):
         """Deletes this chart."""
-        base = self.base
-        result = super().delete_instance()
-        base.delete_instance()
-        return result
+        return self.base.delete_instance()

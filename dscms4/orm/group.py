@@ -184,7 +184,7 @@ class Group(DSCMS4Model, CustomerModel):
 class GroupMember:
     """An abstract group member model."""
 
-    group = ForeignKeyField(Group, db_column='group')
+    group = ForeignKeyField(Group, db_column='group', on_delete='CASCADE')
 
     @classmethod
     def by_group(cls, group):

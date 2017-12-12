@@ -20,7 +20,8 @@ __all__ = [
 class TerminalContent:
     """Common abstract content mapping."""
 
-    terminal = ForeignKeyField(Terminal, db_column='terminal')
+    terminal = ForeignKeyField(
+        Terminal, db_column='terminal', on_delete='CASCADE')
 
 
 class TerminalBaseChart(DSCMS4Model, TerminalContent):

@@ -19,7 +19,7 @@ __all__ = [
 class GroupContent:
     """Common abstract content mapping."""
 
-    group = ForeignKeyField(Group, db_column='group')
+    group = ForeignKeyField(Group, db_column='group', on_delete='CASCADE')
 
 
 class GroupBaseChart(DSCMS4Model, GroupContent):

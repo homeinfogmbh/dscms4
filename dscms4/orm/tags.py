@@ -91,7 +91,8 @@ class TerminalTag(DSCMS4Model, Tag):
     class Meta:
         db_table = 'tags_terminal'
 
-    terminal = ForeignKeyField(Terminal, db_column='terminal')
+    terminal = ForeignKeyField(
+        Terminal, db_column='terminal', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, terminal, lst):
@@ -118,7 +119,8 @@ class ComCatAccountTag(DSCMS4Model, Tag):
     class Meta:
         db_table = 'tags_comcat_account'
 
-    comcat_account = ForeignKeyField(ComCatAccount, db_column='comcat_account')
+    comcat_account = ForeignKeyField(
+        ComCatAccount, db_column='comcat_account', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, comcat_account, lst):
@@ -146,7 +148,7 @@ class ApartmentBuildingTag(DSCMS4Model, Tag):
         db_table = 'tags_apartment_building'
 
     apartment_building = ForeignKeyField(
-        ApartmentBuilding, db_column='apartment_building')
+        ApartmentBuilding, db_column='apartment_building', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, apartment_building, lst):

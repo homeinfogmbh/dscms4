@@ -215,7 +215,8 @@ class IdFilter(DSCMS4Model):
     class Meta:
         db_table = 'filter_id'
 
-    chart = ForeignKeyField(RealEstates, db_column='chart')
+    chart = ForeignKeyField(
+        RealEstates, db_column='chart', on_delete='CASCADE')
     value = CharField(255)
     typ = EnumField(IdTypes, db_column='types')
 
@@ -246,7 +247,8 @@ class ZipCodeFilter(DSCMS4Model):
     class Meta:
         db_table = 'filter_zip_code'
 
-    chart = ForeignKeyField(RealEstates, db_column='chart')
+    chart = ForeignKeyField(
+        RealEstates, db_column='chart', on_delete='CASCADE')
     zip_code = CharField(255)
     # True: blacklist, False: whitelist.
     blacklist = BooleanField(default=False)

@@ -140,9 +140,11 @@ class TickerTextMapping(DSCMS4Model):
     class Meta:
         db_table = 'ticker_texts'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker', related_name='texts')
+    ticker = ForeignKeyField(
+        Ticker, db_column='ticker', related_name='texts', on_delete='CASCADE')
     text = ForeignKeyField(
-        TickerText, db_column='text', related_name='tickers')
+        TickerText, db_column='text', related_name='tickers',
+        on_delete='CASCADE')
 
 
 class TickerURLMapping(DSCMS4Model):
@@ -151,8 +153,11 @@ class TickerURLMapping(DSCMS4Model):
     class Meta:
         db_table = 'ticker_urls'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker', related_name='urls')
-    url = ForeignKeyField(TickerURL, db_column='url', related_name='tickers')
+    ticker = ForeignKeyField(
+        Ticker, db_column='ticker', related_name='urls', on_delete='CASCADE')
+    url = ForeignKeyField(
+        TickerURL, db_column='url', related_name='tickers',
+        on_delete='CASCADE')
 
 
 MODELS = (Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping)

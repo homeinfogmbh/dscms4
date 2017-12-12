@@ -61,7 +61,8 @@ class Account(DSCMS4Model):
     class Meta:
         db_table = 'facebook_account'
 
-    chart = ForeignKeyField(Facebook, db_column='facebook_chart')
+    chart = ForeignKeyField(
+        Facebook, db_column='facebook_chart', on_delete='CASCADE')
     facebook_id = IntegerField()
     recent_days = SmallIntegerField(default=DEFAULT_RECENT_DAYS)
     max_posts = SmallIntegerField(default=DEFAULT_MAX_POSTS)

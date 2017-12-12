@@ -47,7 +47,7 @@ class MenuItem(DSCMS4Model):
     class Meta:
         db_table = 'menu_item'
 
-    menu = ForeignKeyField(Menu, db_column='menu')
+    menu = ForeignKeyField(Menu, db_column='menu', on_delete='CASCADE')
     parent = ForeignKeyField(
         'self', db_column='parent', null=True, default=None)
     name = CharField(255)

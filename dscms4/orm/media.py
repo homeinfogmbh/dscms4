@@ -13,13 +13,14 @@ __all__ = ['MediaSettings', 'MediaFile']
 
 
 BINARY_FACTOR = 1024
-KIBIBYTE = BINARY_FACTOR
-MEBIBYTE = BINARY_FACTOR * KIBIBYTE
-GIBIBATE = BINARY_FACTOR * MEBIBYTE
+BYTE = 1
+KIBIBYTE = BYTE * BINARY_FACTOR
+MEBIBYTE = KIBIBYTE * BINARY_FACTOR
+GIBIBATE = MEBIBYTE * BINARY_FACTOR
 
 DEFAULT_QUOTA = 5 * GIBIBATE    # 5.0 GiB.
 
-PARAMETER_ERROR = TypeError('Must specify either file_id or bytes.')
+PARAMETER_ERROR = TypeError('Must specify either file ID or bytes.')
 
 
 def check_quota(customer, bytes_):

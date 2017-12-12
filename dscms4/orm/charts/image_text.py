@@ -75,17 +75,6 @@ class ImageText(DSCMS4Model, Chart):
         dictionary['images'] = tuple(self.images)
         return dictionary
 
-    def delete_instance(self, recursive=False, delete_nullable=False):
-        """Deletes related models and this model."""
-        for chart_text in self.chart_texts:
-            chart_text.delete_instance()
-
-        for chart_image in self.chart_images:
-            chart_image.delete_instance()
-
-        super().delete_instance(
-            recursive=recursive, delete_nullable=delete_nullable)
-
 
 class Image(DSCMS4Model):
     """Image for an ImageTextChart."""
@@ -93,7 +82,8 @@ class Image(DSCMS4Model):
     class Meta:
         db_table = 'chart_image_text_image'
 
-    chart = ForeignKeyField(ImageText, db_column='image_text_chart')
+    chart = ForeignKeyField(
+        ImageText, db_column='image_text_chart', on_delete='CASCADE')
     image = ForeignKeyField(MediaFile, db_column='image')
 
     @classmethod
@@ -111,7 +101,8 @@ class Text(DSCMS4Model):
     class Meta:
         db_table = 'chart_image_text_text'
 
-    chart = ForeignKeyField(ImageText, db_column='image_text_chart')
+    chart = ForeignKeyField(
+        ImageText, db_column='image_text_chart', on_delete='CASCADE')
     text = TextField()
 
     @classmethod
