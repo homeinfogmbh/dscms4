@@ -4,16 +4,10 @@ from sys import stderr
 from contextlib import suppress
 
 from peewee import ForeignKeyField, SmallIntegerField, CharField, TextField
-from homeinfo.crm import Customer
 
 from .common import DSCMS4Model, CustomerModel
 
-__all__ = [
-    'Ticker',
-    'TickerText',
-    'TickerURL',
-    'TickerTextMapping',
-    'TickerURLMapping']
+__all__ = ['Ticker', 'Text', 'URL']
 
 
 def create_tables():
@@ -40,6 +34,16 @@ class Ticker(DSCMS4Model, CustomerModel):
         ticker.save()
         return ticker
 
+    @property
+    def texts(self):
+        """Yields the ticker's texts."""
+        return Text.select().where(Text.ticker == self)
+
+    @property
+    def urls(self):
+        """Yields the ticker's URLs."""
+        return URL.select().where(URL.ticker == self)
+
     def to_dict(self, recursive=False):
         """Returns a JSON-compliant dictionary."""
         dictionary = {'name': self.name}
@@ -62,20 +66,21 @@ class Ticker(DSCMS4Model, CustomerModel):
         self.save()
 
 
-class TickerText(DSCMS4Model, CustomerModel):
+class Text(DSCMS4Model):
     """Text for a ticker."""
 
     class Meta:
         db_table = 'ticker_text'
 
+    ticker = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
     text = TextField()
     index = SmallIntegerField()
 
     @classmethod
-    def from_dict(cls, customer, dictionary):
+    def from_dict(cls, ticker, dictionary):
         """Creates a ticker text from the given dictionary."""
         ticker_text = cls()
-        ticker_text.customer = customer
+        ticker_text.ticker = ticker
         ticker_text.text = dictionary['text']
         ticker_text.index = dictionary.get('index', 0)
         ticker_text.save()
@@ -98,20 +103,21 @@ class TickerText(DSCMS4Model, CustomerModel):
         self.save()
 
 
-class TickerURL(DSCMS4Model, CustomerModel):
+class URL(DSCMS4Model):
     """Text for a ticker."""
 
     class Meta:
         db_table = 'ticker_url'
 
+    ticker = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
     url = CharField(255)
     index = SmallIntegerField()
 
     @classmethod
-    def from_dict(cls, customer, dictionary):
+    def from_dict(cls, ticker, dictionary):
         """Creates a ticker URL from the given dictionary."""
         ticker_url = cls()
-        ticker_url.customer = customer
+        ticker_url.ticker = ticker
         ticker_url.url = dictionary['url']
         ticker_url.index = dictionary.get('index', 0)
         ticker_url.save()
@@ -134,30 +140,4 @@ class TickerURL(DSCMS4Model, CustomerModel):
         self.save()
 
 
-class TickerTextMapping(DSCMS4Model):
-    """Ticker-text mapping."""
-
-    class Meta:
-        db_table = 'ticker_texts'
-
-    ticker = ForeignKeyField(
-        Ticker, db_column='ticker', related_name='texts', on_delete='CASCADE')
-    text = ForeignKeyField(
-        TickerText, db_column='text', related_name='tickers',
-        on_delete='CASCADE')
-
-
-class TickerURLMapping(DSCMS4Model):
-    """Ticker-URL mapping."""
-
-    class Meta:
-        db_table = 'ticker_urls'
-
-    ticker = ForeignKeyField(
-        Ticker, db_column='ticker', related_name='urls', on_delete='CASCADE')
-    url = ForeignKeyField(
-        TickerURL, db_column='url', related_name='tickers',
-        on_delete='CASCADE')
-
-
-MODELS = (Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping)
+MODELS = (Ticker, Text, URL)
