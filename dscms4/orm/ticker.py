@@ -50,11 +50,9 @@ class Ticker(DSCMS4Model, CustomerModel):
 
         if recursive:
             dictionary['texts'] = [
-                ticker_text.text.to_dict() for
-                ticker_text in self.texts]
+                ticker_text.text.to_dict() for ticker_text in self.texts]
             dictionary['urls'] = [
-                ticker_url.url.to_dict() for
-                ticker_url in self.urls]
+                ticker_url.url.to_dict() for ticker_url in self.urls]
 
         return dictionary
 
