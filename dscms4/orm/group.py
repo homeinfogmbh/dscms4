@@ -199,7 +199,8 @@ class GroupMemberTerminal(DSCMS4Model, GroupMember):
         """Meta information for the database model."""
         db_table = 'group_member_terminal'
 
-    terminal = ForeignKeyField(Terminal, db_column='terminal')
+    terminal = ForeignKeyField(
+        Terminal, db_column='terminal', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, terminal):
@@ -234,7 +235,7 @@ class GroupMemberComCatAccount(DSCMS4Model, GroupMember):
         db_table = 'group_member_comcat_account'
 
     comcat_account = ForeignKeyField(
-        ComCatAccount, db_column='comcat_account')
+        ComCatAccount, db_column='comcat_account', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, comcat_account):
@@ -270,7 +271,7 @@ class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
         db_table = 'group_member_apartment_building'
 
     apartment_building = ApartmentBuilding(
-        Terminal, db_column='apartment_building')
+        Terminal, db_column='apartment_building', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, apartment_building):

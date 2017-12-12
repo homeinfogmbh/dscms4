@@ -30,7 +30,8 @@ class TerminalBaseChart(DSCMS4Model, TerminalContent):
     class Meta:
         db_table = 'terminal_base_chart'
 
-    content = ForeignKeyField(BaseChart, db_column='base_chart')
+    content = ForeignKeyField(
+        BaseChart, db_column='base_chart', on_delete='CASCADE')
 
 
 class TerminalConfiguration(DSCMS4Model, TerminalContent):
@@ -39,7 +40,8 @@ class TerminalConfiguration(DSCMS4Model, TerminalContent):
     class Meta:
         db_table = 'terminal_configuration'
 
-    content = ForeignKeyField(Configuration, db_column='configuration')
+    content = ForeignKeyField(
+        Configuration, db_column='configuration', on_delete='CASCADE')
 
 
 class TerminalMenu(DSCMS4Model, TerminalContent):
@@ -48,7 +50,7 @@ class TerminalMenu(DSCMS4Model, TerminalContent):
     class Meta:
         db_table = 'terminal_menu'
 
-    content = ForeignKeyField(Menu, db_column='menu')
+    content = ForeignKeyField(Menu, db_column='menu', on_delete='CASCADE')
 
 
 class TerminalTicker(DSCMS4Model, TerminalContent):
@@ -57,4 +59,4 @@ class TerminalTicker(DSCMS4Model, TerminalContent):
     class Meta:
         db_table = 'terminal_ticker'
 
-    content = ForeignKeyField(Ticker, db_column='ticker')
+    content = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
