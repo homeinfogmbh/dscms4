@@ -84,12 +84,6 @@ def _get_chart(ident):
         raise NoSuchChart()
 
 
-def _delete_from_contents(chart):
-    """Removes the chart from all possible content containers."""
-
-    pass    # TODO: implement.
-
-
 def list():
     """Lists charts or retrieves single chart."""
 
