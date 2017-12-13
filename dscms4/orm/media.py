@@ -80,20 +80,19 @@ class MediaSettings(DSCMS4Model, CustomerModel):
 class MediaFile(DSCMS4Model, CustomerModel):
     """A media file of the respective customer."""
 
-    file_id = IntegerField()
-    file = FileProperty(file_id)
+    file = IntegerField()
+    data = FileProperty(file)
 
     @classmethod
-    def add(cls, customer, bytes_, ignore_quota=False):
+    def from_bytes(cls, data, customer=None, ignore_quota=False):
         """Adds a new media file by bytes."""
         with suppress(DoesNotExist):
-            return cls.by_sha256sum(sha256(bytes_).hexdigest())
+            return cls.by_sha256sum(sha256(data).hexdigest())
 
-        if ignore_quota or check_quota(customer, bytes_):
+        if ignore_quota or check_quota(customer, data):
             record = cls()
+            record.data = data
             record.customer = customer
-            record.file = bytes_
-            record.save()
             return record
 
     @classmethod
@@ -101,14 +100,19 @@ class MediaFile(DSCMS4Model, CustomerModel):
         """Returns the respective media file by
         its's corresponding SHA-256 checksum.
         """
-        return cls.get(cls.file_id == File.get(File.sha256sum == sha256sum).id)
+        return cls.get(cls.file == File.get(File.sha256sum == sha256sum).id)
 
     def to_dict(self):
         """Returns a JSON compliant dictionary of the file's meta data."""
         dictionary = super().to_dict()
-        file = self.file
+        file = self.data
         dictionary.update({
             'mimetype': file.mimetype,
             'sha256sum': file.sha256sum,
             'size': file.size})
         return dictionary
+
+    def delete_instance(self, *args, **kwargs):
+        """Deletes the respective file."""
+        self.data.unlink()
+        return super().delete_instance(*args, **kwargs)
