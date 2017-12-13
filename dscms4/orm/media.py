@@ -87,8 +87,7 @@ class MediaFile(DSCMS4Model, CustomerModel):
     def add(cls, customer, bytes_, ignore_quota=False):
         """Adds a new media file by bytes."""
         with suppress(DoesNotExist):
-            file = File.get(File.sha256sum == sha256(bytes_).hexdigest())
-            return cls.get(cls.file == file)
+            return cls.by_sha256sum(sha256(bytes_).hexdigest())
 
         if ignore_quota or check_quota(customer, bytes_):
             record = cls()
@@ -96,6 +95,13 @@ class MediaFile(DSCMS4Model, CustomerModel):
             record.file = bytes_
             record.save()
             return record
+
+    @classmethod
+    def by_sha256sum(cls, sha256sum):
+        """Returns the respective media file by
+        its's corresponding SHA-256 checksum.
+        """
+        return cls.get(cls.file_id == File.get(File.sha256sum == sha256sum).id)
 
     def to_dict(self):
         """Returns a JSON compliant dictionary of the file's meta data."""
