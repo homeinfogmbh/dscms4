@@ -11,10 +11,10 @@ from dscms4.orm.content.group import GroupConfiguration
 from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.group import _get_group
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the configurations in the respective group."""
 
     return JSON([
@@ -55,3 +55,9 @@ def delete(gid, ident):
 
     group_configuration.delete_instance()
     return ConfigurationDeletedFromGroup()
+
+
+ROUTES = (
+    ('/content/group/<int:gid>/configuration', 'GET', get),
+    ('/content/group/<int:gid>/configuration', 'POST', add),
+    ('/content/group/<int:gid>/configuration/<int:ident>', 'DELETE', delete))

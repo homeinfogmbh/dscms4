@@ -10,10 +10,10 @@ from dscms4.orm.content.group import GroupMenu
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.menu import _get_menu
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTE']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
     return JSON([group_menu.menu.id for group_menu in GroupMenu.select().where(
@@ -50,3 +50,9 @@ def delete(gid, ident):
 
     group_menu.delete_instance()
     return MenuDeletedFromGroup()
+
+
+ROUTES = (
+    ('/content/group/<int:gid>/menu', 'GET', get),
+    ('/content/group/<int:gid>/menu', 'POST', add),
+    ('/content/group/<int:gid>/menu/<int:ident>', 'DELETE', delete))

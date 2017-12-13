@@ -11,13 +11,10 @@ from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.terminal import _get_terminal
 
-__all__ = [
-    'list',
-    'add',
-    'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the configurations
     in the respective terminal.
     """
@@ -60,3 +57,10 @@ def delete(gid, ident):
 
     terminal_configuration.delete_instance()
     return ConfigurationDeletedFromTerminal()
+
+
+ROUTES = (
+    ('/content/terminal/<int:gid>/configuration', 'GET', get),
+    ('/content/terminal/<int:gid>/configuration', 'POST', add),
+    ('/content/terminal/<int:gid>/configuration/<int:ident>', 'DELETE', delete)
+)

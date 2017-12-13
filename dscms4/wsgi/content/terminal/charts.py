@@ -11,10 +11,10 @@ from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.terminal import _get_terminal
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(tid):
+def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
     return JSON([tbc.chart.id for tbc in TerminalBaseChart.select().where(
@@ -53,3 +53,9 @@ def delete(tid, ident):
 
     terminal_chart.delete_instance()
     return ChartDeletedFromTerminal()
+
+
+ROUTES = (
+    ('/content/terminal/<int:gid>/chart', 'GET', get),
+    ('/content/terminal/<int:gid>/chart', 'POST', add),
+    ('/content/terminal/<int:gid>/chart/<int:ident>', 'DELETE', delete))

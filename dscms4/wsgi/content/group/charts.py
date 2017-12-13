@@ -10,10 +10,10 @@ from dscms4.orm.content.group import GroupBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.group import _get_group
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
     return JSON([gbc.chart.id for gbc in GroupBaseChart.select().where(
@@ -51,3 +51,9 @@ def delete(gid, ident):
 
     group_chart.delete_instance()
     return ChartDeletedFromGroup()
+
+
+ROUTES = (
+    ('/content/group/<int:gid>/chart', 'GET', get),
+    ('/content/group/<int:gid>/chart', 'POST', add),
+    ('/content/group/<int:gid>/chart/<int:ident>', 'DELETE', delete))

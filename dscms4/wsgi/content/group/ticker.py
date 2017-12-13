@@ -10,10 +10,10 @@ from dscms4.orm.content.group import GroupTicker
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.ticker import _get_ticker
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
     return JSON([
@@ -51,3 +51,9 @@ def delete(gid, ident):
 
     group_ticker.delete_instance()
     return TickerDeletedFromGroup()
+
+
+ROUTES = (
+    ('/content/group/<int:gid>/ticker', 'GET', get),
+    ('/content/group/<int:gid>/ticker', 'POST', add),
+    ('/content/group/<int:gid>/ticker/<int:ident>', 'DELETE', delete))

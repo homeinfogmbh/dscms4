@@ -4,14 +4,13 @@ from peewee import DoesNotExist
 
 from wsgilib import JSON
 
-from dscms4.wsgi.common import DSCMS4Service
-from dscms4.wsgi.messages import ChartDataIncomplete, ChartDataInvalid, \
+from dscms4.wsgi.messages.charts import ChartDataIncomplete, ChartDataInvalid,\
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched, InvalidId
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 
-__all__ = ['list', 'get', 'add', 'delete', 'patch']
+__all__ = ['ROUTES']
 
 
 def _parse_chart_types(string, sep=','):
@@ -84,16 +83,16 @@ def _get_chart(ident):
         raise NoSuchChart()
 
 
-def list():
-    """Lists charts or retrieves single chart."""
+def lst():
+    """Lists IDs of charts of the respective customer."""
 
     return JSON([chart.to_dict() for chart in _get_charts()])
 
 
 def get(ident):
-    """Lists charts or retrieves single chart."""
+    """Returns the respective chart of the current customer."""
 
-    return JSON(_get_chart())
+    return JSON(_get_chart(ident))
 
 
 def add():
@@ -136,3 +135,11 @@ def patch(ident):
         _delete_from_contents(chart)
 
     return ChartPatched()
+
+
+ROUTES = (
+    ('/charts', 'GET', lst),
+    ('/charts/<int:ident>', 'GET', get),
+    ('/charts', 'POST', add),
+    ('/charts/<int:ident>', 'DELETE', delete),
+    ('/charts/<int:ident>', 'PATCH', patch))

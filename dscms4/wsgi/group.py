@@ -8,16 +8,37 @@ from his.api.handlers import AuthorizedService
 from dscms4.orm.group import Group, GROUP_MEMBERS
 from dscms4.messages.group import NoSuchGroup
 
-__all__ = ['get_group']
+__all__ = ['ROUTES']
 
 
-def get_group(gid):
+def _get_group(gid):
     """Returns the respective group."""
 
     try:
         return Group.get((Group.id == gid) & (Group.customer == CUSTOMER.id))
     except DoesNotExist:
         raise NoSuchGroup()
+
+
+def lst():
+    """Lists IDs of groups of the respective customer."""
+
+    return JSON([group.id for group in Group.select().where(
+        Group.customer == CUSTOMER.id)])
+
+
+def get(ident):
+    """Returns the respective group."""
+
+    return JSON(_get_group().to_dict())
+
+
+def add():
+    """Adds a new group."""
+
+    group = Group.from_dict(DATA.json, customer=CUSTOMER.id)
+    group.save()
+    return GroupAdded(id=group.id)
 
 
 @routed('/group/[id:int]')
@@ -123,3 +144,11 @@ class GroupMemberHandler(AuthorizedService):
         """Deletes group members."""
         self.member.delete_instance()
         return MemberDeleted()
+
+
+ROUTES = (
+    ('/group', 'GET', lst),
+    ('/group/<int:ident>', 'GET', get),
+    ('/group', 'POST', add),
+    ('/group/<int:ident>', 'PATCH', patch),
+    ('/group/<int:ident>', 'DELETE', delete))

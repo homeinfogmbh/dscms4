@@ -10,10 +10,10 @@ from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.menu import _get_menu
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
@@ -52,3 +52,9 @@ def delete(gid, ident):
 
     terminal_menu.delete_instance()
     return MenuDeletedFromTerminal()
+
+
+ROUTES = (
+    ('/content/terminal/<int:gid>/menu', 'GET', get),
+    ('/content/terminal/<int:gid>/menu', 'POST', add),
+    ('/content/terminal/<int:gid>/menu/<int:ident>', 'DELETE', delete))

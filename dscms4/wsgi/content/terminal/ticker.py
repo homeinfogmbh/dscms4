@@ -10,10 +10,10 @@ from dscms4.orm.content.terminal import TerminalTicker
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.ticker import _get_ticker
 
-__all__ = ['list', 'add', 'delete']
+__all__ = ['ROUTES']
 
 
-def list(gid):
+def get(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
@@ -54,3 +54,9 @@ def delete(gid, ident):
 
     terminal_ticker.delete_instance()
     return TickerDeletedFromTerminal()
+
+
+ROUTES = (
+    ('/content/terminal/<int:gid>/ticker', 'GET', get),
+    ('/content/terminal/<int:gid>/ticker', 'POST', add),
+    ('/content/terminal/<int:gid>/ticker/<int:ident>', 'DELETE', delete))
