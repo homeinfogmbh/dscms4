@@ -11,7 +11,7 @@ from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 __all__ = ['charts_of', 'chart_of', 'check_base_charts']
 
 
-CheckResult = namedtuple('CheckResult', 'orphans, ambiguous')
+CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
 
 
 def charts_of(base_chart):
@@ -38,6 +38,7 @@ def chart_of(base_chart):
 
 def check_base_charts(verbose=False):
     """Checks base charts."""
+
     orphans = []
     ambiguous = []
 
@@ -55,3 +56,15 @@ def check_base_charts(verbose=False):
                 print(base_chart, '↔', chart)
 
     return CheckResult(orphans, ambiguous)
+
+
+def delete_outdated_charts(customer):
+    """Deletes outdated charts of the respective customer."""
+
+    for chart in BaseChart.select().where(BaseChart.customer == customer):
+        if not chart.active:
+            # TODO: Delete chart or mark as trashed?
+            #chart.delete_instance()
+            #chart.trashed = True
+            #chart.save()
+            pass

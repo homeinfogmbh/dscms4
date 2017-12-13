@@ -59,13 +59,11 @@ class BaseChart(DSCMS4Model, CustomerModel):
         """Determines whether the chart is considered active."""
         now = datetime.now()
 
-        if self.display_from is not None:
-            if self.display_from > now:
-                return False
+        if self.display_from is not None and self.display_from > now:
+            return False
 
-        if self.display_until is not None:
-            if self.display_until < now:
-                return False
+        if self.display_until is not None and self.display_until < now:
+            return False
 
         return True
 
@@ -99,6 +97,11 @@ class Chart:
     def customer(self, customer):
         """Sets the base chart's customer."""
         self.base.customer = customer
+
+    @property
+    def trashed(self):
+        """Determines whether this chart is considered trashed."""
+        return self.base.trashed
 
     def patch(self, dictionary):
         """Pathes the chart with the provided dictionary."""

@@ -7,19 +7,13 @@ from peewee import DoesNotExist, ForeignKeyField, CharField, TextField
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
-try:
-    from his.comcat import ComCatAccount
-except ImportError:
-    from dscms4.orm.mockups import ComCatAccount
-
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
-    MissingData, NoSuchTerminal, NoSuchComCatAccount, NoSuchApartment
+    MissingData, NoSuchTerminal, NoSuchApartment
 
 __all__ = [
     'Group',
     'GroupMemberTerminal',
-    'GroupMemberComCatAccount',
     'GroupMemberApartmentBuilding',
     'GROUP_MEMBERS',
     'MODELS']
@@ -45,13 +39,6 @@ class MemberProxy:
             yield mapping.terminal
 
     @property
-    def comcat_accounts(self):
-        """Yields ComCat accounts."""
-        for mapping in GroupMemberComCatAccount.select().where(
-                GroupMemberComCatAccount.group == self.group):
-            yield mapping.comcat_account
-
-    @property
     def apartment_buildings(self):
         """Yields apartment buildings."""
         for mapping in GroupMemberApartmentBuilding.select().where(
@@ -62,12 +49,10 @@ class MemberProxy:
         """Adds a member to the respective group."""
         if isinstance(member, Terminal):
             member = GroupMemberTerminal.add(self.group, member)
-        elif isinstance(member, ComCatAccount):
-            member = GroupMemberComCatAccount.add(self.group, member)
         elif isinstance(member, ApartmentBuilding):
             member = GroupMemberApartmentBuilding.add(self.group, member)
         else:
-            raise UnsupportedMember(member) from None
+            raise UnsupportedMember(member)
 
         member.save()
         return member
@@ -78,11 +63,6 @@ class MemberProxy:
             for mapping in GroupMemberTerminal.select().where(
                     (GroupMemberTerminal.group == self.group) &
                     (GroupMemberTerminal.terminal == member)):
-                mapping.delete_instance()
-        elif isinstance(member, ComCatAccount):
-            for mapping in GroupMemberComCatAccount.select().where(
-                    (GroupMemberComCatAccount.group == self.group) &
-                    (GroupMemberComCatAccount.comcat_account == member)):
                 mapping.delete_instance()
         elif isinstance(member, ApartmentBuilding):
             for mapping in GroupMemberApartmentBuilding.select().where(
@@ -109,14 +89,10 @@ class Group(DSCMS4Model, CustomerModel):
             (cls.customer == customer) & (cls.parent >> None))
 
     @classmethod
-    def add(cls, customer, name, description=None, parent=None):
-        """Adds a new group."""
-        record = cls()
+    def from_dict(cls, dictionary, customer=None):
+        """Creates a group from the respective dictionary."""
+        record = super().from_dict(dictionary)
         record.customer = customer
-        record.name = name
-        record.description = description
-        record.parent = parent
-        record.save()
         return record
 
     @classmethod
@@ -213,54 +189,20 @@ class GroupMemberTerminal(DSCMS4Model, GroupMember):
     @classmethod
     def from_dict(cls, dictionary, group):
         """Creates a new record from the provided dictionary."""
-        tid = dictionary.get('tid')
-
-        if tid is None:
-            raise MissingData('tid') from None
+        try:
+            tid = int(dictionary['tid'])
+        except (KeyError, TypeError):
+            raise MissingData('tid')
+        except ValueError:
+            raise InvalidData('tid')
 
         try:
             terminal = Terminal.get(
                 (Terminal.customer == group.customer) & (Terminal.tid == tid))
         except DoesNotExist:
-            raise NoSuchTerminal() from None
+            raise NoSuchTerminal()
 
         return cls.add(group, terminal)
-
-
-class GroupMemberComCatAccount(DSCMS4Model, GroupMember):
-    """ComCat accounts as members in groups."""
-
-    class Meta:
-        """Meta information for the database model."""
-        db_table = 'group_member_comcat_account'
-
-    comcat_account = ForeignKeyField(
-        ComCatAccount, db_column='comcat_account', on_delete='CASCADE')
-
-    @classmethod
-    def add(cls, group, comcat_account):
-        """Adds a new record."""
-        record = cls()
-        record.group = group
-        record.comcat_account = comcat_account
-        return record
-
-    @classmethod
-    def from_dict(cls, dictionary, group):
-        """Creates a new record from the provided dictionary."""
-        ident = dictionary.get('id')
-
-        if ident is None:
-            raise MissingData('id') from None
-
-        try:
-            comcat_account = ComCatAccount.get(
-                (ComCatAccount.customer == group.customer)
-                & (ComCatAccount.id == ident))
-        except DoesNotExist:
-            raise NoSuchComCatAccount() from None
-
-        return cls.add(group, comcat_account)
 
 
 class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
@@ -284,26 +226,25 @@ class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
     @classmethod
     def from_dict(cls, dictionary, group=None):
         """Creates a new record from the provided dictionary."""
-        ident = dictionary.get('id')
-
-        if ident is None:
-            raise MissingData('id') from None
+        try:
+            ident = int(dictionary['id'])
+        except (KeyError, TypeError):
+            raise MissingData('id')
+        except ValueError:
+            raise InvalidData('id')
 
         try:
             apartment_building = ApartmentBuilding.get(
                 (ApartmentBuilding.customer == group.customer)
                 & (ApartmentBuilding.id == ident))
         except DoesNotExist:
-            raise NoSuchApartment() from None
+            raise NoSuchApartment()
 
         return cls.add(group, apartment_building)
 
 
 GROUP_MEMBERS = {
     'terminal': GroupMemberTerminal,
-    'ccacc': GroupMemberComCatAccount,
     'building': GroupMemberApartmentBuilding}
 
-MODELS = (
-    Group, GroupMemberTerminal, GroupMemberComCatAccount,
-    GroupMemberApartmentBuilding)
+MODELS = (Group, GroupMemberTerminal, GroupMemberApartmentBuilding)
