@@ -2,9 +2,10 @@
 
 from peewee import DoesNotExist
 
+from flask import request
 from wsgilib import JSON
 
-from dscms4.wsgi.messages.charts import ChartDataIncomplete, ChartDataInvalid,\
+from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched, InvalidId
 from dscms4.orm.charts import CHARTS
@@ -132,7 +133,7 @@ def patch(ident):
     chart.patch(DATA.json)
 
     if chart.trashed:
-        _delete_from_contents(chart)
+        chart.delete_instance()
 
     return ChartPatched()
 
