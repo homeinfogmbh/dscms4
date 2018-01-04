@@ -3,7 +3,7 @@
 
 from his.api.messages import locales, HISMessage
 
-__all__ = ['DSCMS4Message']
+__all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified']
 
 
 @locales('/etc/his.d/locale/dscms4.ini')

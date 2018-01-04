@@ -1,6 +1,7 @@
 """Configurations controller."""
 
-from his import CUSTOMER
+from his import CUSTOMER, DATA
+from peewee import DoesNotExist
 from wsgilib import JSON
 
 from dscms4.wsgi.messages.configuration import NoSuchConfiguration, \
