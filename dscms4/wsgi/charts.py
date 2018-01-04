@@ -3,11 +3,13 @@
 from peewee import DoesNotExist
 
 from flask import request
+from his import CUSTOMER, DATA
 from wsgilib import JSON
 
 from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
-    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched, InvalidId
+    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
+from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 
@@ -58,7 +60,7 @@ def _get_chart_id(ident):
     """Returns the specified chart ID."""
 
     try:
-        return int(self.resource)
+        return int(ident)
     except TypeError:
         raise NoChartIdSpecified()
     except ValueError:
