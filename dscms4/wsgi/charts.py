@@ -4,6 +4,7 @@ from peewee import DoesNotExist
 
 from flask import request
 from his import CUSTOMER, DATA
+from werkzeug.local import LocalProxy
 from wsgilib import JSON
 
 from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
@@ -13,7 +14,7 @@ from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.exceptions import InvalidData, MissingData
 
-__all__ = ['ROUTES']
+__all__ = ['CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
 
 def _parse_chart_types(string, sep=','):
@@ -32,14 +33,16 @@ def _get_chart_types():
     try:
         chart_types = request.args['types']
     except KeyError:
-        for _, chart_type in CHARTS.items():
-            yield chart_type
+        yield from CHARTS.values()
     else:
         for chart_type in _parse_chart_types(chart_types):
             try:
                 yield CHARTS[chart_type]
             except KeyError:
                 raise InvalidChartType()
+
+
+CHART_TYPES = LocalProxy(_get_chart_types)
 
 
 def _get_chart_type():
@@ -56,6 +59,9 @@ def _get_chart_type():
         raise InvalidChartType()
 
 
+CHART_TYPE = LocalProxy(_get_chart_type)
+
+
 def _get_chart_id(ident):
     """Returns the specified chart ID."""
 
@@ -70,18 +76,20 @@ def _get_chart_id(ident):
 def _get_charts():
     """Lists the available charts."""
 
-    for typ in _get_chart_types():
+    for typ in CHART_TYPES:
         for chart in typ.select().where(typ.customer == CUSTOMER.id):
             yield chart
+
+
+CHARTS = LocalProxy(_get_charts)
 
 
 def _get_chart(ident):
     """Returns the selected chart."""
 
-    typ = _get_chart_type()
-
     try:
-        return typ.get((typ.id == ident) & (typ.customer == CUSTOMER.id))
+        return CHART_TYPE.get(
+            (CHART_TYPE.id == ident) & (CHART_TYPE.customer == CUSTOMER.id))
     except DoesNotExist:
         raise NoSuchChart()
 
@@ -89,7 +97,7 @@ def _get_chart(ident):
 def lst():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_dict() for chart in _get_charts()])
+    return JSON([chart.to_dict() for chart in CHARTS])
 
 
 def get(ident):
@@ -102,10 +110,9 @@ def add():
     """Adds new charts."""
 
     chart_dict = DATA.json
-    chart_type = _get_chart_type()
 
     try:
-        chart = chart_type.from_dict(chart_dict)
+        chart = CHART_TYPE.from_dict(chart_dict)
     except MissingData as missing_data:
         raise ChartDataIncomplete(missing_data.missing)
     except InvalidData as invalid_data:
@@ -117,10 +124,8 @@ def add():
 def delete(ident):
     """Deletes the specified chart."""
 
-    typ = _get_chart_type()
-
     try:
-        chart = typ.get(typ.id == ident)
+        chart = CHART_TYPE.get(CHART_TYPE.id == ident)
     except DoesNotExist:
         raise NoSuchChart()
 
@@ -141,8 +146,8 @@ def patch(ident):
 
 
 ROUTES = (
-    ('/charts', 'GET', lst),
-    ('/charts/<int:ident>', 'GET', get),
-    ('/charts', 'POST', add),
-    ('/charts/<int:ident>', 'DELETE', delete),
-    ('/charts/<int:ident>', 'PATCH', patch))
+    ('GET', '/charts', lst, 'list_charts'),
+    ('GET', '/charts/<int:ident>', get, 'get_charts'),
+    ('POST', '/charts', add, 'add_chart'),
+    ('DELETE', '/charts/<int:ident>', delete, 'delete_chart'),
+    ('PATCH', '/charts/<int:ident>', patch, 'patch_chart'))

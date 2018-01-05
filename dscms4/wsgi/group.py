@@ -2,11 +2,12 @@
 
 from peewee import DoesNotExist
 
+from his import CUSTOMER, DATA
 from wsgilib import JSON
-from his.api.handlers import AuthorizedService
 
+from dscms4.messages.group import NoSuchGroup, NoSuchMemberType, NoSuchMember,\
+    GroupAdded, GroupPatched, GroupDeleted, MemberAdded, MemberDeleted
 from dscms4.orm.group import Group, GROUP_MEMBERS
-from dscms4.messages.group import NoSuchGroup
 
 __all__ = ['ROUTES']
 
@@ -20,6 +21,15 @@ def _get_group(gid):
         raise NoSuchGroup()
 
 
+def _get_member_class(member_type):
+    """Returns the respective member class."""
+
+    try:
+        return GROUP_MEMBERS[member_type]
+    except KeyError:
+        raise NoSuchMemberType()
+
+
 def lst():
     """Lists IDs of groups of the respective customer."""
 
@@ -30,7 +40,7 @@ def lst():
 def get(ident):
     """Returns the respective group."""
 
-    return JSON(_get_group().to_dict())
+    return JSON(_get_group(ident).to_dict())
 
 
 def add():
@@ -41,114 +51,71 @@ def add():
     return GroupAdded(id=group.id)
 
 
-@routed('/group/[id:int]')
-class GroupHandler(AuthorizedService):
-    """Handles groups."""
+def patch(ident):
+    """Patches the respective group."""
 
-    @property
-    def groups(self):
-        """Yields all groups of the current customer."""
-        return Group.select().where(Group.customer == self.customer)
+    try:
+        _get_group(ident).patch(DATA.json)
+    except Exception:
+        # TODO: implement
+        pass
 
-    @property
-    @lru_cache(maxsize=1)
-    def group(self):
-        """Returns the requested group."""
-        if self.vars['id'] is None:
-            raise NoGroupSpecified()
-
-        try:
-            return Group.get(
-                (Group.id == self.vars['id'])
-                & (Group.customer == self.customer))
-        except DoesNotExist:
-            raise NoSuchGroup() from None
-
-    def get(self):
-        """Lists a specific group or all groups if no group is specified."""
-        if self.vars['id'] is None:
-            if self.query.get('tree', False):
-                return JSON(Group.tree_for(self.customer))
-
-            return JSON([group.to_dict() for group in self.groups])
-
-        return JSON(self.group.to_dict())
-
-    def post(self):
-        """Adds a new group."""
-        group = Group.from_dict(self.data.json, customer=self.customer)
-        group.save()
-        return GroupAdded(id=group.id)
+    return GroupPatched()
 
 
-@routed('/group/<group_id:int>/<type>/[id:int]')
-class GroupMemberHandler(AuthorizedService):
-    """Handles groups."""
+def delete(ident):
+    """Deletes the respective group."""
 
-    @property
-    @lru_cache(maxsize=1)
-    def group(self):
-        """Returns the requested group."""
-        if self.vars['group_id'] is None:
-            raise NoGroupSpecified()
+    _get_group(ident).delete_instance()
+    return GroupDeleted()
 
-        try:
-            return Group.get(
-                (Group.id == self.vars['group_id'])
-                & (Group.customer == self.customer))
-        except DoesNotExist:
-            raise NoSuchGroup() from None
 
-    @property
-    @lru_cache(maxsize=1)
-    def model(self):
-        """Returns the respective member model."""
-        try:
-            return GROUP_MEMBERS[self.vars['type']]
-        except KeyError:
-            raise UnsupportedMemberType() from None
+def get_members(group_id):
+    """Returns the group's members."""
 
-    @property
-    def members(self):
-        """Yields all members of the respective group of the speficied type."""
-        return self.model.select().where(self.model.group == self.group)
+    group = _get_group(group_id)
+    members = {
+        member_type: [
+            member.to_dict() for member in member_class.select().where(
+                member_class.group == group)]
+        for member_type, member_class in GROUP_MEMBERS.items()}
+    return JSON(members)
 
-    @property
-    @lru_cache(maxsize=1)
-    def member(self):
-        """Returns the requested group member."""
-        if self.vars['id'] is None:
-            raise NoMemberSpecified()
 
-        try:
-            return self.model.get(
-                (self.model.id == self.vars['member_id'])
-                & (self.model.customer == self.customer))
-        except DoesNotExist:
-            raise NoSuchMember() from None
+def add_member(group_id, member_type):
+    """Adds the member to the respective group."""
 
-    def get(self):
-        """Handles GET requests."""
-        if self.vars['id'] is None:
-            return JSON([member.to_dict() for member in self.members])
+    group = _get_group(group_id)
+    member_class = _get_member_class(member_type)
+    member = member_class.from_dict(group, DATA.json)
+    member.save()
+    return MemberAdded()
 
-        return JSON(self.member.to_dict())
 
-    def post(self):
-        """Adds new group members."""
-        record = self.model.from_dict(self.data.json, group=self.group)
-        record.save()
-        return MemberAdded(id=record.id)
+def delete_member(group_id, member_type, member_id):
+    """Deletes the respective group member."""
 
-    def delete(self):
-        """Deletes group members."""
-        self.member.delete_instance()
-        return MemberDeleted()
+    group = _get_group(group_id)
+    member_class = _get_member_class(member_type)
+
+    try:
+        member = member_class.get(
+            (member_class.group == group) & (member_class.id == member_id))
+    except DoesNotExist:
+        raise NoSuchMember()
+
+    member.delete_instance()
+    return MemberDeleted()
 
 
 ROUTES = (
-    ('/group', 'GET', lst),
-    ('/group/<int:ident>', 'GET', get),
-    ('/group', 'POST', add),
-    ('/group/<int:ident>', 'PATCH', patch),
-    ('/group/<int:ident>', 'DELETE', delete))
+    ('GET', '/group', lst, 'list_groups'),
+    ('GET', '/group/<int:ident>', get, 'get_group'),
+    ('POST', '/group', add, 'add_group'),
+    ('PATCH', '/group/<int:ident>', patch, 'patch_group'),
+    ('DELETE', '/group/<int:ident>', delete, 'delete_group'),
+    ('GET', '/group/<int:group_id>/member', get_members, 'get_group_members'),
+    ('POST', '/group/<int:group_id>/member/<member_type>', get_members,
+     'add_group_member'),
+    ('DELETE', '/group/<int:group_id>/member/<member_type>/<int:member_id>',
+     delete_member, 'delete_group_member'))

@@ -156,7 +156,6 @@ class Group(DSCMS4Model, CustomerModel):
         return dictionary
 
 
-
 class GroupMember:
     """An abstract group member model."""
 
@@ -187,7 +186,7 @@ class GroupMemberTerminal(DSCMS4Model, GroupMember):
         return record
 
     @classmethod
-    def from_dict(cls, dictionary, group):
+    def from_dict(cls, group, dictionary):
         """Creates a new record from the provided dictionary."""
         try:
             tid = int(dictionary['tid'])
@@ -224,7 +223,7 @@ class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
         return record
 
     @classmethod
-    def from_dict(cls, dictionary, group=None):
+    def from_dict(cls, group, dictionary):
         """Creates a new record from the provided dictionary."""
         try:
             ident = int(dictionary['id'])
