@@ -54,6 +54,7 @@ def delete(gid, ident):
 
 
 ROUTES = (
-    ('/content/group/<int:gid>/ticker', 'GET', get),
-    ('/content/group/<int:gid>/ticker', 'POST', add),
-    ('/content/group/<int:gid>/ticker/<int:ident>', 'DELETE', delete))
+    ('GET', '/content/group/<int:gid>/ticker', get, 'list_group_ticker'),
+    ('POST', '/content/group/<int:gid>/ticker', add, 'add_group_ticker'),
+    ('DELETE', '/content/group/<int:gid>/ticker/<int:ident>', delete,
+     'delete_group_ticker'))

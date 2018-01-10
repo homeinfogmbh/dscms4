@@ -53,6 +53,7 @@ def delete(gid, ident):
 
 
 ROUTES = (
-    ('/content/group/<int:gid>/menu', 'GET', get),
-    ('/content/group/<int:gid>/menu', 'POST', add),
-    ('/content/group/<int:gid>/menu/<int:ident>', 'DELETE', delete))
+    ('GET', '/content/group/<int:gid>/menu', get, 'list_group_menus'),
+    ('POST', '/content/group/<int:gid>/menu', add, 'add_group_menu'),
+    ('DELETE', '/content/group/<int:gid>/menu/<int:ident>', delete,
+     'delete_group_menu'))

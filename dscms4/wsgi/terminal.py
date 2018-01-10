@@ -1,4 +1,4 @@
-"""Terminal controller."""
+"""Terminal-related requests."""
 
 from peewee import DoesNotExist
 
@@ -7,7 +7,7 @@ from terminallib import Terminal
 
 from dscms4.messages.terminal import NoSuchTerminal
 
-__all__ = ['list', 'get']
+__all__ = ['ROUTES']
 
 
 def _get_terminal(tid):
@@ -31,3 +31,8 @@ def get(tid):
     """Returns the respective terminal."""
 
     return JSON(_get_terminal(tid).to_dict())
+
+
+ROUTES = (
+    ('GET', '/terminal', lst, 'list_terminals'),
+    ('GET', '/terminal/<int:tid>', get, 'get_terminal'))

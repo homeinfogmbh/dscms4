@@ -60,7 +60,9 @@ def delete(gid, ident):
 
 
 ROUTES = (
-    ('/content/terminal/<int:gid>/configuration', 'GET', get),
-    ('/content/terminal/<int:gid>/configuration', 'POST', add),
-    ('/content/terminal/<int:gid>/configuration/<int:ident>', 'DELETE', delete)
-)
+    ('GET', '/content/terminal/<int:gid>/configuration', get,
+     'list_terminal_configurations'),
+    ('POST', '/content/terminal/<int:gid>/configuration', add,
+     'add_terminal_configuration'),
+    ('DELETE', '/content/terminal/<int:gid>/configuration/<int:ident>', delete,
+     'delete_terminal_configuration'))
