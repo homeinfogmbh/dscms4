@@ -54,12 +54,7 @@ def add():
 def patch(ident):
     """Patches the respective group."""
 
-    try:
-        _get_group(ident).patch(DATA.json)
-    except Exception:
-        # TODO: implement
-        pass
-
+    _get_group(ident).patch(DATA.json)
     return GroupPatched()
 
 

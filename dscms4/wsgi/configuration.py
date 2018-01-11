@@ -1,14 +1,13 @@
 """Configurations controller."""
 
 from his import CUSTOMER, DATA
-from his.messages import IncompleteData
+from his.messages import IncompleteData, InvalidData, MissingData
 from peewee import DoesNotExist
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \
     ConfigurationAdded, ConfigurationPatched, ConfigurationDeleted
 from dscms4.orm.configuration import Configuration
-from dscms4.orm.exceptions import InvalidData, MissingData
 
 __all__ = ['ROUTES']
 

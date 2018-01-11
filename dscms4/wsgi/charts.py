@@ -4,6 +4,7 @@ from peewee import DoesNotExist
 
 from flask import request
 from his import CUSTOMER, DATA
+from his.messages import InvalidData, MissingData
 from werkzeug.local import LocalProxy
 from wsgilib import JSON
 
@@ -12,7 +13,6 @@ from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS
-from dscms4.orm.exceptions import InvalidData, MissingData
 
 __all__ = ['CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -121,18 +121,6 @@ def add():
     return ChartAdded(id=chart.id)
 
 
-def delete(ident):
-    """Deletes the specified chart."""
-
-    try:
-        chart = CHART_TYPE.get(CHART_TYPE.id == ident)
-    except DoesNotExist:
-        raise NoSuchChart()
-
-    chart.remove()
-    return ChartDeleted()
-
-
 def patch(ident):
     """Patches a chart."""
 
@@ -145,9 +133,21 @@ def patch(ident):
     return ChartPatched()
 
 
+def delete(ident):
+    """Deletes the specified chart."""
+
+    try:
+        chart = CHART_TYPE.get(CHART_TYPE.id == ident)
+    except DoesNotExist:
+        raise NoSuchChart()
+
+    chart.remove()
+    return ChartDeleted()
+
+
 ROUTES = (
     ('GET', '/charts', lst, 'list_charts'),
     ('GET', '/charts/<int:ident>', get, 'get_charts'),
     ('POST', '/charts', add, 'add_chart'),
-    ('DELETE', '/charts/<int:ident>', delete, 'delete_chart'),
-    ('PATCH', '/charts/<int:ident>', patch, 'patch_chart'))
+    ('PATCH', '/charts/<int:ident>', patch, 'patch_chart'),
+    ('DELETE', '/charts/<int:ident>', delete, 'delete_chart'))

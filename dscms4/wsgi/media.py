@@ -1,9 +1,16 @@
 """User's media files."""
 
-from his import CUSTOMER
-from wsgilib import routed, JSON
+from flask import request
+from peewee import DoesNotExist
+from werkzeug.local import LocalProxy
 
-from dscms4.orm.media import MediaFile
+from his import CUSTOMER, DATA
+from wsgilib import JSON, Binary
+
+from dscms4.messages.media import NoSuchMediaFile, QuotaExceeded, \
+    MediaFileAdded
+from dscms4.orm.exceptions import QuotaExceeded as QuotaExceeded_
+from dscms4.orm.media import MediaSettings, MediaFile
 
 __all__ = ['ROUTES']
 
@@ -36,9 +43,45 @@ def lst():
 def get(ident):
     """Returns the respective media file."""
 
-    return JSON(_get_media_file(ident).to_dict())
+    media_file = _get_media_file(ident)
+
+    try:
+        request.args['metadata']
+    except KeyError:
+        return JSON(media_file.to_dict())
+
+    return Binary(media_file.data)
+
+
+def post():
+    """Returns the respective media file."""
+
+    try:
+        media_file = MediaFile.from_bytes(DATA.bytes, customer=CUSTOMER.id)
+    except QuotaExceeded_:
+        raise QuotaExceeded()
+
+    media_file.save()
+    return MediaFileAdded(id=media_file.id)
+
+
+def delete(ident):
+    """Deletes the respective media file."""
+
+    _get_media_file(ident).delete_instance()
+    return MediaFileDeleted()
+
+
+def get_settings():
+    """Returns the respective media settings."""
+
+    return JSON(MediaSettings.get(
+        MediaSettings.customer == CUSTOMER.id).to_dict())
 
 
 ROUTES = (
-    ('GET', '/media', get, 'list_media'),
-    ('GET', '/media/<int:ident>', get, 'get_media')
+    ('GET', '/media/file', lst, 'list_media_files'),
+    ('GET', '/media/file/<int:ident>', get, 'get_media_file'),
+    ('POST', '/media/file', post, 'post_media_file'),
+    ('DELETE', '/media/file/<int:ident>', delete, 'delete_media_file'),
+    ('GET', '/media/settings', post, 'get_media_settings'))
