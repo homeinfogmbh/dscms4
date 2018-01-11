@@ -1,8 +1,8 @@
 """Common ORM models."""
 
-from peewee import Model, PrimaryKeyField, ForeignKeyField
+from peewee import PrimaryKeyField, ForeignKeyField
 
-from peeweeplus import MySQLDatabase, JSONSerializable
+from peeweeplus import MySQLDatabase, JSONModel
 from homeinfo.crm import Customer
 
 from dscms4.config import CONFIG
@@ -36,7 +36,7 @@ def save(models):
         model.save()
 
 
-class DSCMS4Model(Model):
+class DSCMS4Model(JSONModel):
     """Base Model for the DSCMS4 database."""
 
     class Meta:
@@ -51,7 +51,7 @@ class DSCMS4Model(Model):
         return cls.get(cls.id == ident)
 
 
-class CustomerModel:
+class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer.
 
      Not derived from peewee.Model to prevent binding of fields.

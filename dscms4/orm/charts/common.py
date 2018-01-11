@@ -39,7 +39,7 @@ class Transitions(Enum):
         raise ValueError('No such transition.')
 
 
-class BaseChart(DSCMS4Model, CustomerModel):
+class BaseChart(CustomerModel):
     """Common basic chart data model."""
 
     class Meta:
@@ -72,7 +72,7 @@ class BaseChart(DSCMS4Model, CustomerModel):
         return super().to_dict(ignore=None if id else self.__class__.id)
 
 
-class Chart:
+class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
     base = ForeignKeyField(BaseChart, db_column='base', on_delete='CASCADE')

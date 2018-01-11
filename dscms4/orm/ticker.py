@@ -20,7 +20,7 @@ def create_tables():
             print('Could not create table for {}.'.format(model), file=stderr)
 
 
-class Ticker(DSCMS4Model, CustomerModel):
+class Ticker(CustomerModel):
     """Ticker."""
 
     name = CharField(255)

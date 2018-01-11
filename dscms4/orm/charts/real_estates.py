@@ -29,7 +29,7 @@ class IdTypes(Enum):
     OPENIMMO = 'openimmo_obid'
 
 
-class RealEstates(DSCMS4Model, Chart):
+class RealEstates(Chart):
     """Chart for real estate displaying."""
 
     class Meta:

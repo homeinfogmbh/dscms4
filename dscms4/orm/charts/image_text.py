@@ -20,7 +20,7 @@ class Style(Enum):
     PIN_CHART = 'pin chart'
 
 
-class ImageText(DSCMS4Model, Chart):
+class ImageText(Chart):
     """A chart that may contain images and text."""
 
     class Meta:

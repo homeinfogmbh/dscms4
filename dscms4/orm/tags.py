@@ -12,7 +12,7 @@ try:
 except ImportError:
     from dscms4.orm.mockups import ComCatAccount
 
-from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import CustomerModel
 
 __all__ = [
     'find',
@@ -85,7 +85,7 @@ class Tag(CustomerModel):
         return {'id': self.id, 'customer': self.customer.id}
 
 
-class TerminalTag(DSCMS4Model, Tag):
+class TerminalTag(Tag):
     """Tags for terminals."""
 
     class Meta:
@@ -113,7 +113,7 @@ class TerminalTag(DSCMS4Model, Tag):
         return dictionary
 
 
-class ComCatAccountTag(DSCMS4Model, Tag):
+class ComCatAccountTag(Tag):
     """Tags for ComCat accounts."""
 
     class Meta:
@@ -141,7 +141,7 @@ class ComCatAccountTag(DSCMS4Model, Tag):
         return dictionary
 
 
-class ApartmentBuildingTag(DSCMS4Model, Tag):
+class ApartmentBuildingTag(Tag):
     """Tags for apartment buildings."""
 
     class Meta:

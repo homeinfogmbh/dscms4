@@ -23,7 +23,7 @@ class Icons(Enum):
     COOL_ICON = 'cool icon'
 
 
-class Menu(DSCMS4Model, CustomerModel):
+class Menu(CustomerModel):
     """Menus trees."""
 
     name = CharField(255)

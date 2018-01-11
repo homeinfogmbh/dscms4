@@ -3,7 +3,7 @@
 from datetime import datetime
 from peewee import DateTimeField, SmallIntegerField
 
-from .common import DSCMS4Model, CustomerModel
+from .common import CustomerModel
 
 __all__ = ['Schedule']
 
@@ -16,7 +16,7 @@ STR_TEMP = (
     ' {}  │  {}  │  {}  │  {}  │  {}  │  {}  │  {}')
 
 
-class Schedule(DSCMS4Model, CustomerModel):
+class Schedule(CustomerModel):
     """Date / time schedule.
 
     Weekdays are a binary integer:

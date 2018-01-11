@@ -6,7 +6,7 @@ from hashlib import sha256
 from filedb import File, FileProperty
 from peewee import DoesNotExist, IntegerField
 
-from .common import DSCMS4Model, CustomerModel
+from .common import CustomerModel
 from .exceptions import QuotaExceeded
 
 __all__ = ['MediaSettings', 'MediaFile']
@@ -36,7 +36,7 @@ def check_quota(customer, bytes_):
     raise QuotaExceeded(media_settings.quota)
 
 
-class MediaSettings(DSCMS4Model, CustomerModel):
+class MediaSettings(CustomerModel):
     """Media settings for a customer."""
 
     quota = IntegerField(default=DEFAULT_QUOTA)     # Customer quota in bytes.
@@ -77,7 +77,7 @@ class MediaSettings(DSCMS4Model, CustomerModel):
         return dictionary
 
 
-class MediaFile(DSCMS4Model, CustomerModel):
+class MediaFile(CustomerModel):
     """A media file of the respective customer."""
 
     file = IntegerField()

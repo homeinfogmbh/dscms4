@@ -71,7 +71,7 @@ class MemberProxy:
                 mapping.delete_instance()
 
 
-class Group(DSCMS4Model, CustomerModel):
+class Group(CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
     name = CharField(255)
@@ -156,7 +156,7 @@ class Group(DSCMS4Model, CustomerModel):
         return dictionary
 
 
-class GroupMember:
+class GroupMember(DSCMS4Model):
     """An abstract group member model."""
 
     group = ForeignKeyField(Group, db_column='group', on_delete='CASCADE')
@@ -167,7 +167,7 @@ class GroupMember:
         return cls.select().where(cls.group == group)
 
 
-class GroupMemberTerminal(DSCMS4Model, GroupMember):
+class GroupMemberTerminal(GroupMember):
     """Terminals as members in groups."""
 
     class Meta:
@@ -204,7 +204,7 @@ class GroupMemberTerminal(DSCMS4Model, GroupMember):
         return cls.add(group, terminal)
 
 
-class GroupMemberApartmentBuilding(DSCMS4Model, GroupMember):
+class GroupMemberApartmentBuilding(GroupMember):
     """Apartment buildings as members in groups."""
 
     class Meta:

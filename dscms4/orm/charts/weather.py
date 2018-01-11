@@ -1,12 +1,11 @@
 """Weather chart."""
 
 from dscms4.orm.charts.common import Chart
-from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Weather']
 
 
-class Weather(DSCMS4Model, Chart):
+class Weather(Chart):
     """Weather data."""
 
     class Meta:

@@ -14,7 +14,7 @@ from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Weather
 
 
-__all__ = ['MODELS', 'CHARTS', 'create_tables']
+__all__ = ['MODELS', 'CHARTS']
 
 
 MODELS = (

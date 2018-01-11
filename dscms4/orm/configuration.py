@@ -74,7 +74,7 @@ class Colors(DSCMS4Model):
     text_background = IntegerField()
 
 
-class Configuration(DSCMS4Model, CustomerModel):
+class Configuration(CustomerModel):
     """Customer configuration for charts."""
 
     name = CharField(255)

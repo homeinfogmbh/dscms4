@@ -18,7 +18,7 @@ DEFAULT_MAX_POSTS = 10
 
 
 @logging()
-class Facebook(DSCMS4Model, Chart):
+class Facebook(Chart):
     """Facebook data chart."""
 
     class Meta:
