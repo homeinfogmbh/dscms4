@@ -3,13 +3,11 @@
 from his.messages import locales, Message
 
 __all__ = [
-    # Menus.
     'NoMenuSpecified',
     'NoSuchMenu',
     'InvalidMenuData',
     'MenuAdded',
     'NoSuchMenuItem',
-    # Menu items.
     'NoMenuItemSpecified',
     'NoSuchMenuItem',
     'MenuItemAdded',
