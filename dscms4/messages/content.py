@@ -1,59 +1,39 @@
 """Messages for content handlers."""
 
+from his.messages import locales, Message
+
 __all__ = [
-    'NoSuchBaseChart',
-    'NoSuchConfiguration',
-    'NoSuchMenu',
-    'NoSuchTicker',
     'NoTypeSpecified',
     'InvalidContentType',
     'ContentAdded',
     'ContentDeleted']
 
 
-class NoSuchBaseChart(DSCMS4Message):
-    """Indicates that the respective base chart does not exist."""
+class ContentMessage(Message):
+    """Base class for content related messages."""
 
-    STATUS = 404
-
-
-class NoSuchConfiguration(DSCMS4Message):
-    """Indicates that the respective configuration does not exist."""
-
-    STATUS = 404
+    LOCALES = locales('/etc/dscms4.d/locales/content.ini')
 
 
-class NoSuchMenu(DSCMS4Message):
-    """Indicates that the respective menu does not exist."""
-
-    STATUS = 404
-
-
-class NoSuchTicker(DSCMS4Message):
-    """Indicates that the respective ticker does not exist."""
-
-    STATUS = 404
-
-
-class NoTypeSpecified(DSCMS4Message):
+class NoTypeSpecified(ContentMessage):
     """Indicates that no content type was specified."""
 
     STATUS = 400
 
 
-class InvalidContentType(DSCMS4Message):
+class InvalidContentType(ContentMessage):
     """Indicates that an invalid content type has bee specified."""
 
     STATUS = 400
 
 
-class ContentAdded(DSCMS4Message):
+class ContentAdded(ContentMessage):
     """Indicates that the respective content was added."""
 
     STATUS = 201
 
 
-class ContentDeleted(DSCMS4Message):
+class ContentDeleted(ContentMessage):
     """Indicates that the respective content was deleted."""
 
     STATUS = 200

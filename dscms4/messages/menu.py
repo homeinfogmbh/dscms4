@@ -1,6 +1,6 @@
 """Menu realted messages."""
 
-from dscms4.messages.common import DSCMS4Message
+from his.messages import locales, Message
 
 __all__ = [
     # Menus.
@@ -16,55 +16,61 @@ __all__ = [
     'MenuItemDeleted']
 
 
-class NoMenuSpecified(DSCMS4Message):
+class MenuMessage(Message):
+    """Base class for menu related messages."""
+
+    LOCALES = locales('/etc/dscms4.d/locales/menu.ini')
+
+
+class NoMenuSpecified(MenuMessage):
     """Indicates that no menu was specified."""
 
     STATUS = 400
 
 
-class NoSuchMenu(DSCMS4Message):
+class NoSuchMenu(MenuMessage):
     """Indicates that the requested menu does not exist."""
 
     STATUS = 404
 
 
-class InvalidMenuData(DSCMS4Message):
+class InvalidMenuData(MenuMessage):
     """Indicates that invalid menu data has been specified."""
 
     STATUS = 400
 
 
-class MenuAdded(DSCMS4Message):
+class MenuAdded(MenuMessage):
     """Indicates that the menu was successfully added."""
 
     STATUS = 201
 
 
-class MenuDeleted(DSCMS4Message):
+class MenuDeleted(MenuMessage):
     """Indicates that the menu was successfully deleted."""
 
     STATUS = 200
 
 
-class NoMenuItemSpecified(DSCMS4Message):
+class NoMenuItemSpecified(MenuMessage):
     """Indicates that no menu item was specified."""
 
     STATUS = 400
 
 
-class NoSuchMenuItem(DSCMS4Message):
+class NoSuchMenuItem(MenuMessage):
     """Indicates that the requested menu item does not exist."""
 
     STATUS = 404
 
 
-class MenuItemAdded(DSCMS4Message):
+class MenuItemAdded(MenuMessage):
     """Indicates that the respective menu item was successfully added."""
 
     STATUS = 201
 
 
-class MenuItemDeleted(DSCMS4Message):
+class MenuItemDeleted(MenuMessage):
     """Indicates that the respective menu item was successfully deleted."""
 
     STATUS = 400

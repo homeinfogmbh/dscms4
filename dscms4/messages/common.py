@@ -1,16 +1,14 @@
 """Common messages."""
 
-
-from his.api.messages import locales, HISMessage
+from his.messages import locales, Message
 
 __all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified']
 
 
-@locales('/etc/his.d/locale/dscms4.ini')
-class DSCMS4Message(HISMessage):
+class DSCMS4Message(Message):
     """Basic real estates message."""
 
-    pass
+    LOCALES = locales('/etc/dscms4.d/locales/dscms4.ini')
 
 
 class InvalidId(DSCMS4Message):
