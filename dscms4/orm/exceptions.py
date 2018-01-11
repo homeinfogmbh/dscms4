@@ -1,8 +1,6 @@
 """Common ORM model exceptions."""
 
 __all__ = [
-    'InvalidData',
-    'MissingData',
     'UnsupportedMember',
     'CircularPedigreeError',
     'OrphanedBaseChart',
@@ -17,24 +15,6 @@ class DSCMS4Error(Exception):
     """Base class for exceptions within the DSCMS4."""
 
     pass
-
-
-class InvalidData(DSCMS4Error):
-    """Indicates invalid ORM model data."""
-
-    def __init__(self, invalid):
-        """Sets the invalid data."""
-        super().__init__(invalid)
-        self.invalid = invalid
-
-
-class MissingData(DSCMS4Error):
-    """Indicates missing ORM model data."""
-
-    def __init__(self, missing):
-        """Sets the missing data fields."""
-        super().__init__(missing)
-        self.missing = missing
 
 
 class UnsupportedMember(DSCMS4Error):
