@@ -1,6 +1,6 @@
 """Configurations controller."""
 
-from his import CUSTOMER, DATA
+from his import CUSTOMER, DATA, authenticated, authorized
 from his.messages import IncompleteData, InvalidData, MissingData
 from peewee import DoesNotExist
 from wsgilib import JSON

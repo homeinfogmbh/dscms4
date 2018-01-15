@@ -1,5 +1,7 @@
 """Controllers for chart types."""
 
+from his import authenticated, authorized
+
 from dscms4.orm.chart_types import ChartType
 
 __all__ = ['ROUTES']

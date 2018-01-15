@@ -2,7 +2,7 @@
 
 from peewee import DoesNotExist
 
-from his import CUSTOMER, DATA
+from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.group import NoSuchGroup, NoSuchMemberType, NoSuchMember,\

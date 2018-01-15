@@ -2,7 +2,7 @@
 
 from peewee import DoesNotExist
 
-from his import CUSTOMER
+from his import CUSTOMER, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
 

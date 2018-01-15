@@ -3,7 +3,7 @@
 from peewee import DoesNotExist
 
 from flask import request
-from his import CUSTOMER, DATA
+from his import CUSTOMER, DATA, authenticated, authorized
 from his.messages import InvalidData, MissingData
 from werkzeug.local import LocalProxy
 from wsgilib import JSON

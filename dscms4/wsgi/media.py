@@ -4,7 +4,7 @@ from flask import request
 from peewee import DoesNotExist
 from werkzeug.local import LocalProxy
 
-from his import CUSTOMER, DATA
+from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON, Binary
 
 from dscms4.messages.media import NoSuchMediaFile, QuotaExceeded, \

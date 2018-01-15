@@ -2,7 +2,7 @@
 
 from peewee import DoesNotExist
 
-from his import CUSTOMER, DATA
+from his import CUSTOMER, DATA, authenticated, authorized
 from werkzeug.local import LocalProxy
 from wsgilib import JSON
 
