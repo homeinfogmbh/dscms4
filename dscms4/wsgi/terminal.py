@@ -4,6 +4,7 @@ from peewee import DoesNotExist
 
 from his import CUSTOMER
 from terminallib import Terminal
+from wsgilib import JSON
 
 from dscms4.messages.terminal import NoSuchTerminal
 
@@ -20,13 +21,17 @@ def _get_terminal(tid):
         raise NoSuchTerminal()
 
 
-def list():
+@authenticated
+@authorized('dscms4')
+def lst():
     """Lists all terminals of the respective customer."""
 
     return JSON([terminal.to_dict() for terminal in Terminal.select().where(
         Terminal.customer == CUSTOMER.id)])
 
 
+@authenticated
+@authorized('dscms4')
 def get(tid):
     """Returns the respective terminal."""
 

@@ -23,6 +23,8 @@ def _get(ident):
         raise NoSuchConfiguration()
 
 
+@authenticated
+@authorized('dscms4')
 def lst():
     """Returns a list of IDs of the customer's configurations."""
 
@@ -31,12 +33,16 @@ def lst():
             Configuration.customer == CUSTOMER.id)])
 
 
+@authenticated
+@authorized('dscms4')
 def get(ident):
     """Returns the respective configuration."""
 
     return JSON(_get(ident).to_dict())
 
 
+@authenticated
+@authorized('dscms4')
 def add():
     """Adds a new configuration."""
 
@@ -51,6 +57,8 @@ def add():
     return ConfigurationAdded()
 
 
+@authenticated
+@authorized('dscms4')
 def patch(ident):
     """Modifies an existing configuration."""
 
@@ -58,6 +66,8 @@ def patch(ident):
     return ConfigurationPatched()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Modifies an existing configuration."""
 

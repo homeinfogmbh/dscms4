@@ -6,6 +6,7 @@ from sys import stderr
 
 from dscms4.orm.charts import BaseChart, Facebook, Account, GuessPicture, \
     ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather
+from dscms4.orm.common import DATABASE
 from dscms4.orm.content import ComCatAccountBaseChart, \
     ComCatAccountConfiguration, ComCatAccountMenu, ComCatAccountTicker, \
     GroupBaseChart, GroupConfiguration, GroupMenu, GroupTicker, \
@@ -19,8 +20,10 @@ from dscms4.orm.mockups import ComCatAccount
 from dscms4.orm.ticker import Ticker, TickerText, TickerURL, \
     TickerTextMapping, TickerURLMapping
 
+__all__ = ['DATABASE', 'MODELS', 'create_tables']
 
-# Order matters here.
+
+# Order matters here!
 MODELS = (
     ComCatAccount, MediaFile, BaseChart, Facebook, Account, GuessPicture,
     ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather,

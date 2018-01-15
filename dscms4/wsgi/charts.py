@@ -94,18 +94,24 @@ def _get_chart(ident):
         raise NoSuchChart()
 
 
+@authenticated
+@authorized('dscms4')
 def lst():
     """Lists IDs of charts of the respective customer."""
 
     return JSON([chart.to_dict() for chart in CHARTS])
 
 
+@authenticated
+@authorized('dscms4')
 def get(ident):
     """Returns the respective chart of the current customer."""
 
     return JSON(_get_chart(ident))
 
 
+@authenticated
+@authorized('dscms4')
 def add():
     """Adds new charts."""
 
@@ -121,6 +127,8 @@ def add():
     return ChartAdded(id=chart.id)
 
 
+@authenticated
+@authorized('dscms4')
 def patch(ident):
     """Patches a chart."""
 
@@ -133,6 +141,8 @@ def patch(ident):
     return ChartPatched()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes the specified chart."""
 

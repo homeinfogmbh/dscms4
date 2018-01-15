@@ -30,6 +30,8 @@ def _get_member_class(member_type):
         raise NoSuchMemberType()
 
 
+@authenticated
+@authorized('dscms4')
 def lst():
     """Lists IDs of groups of the respective customer."""
 
@@ -37,12 +39,16 @@ def lst():
         Group.customer == CUSTOMER.id)])
 
 
+@authenticated
+@authorized('dscms4')
 def get(ident):
     """Returns the respective group."""
 
     return JSON(_get_group(ident).to_dict())
 
 
+@authenticated
+@authorized('dscms4')
 def add():
     """Adds a new group."""
 
@@ -51,6 +57,8 @@ def add():
     return GroupAdded(id=group.id)
 
 
+@authenticated
+@authorized('dscms4')
 def patch(ident):
     """Patches the respective group."""
 
@@ -58,6 +66,8 @@ def patch(ident):
     return GroupPatched()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes the respective group."""
 
@@ -65,6 +75,8 @@ def delete(ident):
     return GroupDeleted()
 
 
+@authenticated
+@authorized('dscms4')
 def get_members(group_id):
     """Returns the group's members."""
 
@@ -77,6 +89,8 @@ def get_members(group_id):
     return JSON(members)
 
 
+@authenticated
+@authorized('dscms4')
 def add_member(group_id, member_type):
     """Adds the member to the respective group."""
 
@@ -87,6 +101,8 @@ def add_member(group_id, member_type):
     return MemberAdded()
 
 
+@authenticated
+@authorized('dscms4')
 def delete_member(group_id, member_type, member_id):
     """Deletes the respective group member."""
 

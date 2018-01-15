@@ -3,13 +3,13 @@
 from peewee import DoesNotExist
 
 from his import CUSTOMER, DATA
+from werkzeug.local import LocalProxy
+from wsgilib import JSON
 
-from dscms4.messages.chart import NoSuchChart
-from dscms4.messages.menu import NoMenuSpecified, NoSuchMenu, InvalidMenuData,\
-    MenuAdded, MenuDeleted, NoMenuItemSpecified, NoSuchMenuItem, \
-    MenuItemAdded, MenuItemDeleted
+from dscms4.messages.charts import NoSuchChart
+from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
+    MenuDeleted, NoSuchMenuItem, MenuItemAdded, MenuItemDeleted
 from dscms4.orm.charts import BaseChart
-from dscms4.orm.exceptions import NoSuchChart
 from dscms4.orm.menu import Menu, MenuItem
 
 __all__ = ['ROUTES']
@@ -27,7 +27,7 @@ def _get_menu(ident):
 def _get_menus():
     """Yields the menus of the current customer."""
 
-    return Menu.select().where(Menu.customer == self.customer)
+    return Menu.select().where(Menu.customer == CUSTOMER.id)
 
 
 MENUS = LocalProxy(_get_menus)
@@ -82,18 +82,24 @@ def _menu_item_chart(dictionary):
         raise NoSuchChart()
 
 
+@authenticated
+@authorized('dscms4')
 def lst():
     """List menus."""
 
     return JSON([menu.to_dict() for menu in MENUS])
 
 
+@authenticated
+@authorized('dscms4')
 def get(ident):
     """Returns the respective menu."""
 
     return JSON(_get_menu(ident).to_dict())
 
 
+@authenticated
+@authorized('dscms4')
 def add():
     """Adds a new menu."""
 
@@ -106,6 +112,8 @@ def add():
     return MenuAdded(id=menu.id)
 
 
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes a menu."""
 
@@ -113,6 +121,8 @@ def delete(ident):
     return MenuDeleted()
 
 
+@authenticated
+@authorized('dscms4')
 def list_items(menu_id):
     """Lists the respective menu's items."""
 
@@ -121,12 +131,16 @@ def list_items(menu_id):
         _get_menu_items(_get_menu(menu_id))])
 
 
+@authenticated
+@authorized('dscms4')
 def get_item(menu_id, item_id):
     """Returns the respective menu item."""
 
     return JSON(_get_menu_item(_get_menu(menu_id), item_id).to_dict())
 
 
+@authenticated
+@authorized('dscms4')
 def add_item(menu_id):
     """Adds a new menu item."""
 
@@ -144,7 +158,9 @@ def add_item(menu_id):
     return MenuItemAdded(id=menu_item.id)
 
 
-def delete(menu_id, item_id):
+@authenticated
+@authorized('dscms4')
+def delete_item(menu_id, item_id):
     """Deletes a menu or menu item."""
 
     _get_menu_item(_get_menu(menu_id), item_id).delete_instance()
@@ -158,6 +174,6 @@ ROUTES = (
     ('DELETE', '/menu/<int:ident>', delete, 'delete_menu'),
     ('GET', '/menu/<int:menu_id>/item', list_items, 'list_items'),
     ('GET', '/menu/<int:menu_id>/item/<int:item_id>', get_item, 'get_item'),
-    ('POST', '/menu/<int:menu_id>/item', add_item, 'add_item')
+    ('POST', '/menu/<int:menu_id>/item', add_item, 'add_item'),
     ('DELETE', '/menu/<int:menu_id>/item/<int:item_id>', delete_item,
      'delete_item'))

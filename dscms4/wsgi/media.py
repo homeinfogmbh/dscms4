@@ -8,7 +8,7 @@ from his import CUSTOMER, DATA
 from wsgilib import JSON, Binary
 
 from dscms4.messages.media import NoSuchMediaFile, QuotaExceeded, \
-    MediaFileAdded
+    MediaFileAdded, MediaFileDeleted
 from dscms4.orm.exceptions import QuotaExceeded as QuotaExceeded_
 from dscms4.orm.media import MediaSettings, MediaFile
 
@@ -34,12 +34,16 @@ def _get_media_file(ident):
         raise NoSuchMediaFile()
 
 
+@authenticated
+@authorized('dscms4')
 def lst():
     """Lists the media files of the current customer."""
 
     return JSON([media_file.to_dict() for media_file in MEDIA_FILES])
 
 
+@authenticated
+@authorized('dscms4')
 def get(ident):
     """Returns the respective media file."""
 
@@ -53,7 +57,9 @@ def get(ident):
     return Binary(media_file.data)
 
 
-def post():
+@authenticated
+@authorized('dscms4')
+def add():
     """Returns the respective media file."""
 
     try:
@@ -65,6 +71,8 @@ def post():
     return MediaFileAdded(id=media_file.id)
 
 
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes the respective media file."""
 
@@ -72,6 +80,8 @@ def delete(ident):
     return MediaFileDeleted()
 
 
+@authenticated
+@authorized('dscms4')
 def get_settings():
     """Returns the respective media settings."""
 
@@ -82,6 +92,6 @@ def get_settings():
 ROUTES = (
     ('GET', '/media/file', lst, 'list_media_files'),
     ('GET', '/media/file/<int:ident>', get, 'get_media_file'),
-    ('POST', '/media/file', post, 'post_media_file'),
+    ('POST', '/media/file', add, 'add_media_file'),
     ('DELETE', '/media/file/<int:ident>', delete, 'delete_media_file'),
-    ('GET', '/media/settings', post, 'get_media_settings'))
+    ('GET', '/media/settings', get_settings, 'get_media_settings'))

@@ -2,7 +2,11 @@
 
 from his.messages import locales, Message
 
-__all__ = ['NoSuchMediaFile', 'QuotaExceeded', 'MediaFileAdded']
+__all__ = [
+    'NoSuchMediaFile',
+    'QuotaExceeded',
+    'MediaFileAdded',
+    'MediaFileDeleted']
 
 
 class MediaMessage(Message):
@@ -27,3 +31,9 @@ class MediaFileAdded(MediaMessage):
     """Indicates that the media files was stored successfully."""
 
     STATUS = 201
+
+
+class MediaFileDeleted(MediaMessage):
+    """Indicates that the respective media file was successfully deleted."""
+
+    STATUS = 200
