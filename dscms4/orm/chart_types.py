@@ -1,7 +1,7 @@
 """Chart type settings for the respective customers."""
 
-from dscms4.orm.common import CustomerModel
 from dscms4.orm.charts import CHARTS
+from dscms4.orm.common import CustomerModel
 
 __all__ = ['ChartType']
 
