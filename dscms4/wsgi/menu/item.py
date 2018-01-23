@@ -1,4 +1,4 @@
-"""Menu item controllers."""
+"""DSCMS4 WSGI handlers for menu items."""
 
 from peewee import DoesNotExist
 
