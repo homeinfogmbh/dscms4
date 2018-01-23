@@ -11,7 +11,7 @@ from dscms4.messages.terminal import NoSuchTerminal
 __all__ = ['ROUTES']
 
 
-def _get_terminal(tid):
+def get_terminal(tid):
     """Returns the respective terminal."""
 
     try:
@@ -35,7 +35,7 @@ def lst():
 def get(tid):
     """Returns the respective terminal."""
 
-    return JSON(_get_terminal(tid).to_dict())
+    return JSON(get_terminal(tid).to_dict())
 
 
 ROUTES = (
