@@ -13,7 +13,8 @@ __all__ = [
     'GroupBaseChart',
     'GroupConfiguration',
     'GroupMenu',
-    'GroupTicker']
+    'GroupTicker',
+    'MODELS']
 
 
 class GroupContent:
@@ -58,3 +59,6 @@ class GroupTicker(DSCMS4Model, GroupContent):
         db_table = 'group_ticker'
 
     ticker = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
+
+
+MODELS = (GroupBaseChart, GroupConfiguration, GroupMenu, GroupTicker)

@@ -4,36 +4,16 @@ This package provides the CMS's database models.
 """
 from sys import stderr
 
-from dscms4.orm.charts import BaseChart, Facebook, Account, GuessPicture, \
-    ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather
-from dscms4.orm.common import DATABASE
-from dscms4.orm.content import ComCatAccountBaseChart, \
-    ComCatAccountConfiguration, ComCatAccountMenu, ComCatAccountTicker, \
-    GroupBaseChart, GroupConfiguration, GroupMenu, GroupTicker, \
-    TerminalBaseChart, TerminalConfiguration, TerminalMenu, TerminalTicker
-from dscms4.orm.configuration import Colors, Configuration, Backlight
-from dscms4.orm.group import Group, GroupMemberTerminal, \
-    GroupMemberComCatAccount, GroupMemberApartmentBuilding
-from dscms4.orm.media import MediaFile
-from dscms4.orm.menu import Menu, MenuItem
-from dscms4.orm.mockups import ComCatAccount
-from dscms4.orm.ticker import Ticker, TickerText, TickerURL, \
-    TickerTextMapping, TickerURLMapping
+from dscms4.orm import charts, content, configuration, group, media, menu, \
+    ticker
 
-__all__ = ['DATABASE', 'MODELS', 'create_tables']
+__all__ = ['create_tables']
 
 
 # Order matters here!
 MODELS = (
-    ComCatAccount, MediaFile, BaseChart, Facebook, Account, GuessPicture,
-    ImageText, Image, Text, News, PublicTransport, Quotes, Video, Weather,
-    Colors, Configuration, Backlight, Group, GroupMemberTerminal,
-    GroupMemberComCatAccount, GroupMemberApartmentBuilding, Menu, MenuItem,
-    Ticker, TickerText, TickerURL, TickerTextMapping, TickerURLMapping,
-    ComCatAccountBaseChart, ComCatAccountConfiguration, ComCatAccountMenu,
-    ComCatAccountTicker, GroupBaseChart, GroupConfiguration, GroupMenu,
-    GroupTicker, TerminalBaseChart, TerminalConfiguration, TerminalMenu,
-    TerminalTicker)
+    media.MODELS + charts.MODELS + configuration.MODELS + group.MODELS
+    + menu.MODELS + ticker.MODELS + content.MODELS)
 
 
 def create_tables(fail_silently=True):

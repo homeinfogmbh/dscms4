@@ -18,7 +18,11 @@ setup(
         'dscms4.orm.charts',
         'dscms4.orm.content',
         'dscms4.wsgi',
-        'dscms4.wsgi.content'],
+        'dscms4.wsgi.content',
+        'dscms4.wsgi.content.group',
+        'dscms4.wsgi.content.terminal',
+        'dscms4.wsgi.group',
+        'dscms4.wsgi.menu'],
     data_files=[
         ('/usr/lib/systemd/system', ['files/dscms4.service']),
         ('/etc/his.d/locale', ['files/locales/dscms4.ini']),

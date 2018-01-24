@@ -84,7 +84,7 @@ class Chart(DSCMS4Model):
     @classmethod
     def from_dict(cls, dictionary, customer=None):
         """Creates a new chart from the respective dictionary."""
-        chart = super().from_dict(dictionary)
+        chart = super().from_dict(dictionary, allow=['base'])
         chart.base = BaseChart.from_dict(dictionary['base'], customer=customer)
         return chart
 

@@ -14,7 +14,8 @@ __all__ = [
     'TerminalBaseChart',
     'TerminalConfiguration',
     'TerminalMenu',
-    'TerminalTicker']
+    'TerminalTicker',
+    'MODELS']
 
 
 class TerminalContent:
@@ -60,3 +61,7 @@ class TerminalTicker(DSCMS4Model, TerminalContent):
         db_table = 'terminal_ticker'
 
     content = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
+
+
+MODELS = (
+    TerminalBaseChart, TerminalConfiguration, TerminalMenu, TerminalTicker)

@@ -17,10 +17,8 @@ __all__ = [
 
 
 DATABASE = MySQLDatabase(
-    CONFIG['db']['db'],
-    host=CONFIG['db']['host'],
-    user=CONFIG['db']['user'],
-    passwd=CONFIG['db']['passwd'])
+    CONFIG['db']['db'], host=CONFIG['db']['host'], user=CONFIG['db']['user'],
+    passwd=CONFIG['db']['passwd'], closing=True)
 
 
 def create_tables(models, fail_silently=True):
