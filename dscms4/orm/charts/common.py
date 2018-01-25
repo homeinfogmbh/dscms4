@@ -69,10 +69,6 @@ class BaseChart(CustomerModel):
 
         return True
 
-    def to_dict(self, id=True):
-        """Returns a JSON-ish dictionary."""
-        return super().to_dict(ignore=None if id else self.__class__.id)
-
 
 class Chart(DSCMS4Model):
     """Abstract basic chart."""
