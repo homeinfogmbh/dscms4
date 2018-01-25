@@ -13,6 +13,7 @@ class ConfigurationMessage(Message):
     """Base class for configuration related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/configuration.ini')
+    ABSTRACT = True
 
 
 class NoSuchConfiguration(ConfigurationMessage):

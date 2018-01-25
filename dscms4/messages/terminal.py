@@ -9,6 +9,7 @@ class TerminalMessage(Message):
     """Base class for terminal related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/menu.ini')
+    ABSTRACT = True
 
 
 class NoSuchTerminal(TerminalMessage):

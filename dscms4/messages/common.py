@@ -9,6 +9,7 @@ class DSCMS4Message(Message):
     """Basic real estates message."""
 
     LOCALES = locales('/etc/dscms4.d/locales/dscms4.ini')
+    ABSTRACT = True
 
 
 class InvalidId(DSCMS4Message):

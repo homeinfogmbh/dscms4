@@ -17,6 +17,7 @@ class GroupMessage(Message):
     """Base class for content related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/group.ini')
+    ABSTRACT = True
 
 
 class NoSuchGroup(GroupMessage):

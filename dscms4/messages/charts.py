@@ -19,6 +19,7 @@ class ChartsMessage(Message):
     """Base for charts related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/charts.ini')
+    ABSTRACT = True
 
 
 class ChartDataIncomplete(ChartsMessage):

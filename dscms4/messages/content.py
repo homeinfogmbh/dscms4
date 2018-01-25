@@ -13,6 +13,7 @@ class ContentMessage(Message):
     """Base class for content related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/content.ini')
+    ABSTRACT = True
 
 
 class NoTypeSpecified(ContentMessage):

@@ -18,6 +18,7 @@ class MenuMessage(Message):
     """Base class for menu related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/menu.ini')
+    ABSTRACT = True
 
 
 class NoMenuSpecified(MenuMessage):

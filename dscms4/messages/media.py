@@ -13,6 +13,7 @@ class MediaMessage(Message):
     """Base for media file related messages."""
 
     LOCALES = locales('/etc/dscms4.d/locales/media.ini')
+    ABSTRACT = True
 
 
 class NoSuchMediaFile(MediaMessage):
