@@ -6,6 +6,7 @@ for chart model implementation.
 
 from datetime import datetime
 from enum import Enum
+from itertools import chain
 
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     SmallIntegerField, BooleanField
@@ -18,6 +19,7 @@ from dscms4.orm.common import DSCMS4Model, CustomerModel
 __all__ = ['BaseChart', 'Chart']
 
 DEFAULT_DURATION = 10
+ALLOW = ('base',)
 
 
 class Transitions(Enum):
@@ -82,9 +84,10 @@ class Chart(DSCMS4Model):
         return '{}@{}'.format(self.id, self.__class__.__name__)
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, allow=None, **kwargs):
         """Creates a new chart from the respective dictionary."""
-        chart = super().from_dict(dictionary, allow=['base'])
+        allow = ALLOW if allow is None else tuple(chain(allow, ALLOW))
+        chart = super().from_dict(dictionary, allow=allow, **kwargs)
         chart.base = BaseChart.from_dict(dictionary['base'], customer=customer)
         return chart
 
