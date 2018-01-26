@@ -37,13 +37,15 @@ class ImageText(Chart):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
+        images = dictionary.pop('images', ())
+        texts = dictionary.pop('texts', ())
         chart = super().from_dict(dictionary, customer=customer)
         yield chart
 
-        for image_id in dictionary.get('images', tuple()):
-            yield Image.add(chart, image_id)
+        for image in images:
+            yield Image.add(chart, image)
 
-        for text in dictionary.get('texts', tuple()):
+        for text in texts:
             yield Text.add(chart, text)
 
     @property
@@ -82,8 +84,7 @@ class Image(DSCMS4Model):
     class Meta:
         db_table = 'chart_image_text_image'
 
-    chart = ForeignKeyField(
-        ImageText, db_column='image_text_chart', on_delete='CASCADE')
+    chart = ForeignKeyField(ImageText, db_column='chart', on_delete='CASCADE')
     image = ForeignKeyField(MediaFile, db_column='image')
 
     @classmethod
@@ -101,8 +102,7 @@ class Text(DSCMS4Model):
     class Meta:
         db_table = 'chart_image_text_text'
 
-    chart = ForeignKeyField(
-        ImageText, db_column='image_text_chart', on_delete='CASCADE')
+    chart = ForeignKeyField(ImageText, db_column='chart', on_delete='CASCADE')
     text = TextField()
 
     @classmethod

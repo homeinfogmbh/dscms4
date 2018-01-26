@@ -9,7 +9,7 @@ __all__ = ['ChartType']
 class ChartType(CustomerModel):
     """Represents a chart type this customer can use."""
 
-    chart_type = CharField(255, db_column='chart_type')
+    chart_type = CharField(255)
 
     @classmethod
     def add(cls, customer, chart_type):
@@ -31,9 +31,9 @@ class ChartType(CustomerModel):
     @chart_class.setter
     def chart_class(self, chart_class):
         """Sets the respective chart type by its class."""
-        for typ, cls in CHARTS.items():
+        for name, cls in CHARTS.items():
             if cls == chart_class:
-                self.chart_type = typ
+                self.chart_type = name
                 break
 
     def to_dict(self):

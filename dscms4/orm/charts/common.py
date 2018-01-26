@@ -14,12 +14,9 @@ from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
 from peeweeplus import EnumField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
-
+from dscms4.orm.exceptions import MissingBaseChartData
 
 __all__ = ['BaseChart', 'Chart']
-
-DEFAULT_DURATION = 10
-ALLOW = ('base',)
 
 
 class Transitions(Enum):
@@ -31,15 +28,6 @@ class Transitions(Enum):
     RANDOM = 'random'
     NONE = None
 
-    @classmethod
-    def by_value(cls, value):
-        """Returns the appropriate enumeration for the provided value."""
-        for transition in cls:
-            if transition.value == value:
-                return transition
-
-        raise ValueError('No such transition.')
-
 
 class BaseChart(CustomerModel):
     """Common basic chart data model."""
@@ -48,10 +36,10 @@ class BaseChart(CustomerModel):
         db_table = 'base_chart'
 
     title = CharField(255)
-    description = TextField(null=True, default=None)
-    duration = SmallIntegerField(default=DEFAULT_DURATION)
-    display_from = DateTimeField(null=True, default=None)
-    display_until = DateTimeField(null=True, default=None)
+    description = TextField(null=True)
+    duration = SmallIntegerField(default=10)
+    display_from = DateTimeField(null=True)
+    display_until = DateTimeField(null=True)
     transition = EnumField(Transitions)
     created = DateTimeField(default=datetime.now)
     trashed = BooleanField(default=False)
@@ -80,11 +68,15 @@ class Chart(DSCMS4Model):
         return '{}@{}'.format(self.id, self.__class__.__name__)
 
     @classmethod
-    def from_dict(cls, customer, dictionary, allow=None, **kwargs):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new chart from the respective dictionary."""
-        allow = ALLOW if allow is None else tuple(chain(allow, ALLOW))
-        chart = super().from_dict(dictionary, allow=allow, **kwargs)
-        chart.base = BaseChart.from_dict(dictionary['base'], customer=customer)
+        try:
+            base_dict = dictionary.pop('base')
+        except KeyError:
+            raise MissingBaseChartData()
+
+        chart = super().from_dict(dictionary, **kwargs)
+        chart.base = BaseChart.from_dict(customer, base_dict)
         return chart
 
     @property
@@ -102,26 +94,38 @@ class Chart(DSCMS4Model):
         """Determines whether this chart is considered trashed."""
         return self.base.trashed
 
-    def patch(self, dictionary):
+    @property
+    def active(self):
+        """Determines whether the chart is considered active."""
+        return self.base.active
+
+    def patch(self, dictionary, **kwargs):
         """Pathes the chart with the provided dictionary."""
-        base_dictionary = dictionary.get('base')
+        try:
+            base = dictionary.pop('base')
+        except KeyError:
+            pass
+        else:
+            self.base.patch(base)
 
-        if base_dictionary:
-            yield self.base.patch(base_dictionary)
-
-        yield super().patch(dictionary)
+        return super().patch(dictionary, **kwargs)
 
     def to_dict(self):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict()
-        dictionary['base'] = self.base.to_dict(id=False)
+        dictionary['base'] = self.base.to_dict(primary_key=False)
         return dictionary
 
-    def save(self):
+    def save(self, base=True):
         """Saves itself and its base chart."""
-        self.base.save()
-        super().save()
+        ident = super().save()
+
+        if base:
+            base_id = self.base.save()
+            return (ident, base_id)
+
+        return ident
 
     def delete_instance(self):
-        """Deletes this chart."""
+        """Deletes the base chart and thus (CASCADE) this chart."""
         return self.base.delete_instance()

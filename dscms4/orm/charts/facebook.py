@@ -10,13 +10,6 @@ from dscms4.orm.common import DSCMS4Model
 __all__ = ['Facebook', 'Account']
 
 
-DEFAULT_FONT_SIZE = 26
-DEFAULT_TITLE_COLOR = 0x000000
-DEFAULT_KEN_BURNS = False
-DEFAULT_RECENT_DAYS = 14
-DEFAULT_MAX_POSTS = 10
-
-
 @logging()
 class Facebook(Chart):
     """Facebook data chart."""
@@ -24,19 +17,20 @@ class Facebook(Chart):
     class Meta:
         db_table = 'chart_facebook'
 
-    font_size = SmallIntegerField(default=DEFAULT_FONT_SIZE)
-    title_color = IntegerField(default=DEFAULT_TITLE_COLOR)
-    ken_burns = BooleanField(default=DEFAULT_KEN_BURNS)
+    font_size = SmallIntegerField(default=26)
+    title_color = IntegerField(default=0x000000)
+    ken_burns = BooleanField(default=False)
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
-        chart = super().from_dict(dictionary, customer=customer)
+        accounts = dictionary.pop('accounts', ())
+        chart = super().from_dict(customer, dictionary, **kwargs)
         yield chart
 
-        for account in dictionary.get('accounts', tuple()):
+        for account in accounts:
             try:
                 yield Account.from_dict(chart, account)
             except KeyError:
@@ -50,7 +44,7 @@ class Facebook(Chart):
 
     def to_dict(self):
         """Returns a JSON-ish dictionary."""
-        dictionary = super.to_dict()
+        dictionary = super().to_dict()
         dictionary['accounts'] = tuple(self.accounts)
         return dictionary
 
@@ -61,18 +55,17 @@ class Account(DSCMS4Model):
     class Meta:
         db_table = 'facebook_account'
 
-    chart = ForeignKeyField(
-        Facebook, db_column='facebook_chart', on_delete='CASCADE')
+    chart = ForeignKeyField(Facebook, db_column='chart', on_delete='CASCADE')
     facebook_id = IntegerField()
-    recent_days = SmallIntegerField(default=DEFAULT_RECENT_DAYS)
-    max_posts = SmallIntegerField(default=DEFAULT_MAX_POSTS)
-    name = CharField(255, null=True, default=None)
+    recent_days = SmallIntegerField(default=14)
+    max_posts = SmallIntegerField(default=10)
+    name = CharField(255, null=True)
 
     @classmethod
-    def from_dict(cls, chart, dictionary):
+    def from_dict(cls, chart, dictionary, **kwargs):
         """Creates a new facebook account for the provided
         facebook chart from the respective distionary.
         """
-        account = super().from_dict(dictionary)
+        account = super().from_dict(dictionary, **kwargs)
         account.chart = chart
         return account

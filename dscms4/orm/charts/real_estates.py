@@ -124,9 +124,9 @@ class RealEstates(Chart):
     sale = BooleanField(default=True)
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new chart from the respective dictionary."""
-        chart = super().from_dict(dictionary, customer=customer)
+        chart = super().from_dict(customer, dictionary, **kwargs)
         yield chart
         filters = dictionary.get('filters', {})
 
@@ -228,8 +228,8 @@ class IdFilter(DSCMS4Model):
             return self.value == real_estate.objektnr_extern
         elif self.typ == IdTypes.OPENIMMO:
             return self.value == real_estate.openimmo_obid
-        else:
-            raise ValueError('Unexpected ID type.')
+
+        raise ValueError('Unexpected ID type.')
 
     @classmethod
     def from_dict(cls, chart, dictionary):

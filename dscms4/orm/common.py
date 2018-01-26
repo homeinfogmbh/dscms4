@@ -50,17 +50,14 @@ class DSCMS4Model(JSONModel):
 
 
 class CustomerModel(DSCMS4Model):
-    """Entity that relates to a customer.
-
-     Not derived from peewee.Model to prevent binding of fields.
-     """
+    """Entity that relates to a customer."""
 
     customer = ForeignKeyField(Customer, db_column='customer')
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new record from the provided dictionary and customer."""
-        record = super().from_dict(dictionary)
+        record = super().from_dict(dictionary, **kwargs)
         record.customer = customer
         return record
 

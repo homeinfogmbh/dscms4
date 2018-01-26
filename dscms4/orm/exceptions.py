@@ -3,6 +3,7 @@
 __all__ = [
     'UnsupportedMember',
     'CircularPedigreeError',
+    'MissingBaseChartData',
     'OrphanedBaseChart',
     'AmbiguousBaseChart',
     'QuotaExceeded',
@@ -27,9 +28,15 @@ class UnsupportedMember(DSCMS4Error):
 
 
 class CircularPedigreeError(DSCMS4Error):
-    """Indicates that the a group was tried
-    to be set as a child of its parents.
+    """Indicates that the a group was tried to be set as
+    a child of its children or parent of its parents.
     """
+
+    pass
+
+
+class MissingBaseChartData(DSCMS4Error):
+    """Indicates that data for the base chart is missing."""
 
     pass
 
