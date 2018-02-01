@@ -25,6 +25,6 @@ class Cleaning(DSCMS4Model, Chart):
         db_table = 'chart_cleaning'
 
     mode = EnumField(Mode)
-    text = TextField(null=True, default=None)
+    text = TextField(null=True)
     font_size = SmallIntegerField(default=8)
     text_color = IntegerField(default=0x000000)

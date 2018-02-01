@@ -28,8 +28,7 @@ class MemberProxy:
 
     def __iter__(self):
         """Yields all members of the respective group."""
-        return chain(self.terminals, self.comcat_accounts,
-                     self.apartment_buildings)
+        return chain(self.terminals, self.apartment_buildings)
 
     @property
     def terminals(self):
@@ -75,9 +74,8 @@ class Group(CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
     name = CharField(255)
-    description = TextField(null=True, default=None)
-    parent = ForeignKeyField(
-        'self', db_column='parent', null=True, default=None)
+    description = TextField(null=True)
+    parent = ForeignKeyField('self', db_column='parent', null=True)
 
     @classmethod
     def toplevel(cls, customer=None):

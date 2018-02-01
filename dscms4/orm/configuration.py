@@ -78,7 +78,7 @@ class Configuration(CustomerModel):
     """Customer configuration for charts."""
 
     name = CharField(255)
-    description = CharField(255, null=True, default=None)
+    description = CharField(255, null=True)
     font = EnumField(Font)
     portrait = BooleanField(default=False)
     touch = BooleanField()

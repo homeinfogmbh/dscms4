@@ -27,7 +27,7 @@ class Menu(CustomerModel):
     """Menus trees."""
 
     name = CharField(255)
-    description = CharField(255, null=True, default=None)
+    description = CharField(255, null=True)
 
     @property
     def items(self):
@@ -49,13 +49,13 @@ class MenuItem(DSCMS4Model):
 
     menu = ForeignKeyField(Menu, db_column='menu', on_delete='CASCADE')
     parent = ForeignKeyField(
-        'self', db_column='parent', null=True, default=None)
+        'self', db_column='parent', null=True)
     name = CharField(255)
-    icon = EnumField(Icons, default=None)
+    icon = EnumField(Icons)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
-        BaseChart, null=True, default=None, db_column='chart',
+        BaseChart, null=True, db_column='chart',
         on_delete=ForeignKeyConstraint.SET_NULL)
 
     @classmethod
