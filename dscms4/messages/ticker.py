@@ -10,7 +10,11 @@ __all__ = [
     'NoSuchTickerText',
     'TickerTextAdded',
     'TickerTextPatched',
-    'TickerTextDeleted']
+    'TickerTextDeleted',
+    'NoSuchTickerURL',
+    'TickerURLAdded',
+    'TickerURLPatched',
+    'TickerURLDeleted']
 
 
 class TickerMessage(Message):
@@ -63,6 +67,30 @@ class TickerTextPatched(TerminalMessage):
 
 
 class TickerTextDeleted(TerminalMessage):
+    """Indicates that the respective ticker URL was successfully deleted."""
+
+    STATUS = 200
+
+
+class NoSuchTickerURL(TerminalMessage):
+    """Indicates that the respective ticker URL does not exist."""
+
+    STATUS = 404
+
+
+class TickerURLAdded(TerminalMessage):
+    """Indicates that the respective ticker URL was successfully added."""
+
+    STATUS = 201
+
+
+class TickerURLPatched(TerminalMessage):
+    """Indicates that the respective ticker URL was successfully patched."""
+
+    STATUS = 200
+
+
+class TickerURLDeleted(TerminalMessage):
     """Indicates that the respective ticker text was successfully deleted."""
 
     STATUS = 200
