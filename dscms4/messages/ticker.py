@@ -2,7 +2,15 @@
 
 from his.messages import locales, Message
 
-__all__ = ['NoSuchTicker', 'TickerAdded', 'TickerPatched', 'TickerDeleted']
+__all__ = [
+    'NoSuchTicker',
+    'TickerAdded',
+    'TickerPatched',
+    'TickerDeleted',
+    'NoSuchTickerText',
+    'TickerTextAdded',
+    'TickerTextPatched',
+    'TickerTextDeleted']
 
 
 class TickerMessage(Message):
@@ -32,5 +40,29 @@ class TickerPatched(TerminalMessage):
 
 class TickerDeleted(TerminalMessage):
     """Indicates that the respective ticker was successfully deleted."""
+
+    STATUS = 200
+
+
+class NoSuchTickerText(TerminalMessage):
+    """Indicates that the respective ticker text does not exist."""
+
+    STATUS = 404
+
+
+class TickerTextAdded(TerminalMessage):
+    """Indicates that the respective ticker text was successfully added."""
+
+    STATUS = 201
+
+
+class TickerTextPatched(TerminalMessage):
+    """Indicates that the respective ticker text was successfully patched."""
+
+    STATUS = 200
+
+
+class TickerTextDeleted(TerminalMessage):
+    """Indicates that the respective ticker text was successfully deleted."""
 
     STATUS = 200
