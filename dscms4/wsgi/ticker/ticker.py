@@ -2,9 +2,11 @@
 
 from wsgilib import JSON
 
+from dscms4.messages.ticker import NoSuchTicker, TickerAdded, TickerPatched, \
+    TickerDeleted
 from dscms4.orm.ticker import Ticker
 
-__all__ = ['ROUTES']
+__all__ = ['ROUTES', 'get_ticker']
 
 
 def get_tickers():
@@ -39,6 +41,47 @@ def get(ident):
     return JSON(get_ticker(ident).to_dict())
 
 
+@authenticated
+@authorized('dscms4')
+def add():
+    """Adds a new ticker."""
+
+    try:
+        ticker = Ticker.from_dict(DATA.json)
+        ident = ticker.save()
+    except ValueError:
+        pass
+
+    return TickerAdded(id=ident)
+
+
+@authenticated
+@authorized('dscms4')
+def patch(ident):
+    """Adds a new ticker."""
+
+    ticker = get_ticker(ident)
+
+    try:
+        ticker.patch(DATA.json)
+    except ValueError:
+        pass
+
+    return TickerPatched()
+
+
+@authenticated
+@authorized('dscms4')
+def delete(ident):
+    """Adds a new ticker."""
+
+    get_ticker(ident).delete_instance()
+    return TickerDeleted()
+
+
 ROUTES = (
     ('GET', '/ticker', lst, 'list_tickers'),
-    ('GET', '/ticker/<int:ident>', get, 'get_ticker'))
+    ('GET', '/ticker/<int:ident>', get, 'get_ticker'),
+    ('POST', '/ticker', add, 'add_ticker'),
+    ('PATCH', '/ticker/<int:ident>', patch, 'patch_ticker'),
+    ('DELETE', '/ticker/<int:ident>', delete, 'delete_ticker'))
