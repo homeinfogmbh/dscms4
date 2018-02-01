@@ -56,15 +56,3 @@ def check_base_charts(verbose=False):
                 print(base_chart, '↔', chart)
 
     return CheckResult(orphans, ambiguous)
-
-
-def delete_outdated_charts(customer):
-    """Deletes outdated charts of the respective customer."""
-
-    for chart in BaseChart.select().where(BaseChart.customer == customer):
-        if not chart.active:
-            # TODO: Delete chart or mark as trashed?
-            #chart.delete_instance()
-            #chart.trashed = True
-            #chart.save()
-            pass
