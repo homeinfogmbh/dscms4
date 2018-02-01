@@ -4,6 +4,8 @@ from wsgilib import JSON
 
 from his import authenticated, authorized
 
+from dscms4.messages.ticker import NoSuchTickerText, TickerTextAdded, \
+    TickerTextPatched, TickerTextDeleted
 from dscms4.orm.ticker import Text
 from dscms4.wsgi.ticker.ticker import get_ticker
 
