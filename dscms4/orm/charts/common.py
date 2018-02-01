@@ -6,7 +6,6 @@ for chart model implementation.
 
 from datetime import datetime
 from enum import Enum
-from itertools import chain
 
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     SmallIntegerField, BooleanField
