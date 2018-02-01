@@ -1,7 +1,5 @@
 """Management of menus in terminals."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.terminal import NoSuchTerminalMenu, \
@@ -18,7 +16,7 @@ def get(gid):
 
     return JSON([
         terminal_menu.menu.id for terminal_menu in TerminalMenu.select().where(
-        TerminalMenu.terminal == _get_terminal(gid))])
+            TerminalMenu.terminal == _get_terminal(gid))])
 
 
 def add(gid, ident):
@@ -30,7 +28,7 @@ def add(gid, ident):
     try:
         TerminalMenu.get(
             (TerminalMenu.terminal == terminal) & (TerminalMenu.menu == menu))
-    except DoesNotExist:
+    except TerminalMenu.DoesNotExist:
         terminal_menu = TerminalMenu()
         terminal_menu.terminal = terminal
         terminal_menu.menu = menu
@@ -47,7 +45,7 @@ def delete(gid, ident):
         terminal_menu = TerminalMenu.get(
             (TerminalMenu.terminal == _get_terminal(gid))
             & (TerminalMenu.id == ident))
-    except DoesNotExist:
+    except TerminalMenu.DoesNotExist:
         raise NoSuchTerminalMenu()
 
     terminal_menu.delete_instance()

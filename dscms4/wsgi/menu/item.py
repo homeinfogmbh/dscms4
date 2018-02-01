@@ -1,7 +1,5 @@
 """DSCMS4 WSGI handlers for menu items."""
 
-from peewee import DoesNotExist
-
 from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
@@ -26,7 +24,7 @@ def get_menu_item(menu, ident):
 
     try:
         return MenuItem.get((MenuItem.menu == menu) & (MenuItem.id == ident))
-    except DoesNotExist:
+    except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
 
@@ -43,7 +41,7 @@ def parent_menu_item(menu, dictionary):
     try:
         return MenuItem.get(
             (MenuItem.menu == menu) & (MenuItem.parent == parent))
-    except DoesNotExist:
+    except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
 
@@ -60,7 +58,7 @@ def menu_item_chart(dictionary):
     try:
         return BaseChart.get(
             (BaseChart.customer == CUSTOMER.id) & (BaseChart.id == chart))
-    except DoesNotExist:
+    except BaseChart.DoesNotExist:
         raise NoSuchChart()
 
 

@@ -1,7 +1,5 @@
 """Management of tickers in terminals."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.terminal import NoSuchTerminalTicker, \
@@ -32,7 +30,7 @@ def add(gid, ident):
         TerminalTicker.get(
             (TerminalTicker.terminal == terminal)
             & (TerminalTicker.ticker == ticker))
-    except DoesNotExist:
+    except TerminalTicker.DoesNotExist:
         terminal_ticker = TerminalTicker()
         terminal_ticker.terminal = terminal
         terminal_ticker.ticker = ticker
@@ -49,7 +47,7 @@ def delete(gid, ident):
         terminal_ticker = TerminalTicker.get(
             (TerminalTicker.terminal == _get_terminal(gid))
             & (TerminalTicker.id == ident))
-    except DoesNotExist:
+    except TerminalTicker.DoesNotExist:
         raise NoSuchTerminalTicker()
 
     terminal_ticker.delete_instance()

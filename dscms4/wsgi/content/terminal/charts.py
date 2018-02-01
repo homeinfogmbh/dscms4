@@ -1,7 +1,5 @@
 """Management of charts in terminals."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.terminal import NoSuchTerminalChart, \
@@ -31,7 +29,7 @@ def add(tid, ident):
         TerminalBaseChart.get(
             (TerminalBaseChart.terminal == terminal)
             & (TerminalBaseChart.chart == chart))
-    except DoesNotExist:
+    except TerminalBaseChart.DoesNotExist:
         tbc = TerminalBaseChart()
         tbc.terminal = terminal
         tbc.chart = chart
@@ -48,7 +46,7 @@ def delete(tid, ident):
         terminal_chart = TerminalBaseChart.get(
             (TerminalBaseChart.terminal == _get_terminal(tid))
             & (TerminalBaseChart.id == ident))
-    except DoesNotExist:
+    except TerminalBaseChart.DoesNotExist:
         raise NoSuchTerminalChart()
 
     terminal_chart.delete_instance()

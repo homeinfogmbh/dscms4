@@ -1,7 +1,5 @@
 """Management of tickers in groups."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.group import NoSuchGroupTicker, \
@@ -30,7 +28,7 @@ def add(gid, ident):
     try:
         GroupTicker.get(
             (GroupTicker.group == group) & (GroupTicker.ticker == ticker))
-    except DoesNotExist:
+    except GroupTicker.DoesNotExist:
         group_ticker = GroupTicker()
         group_ticker.group = group
         group_ticker.ticker = ticker
@@ -46,7 +44,7 @@ def delete(gid, ident):
     try:
         group_ticker = GroupTicker.get(
             (GroupTicker.group == _get_group(gid)) & (GroupTicker.id == ident))
-    except DoesNotExist:
+    except GroupTicker.DoesNotExist:
         raise NoSuchGroupTicker()
 
     group_ticker.delete_instance()

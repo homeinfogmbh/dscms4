@@ -2,7 +2,7 @@
 
 from itertools import chain
 
-from peewee import DoesNotExist, ForeignKeyField, CharField, TextField
+from peewee import ForeignKeyField, CharField, TextField
 
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
@@ -196,7 +196,7 @@ class GroupMemberTerminal(GroupMember):
         try:
             terminal = Terminal.get(
                 (Terminal.customer == group.customer) & (Terminal.tid == tid))
-        except DoesNotExist:
+        except Terminal.DoesNotExist:
             raise NoSuchTerminal()
 
         return cls.add(group, terminal)
@@ -234,7 +234,7 @@ class GroupMemberApartmentBuilding(GroupMember):
             apartment_building = ApartmentBuilding.get(
                 (ApartmentBuilding.customer == group.customer)
                 & (ApartmentBuilding.id == ident))
-        except DoesNotExist:
+        except ApartmentBuilding.DoesNotExist:
             raise NoSuchApartment()
 
         return cls.add(group, apartment_building)

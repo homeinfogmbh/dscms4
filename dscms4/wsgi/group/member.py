@@ -1,7 +1,5 @@
 """Group member controllers."""
 
-from peewee import DoesNotExist
-
 from his import DATA, authenticated, authorized
 from wsgilib import JSON
 
@@ -59,7 +57,7 @@ def delete(group_id, member_type, member_id):
     try:
         member = member_class.get(
             (member_class.group == group) & (member_class.id == member_id))
-    except DoesNotExist:
+    except member_class.DoesNotExist:
         raise NoSuchMember()
 
     member.delete_instance()

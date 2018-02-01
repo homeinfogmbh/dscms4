@@ -1,7 +1,5 @@
 """DSCMS4 WSGI handlers for charts."""
 
-from peewee import DoesNotExist
-
 from flask import request
 from his import CUSTOMER, DATA, authenticated, authorized
 from his.messages import InvalidData, MissingData
@@ -90,7 +88,7 @@ def _get_chart(ident):
     try:
         return CHART_TYPE.get(
             (CHART_TYPE.id == ident) & (CHART_TYPE.customer == CUSTOMER.id))
-    except DoesNotExist:
+    except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 
 
@@ -148,7 +146,7 @@ def delete(ident):
 
     try:
         chart = CHART_TYPE.get(CHART_TYPE.id == ident)
-    except DoesNotExist:
+    except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 
     chart.remove()

@@ -1,7 +1,6 @@
 """User's media files."""
 
 from flask import request
-from peewee import DoesNotExist
 from werkzeug.local import LocalProxy
 
 from his import CUSTOMER, DATA, authenticated, authorized
@@ -30,7 +29,7 @@ def _get_media_file(ident):
     try:
         return MediaFile.get(
             (MediaFile.customer == CUSTOMER.id) & (MediaFile.id == ident))
-    except DoesNotExist:
+    except MediaFile.DoesNotExist:
         raise NoSuchMediaFile()
 
 

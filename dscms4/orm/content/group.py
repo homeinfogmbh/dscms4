@@ -1,6 +1,6 @@
 """Content assigned to groups."""
 
-from peewee import DoesNotExist, ForeignKeyField
+from peewee import ForeignKeyField
 
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model

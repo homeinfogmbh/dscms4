@@ -1,7 +1,5 @@
 """Terminal-related requests."""
 
-from peewee import DoesNotExist
-
 from his import CUSTOMER, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
@@ -17,7 +15,7 @@ def get_terminal(tid):
     try:
         return Terminal.get(
             (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid))
-    except DoesNotExist:
+    except Terminal.DoesNotExist:
         raise NoSuchTerminal()
 
 

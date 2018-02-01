@@ -1,5 +1,11 @@
 """WSGI controllers for tickers."""
 
+from wsgilib import JSON
+
+from dscms4.orm.ticker import Ticker
+
+__all__ = ['ROUTES']
+
 
 def get_tickers():
     """Yields tickers of the current user."""
@@ -11,8 +17,9 @@ def get_ticker(ident):
     """Returns the respective ticker of the customer."""
 
     try:
-        Ticker.get((Ticker.id == ident) & (Ticker.customer == CUSTOMER.id))
-    except DoesNotExist:
+        return Ticker.get(
+            (Ticker.id == ident) & (Ticker.customer == CUSTOMER.id))
+    except Ticker.DoesNotExist:
         raise NoSuchTicker()
 
 
@@ -30,3 +37,8 @@ def get(ident):
     """Returns the respective ticker."""
 
     return JSON(get_ticker(ident).to_dict())
+
+
+ROUTES = (
+    ('GET', '/ticker', lst, 'list_tickers'),
+    ('GET', '/ticker/<int:ident>', get, 'get_ticker'))

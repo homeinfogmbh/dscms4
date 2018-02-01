@@ -1,7 +1,5 @@
 """Group Controllers."""
 
-from peewee import DoesNotExist
-
 from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
@@ -16,7 +14,7 @@ def get_group(gid):
 
     try:
         return Group.get((Group.id == gid) & (Group.customer == CUSTOMER.id))
-    except DoesNotExist:
+    except Group.DoesNotExist:
         raise NoSuchGroup()
 
 

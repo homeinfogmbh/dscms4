@@ -17,7 +17,7 @@ class ChartType(CustomerModel):
         try:
             return cls.get(
                 (cls.customer == customer) & (cls.chart_type == chart_type))
-        except DoesNotExist:
+        except cls.DoesNotExist:
             record = cls()
             record.customer = customer
             record.chart_type = chart_type

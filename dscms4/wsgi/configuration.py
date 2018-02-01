@@ -2,7 +2,7 @@
 
 from his import CUSTOMER, DATA, authenticated, authorized
 from his.messages import IncompleteData, InvalidData, MissingData
-from peewee import DoesNotExist
+
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \
@@ -19,7 +19,7 @@ def _get(ident):
         return Configuration.get(
             (Configuration.customer == CUSTOMER.id)
             & (Configuration.id == ident))
-    except DoesNotExist:
+    except Configuration.DoesNotExist:
         raise NoSuchConfiguration()
 
 

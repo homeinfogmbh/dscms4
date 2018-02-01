@@ -1,7 +1,5 @@
 """Management of charts in groups."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.group import NoSuchGroupChart, ChartAddedToGroup,\
@@ -29,7 +27,7 @@ def add(gid, ident):
     try:
         GroupBaseChart.get(
             (GroupBaseChart.group == group) & (GroupBaseChart.chart == chart))
-    except DoesNotExist:
+    except GroupBaseChart.DoesNotExist:
         gbc = GroupBaseChart()
         gbc.group = group
         gbc.chart = chart
@@ -46,7 +44,7 @@ def delete(gid, ident):
         group_chart = GroupBaseChart.get(
             (GroupBaseChart.group == _get_group(gid))
             & (GroupBaseChart.id == ident))
-    except DoesNotExist:
+    except GroupBaseChart.DoesNotExist:
         raise NoSuchGroupChart()
 
     group_chart.delete_instance()

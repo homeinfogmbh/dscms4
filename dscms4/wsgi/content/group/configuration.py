@@ -1,7 +1,5 @@
 """Management of configurations in groups."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.group import NoSuchGroupConfiguration, \
@@ -33,7 +31,7 @@ def add(gid, ident):
         GroupConfiguration.get(
             (GroupConfiguration.group == group)
             & (GroupConfiguration.configuration == configuration))
-    except DoesNotExist:
+    except GroupConfiguration.DoesNotExist:
         group_configuration = GroupConfiguration()
         group_configuration.group = group
         group_configuration.configuration = configuration
@@ -50,7 +48,7 @@ def delete(gid, ident):
         group_configuration = GroupConfiguration.get(
             (GroupConfiguration.group == _get_group(gid))
             & (GroupConfiguration.id == ident))
-    except DoesNotExist:
+    except GroupConfiguration.DoesNotExist:
         raise NoSuchGroupConfiguration()
 
     group_configuration.delete_instance()

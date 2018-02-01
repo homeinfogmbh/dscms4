@@ -1,7 +1,5 @@
 """Management of menus in groups."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.group import NoSuchGroupMenu, MenuAddedToGroup, \
@@ -29,7 +27,7 @@ def add(gid, ident):
     try:
         GroupMenu.get(
             (GroupMenu.group == group) & (GroupMenu.menu == menu))
-    except DoesNotExist:
+    except GroupMenu.DoesNotExist:
         group_menu = GroupMenu()
         group_menu.group = group
         group_menu.menu = menu
@@ -45,7 +43,7 @@ def delete(gid, ident):
     try:
         group_menu = GroupMenu.get(
             (GroupMenu.group == _get_group(gid)) & (GroupMenu.id == ident))
-    except DoesNotExist:
+    except GroupMenu.DoesNotExist:
         raise NoSuchGroupMenu()
 
     group_menu.delete_instance()

@@ -1,7 +1,5 @@
 """Management of configurations in terminals."""
 
-from peewee import DoesNotExist
-
 from wsgilib import JSON
 
 from dscms4.messages.content.terminal import NoSuchTerminalConfiguration, \
@@ -35,7 +33,7 @@ def add(gid, ident):
         TerminalConfiguration.get(
             (TerminalConfiguration.terminal == terminal)
             & (TerminalConfiguration.configuration == configuration))
-    except DoesNotExist:
+    except TerminalConfiguration.DoesNotExist:
         terminal_configuration = TerminalConfiguration()
         terminal_configuration.terminal = terminal
         terminal_configuration.configuration = configuration
@@ -52,7 +50,7 @@ def delete(gid, ident):
         terminal_configuration = TerminalConfiguration.get(
             (TerminalConfiguration.terminal == _get_terminal(gid))
             & (TerminalConfiguration.id == ident))
-    except DoesNotExist:
+    except TerminalConfiguration.DoesNotExist:
         raise NoSuchTerminalConfiguration()
 
     terminal_configuration.delete_instance()

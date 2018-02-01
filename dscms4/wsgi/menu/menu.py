@@ -1,7 +1,5 @@
 """DSCMS4 WSGI handlers for menus."""
 
-from peewee import DoesNotExist
-
 from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
@@ -17,7 +15,7 @@ def get_menu(ident):
 
     try:
         return Menu.get((Menu.customer == CUSTOMER.id) & (Menu.id == ident))
-    except DoesNotExist:
+    except Menu.DoesNotExist:
         raise NoSuchMenu()
 
 

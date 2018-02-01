@@ -4,7 +4,7 @@ from contextlib import suppress
 from hashlib import sha256
 
 from filedb import File, FileProperty
-from peewee import DoesNotExist, IntegerField
+from peewee import IntegerField
 
 from .common import CustomerModel
 from .exceptions import QuotaExceeded
@@ -86,7 +86,7 @@ class MediaFile(CustomerModel):
     @classmethod
     def from_bytes(cls, data, customer=None, ignore_quota=False):
         """Adds a new media file by bytes."""
-        with suppress(DoesNotExist):
+        with suppress(cls.DoesNotExist):
             return cls.by_sha256sum(sha256(data).hexdigest())
 
         if ignore_quota or check_quota(customer, data):

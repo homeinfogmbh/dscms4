@@ -12,7 +12,7 @@ def _get_customer(cid):
 
     try:
         return Customer.get(Customer.id == cid)
-    except DoesNotExist:
+    except Customer.DoesNotExist:
         raise NoSuchCustomer()
 
 

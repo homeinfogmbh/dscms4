@@ -1,6 +1,6 @@
 """Content assigned to Terminals."""
 
-from peewee import DoesNotExist, ForeignKeyField
+from peewee import ForeignKeyField
 
 from terminallib import Terminal
 
