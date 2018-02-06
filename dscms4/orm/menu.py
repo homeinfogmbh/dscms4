@@ -4,7 +4,7 @@ from enum import Enum
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
-from peeweeplus import ForeignKeyConstraint, EnumField
+from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import BaseChart
@@ -55,8 +55,7 @@ class MenuItem(DSCMS4Model):
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
-        BaseChart, null=True, column_name='chart',
-        on_delete=ForeignKeyConstraint.SET_NULL)
+        BaseChart, null=True, column_name='chart', on_delete='CASCADE')
 
     @classmethod
     def from_dict(cls, dictionary, menu=None, parent=None, chart=None):
