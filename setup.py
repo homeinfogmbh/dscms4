@@ -23,6 +23,7 @@ setup(
         'dscms4.wsgi.content.terminal',
         'dscms4.wsgi.group',
         'dscms4.wsgi.menu'],
+    scripts=['files/dscms4d'],
     data_files=[
         ('/usr/lib/systemd/system', ['files/dscms4.service']),
         ('/etc/his.d/locale', ['files/locales/dscms4.ini']),
@@ -30,6 +31,7 @@ setup(
             'files/locales/charts.ini',
             'files/locales/configuration.ini',
             'files/locales/content.ini',
+            'files/locales/dscms4.ini',
             'files/locales/group.ini',
             'files/locales/media.ini',
             'files/locales/menu.ini',

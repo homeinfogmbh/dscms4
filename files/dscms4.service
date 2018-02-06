@@ -1,0 +1,11 @@
+[Unit]
+Description=DSCMS4
+PartOf=wsgi-services.target
+
+[Service]
+User=dscms4
+Group=dscms4
+ExecStart=/usr/local/bin/dscms4d
+
+[Install]
+WantedBy=wsgi-services.target

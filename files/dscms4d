@@ -1,0 +1,11 @@
+#! /usr/bin/env python3
+"""HOMEINFO Digital Signage Content Management System version 4 daemon."""
+
+from dscms4.config import CONFIG
+from dscms4.wsgi import APPLICATION
+
+
+if __name__ == '__main__':
+    HOST = CONFIG['wsgi']['host']
+    PORT = int(CONFIG['wsgi']['port'])
+    APPLICATION.run(host=HOST, port=PORT)
