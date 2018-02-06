@@ -2,7 +2,7 @@
 
 from dscms4.wsgi.ticker import ticker, text, url
 
-__all_ = ['ROUTES']
+__all__ = ['ROUTES']
 
 
 ROUTES = ticker.ROUTES + text.ROUTES + url.ROUTES

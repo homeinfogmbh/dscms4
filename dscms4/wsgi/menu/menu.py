@@ -47,7 +47,7 @@ def add():
     """Adds a new menu."""
 
     try:
-        menu = Menu.from_dict(DATA.json, customer=CUSTOMER.id)
+        menu = Menu.from_dict(CUSTOMER.id, DATA.json)
     except ValueError:
         raise InvalidMenuData()
 

@@ -2,6 +2,7 @@
 
 from itertools import chain
 
+from his.messages.data import MissingData, InvalidData
 from peewee import ForeignKeyField, CharField, TextField
 
 from tenements.orm import ApartmentBuilding
@@ -9,7 +10,7 @@ from terminallib import Terminal
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
-    MissingData, InvalidData, NoSuchTerminal, NoSuchApartment
+    NoSuchTerminal, NoSuchApartment
 
 __all__ = [
     'Group',
@@ -87,10 +88,10 @@ class Group(CustomerModel):
             (cls.customer == customer) & (cls.parent >> None))
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a group from the respective dictionary."""
-        record = super().from_dict(dictionary)
-        record.customer = customer
+        record = super().from_dict(customer, dictionary, **kwargs)
+        record.parent = dictionary.get('parent')
         return record
 
     @classmethod

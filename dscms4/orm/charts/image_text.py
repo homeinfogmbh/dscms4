@@ -34,13 +34,15 @@ class ImageText(Chart):
     ken_burns = BooleanField(default=False)
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
+        # Pop images and texts first to exclude them from the
+        # dictionary before invoking super().from_dict().
         images = dictionary.pop('images', ())
         texts = dictionary.pop('texts', ())
-        chart = super().from_dict(dictionary, customer=customer)
+        chart = super().from_dict(customer, dictionary, **kwargs)
         yield chart
 
         for image in images:

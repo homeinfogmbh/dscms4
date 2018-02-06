@@ -1,8 +1,7 @@
 """Ticker URL API."""
 
-from wsgilib import JSON
-
 from his import DATA, authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.messages.ticker import NoSuchTickerURL, TickerURLAdded, \
     TickerURLPatched, TickerURLDeleted
