@@ -3,8 +3,7 @@
 from collections import namedtuple
 from sys import stderr
 
-from dscms4.orm import charts, content, chart_types, configuration, group, \
-    menu, schedule, tags, ticker
+from dscms4.orm.charts import CHARTS
 from dscms4.orm.charts.common import BaseChart
 from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
@@ -12,24 +11,13 @@ from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 __all__ = ['create_tables', 'charts_of', 'chart_of', 'check_base_charts']
 
 
-MODELS = (
-    charts.MODELS + content.MODELS + chart_types.MODELS + configuration.MODELS
-    + group.MODELS + menu.MODELS + schedule.MODELS + tags.MODELS
-    + ticker.MODELS)
 CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
-
-
-def create_tables(*args, **kwargs):
-    """Creates the respective database tables."""
-
-    for model in MODELS:
-        model.create_table(*args, **kwargs)
 
 
 def charts_of(base_chart):
     """Yields all charts that associate this base chart."""
 
-    for cls in charts.CHARTS.values():
+    for cls in CHARTS.values():
         for chart in cls.select().where(cls.base_chart == base_chart):
             yield chart
 
