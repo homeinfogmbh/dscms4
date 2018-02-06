@@ -133,8 +133,7 @@ class Schedule(CustomerModel):
         """
         if self.begin is None or self.begin <= date:
             if self.end is None or self.end >= date:
-                if self.match_day(date.weekday()):
-                    return True
+                return self.match_day(date.weekday())
 
         return False
 
