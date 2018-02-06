@@ -85,7 +85,7 @@ class Configuration(CustomerModel):
     design = EnumField(Design)
     effects = BooleanField()
     ticker_speed = SmallIntegerField()
-    colors = ForeignKeyField(Colors, db_column='colors')
+    colors = ForeignKeyField(Colors, column_name='colors')
     title_size = SmallIntegerField()
     text_size = SmallIntegerField()
     logo = IntegerField()           # File
@@ -97,11 +97,11 @@ class Configuration(CustomerModel):
     volume = SmallIntegerField()
 
     @classmethod
-    def from_dict(cls, dictionary, customer=None):
+    def from_dict(cls, customer, dictionary):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
-        configuration = super().from_dict(dictionary)
+        configuration = super().from_dict(customer, dictionary)
         configuration.customer = customer
         configuration.colors = Colors.from_dict(dictionary.get('colors', {}))
         yield configuration
@@ -137,8 +137,8 @@ class Configuration(CustomerModel):
 class Ticker(DSCMS4Model):
     """Tickers of the respective configuration."""
 
-    configuration = ForeignKeyField(Configuration, db_column='configuration')
-    typ = EnumField(TickerTypes, db_column='type')
+    configuration = ForeignKeyField(Configuration, column_name='configuration')
+    typ = EnumField(TickerTypes, column_name='type')
     text = TextField()
 
     @classmethod
@@ -166,7 +166,7 @@ class Ticker(DSCMS4Model):
 class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
-    configuration = ForeignKeyField(Configuration, db_column='configuration')
+    configuration = ForeignKeyField(Configuration, column_name='configuration')
     time = TimeField()
     value = SmallIntegerField()     # Brightness in percent.
 

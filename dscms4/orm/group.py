@@ -9,7 +9,7 @@ from terminallib import Terminal
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
-    MissingData, NoSuchTerminal, NoSuchApartment
+    MissingData, InvalidData, NoSuchTerminal, NoSuchApartment
 
 __all__ = [
     'Group',
@@ -75,7 +75,7 @@ class Group(CustomerModel):
 
     name = CharField(255)
     description = TextField(null=True)
-    parent = ForeignKeyField('self', db_column='parent', null=True)
+    parent = ForeignKeyField('self', column_name='parent', null=True)
 
     @classmethod
     def toplevel(cls, customer=None):
@@ -157,7 +157,7 @@ class Group(CustomerModel):
 class GroupMember(DSCMS4Model):
     """An abstract group member model."""
 
-    group = ForeignKeyField(Group, db_column='group', on_delete='CASCADE')
+    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
 
     @classmethod
     def by_group(cls, group):
@@ -170,10 +170,10 @@ class GroupMemberTerminal(GroupMember):
 
     class Meta:
         """Meta information for the database model."""
-        db_table = 'group_member_terminal'
+        table_name = 'group_member_terminal'
 
     terminal = ForeignKeyField(
-        Terminal, db_column='terminal', on_delete='CASCADE')
+        Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, terminal):
@@ -207,10 +207,10 @@ class GroupMemberApartmentBuilding(GroupMember):
 
     class Meta:
         """Meta information for the database model."""
-        db_table = 'group_member_apartment_building'
+        table_name = 'group_member_apartment_building'
 
     apartment_building = ApartmentBuilding(
-        Terminal, db_column='apartment_building', on_delete='CASCADE')
+        Terminal, column_name='apartment_building', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, apartment_building):

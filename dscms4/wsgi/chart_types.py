@@ -1,8 +1,14 @@
 """Controllers for chart types."""
 
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized, root
+from wsgilib import JSON
+
+from homeinfo.crm import Customer
 
 from dscms4.orm.chart_types import ChartType
+from dscms4.orm.charts import CHARTS
+from dscms4.messages.customer import NoSuchCustomer
+from dscms4.messages.chart_types import InvalidChartType, ChartTypeAdded
 
 __all__ = ['ROUTES']
 

@@ -2,7 +2,7 @@
 
 from wsgilib import JSON
 
-from his import authenticated, authorized
+from his import DATA, authenticated, authorized
 
 from dscms4.messages.ticker import NoSuchTickerURL, TickerURLAdded, \
     TickerURLPatched, TickerURLDeleted
@@ -26,7 +26,7 @@ def get_url(ticker, ident):
 def lst(ticker_id):
     """Lists all URLs of the respective ticker."""
 
-    return JSON([text.to_dict() for text in Text.select().where(
+    return JSON([url.to_dict() for url in URL.select().where(
         URL.ticker == get_ticker(ticker_id))])
 
 

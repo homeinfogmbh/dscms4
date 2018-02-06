@@ -9,4 +9,4 @@ class PublicTransport(Chart):
     """Public transport chart."""
 
     class Meta:
-        db_table = 'chart_public_transport'
+        table_name = 'chart_public_transport'

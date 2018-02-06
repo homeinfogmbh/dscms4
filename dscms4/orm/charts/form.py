@@ -20,6 +20,6 @@ class Form(Chart):
     """A form chart."""
 
     class Meta:
-        db_table = 'chart_form'
+        table_name = 'chart_form'
 
-    typ = EnumField(Type, db_column='type')
+    typ = EnumField(Type, column_name='type')

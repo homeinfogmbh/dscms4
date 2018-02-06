@@ -79,9 +79,6 @@ def _get_charts():
             yield chart
 
 
-CHARTS = LocalProxy(_get_charts)
-
-
 def _get_chart(ident):
     """Returns the selected chart."""
 
@@ -97,7 +94,7 @@ def _get_chart(ident):
 def lst():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_dict() for chart in CHARTS])
+    return JSON([chart.to_dict() for chart in _get_charts()])
 
 
 @authenticated

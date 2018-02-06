@@ -52,7 +52,7 @@ class DSCMS4Model(JSONModel):
 class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer."""
 
-    customer = ForeignKeyField(Customer, db_column='customer')
+    customer = ForeignKeyField(Customer, column_name='customer')
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):

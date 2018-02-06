@@ -3,7 +3,8 @@
 from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, GroupDeleted
+from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
+    GroupDeleted
 from dscms4.orm.group import Group
 
 __all__ = ['ROUTES']

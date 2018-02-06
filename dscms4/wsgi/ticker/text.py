@@ -1,5 +1,7 @@
 """Ticker text API."""
 
+from his import DATA
+
 from wsgilib import JSON
 
 from his import authenticated, authorized

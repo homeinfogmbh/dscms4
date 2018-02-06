@@ -9,4 +9,4 @@ class Weather(Chart):
     """Weather data."""
 
     class Meta:
-        db_table = 'chart_weather'
+        table_name = 'chart_weather'

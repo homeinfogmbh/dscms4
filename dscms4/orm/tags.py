@@ -89,10 +89,10 @@ class TerminalTag(Tag):
     """Tags for terminals."""
 
     class Meta:
-        db_table = 'tags_terminal'
+        table_name = 'tags_terminal'
 
     terminal = ForeignKeyField(
-        Terminal, db_column='terminal', on_delete='CASCADE')
+        Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, terminal, lst):
@@ -117,10 +117,10 @@ class ComCatAccountTag(Tag):
     """Tags for ComCat accounts."""
 
     class Meta:
-        db_table = 'tags_comcat_account'
+        table_name = 'tags_comcat_account'
 
     comcat_account = ForeignKeyField(
-        ComCatAccount, db_column='comcat_account', on_delete='CASCADE')
+        ComCatAccount, column_name='comcat_account', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, comcat_account, lst):
@@ -145,10 +145,11 @@ class ApartmentBuildingTag(Tag):
     """Tags for apartment buildings."""
 
     class Meta:
-        db_table = 'tags_apartment_building'
+        table_name = 'tags_apartment_building'
 
     apartment_building = ForeignKeyField(
-        ApartmentBuilding, db_column='apartment_building', on_delete='CASCADE')
+        ApartmentBuilding, column_name='apartment_building',
+        on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, apartment_building, lst):

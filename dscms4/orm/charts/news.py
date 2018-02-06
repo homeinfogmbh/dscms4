@@ -11,7 +11,7 @@ class News(Chart):
     """Chart to display news."""
 
     class Meta:
-        db_table = 'chart_news'
+        table_name = 'chart_news'
 
     font_size_title = SmallIntegerField(default=8)
     title_color = IntegerField(default=0x000000)

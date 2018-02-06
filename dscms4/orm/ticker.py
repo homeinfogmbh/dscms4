@@ -68,9 +68,9 @@ class Text(DSCMS4Model):
     """Text for a ticker."""
 
     class Meta:
-        db_table = 'ticker_text'
+        table_name = 'ticker_text'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
+    ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
     text = TextField()
     index = SmallIntegerField()
 
@@ -105,9 +105,9 @@ class URL(DSCMS4Model):
     """Text for a ticker."""
 
     class Meta:
-        db_table = 'ticker_url'
+        table_name = 'ticker_url'
 
-    ticker = ForeignKeyField(Ticker, db_column='ticker', on_delete='CASCADE')
+    ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
     url = CharField(255)
     index = SmallIntegerField()
 

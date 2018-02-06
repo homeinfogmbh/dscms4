@@ -22,7 +22,7 @@ class Cleaning(DSCMS4Model, Chart):
     """Cleaning chart."""
 
     class Meta:
-        db_table = 'chart_cleaning'
+        table_name = 'chart_cleaning'
 
     mode = EnumField(Mode)
     text = TextField(null=True)

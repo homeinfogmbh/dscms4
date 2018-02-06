@@ -24,73 +24,73 @@ class TickerMessage(Message):
     ABSTRACT = True
 
 
-class NoSuchTicker(TerminalMessage):
+class NoSuchTicker(TickerMessage):
     """Indicates that the respective ticker does not exist."""
 
     STATUS = 404
 
 
-class TickerAdded(TerminalMessage):
+class TickerAdded(TickerMessage):
     """Indicates that the respective ticker was successfully added."""
 
     STATUS = 201
 
 
-class TickerPatched(TerminalMessage):
+class TickerPatched(TickerMessage):
     """Indicates that the respective ticker was successfully patched."""
 
     STATUS = 200
 
 
-class TickerDeleted(TerminalMessage):
+class TickerDeleted(TickerMessage):
     """Indicates that the respective ticker was successfully deleted."""
 
     STATUS = 200
 
 
-class NoSuchTickerText(TerminalMessage):
+class NoSuchTickerText(TickerMessage):
     """Indicates that the respective ticker text does not exist."""
 
     STATUS = 404
 
 
-class TickerTextAdded(TerminalMessage):
+class TickerTextAdded(TickerMessage):
     """Indicates that the respective ticker text was successfully added."""
 
     STATUS = 201
 
 
-class TickerTextPatched(TerminalMessage):
+class TickerTextPatched(TickerMessage):
     """Indicates that the respective ticker text was successfully patched."""
 
     STATUS = 200
 
 
-class TickerTextDeleted(TerminalMessage):
+class TickerTextDeleted(TickerMessage):
     """Indicates that the respective ticker URL was successfully deleted."""
 
     STATUS = 200
 
 
-class NoSuchTickerURL(TerminalMessage):
+class NoSuchTickerURL(TickerMessage):
     """Indicates that the respective ticker URL does not exist."""
 
     STATUS = 404
 
 
-class TickerURLAdded(TerminalMessage):
+class TickerURLAdded(TickerMessage):
     """Indicates that the respective ticker URL was successfully added."""
 
     STATUS = 201
 
 
-class TickerURLPatched(TerminalMessage):
+class TickerURLPatched(TickerMessage):
     """Indicates that the respective ticker URL was successfully patched."""
 
     STATUS = 200
 
 
-class TickerURLDeleted(TerminalMessage):
+class TickerURLDeleted(TickerMessage):
     """Indicates that the respective ticker text was successfully deleted."""
 
     STATUS = 200

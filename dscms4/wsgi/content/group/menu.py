@@ -8,7 +8,7 @@ from dscms4.orm.content.group import GroupMenu
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.menu import _get_menu
 
-__all__ = ['ROUTE']
+__all__ = ['ROUTES']
 
 
 def get(gid):

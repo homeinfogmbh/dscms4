@@ -15,7 +15,7 @@ class Facebook(Chart):
     """Facebook data chart."""
 
     class Meta:
-        db_table = 'chart_facebook'
+        table_name = 'chart_facebook'
 
     font_size = SmallIntegerField(default=26)
     title_color = IntegerField(default=0x000000)
@@ -53,9 +53,9 @@ class Account(DSCMS4Model):
     """Facebook account settings."""
 
     class Meta:
-        db_table = 'facebook_account'
+        table_name = 'facebook_account'
 
-    chart = ForeignKeyField(Facebook, db_column='chart', on_delete='CASCADE')
+    chart = ForeignKeyField(Facebook, column_name='chart', on_delete='CASCADE')
     facebook_id = IntegerField()
     recent_days = SmallIntegerField(default=14)
     max_posts = SmallIntegerField(default=10)

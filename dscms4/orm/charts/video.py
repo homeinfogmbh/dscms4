@@ -2,8 +2,9 @@
 
 from peewee import ForeignKeyField
 
+from hisfs.orm import File
+
 from dscms4.orm.charts.common import Chart
-from dscms4.orm.media import MediaFile
 
 __all__ = ['Video']
 
@@ -12,6 +13,6 @@ class Video(Chart):
     """A chart that may contain images and texts."""
 
     class Meta:
-        db_table = 'chart_video'
+        table_name = 'chart_video'
 
-    video = ForeignKeyField(MediaFile, db_column='video', null=True)
+    video = ForeignKeyField(File, column_name='video', on_delete='CASCADE')

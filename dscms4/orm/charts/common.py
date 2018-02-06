@@ -32,7 +32,7 @@ class BaseChart(CustomerModel):
     """Common basic chart data model."""
 
     class Meta:
-        db_table = 'base_chart'
+        table_name = 'base_chart'
 
     title = CharField(255)
     description = TextField(null=True)
@@ -60,7 +60,7 @@ class BaseChart(CustomerModel):
 class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
-    base = ForeignKeyField(BaseChart, db_column='base', on_delete='CASCADE')
+    base = ForeignKeyField(BaseChart, column_name='base', on_delete='CASCADE')
 
     def __str__(self):
         """Generic string representation of the respective chart."""

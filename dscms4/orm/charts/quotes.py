@@ -11,7 +11,7 @@ class Quotes(Chart):
     """Chart for quotations."""
 
     class Meta:
-        db_table = 'chart_quotes'
+        table_name = 'chart_quotes'
 
     font_color = IntegerField(0x000000)
     background_color = IntegerField(0x000000)

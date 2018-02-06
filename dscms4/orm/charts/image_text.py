@@ -6,9 +6,10 @@ from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 from peeweeplus import EnumField
 
+from hisfs.orm import File
+
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
-from dscms4.orm.media import MediaFile
 
 __all__ = ['ImageText', 'Image', 'Text']
 
@@ -24,7 +25,7 @@ class ImageText(Chart):
     """A chart that may contain images and text."""
 
     class Meta:
-        db_table = 'chart_image_text'
+        table_name = 'chart_image_text'
 
     style = EnumField(Style)
     title = CharField(255)
@@ -82,10 +83,11 @@ class Image(DSCMS4Model):
     """Image for an ImageTextChart."""
 
     class Meta:
-        db_table = 'chart_image_text_image'
+        table_name = 'chart_image_text_image'
 
-    chart = ForeignKeyField(ImageText, db_column='chart', on_delete='CASCADE')
-    image = ForeignKeyField(MediaFile, db_column='image')
+    chart = ForeignKeyField(
+        ImageText, column_name='chart', on_delete='CASCADE')
+    image = ForeignKeyField(File, column_name='image', on_delete='CASCADE')
 
     @classmethod
     def add(cls, chart, image):
@@ -100,9 +102,10 @@ class Text(DSCMS4Model):
     """Text for an ImageTextChart."""
 
     class Meta:
-        db_table = 'chart_image_text_text'
+        table_name = 'chart_image_text_text'
 
-    chart = ForeignKeyField(ImageText, db_column='chart', on_delete='CASCADE')
+    chart = ForeignKeyField(
+        ImageText, column_name='chart', on_delete='CASCADE')
     text = TextField()
 
     @classmethod

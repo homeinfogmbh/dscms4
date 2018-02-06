@@ -45,17 +45,17 @@ class MenuItem(DSCMS4Model):
     """A menu item."""
 
     class Meta:
-        db_table = 'menu_item'
+        table_name = 'menu_item'
 
-    menu = ForeignKeyField(Menu, db_column='menu', on_delete='CASCADE')
+    menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
     parent = ForeignKeyField(
-        'self', db_column='parent', null=True)
+        'self', column_name='parent', null=True)
     name = CharField(255)
     icon = EnumField(Icons)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
-        BaseChart, null=True, db_column='chart',
+        BaseChart, null=True, column_name='chart',
         on_delete=ForeignKeyConstraint.SET_NULL)
 
     @classmethod

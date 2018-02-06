@@ -4,7 +4,6 @@ from wsgilib import JSON
 
 from dscms4.messages.content.terminal import NoSuchTerminalChart, \
     ChartAddedToTerminal, ChartAlreadyInTerminal, ChartDeletedFromTerminal
-from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.terminal import _get_terminal

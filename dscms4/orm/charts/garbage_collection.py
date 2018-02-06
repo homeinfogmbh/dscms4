@@ -9,4 +9,4 @@ class GarbageCollection(Chart):
     """Chart for garbage collection."""
 
     class Meta:
-        db_table = 'chart_garbage_collection'
+        table_name = 'chart_garbage_collection'

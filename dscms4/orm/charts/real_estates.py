@@ -33,7 +33,7 @@ class RealEstates(Chart):
     """Chart for real estate displaying."""
 
     class Meta:
-        db_table = 'chart_real_estates'
+        table_name = 'chart_real_estates'
 
     display_format = EnumField(
         DisplayFormat, default=DisplayFormat.BIG_PICTURE)
@@ -213,12 +213,12 @@ class IdFilter(DSCMS4Model):
     """Filter for the object IDs."""
 
     class Meta:
-        db_table = 'filter_id'
+        table_name = 'filter_id'
 
     chart = ForeignKeyField(
-        RealEstates, db_column='chart', on_delete='CASCADE')
+        RealEstates, column_name='chart', on_delete='CASCADE')
     value = CharField(255)
-    typ = EnumField(IdTypes, db_column='types')
+    typ = EnumField(IdTypes, column_name='types')
 
     def __call__(self, real_estate):
         """Checks the filter against the respective real estate."""
@@ -245,10 +245,10 @@ class ZipCodeFilter(DSCMS4Model):
     """Filter for real estate ZIP codes."""
 
     class Meta:
-        db_table = 'filter_zip_code'
+        table_name = 'filter_zip_code'
 
     chart = ForeignKeyField(
-        RealEstates, db_column='chart', on_delete='CASCADE')
+        RealEstates, column_name='chart', on_delete='CASCADE')
     zip_code = CharField(255)
     # True: blacklist, False: whitelist.
     blacklist = BooleanField(default=False)

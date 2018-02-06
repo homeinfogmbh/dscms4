@@ -1,5 +1,7 @@
 """WSGI controllers for tickers."""
 
+from his import CUSTOMER, DATA, authenticated, authorized
+
 from wsgilib import JSON
 
 from dscms4.messages.ticker import NoSuchTicker, TickerAdded, TickerPatched, \
