@@ -32,7 +32,6 @@ setup(
             'files/locales/common.ini',
             'files/locales/configuration.ini',
             'files/locales/content.ini',
-            'files/locales/dscms4.ini',
             'files/locales/group.ini',
             'files/locales/media.ini',
             'files/locales/menu.ini',
