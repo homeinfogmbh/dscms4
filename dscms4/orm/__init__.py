@@ -11,8 +11,8 @@ __all__ = ['create_tables']
 
 # Order matters here!
 MODELS = (
-    media.MODELS + charts.MODELS + configuration.MODELS + group.MODELS
-    + menu.MODELS + ticker.MODELS + content.MODELS)
+    charts.MODELS + configuration.MODELS + group.MODELS + menu.MODELS
+    + ticker.MODELS + content.MODELS)
 
 
 def create_tables(fail_silently=True):
