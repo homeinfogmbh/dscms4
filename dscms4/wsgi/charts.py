@@ -12,10 +12,10 @@ from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
 from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS
 
-__all__ = ['CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
+__all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
 
-def _parse_chart_types(string, sep=','):
+def get_chart_type(string, sep=','):
     """Parses the chart type names from the respective string."""
 
     for item in string.split(sep):
@@ -25,7 +25,7 @@ def _parse_chart_types(string, sep=','):
             yield item
 
 
-def _get_chart_types():
+def get_chart_types():
     """Yields selected chart types."""
 
     try:
@@ -33,17 +33,17 @@ def _get_chart_types():
     except KeyError:
         yield from CHARTS.values()
     else:
-        for chart_type in _parse_chart_types(chart_types):
+        for chart_type in get_chart_type(chart_types):
             try:
                 yield CHARTS[chart_type]
             except KeyError:
                 raise InvalidChartType()
 
 
-CHART_TYPES = LocalProxy(_get_chart_types)
+CHART_TYPES = LocalProxy(get_chart_types)
 
 
-def _get_chart_type():
+def get_chart_type():
     """Returns the selected chart type."""
 
     try:
@@ -57,10 +57,10 @@ def _get_chart_type():
         raise InvalidChartType()
 
 
-CHART_TYPE = LocalProxy(_get_chart_type)
+CHART_TYPE = LocalProxy(get_chart_type)
 
 
-def _get_chart_id(ident):
+def get_chart_id(ident):
     """Returns the specified chart ID."""
 
     try:
@@ -71,7 +71,7 @@ def _get_chart_id(ident):
         raise InvalidId()
 
 
-def _get_charts():
+def get_charts():
     """Lists the available charts."""
 
     for typ in CHART_TYPES:
@@ -79,7 +79,7 @@ def _get_charts():
             yield chart
 
 
-def _get_chart(ident):
+def get_chart(ident):
     """Returns the selected chart."""
 
     try:
@@ -94,7 +94,7 @@ def _get_chart(ident):
 def lst():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_dict() for chart in _get_charts()])
+    return JSON([chart.to_dict() for chart in get_charts()])
 
 
 @authenticated
@@ -102,7 +102,7 @@ def lst():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(_get_chart(ident))
+    return JSON(get_chart(ident))
 
 
 @authenticated
@@ -127,7 +127,7 @@ def add():
 def patch(ident):
     """Patches a chart."""
 
-    chart = _get_chart(ident)
+    chart = get_chart(ident)
     chart.patch(DATA.json)
 
     if chart.trashed:
