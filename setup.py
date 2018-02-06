@@ -27,9 +27,9 @@ setup(
     scripts=['files/dscms4d'],
     data_files=[
         ('/usr/lib/systemd/system', ['files/dscms4.service']),
-        ('/etc/his.d/locale', ['files/locales/dscms4.ini']),
-        ('/etc/his.d/locale/dscms4.d', [
+        ('/etc/dscms4.d/locales', [
             'files/locales/charts.ini',
+            'files/locales/common.ini',
             'files/locales/configuration.ini',
             'files/locales/content.ini',
             'files/locales/dscms4.ini',

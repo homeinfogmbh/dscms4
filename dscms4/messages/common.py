@@ -8,7 +8,7 @@ __all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified']
 class DSCMS4Message(Message):
     """Basic real estates message."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/dscms4.ini')
+    LOCALES = locales('/etc/dscms4.d/locales/common.ini')
     ABSTRACT = True
 
 
