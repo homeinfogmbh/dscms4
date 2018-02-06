@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.terminal import NoSuchTerminalChart, \
-    ChartAddedToTerminal, ChartAlreadyInTerminal, ChartDeletedFromTerminal
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.terminal import _get_terminal
@@ -33,9 +33,9 @@ def add(tid, ident):
         tbc.terminal = terminal
         tbc.chart = chart
         tbc.save()
-        return ChartAddedToTerminal()
+        return ContentAdded()
 
-    return ChartAlreadyInTerminal()
+    return ContentExists()
 
 
 def delete(tid, ident):
@@ -46,10 +46,10 @@ def delete(tid, ident):
             (TerminalBaseChart.terminal == _get_terminal(tid))
             & (TerminalBaseChart.id == ident))
     except TerminalBaseChart.DoesNotExist:
-        raise NoSuchTerminalChart()
+        raise NoSuchContent()
 
     terminal_chart.delete_instance()
-    return ChartDeletedFromTerminal()
+    return ContentDeleted()
 
 
 ROUTES = (

@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.group import NoSuchGroupMenu, MenuAddedToGroup, \
-    MenuAlreadyInGroup, MenuDeletedFromGroup
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupMenu
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.menu import _get_menu
@@ -32,9 +32,9 @@ def add(gid, ident):
         group_menu.group = group
         group_menu.menu = menu
         group_menu.save()
-        return MenuAddedToGroup()
+        return ContentAdded()
 
-    return MenuAlreadyInGroup()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -44,10 +44,10 @@ def delete(gid, ident):
         group_menu = GroupMenu.get(
             (GroupMenu.group == _get_group(gid)) & (GroupMenu.id == ident))
     except GroupMenu.DoesNotExist:
-        raise NoSuchGroupMenu()
+        raise NoSuchContent()
 
     group_menu.delete_instance()
-    return MenuDeletedFromGroup()
+    return ContentDeleted()
 
 
 ROUTES = (

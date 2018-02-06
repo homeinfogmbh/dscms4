@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.terminal import NoSuchTerminalMenu, \
-    MenuAddedToTerminal, MenuAlreadyInTerminal, MenuDeletedFromTerminal
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.menu import _get_menu
@@ -33,9 +33,9 @@ def add(gid, ident):
         terminal_menu.terminal = terminal
         terminal_menu.menu = menu
         terminal_menu.save()
-        return MenuAddedToTerminal()
+        return ContentAdded()
 
-    return MenuAlreadyInTerminal()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -46,10 +46,10 @@ def delete(gid, ident):
             (TerminalMenu.terminal == _get_terminal(gid))
             & (TerminalMenu.id == ident))
     except TerminalMenu.DoesNotExist:
-        raise NoSuchTerminalMenu()
+        raise NoSuchContent()
 
     terminal_menu.delete_instance()
-    return MenuDeletedFromTerminal()
+    return ContentDeleted()
 
 
 ROUTES = (

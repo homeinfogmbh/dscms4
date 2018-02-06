@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.group import NoSuchGroupChart, ChartAddedToGroup,\
-    ChartAlreadyInGroup, ChartDeletedFromGroup
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.wsgi.chart import _get_chart
 from dscms4.wsgi.group import _get_group
@@ -32,9 +32,9 @@ def add(gid, ident):
         gbc.group = group
         gbc.chart = chart
         gbc.save()
-        return ChartAddedToGroup()
+        return ContentAdded()
 
-    return ChartAlreadyInGroup()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -45,10 +45,10 @@ def delete(gid, ident):
             (GroupBaseChart.group == _get_group(gid))
             & (GroupBaseChart.id == ident))
     except GroupBaseChart.DoesNotExist:
-        raise NoSuchGroupChart()
+        raise NoSuchContent()
 
     group_chart.delete_instance()
-    return ChartDeletedFromGroup()
+    return ContentDeleted()
 
 
 ROUTES = (

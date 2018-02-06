@@ -2,9 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.group import NoSuchGroupConfiguration, \
-    ConfigurationAddedToGroup, ConfigurationAlreadyInGroup, \
-    ConfigurationDeletedFromGroup
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.group import _get_group
@@ -36,9 +35,9 @@ def add(gid, ident):
         group_configuration.group = group
         group_configuration.configuration = configuration
         group_configuration.save()
-        return ConfigurationAddedToGroup()
+        return ContentAdded()
 
-    return ConfigurationAlreadyInGroup()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -49,10 +48,10 @@ def delete(gid, ident):
             (GroupConfiguration.group == _get_group(gid))
             & (GroupConfiguration.id == ident))
     except GroupConfiguration.DoesNotExist:
-        raise NoSuchGroupConfiguration()
+        raise NoSuchContent()
 
     group_configuration.delete_instance()
-    return ConfigurationDeletedFromGroup()
+    return ContentDeleted()
 
 
 ROUTES = (

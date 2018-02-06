@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.terminal import NoSuchTerminalTicker, \
-    TickerAddedToTerminal, TickerAlreadyInTerminal, TickerDeletedFromTerminal
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalTicker
 from dscms4.wsgi.terminal import _get_terminal
 from dscms4.wsgi.ticker import _get_ticker
@@ -35,9 +35,9 @@ def add(gid, ident):
         terminal_ticker.terminal = terminal
         terminal_ticker.ticker = ticker
         terminal_ticker.save()
-        return TickerAddedToTerminal()
+        return ContentAdded()
 
-    return TickerAlreadyInTerminal()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -48,10 +48,10 @@ def delete(gid, ident):
             (TerminalTicker.terminal == _get_terminal(gid))
             & (TerminalTicker.id == ident))
     except TerminalTicker.DoesNotExist:
-        raise NoSuchTerminalTicker()
+        raise NoSuchContent()
 
     terminal_ticker.delete_instance()
-    return TickerDeletedFromTerminal()
+    return ContentDeleted()
 
 
 ROUTES = (

@@ -2,8 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.group import NoSuchGroupTicker, \
-    TickerAddedToGroup, TickerAlreadyInGroup, TickerDeletedFromGroup
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupTicker
 from dscms4.wsgi.group import _get_group
 from dscms4.wsgi.ticker import _get_ticker
@@ -33,9 +33,9 @@ def add(gid, ident):
         group_ticker.group = group
         group_ticker.ticker = ticker
         group_ticker.save()
-        return TickerAddedToGroup()
+        return ContentAdded()
 
-    return TickerAlreadyInGroup()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -45,10 +45,10 @@ def delete(gid, ident):
         group_ticker = GroupTicker.get(
             (GroupTicker.group == _get_group(gid)) & (GroupTicker.id == ident))
     except GroupTicker.DoesNotExist:
-        raise NoSuchGroupTicker()
+        raise NoSuchContent()
 
     group_ticker.delete_instance()
-    return TickerDeletedFromGroup()
+    return ContentDeleted()
 
 
 ROUTES = (

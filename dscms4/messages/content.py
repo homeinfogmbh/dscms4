@@ -16,6 +16,12 @@ class ContentMessage(Message):
     ABSTRACT = True
 
 
+class NoSuchContent(ContentMessage):
+    """Indicates that the respective content does not exist."""
+
+    STATUS = 404
+
+
 class NoTypeSpecified(ContentMessage):
     """Indicates that no content type was specified."""
 
@@ -32,6 +38,12 @@ class ContentAdded(ContentMessage):
     """Indicates that the respective content was added."""
 
     STATUS = 201
+
+
+class ContentExists(ContentMessage):
+    """Indicates that the respective content already exists."""
+
+    STATUS = 400
 
 
 class ContentDeleted(ContentMessage):

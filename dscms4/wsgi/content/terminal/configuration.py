@@ -2,9 +2,8 @@
 
 from wsgilib import JSON
 
-from dscms4.messages.content.terminal import NoSuchTerminalConfiguration, \
-    ConfigurationAddedToTerminal, ConfigurationAlreadyInTerminal, \
-    ConfigurationDeletedFromTerminal
+from dscms4.messages.content import NoSuchContent, ContentAdded, \
+    ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.wsgi.configuration import _get_configuration
 from dscms4.wsgi.terminal import _get_terminal
@@ -38,9 +37,9 @@ def add(gid, ident):
         terminal_configuration.terminal = terminal
         terminal_configuration.configuration = configuration
         terminal_configuration.save()
-        return ConfigurationAddedToTerminal()
+        return ContentAdded()
 
-    return ConfigurationAlreadyInTerminal()
+    return ContentExists()
 
 
 def delete(gid, ident):
@@ -51,10 +50,10 @@ def delete(gid, ident):
             (TerminalConfiguration.terminal == _get_terminal(gid))
             & (TerminalConfiguration.id == ident))
     except TerminalConfiguration.DoesNotExist:
-        raise NoSuchTerminalConfiguration()
+        raise NoSuchContent()
 
     terminal_configuration.delete_instance()
-    return ConfigurationDeletedFromTerminal()
+    return ContentDeleted()
 
 
 ROUTES = (
