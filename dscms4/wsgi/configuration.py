@@ -9,10 +9,10 @@ from dscms4.messages.configuration import NoSuchConfiguration, \
     ConfigurationAdded, ConfigurationPatched, ConfigurationDeleted
 from dscms4.orm.configuration import Configuration
 
-__all__ = ['ROUTES']
+__all__ = ['get_configuration', 'ROUTES']
 
 
-def _get(ident):
+def get_configuration(ident):
     """Returns the respective configuration."""
 
     try:
@@ -38,7 +38,7 @@ def lst():
 def get(ident):
     """Returns the respective configuration."""
 
-    return JSON(_get(ident).to_dict())
+    return JSON(get_configuration(ident).to_dict())
 
 
 @authenticated
@@ -62,7 +62,7 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    _get(ident).patch(DATA.json)
+    get_configuration(ident).patch(DATA.json)
     return ConfigurationPatched()
 
 
@@ -71,7 +71,7 @@ def patch(ident):
 def delete(ident):
     """Modifies an existing configuration."""
 
-    _get(ident).delete_instance()
+    get_configuration(ident).delete_instance()
     return ConfigurationDeleted()
 
 

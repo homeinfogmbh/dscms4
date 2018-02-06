@@ -5,8 +5,8 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalMenu
-from dscms4.wsgi.terminal import _get_terminal
-from dscms4.wsgi.menu import _get_menu
+from dscms4.wsgi.terminal import get_terminal
+from dscms4.wsgi.menu import get_menu
 
 __all__ = ['ROUTES']
 

@@ -8,7 +8,7 @@ from dscms4.messages.ticker import NoSuchTicker, TickerAdded, TickerPatched, \
     TickerDeleted
 from dscms4.orm.ticker import Ticker
 
-__all__ = ['ROUTES', 'get_ticker']
+__all__ = ['get_ticker', 'ROUTES']
 
 
 def get_tickers():

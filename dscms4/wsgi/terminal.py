@@ -6,7 +6,7 @@ from wsgilib import JSON
 
 from dscms4.messages.terminal import NoSuchTerminal
 
-__all__ = ['ROUTES']
+__all__ = ['get_terminal', 'ROUTES']
 
 
 def get_terminal(tid):

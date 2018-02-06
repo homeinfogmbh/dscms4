@@ -5,8 +5,8 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupTicker
-from dscms4.wsgi.group import _get_group
-from dscms4.wsgi.ticker import _get_ticker
+from dscms4.wsgi.group import get_group
+from dscms4.wsgi.ticker import get_ticker
 
 __all__ = ['ROUTES']
 

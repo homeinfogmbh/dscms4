@@ -5,8 +5,8 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupConfiguration
-from dscms4.wsgi.configuration import _get_configuration
-from dscms4.wsgi.group import _get_group
+from dscms4.wsgi.configuration import get_configuration
+from dscms4.wsgi.group import get_group
 
 __all__ = ['ROUTES']
 
