@@ -33,7 +33,6 @@ setup(
             'files/locales/configuration.ini',
             'files/locales/content.ini',
             'files/locales/group.ini',
-            'files/locales/media.ini',
             'files/locales/menu.ini',
             'files/locales/terminal.ini',
             'files/locales/ticker.ini'])],
