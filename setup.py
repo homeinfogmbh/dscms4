@@ -4,7 +4,7 @@ from distutils.core import setup
 
 
 setup(
-    name='dsmcs4',
+    name='dscms4',
     version='latest',
     author='HOMEINFO - Digitale Informationssysteme GmbH',
     author_email='<info at homeinfo dot de>',
