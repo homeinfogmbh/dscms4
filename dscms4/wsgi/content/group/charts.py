@@ -5,7 +5,7 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupBaseChart
-from dscms4.wsgi.chart import _get_chart
+from dscms4.wsgi.charts import _get_chart
 from dscms4.wsgi.group import _get_group
 
 __all__ = ['ROUTES']
