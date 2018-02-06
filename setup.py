@@ -35,5 +35,6 @@ setup(
             'files/locales/group.ini',
             'files/locales/media.ini',
             'files/locales/menu.ini',
-            'files/locales/terminal.ini'])],
+            'files/locales/terminal.ini',
+            'files/locales/ticker.ini'])],
     description='HOMEINFO Digital Signage Content Management System v4.')
