@@ -58,14 +58,9 @@ class BaseChart(CustomerModel):
     def active(self):
         """Determines whether the chart is considered active."""
         now = datetime.now()
-
-        if self.display_from is not None and self.display_from > now:
-            return False
-
-        if self.display_until is not None and self.display_until < now:
-            return False
-
-        return True
+        return all((
+            self.display_from is None or self.display_from > now,
+            self.display_until is None or self.display_until < now))
 
 
 class Chart(DSCMS4Model):
