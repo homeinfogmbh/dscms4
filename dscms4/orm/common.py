@@ -71,11 +71,7 @@ class CustomerModel(DSCMS4Model):
 class RecordGroup(tuple):
     """A group of records that shall be handled together."""
 
-    def _save(self):
-        """Saves the records and yields their IDs."""
-        for record in self:
-            yield record.save()
-
-    def save(self):
+    def save(self, *args, **kwargs):
         """Saves the records."""
-        return tuple(self._save())
+        for record in self:
+            record.save(*args, **kwargs)
