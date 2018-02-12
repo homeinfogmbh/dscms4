@@ -33,7 +33,7 @@ def get_chart_types():
     except KeyError:
         yield from CHARTS.values()
     else:
-        for chart_type in get_chart_type(chart_types):
+        for chart_type in chart_types.split(','):
             try:
                 yield CHARTS[chart_type]
             except KeyError:
