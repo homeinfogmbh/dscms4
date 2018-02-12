@@ -10,10 +10,10 @@ from enum import Enum
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     SmallIntegerField, BooleanField
 
+from his.messages import MissingData
 from peeweeplus import EnumField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
-from dscms4.orm.exceptions import MissingBaseChartData
 
 __all__ = ['BaseChart', 'Chart']
 
@@ -72,7 +72,7 @@ class Chart(DSCMS4Model):
         try:
             base_dict = dictionary.pop('base')
         except KeyError:
-            raise MissingBaseChartData()
+            raise MissingData(key='base')
 
         chart = super().from_dict(dictionary, **kwargs)
         chart.base = BaseChart.from_dict(customer, base_dict)
