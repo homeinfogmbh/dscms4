@@ -15,16 +15,6 @@ from dscms4.orm.charts import CHARTS
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
 
-def get_chart_type(string, sep=','):
-    """Parses the chart type names from the respective string."""
-
-    for item in string.split(sep):
-        item = item.strip()
-
-        if item:
-            yield item
-
-
 def get_chart_types():
     """Yields selected chart types."""
 
@@ -113,7 +103,7 @@ def add():
     chart_dict = DATA.json
 
     try:
-        chart = CHART_TYPE.from_dict(chart_dict)
+        chart = CHART_TYPE.from_dict(CUSTOMER, chart_dict)
     except MissingData as missing_data:
         raise ChartDataIncomplete(missing_data.missing)
     except InvalidData as invalid_data:
@@ -141,12 +131,7 @@ def patch(ident):
 def delete(ident):
     """Deletes the specified chart."""
 
-    try:
-        chart = CHART_TYPE.get(CHART_TYPE.id == ident)
-    except CHART_TYPE.DoesNotExist:
-        raise NoSuchChart()
-
-    chart.remove()
+    get_chart(ident).remove()
     return ChartDeleted()
 
 
