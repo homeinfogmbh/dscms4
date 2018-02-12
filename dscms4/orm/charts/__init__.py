@@ -3,8 +3,6 @@
 This package provides ORM models
 of the "chart" types of the CMS.
 """
-from strflib import snake_case
-
 from dscms4.orm.charts.common import BaseChart, Chart
 from dscms4.orm.charts.facebook import Facebook, Account
 from dscms4.orm.charts.guess_picture import GuessPicture
@@ -23,5 +21,4 @@ MODELS = (
     BaseChart, Facebook, Account, GuessPicture, ImageText, Image, Text, News,
     PublicTransport, Quotes, Video, Weather)
 CHARTS = {
-    snake_case(model.__name__): model for model in MODELS
-    if issubclass(model, Chart)}
+    model.__name__: model for model in MODELS if issubclass(model, Chart)}
