@@ -2,7 +2,6 @@
 
 from flask import request
 from his import CUSTOMER, DATA, authenticated, authorized
-from his.messages import InvalidData, MissingData
 from werkzeug.local import LocalProxy
 from wsgilib import JSON
 
@@ -10,7 +9,7 @@ from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
-from dscms4.orm.charts import CHARTS
+from dscms4.orm.charts import CHARTS, Chart
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -103,16 +102,11 @@ def add():
     chart_dict = DATA.json
     ident = None
 
-    try:
-        for record in CHART_TYPE.from_dict(CUSTOMER, chart_dict):
-            record.save()
+    for record in CHART_TYPE.from_dict(CUSTOMER, chart_dict):
+        record.save()
 
-            if isinstance(record, Chart):
-                ident = record.id
-    except MissingData as missing_data:
-        raise ChartDataIncomplete(missing_data.missing)
-    except InvalidData as invalid_data:
-        raise ChartDataInvalid(invalid_data.invalid)
+        if isinstance(record, Chart):
+            ident = record.id
 
     return ChartAdded(id=ident)
 
