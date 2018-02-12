@@ -66,7 +66,7 @@ def get_charts():
     for typ in CHART_TYPES:
         print('Type:', typ, flush=True)
         for chart in typ.select().where(typ.customer == CUSTOMER.id):
-            print('Chart:', chart, flush=True)
+            print('Chart:', chart, 'customer ID:', CUSTOMER.id, flush=True)
             yield chart
 
 
