@@ -120,13 +120,11 @@ class Chart(DSCMS4Model):
 
     def save(self, base=True):
         """Saves itself and its base chart."""
-        ident = super().save()
-
         if base:
             base_id = self.base.save()
-            return (ident, base_id)
 
-        return ident
+        ident = super().save()
+        return (ident, base_id)
 
     def delete_instance(self):
         """Deletes the base chart and thus (CASCADE) this chart."""
