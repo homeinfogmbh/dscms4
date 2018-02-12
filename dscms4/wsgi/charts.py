@@ -101,15 +101,22 @@ def add():
     """Adds new charts."""
 
     chart_dict = DATA.json
+    ident = None
 
     try:
-        chart = CHART_TYPE.from_dict(CUSTOMER, chart_dict)
+        records = CHART_TYPE.from_dict(CUSTOMER, chart_dict)
     except MissingData as missing_data:
         raise ChartDataIncomplete(missing_data.missing)
     except InvalidData as invalid_data:
         raise ChartDataInvalid(invalid_data.invalid)
 
-    return ChartAdded(id=chart.id)
+    for record in records:
+        record.save()
+
+        if isinstance(record, Chart):
+            ident = record.id
+
+    return ChartAdded(id=ident)
 
 
 @authenticated
