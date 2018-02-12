@@ -109,10 +109,13 @@ class Chart(DSCMS4Model):
 
         return super().patch(dictionary, **kwargs)
 
-    def to_dict(self):
+    def to_dict(self, *args, base_chart=True, **kwargs):
         """Converts the chart into a JSON compliant dictionary."""
-        dictionary = super().to_dict()
-        dictionary['base'] = self.base.to_dict(primary_key=False)
+        dictionary = super().to_dict(*args, **kwargs)
+
+        if base_chart:
+            dictionary['base'] = self.base.to_dict(primary_key=False)
+
         return dictionary
 
     def save(self, base=True):
