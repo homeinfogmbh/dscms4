@@ -101,7 +101,6 @@ class Chart(DSCMS4Model):
         return cls.select().join(BaseChart).where(
             (cls.id == ident) & (BaseChart.customer == customer)).get()
 
-
     @property
     def customer(self):
         """Returns the base chart's customer."""
