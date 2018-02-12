@@ -64,7 +64,9 @@ def get_charts():
     """Lists the available charts."""
 
     for typ in CHART_TYPES:
+        print('Type:', typ, flush=True)
         for chart in typ.select().where(typ.customer == CUSTOMER.id):
+            print('Chart:', chart, flush=True)
             yield chart
 
 
