@@ -104,17 +104,15 @@ def add():
     ident = None
 
     try:
-        records = CHART_TYPE.from_dict(CUSTOMER, chart_dict)
+        for record in CHART_TYPE.from_dict(CUSTOMER, chart_dict):
+            record.save()
+
+            if isinstance(record, Chart):
+                ident = record.id
     except MissingData as missing_data:
         raise ChartDataIncomplete(missing_data.missing)
     except InvalidData as invalid_data:
         raise ChartDataInvalid(invalid_data.invalid)
-
-    for record in records:
-        record.save()
-
-        if isinstance(record, Chart):
-            ident = record.id
 
     return ChartAdded(id=ident)
 
