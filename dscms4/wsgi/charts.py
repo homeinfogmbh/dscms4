@@ -73,8 +73,9 @@ def get_chart(ident):
     """Returns the selected chart."""
 
     try:
-        return CHART_TYPE.get(
-            (CHART_TYPE.id == ident) & (CHART_TYPE.customer == CUSTOMER.id))
+        return CHART_TYPE.select().join(BaseChart).where(
+            (CHART_TYPE.id == ident)
+            & (BaseChart.customer == CUSTOMER.id)).get()
     except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 
