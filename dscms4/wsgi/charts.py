@@ -64,10 +64,8 @@ def get_charts():
     """Lists the available charts."""
 
     for typ in CHART_TYPES:
-        print('Type:', typ, 'customer ID:', CUSTOMER.id, flush=True)
         for chart in typ.select().join(BaseChart).where(
-                typ.customer == CUSTOMER.id):
-            print('Chart:', chart, flush=True)
+                BaseChart.customer == CUSTOMER.id):
             yield chart
 
 
