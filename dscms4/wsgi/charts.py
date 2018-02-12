@@ -9,7 +9,7 @@ from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
-from dscms4.orm.charts import CHARTS, Chart
+from dscms4.orm.charts import CHARTS, BaseChart, Chart
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
