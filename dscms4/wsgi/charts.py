@@ -9,7 +9,7 @@ from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
     NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
-from dscms4.orm.charts import CHARTS, BaseChart, Chart
+from dscms4.orm.charts import CHARTS, Chart, ChartGroup
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -64,8 +64,7 @@ def get_charts():
     """Lists the available charts."""
 
     for typ in CHART_TYPES:
-        for chart in typ.select().join(BaseChart).where(
-                BaseChart.customer == CUSTOMER.id):
+        for chart in typ.by_customer(CUSTOMER.id):
             yield chart
 
 
@@ -73,9 +72,7 @@ def get_chart(ident):
     """Returns the selected chart."""
 
     try:
-        return CHART_TYPE.select().join(BaseChart).where(
-            (CHART_TYPE.id == ident)
-            & (BaseChart.customer == CUSTOMER.id)).get()
+        return CHART_TYPE.by_id(ident, customer=CUSTOMER.id)
     except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 
@@ -101,16 +98,9 @@ def get(ident):
 def add():
     """Adds new charts."""
 
-    chart_dict = DATA.json
-    ident = None
-
-    for record in CHART_TYPE.from_dict(CUSTOMER, chart_dict):
-        record.save()
-
-        if isinstance(record, Chart):
-            ident = record.id
-
-    return ChartAdded(id=ident)
+    records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, DATA.json))
+    records.save()
+    return ChartAdded(id=records.chart.id)
 
 
 @authenticated

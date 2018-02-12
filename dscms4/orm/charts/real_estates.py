@@ -126,9 +126,10 @@ class RealEstates(Chart):
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new chart from the respective dictionary."""
-        chart = super().from_dict(customer, dictionary, **kwargs)
+        filters = dictionary.pop('filters', {})
+        base, chart = super().from_dict(customer, dictionary, **kwargs)
+        yield base
         yield chart
-        filters = dictionary.get('filters', {})
 
         for id_filter in filters.get('id', ()):
             yield IdFilter.from_dict(chart, id_filter)

@@ -13,7 +13,7 @@ from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
 from his.messages import MissingData
 from peeweeplus import EnumField
 
-from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import DSCMS4Model, CustomerModel, RecordGroup
 
 __all__ = ['BaseChart', 'Chart']
 
@@ -26,6 +26,17 @@ class Transitions(Enum):
     SLIDE_IN = 'slide-in'
     RANDOM = 'random'
     NONE = None
+
+
+class ChartGroup(RecordGroup):
+    """A Record group with a chart property."""
+
+    @property
+    def chart(self):
+        """Reutns the chart record."""
+        for record in self:
+            if isinstance(record, Chart):
+                return record
 
 
 class BaseChart(CustomerModel):
@@ -74,9 +85,11 @@ class Chart(DSCMS4Model):
         except KeyError:
             raise MissingData(key='base')
 
+        base = BaseChart.from_dict(customer, base_dict)
+        yield base
         chart = super().from_dict(dictionary, **kwargs)
-        chart.base = BaseChart.from_dict(customer, base_dict)
-        return chart
+        chart.base = base
+        yield chart
 
     @classmethod
     def by_customer(cls, customer):
@@ -136,14 +149,6 @@ class Chart(DSCMS4Model):
             dictionary['type'] = self.__class__.__name__
 
         return dictionary
-
-    def save(self, base=True):
-        """Saves itself and its base chart."""
-        if base:
-            base_id = self.base.save()
-
-        ident = super().save()
-        return (ident, base_id)
 
     def delete_instance(self):
         """Deletes the base chart and thus (CASCADE) this chart."""

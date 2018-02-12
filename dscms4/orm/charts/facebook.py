@@ -27,7 +27,8 @@ class Facebook(Chart):
         dictionary for the respective customer.
         """
         accounts = dictionary.pop('accounts', ())
-        chart = super().from_dict(customer, dictionary, **kwargs)
+        base, chart = super().from_dict(customer, dictionary, **kwargs)
+        yield base
         yield chart
 
         for account in accounts:

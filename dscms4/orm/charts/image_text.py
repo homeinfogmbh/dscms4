@@ -42,7 +42,8 @@ class ImageText(Chart):
         # dictionary before invoking super().from_dict().
         images = dictionary.pop('images', ())
         texts = dictionary.pop('texts', ())
-        chart = super().from_dict(customer, dictionary, **kwargs)
+        base, chart = super().from_dict(customer, dictionary, **kwargs)
+        yield base
         yield chart
 
         for image in images:

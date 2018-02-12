@@ -13,7 +13,8 @@ __all__ = [
     'create_tables',
     'save',
     'DSCMS4Model',
-    'CustomerModel']
+    'CustomerModel',
+    'RecordGroup']
 
 
 DATABASE = MySQLDatabase(
@@ -65,3 +66,16 @@ class CustomerModel(DSCMS4Model):
     def by_customer(cls, customer):
         """Yields records for the respective customer."""
         return cls.select().where(cls.customer == customer)
+
+
+class RecordGroup(tuple):
+    """A group of records that shall be handled together."""
+
+    def _save(self):
+        """Saves the records and yields their IDs."""
+        for record in self:
+            yield record.save()
+
+    def save(self):
+        """Saves the records."""
+        return tuple(self._save())
