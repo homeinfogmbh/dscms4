@@ -22,4 +22,4 @@ class Form(Chart):
     class Meta:
         table_name = 'chart_form'
 
-    typ = EnumField(Type, column_name='type')
+    mode = EnumField(Type, column_name='mode')

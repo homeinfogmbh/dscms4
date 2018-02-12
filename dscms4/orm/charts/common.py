@@ -78,6 +78,22 @@ class Chart(DSCMS4Model):
         chart.base = BaseChart.from_dict(customer, base_dict)
         return chart
 
+    @classmethod
+    def by_customer(cls, customer):
+        """Yields charts by customer."""
+        return cls.select().join(BaseChart).where(
+            BaseChart.customer == customer)
+
+    @classmethod
+    def by_id(cls, ident, customer=None):
+        """Returns a single chart by its ID."""
+        if customer is None:
+            return cls.get(cls.id == ident)
+
+        return cls.select().join(BaseChart).where(
+            (cls.id == ident) & (BaseChart.customer == customer)).get()
+
+
     @property
     def customer(self):
         """Returns the base chart's customer."""
@@ -109,12 +125,15 @@ class Chart(DSCMS4Model):
 
         return super().patch(dictionary, **kwargs)
 
-    def to_dict(self, *args, base_chart=True, **kwargs):
+    def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
         """Converts the chart into a JSON compliant dictionary."""
         dictionary = super().to_dict(*args, **kwargs)
 
         if base_chart:
             dictionary['base'] = self.base.to_dict(primary_key=False)
+
+        if type_:
+            dictionary['type'] = self.__class__.__name__
 
         return dictionary
 
