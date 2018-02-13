@@ -135,7 +135,7 @@ def patch(ident):
 def delete(ident):
     """Deletes the specified chart."""
 
-    get_chart(ident).remove()
+    get_chart(ident).delete_instance()
     return ChartDeleted()
 
 
