@@ -1,15 +1,17 @@
 """DSCMS4 WSGI handlers for charts."""
 
 from flask import request
-from his import CUSTOMER, DATA, authenticated, authorized
 from werkzeug.local import LocalProxy
+
+from his import CUSTOMER, DATA, authenticated, authorized
+from his.messages import InvalidData
+from peeweeplus import InvalidKeys
 from wsgilib import JSON
 
-from dscms4.messages.charts import ChartDataIncomplete, ChartDataInvalid, \
-    NoChartTypeSpecified, InvalidChartType, NoChartIdSpecified, \
-    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
+from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
+    NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
-from dscms4.orm.charts import CHARTS, Chart, ChartGroup
+from dscms4.orm.charts import CHARTS, ChartGroup
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -79,7 +81,7 @@ def get_chart(ident):
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Lists IDs of charts of the respective customer."""
 
     return JSON([chart.to_dict() for chart in get_charts()])
@@ -98,7 +100,11 @@ def get(ident):
 def add():
     """Adds new charts."""
 
-    records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, DATA.json))
+    try:
+        records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, DATA.json))
+    except InvalidKeys as invalid_keys:
+        raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
+
     records.save()
     return ChartAdded(id=records.chart.id)
 
@@ -109,7 +115,11 @@ def patch(ident):
     """Patches a chart."""
 
     chart = get_chart(ident)
-    chart.patch(DATA.json)
+
+    try:
+        chart.patch(DATA.json)
+    except InvalidKeys as invalid_keys:
+        raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
     if chart.trashed:
         chart.delete_instance()
@@ -127,7 +137,7 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/charts', lst, 'list_charts'),
+    ('GET', '/charts', list_, 'list_charts'),
     ('GET', '/charts/<int:ident>', get, 'get_charts'),
     ('POST', '/charts', add, 'add_chart'),
     ('PATCH', '/charts/<int:ident>', patch, 'patch_chart'),
