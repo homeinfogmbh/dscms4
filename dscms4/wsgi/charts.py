@@ -92,7 +92,7 @@ def list_():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_chart(ident))
+    return JSON(get_chart(ident).to_dict())
 
 
 @authenticated
