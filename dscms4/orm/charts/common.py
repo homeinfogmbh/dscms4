@@ -128,9 +128,9 @@ class Chart(DSCMS4Model):
         except KeyError:
             pass
         else:
-            self.base.patch(base)
+            yield self.base.patch(base)
 
-        return super().patch(dictionary, **kwargs)
+        yield super().patch(dictionary, **kwargs)
 
     def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
         """Converts the chart into a JSON compliant dictionary."""
