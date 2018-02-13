@@ -78,7 +78,7 @@ class ImageText(Chart):
         """Returns the dictionary representation of this chart's fields."""
         dictionary = super().to_dict()
         dictionary['texts'] = tuple(self.texts)
-        dictionary['images'] = tuple(self.images)
+        dictionary['images'] = tuple(image.to_dict() for image in self.images)
         return dictionary
 
 
