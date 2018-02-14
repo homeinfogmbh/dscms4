@@ -1,8 +1,9 @@
 """Facebook charts and associated data."""
 
-from fancylog import logging
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
+
+from fancylog import logging
 
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
@@ -57,7 +58,7 @@ class Account(DSCMS4Model):
         table_name = 'facebook_account'
 
     chart = ForeignKeyField(Facebook, column_name='chart', on_delete='CASCADE')
-    facebook_id = IntegerField()
+    facebook_id = CharField(255)
     recent_days = SmallIntegerField(default=14)
     max_posts = SmallIntegerField(default=10)
     name = CharField(255, null=True)
