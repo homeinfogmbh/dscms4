@@ -42,12 +42,13 @@ class Facebook(Chart):
     @property
     def accounts(self):
         """Yields accounts configured for this chart."""
-        return Account.select().where(Account.facebook_chart == self)
+        return Account.select().where(Account.chart == self)
 
-    def to_dict(self):
+    def to_dict(self, **kwargs):
         """Returns a JSON-ish dictionary."""
         dictionary = super().to_dict()
-        dictionary['accounts'] = tuple(self.accounts)
+        dictionary['accounts'] = [
+            account.to_dict(**kwargs) for account in self.accounts]
         return dictionary
 
 
