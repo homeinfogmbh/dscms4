@@ -33,16 +33,32 @@ class Facebook(Chart):
         yield chart
 
         for account in accounts:
-            try:
-                yield Account.from_dict(chart, account)
-            except KeyError:
-                cls.logger.error(
-                    'Could not create account:', str(account), sep='\n')
+            yield Account.from_dict(chart, account)
 
     @property
     def accounts(self):
         """Yields accounts configured for this chart."""
         return Account.select().where(Account.chart == self)
+
+    def patch(self, dictionary, **kwargs):
+        """Creates a new quotes chart from the
+        dictionary for the respective customer.
+        """
+        try:
+            accounts = dictionary.pop('accounts')
+        except KeyError:
+            accounts = None
+
+        base, chart = super().patch(dictionary, **kwargs)
+        yield base
+        yield chart
+
+        if accounts is not None:
+            for account in self.accounts:
+                account.delete_instance()
+
+            for account in accounts:
+                yield Account.from_dict(chart, account)
 
     def to_dict(self, **kwargs):
         """Returns a JSON-ish dictionary."""

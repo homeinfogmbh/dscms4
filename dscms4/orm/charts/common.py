@@ -124,11 +124,9 @@ class Chart(DSCMS4Model):
     def patch(self, dictionary, **kwargs):
         """Pathes the chart with the provided dictionary."""
         try:
-            base = dictionary.pop('base')
+            yield self.base.patch(dictionary.pop('base'))
         except KeyError:
-            pass
-        else:
-            yield self.base.patch(base)
+            yield self.base
 
         yield super().patch(dictionary, **kwargs)
 

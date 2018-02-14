@@ -117,15 +117,14 @@ def patch(ident):
     chart = get_chart(ident)
 
     try:
-        base_chart, chart = chart.patch(DATA.json)
+        records = ChartGroup(chart.patch(DATA.json))
     except InvalidKeys as invalid_keys:
         raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
-    if chart.trashed:
+    if records.chart.trashed:
         chart.delete_instance()
     else:
-        base_chart.save()
-        chart.save()
+        records.save()
 
     return ChartPatched()
 
