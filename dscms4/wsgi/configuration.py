@@ -47,7 +47,7 @@ def add():
     """Adds a new configuration."""
 
     try:
-        for record in Configuration.from_dict(DATA.json, CUSTOMER.id):
+        for record in Configuration.from_dict(CUSTOMER.id, DATA.json):
             record.save()
     except MissingData as missing_data:
         raise IncompleteData(missing_data.missing)
