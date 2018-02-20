@@ -101,16 +101,19 @@ class Configuration(CustomerModel):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
+        colors = dictionary.pop('colors', {})
+        tickers = dictionary.pop('tickers', ())
+        backlights = dictionary.pop('backlight', {})
         configuration = super().from_dict(customer, dictionary)
         configuration.customer = customer
-        configuration.colors = Colors.from_dict(dictionary.get('colors', {}))
+        configuration.colors = Colors.from_dict(colors)
         yield configuration
 
-        for ticker_dict in dictionary.get('tickers', ()):
-            yield Ticker.from_dict(ticker_dict, configuration=configuration)
+        for ticker in tickers:
+            yield Ticker.from_dict(ticker, configuration=configuration)
 
         for backlight in Backlight.from_dict(
-                dictionary.get('backlight', {}), configuration=configuration):
+                backlights, configuration=configuration):
             yield backlight
 
     def to_dict(self):
