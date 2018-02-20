@@ -1,5 +1,6 @@
 """Configurations, colors, tickers and brightness settings."""
 
+from contextlib import suppress
 from enum import Enum
 
 from peewee import ForeignKeyField, TimeField, IntegerField, \
@@ -194,7 +195,8 @@ class Backlight(DSCMS4Model):
         dictionary = {}
 
         for backlight in cls.by_configuration(configuration):
-            dictionary.update(backlight.to_dict())
+            with suppress(ValueError):
+                dictionary.update(backlight.to_dict())
 
         return dictionary
 
