@@ -6,6 +6,7 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
+from filedb import FileProperty
 from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
@@ -89,23 +90,26 @@ class Configuration(CustomerModel):
     colors = ForeignKeyField(Colors, column_name='colors')
     title_size = SmallIntegerField()
     text_size = SmallIntegerField()
-    logo = IntegerField()           # File
-    background = IntegerField()     # File
-    dummy_picture = IntegerField()  # File
+    _logo = IntegerField(null=True, column_name='logo')
+    logo = FileProperty(_logo)
+    _background = IntegerField(null=True, column_name='background')
+    background = FileProperty(_background)
+    _dummy_picture = IntegerField(null=True, column_name='dummy_picture')
+    dummy_picture = FileProperty(_dummy_picture)
     hide_cursor = BooleanField(default=True)
     rotation = SmallIntegerField(default=0)
     email_form = BooleanField()
     volume = SmallIntegerField()
 
     @classmethod
-    def from_dict(cls, customer, dictionary):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
         colors = dictionary.pop('colors', {})
         tickers = dictionary.pop('tickers', ())
         backlights = dictionary.pop('backlight', {})
-        configuration = super().from_dict(customer, dictionary)
+        configuration = super().from_dict(customer, dictionary, **kwargs)
         configuration.customer = customer
         configuration.colors = Colors.from_dict(colors)
         yield configuration
