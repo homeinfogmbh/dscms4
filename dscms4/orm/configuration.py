@@ -123,9 +123,9 @@ class Configuration(CustomerModel):
                 backlights, configuration=configuration):
             yield backlight
 
-    def to_dict(self):
+    def to_dict(self, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
-        dictionary = super().to_dict(ignore=self.__class__.colors)
+        dictionary = super().to_dict(**kwargs)
         dictionary['colors'] = self.colors.to_dict()
         dictionary['tickers'] = Ticker.list_for(self)
         dictionary['backlight'] = Backlight.dict_for(self)
