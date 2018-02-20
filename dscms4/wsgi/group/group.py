@@ -41,7 +41,7 @@ def get(ident):
 def add():
     """Adds a new group."""
 
-    group = Group.from_dict(DATA.json, customer=CUSTOMER.id)
+    group = Group.from_dict(CUSTOMER.id, DATA.json)
     group.save()
     return GroupAdded(id=group.id)
 
