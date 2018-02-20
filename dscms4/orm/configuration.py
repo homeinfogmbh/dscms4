@@ -111,7 +111,9 @@ class Configuration(CustomerModel):
         backlights = dictionary.pop('backlight', {})
         configuration = super().from_dict(customer, dictionary, **kwargs)
         configuration.customer = customer
-        configuration.colors = Colors.from_dict(colors)
+        colors = Colors.from_dict(colors)
+        yield colors
+        configuration.colors = colors
         yield configuration
 
         for ticker in tickers:
