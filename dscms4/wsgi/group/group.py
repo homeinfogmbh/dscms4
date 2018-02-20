@@ -21,10 +21,10 @@ def get_group(gid):
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Lists IDs of groups of the respective customer."""
 
-    return JSON([group.id for group in Group.select().where(
+    return JSON([group.to_dict() for group in Group.select().where(
         Group.customer == CUSTOMER.id)])
 
 
@@ -65,7 +65,7 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/group', lst, 'list_groups'),
+    ('GET', '/group', list_, 'list_groups'),
     ('GET', '/group/<int:ident>', get, 'get_group'),
     ('POST', '/group', add, 'add_group'),
     ('PATCH', '/group/<int:ident>', patch, 'patch_group'),
