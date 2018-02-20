@@ -25,11 +25,12 @@ def get_configuration(ident):
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Returns a list of IDs of the customer's configurations."""
 
     return JSON([
-        configuration.id for configuration in Configuration.select().where(
+        configuration.to_dict() for configuration
+        in Configuration.select().where(
             Configuration.customer == CUSTOMER.id)])
 
 
@@ -76,7 +77,7 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/configuration', lst, 'list_configurations'),
+    ('GET', '/configuration', list_, 'list_configurations'),
     ('GET', '/configuration/<int:ident>', get, 'get_configuration'),
     ('POST', '/configuration', add, 'add_configuration'),
     ('PATCH', '/configuration/<int:gid>', patch, 'patch_configuration'),
