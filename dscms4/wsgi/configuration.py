@@ -63,7 +63,14 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    get_configuration(ident).patch(DATA.json)
+    try:
+        for record in get_configuration(ident).patch(DATA.json):
+            record.save()
+    except MissingData as missing_data:
+        raise IncompleteData(missing_data.missing)
+    except InvalidData as invalid_data:
+        raise InvalidData(invalid_data.invalid)
+
     return ConfigurationPatched()
 
 

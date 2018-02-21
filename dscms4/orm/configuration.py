@@ -131,6 +131,31 @@ class Configuration(CustomerModel):
         dictionary['backlight'] = Backlight.dict_for(self)
         return dictionary
 
+    def patch(self, dictionary, **kwargs):
+        """Patches the configuration."""
+        colors = dictionary.pop('colors', None)
+        tickers = dictionary.pop('tickers', None)
+        backlights = dictionary.pop('backlight', None)
+        yield super().patch(dictionary, **kwargs)
+
+        if colors is not None:
+            yield self.colors.patch(colors)
+
+        if tickers is not None:
+            for ticker in Ticker.by_configuration(self):
+                ticker.delete_instance()
+
+            for ticker in tickers:
+                yield Ticker.from_dict(ticker, configuration=self)
+
+        if backlights is not None:
+            for backlight in Backlight.by_configuration(self):
+                backlight.delete_instance()
+
+            for backlight in Backlight.from_dict(
+                    backlights, configuration=self):
+                yield backlight
+
     def delete_instance(self):
         """Deletes this instance."""
         self.colors.delete_instance()
