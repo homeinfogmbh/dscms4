@@ -152,7 +152,7 @@ class Group(CustomerModel):
         dictionary = super().to_dict(**kwargs)
 
         if parent:
-            if self.parent is None
+            if self.parent is None:
                 dictionary['parent'] = None
             else:
                 dictionary['parent'] = self.parent.id
