@@ -39,7 +39,7 @@ def _get_chart_types():
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Lists available chart types."""
 
     return JSON([chart_type.to_dict() for chart_type in _get_chart_types()])
@@ -56,5 +56,5 @@ def add(cid, chart_type):
 
 
 ROUTES = (
-    ('GET', '/chart-types', lst, 'list_chart_types'),
+    ('GET', '/chart-types', list_, 'list_chart_types'),
     ('POST', '/chart-types/<int:cid>/<chart_type>', add, 'add_chart_type'))
