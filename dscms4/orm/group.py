@@ -147,16 +147,15 @@ class Group(CustomerModel):
 
         self.parent = parent
 
-    def to_dict(self, parent=True):
+    def to_dict(self, parent=True, **kwargs):
         """Converts the group to a JSON-like dictionary."""
-        dictionary = {
-            'id': self.id,
-            'customer': self.customer.id,
-            'name': self.name,
-            'description': self.description}
+        dictionary = super().to_dict(**kwargs)
 
         if parent:
-            dictionary['parent'] = self.parent
+            if self.parent is None
+                dictionary['parent'] = None
+            else:
+                dictionary['parent'] = self.parent.id
 
         return dictionary
 
