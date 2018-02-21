@@ -51,7 +51,7 @@ def add():
 def patch(ident):
     """Patches the respective group."""
 
-    get_group(ident).patch(DATA.json)
+    get_group(ident).patch(DATA.json).save()
     return GroupPatched()
 
 
