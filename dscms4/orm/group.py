@@ -90,8 +90,9 @@ class Group(CustomerModel):
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
         """Creates a group from the respective dictionary."""
+        parent = dictionary.pop('parent', None)
         record = super().from_dict(customer, dictionary, **kwargs)
-        record.parent = dictionary.get('parent')
+        record.change_parent(parent)
         return record
 
     @classmethod
@@ -132,14 +133,19 @@ class Group(CustomerModel):
         """Returns a group members proxy."""
         return MemberProxy(self)
 
+    def patch(self, dictionary, **kwargs):
+        """Creates a group from the respective dictionary."""
+        parent = dictionary.pop('parent', None)
+        super().patch(dictionary, **kwargs)
+        self.change_parent(parent)
+        return self
+
     def change_parent(self, parent):
         """Changes the parent reference of the group."""
-        if parent in self.tree:
+        if parent is not None and parent in self.tree:
             raise CircularPedigreeError()
 
         self.parent = parent
-        self.save()
-        return self
 
     def to_dict(self, parent=True):
         """Converts the group to a JSON-like dictionary."""
