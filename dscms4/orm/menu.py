@@ -8,7 +8,7 @@ from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import BaseChart
-from .exceptions import CircularPedigreeError
+from .exceptions import CircularReferenceError
 
 __all__ = [
     'Icons',
@@ -101,7 +101,7 @@ class MenuItem(DSCMS4Model):
     def move(self, parent):
         """Moves this menu entry to a new parent."""
         if parent in self.tree:
-            raise CircularPedigreeError()
+            raise CircularReferenceError()
 
         self.parent = parent
         self.menu = self.parent.menu

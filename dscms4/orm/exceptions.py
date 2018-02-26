@@ -2,7 +2,7 @@
 
 __all__ = [
     'UnsupportedMember',
-    'CircularPedigreeError',
+    'CircularReferenceError',
     'MissingBaseChartData',
     'OrphanedBaseChart',
     'AmbiguousBaseChart',
@@ -27,7 +27,7 @@ class UnsupportedMember(DSCMS4Error):
         self.member = member
 
 
-class CircularPedigreeError(DSCMS4Error):
+class CircularReferenceError(DSCMS4Error):
     """Indicates that the a group was tried to be set as
     a child of its children or parent of its parents.
     """

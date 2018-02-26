@@ -2,7 +2,7 @@
 
 from his.messages import locales, Message
 
-__all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified']
+__all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified', 'CircularReference']
 
 
 class DSCMS4Message(Message):
@@ -22,3 +22,9 @@ class NoIdSpecified(DSCMS4Message):
     """Indicates that no ID was specified."""
 
     STATUS = 400
+
+
+class CircularReference(DSCMS4Message):
+    """Indicates that a circular reference was tried to be designed."""
+
+    STATUS = 406

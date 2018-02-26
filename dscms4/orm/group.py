@@ -9,7 +9,7 @@ from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
-from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
+from dscms4.orm.exceptions import UnsupportedMember, CircularReferenceError, \
     NoSuchTerminal, NoSuchApartment
 
 __all__ = [
@@ -149,7 +149,7 @@ class Group(CustomerModel):
     def change_parent(self, parent):
         """Changes the parent reference of the group."""
         if parent is not None and parent in self.tree:
-            raise CircularPedigreeError()
+            raise CircularReferenceError()
 
         self.parent = parent
 

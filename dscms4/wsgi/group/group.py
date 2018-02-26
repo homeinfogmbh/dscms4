@@ -3,8 +3,10 @@
 from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
+from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
     GroupDeleted
+from dscms4.orm.exceptions import CircularReferenceError
 from dscms4.orm.group import KEEP_PARENT, Group
 
 __all__ = ['get_group', 'ROUTES']
@@ -60,7 +62,11 @@ def patch(ident):
     else:
         parent = get_group(parent)
 
-    get_group(ident).patch(json, parent=parent).save()
+    try:
+        get_group(ident).patch(json, parent=parent).save()
+    except CircularReferenceError:
+        return CircularReference()
+
     return GroupPatched()
 
 
