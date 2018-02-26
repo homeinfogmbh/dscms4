@@ -170,6 +170,12 @@ class GroupMember(DSCMS4Model):
         """Yields members for the respective group."""
         return cls.select().where(cls.group == group)
 
+    def to_dict(self, *args, **kwargs):
+        """Returns a JSON-ish dictionary."""
+        dictionary = super().to_dict(*args, **kwargs)
+        dictionary['gid'] = self.group.id
+        return dictionary
+
 
 class GroupMemberTerminal(GroupMember):
     """Terminals as members in groups."""
@@ -206,6 +212,12 @@ class GroupMemberTerminal(GroupMember):
             raise NoSuchTerminal()
 
         return cls.add(group, terminal)
+
+    def to_dict(self, *args, **kwargs):
+        """Returns a JSON-ish dictionary."""
+        dictionary = super().to_dict(*args, **kwargs)
+        dictionary['tid'] = self.terminal.id
+        return dictionary
 
 
 class GroupMemberApartmentBuilding(GroupMember):
