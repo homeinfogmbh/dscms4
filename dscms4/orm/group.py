@@ -1,6 +1,5 @@
 """ORM model to represent groups."""
 
-from contextlib import suppress
 from itertools import chain
 
 from his.messages.data import MissingData, InvalidData
