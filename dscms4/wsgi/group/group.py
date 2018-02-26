@@ -5,7 +5,7 @@ from wsgilib import JSON
 
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
     GroupDeleted
-from dscms4.orm.group import Group
+from dscms4.orm.group import KEEP_PARENT, Group
 
 __all__ = ['get_group', 'ROUTES']
 
@@ -51,7 +51,16 @@ def add():
 def patch(ident):
     """Patches the respective group."""
 
-    get_group(ident).patch(DATA.json).save()
+    json = DATA.json
+
+    try:
+        parent = json.pop('parent')
+    except KeyError:
+        parent = KEEP_PARENT
+    else:
+        parent = get_group(parent)
+
+    get_group(ident).patch(json, parent=parent).save()
     return GroupPatched()
 
 

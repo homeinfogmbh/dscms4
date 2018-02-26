@@ -1,5 +1,6 @@
 """ORM model to represent groups."""
 
+from contextlib import suppress
 from itertools import chain
 
 from his.messages.data import MissingData, InvalidData
@@ -13,11 +14,15 @@ from dscms4.orm.exceptions import UnsupportedMember, CircularPedigreeError, \
     NoSuchTerminal, NoSuchApartment
 
 __all__ = [
+    'KEEP_PARENT',
     'Group',
     'GroupMemberTerminal',
     'GroupMemberApartmentBuilding',
     'GROUP_MEMBERS',
     'MODELS']
+
+
+KEEP_PARENT = object()
 
 
 class MemberProxy:
@@ -133,11 +138,13 @@ class Group(CustomerModel):
         """Returns a group members proxy."""
         return MemberProxy(self)
 
-    def patch(self, dictionary, **kwargs):
+    def patch(self, dictionary, parent=KEEP_PARENT, **kwargs):
         """Creates a group from the respective dictionary."""
-        parent = dictionary.pop('parent', None)
         super().patch(dictionary, **kwargs)
-        self.change_parent(parent)
+
+        if parent is not KEEP_PARENT:
+            self.change_parent(parent)
+
         return self
 
     def change_parent(self, parent):
