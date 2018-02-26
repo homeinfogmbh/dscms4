@@ -66,7 +66,7 @@ def delete(group_id, member_type, member_id):
 
 ROUTES = (
     ('GET', '/group/<int:group_id>/member', get, 'get_group_members'),
-    ('POST', '/group/<int:group_id>/member/<member_type>', get,
+    ('POST', '/group/<int:group_id>/member/<member_type>', add,
      'add_group_member'),
     ('DELETE', '/group/<int:group_id>/member/<member_type>/<int:member_id>',
      delete, 'delete_group_member'))
