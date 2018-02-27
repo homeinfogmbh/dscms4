@@ -13,7 +13,7 @@ __all__ = ['get_group', 'ROUTES']
 
 
 def get_group(gid):
-    """Returns the respective group."""
+    """Returns the respective group of the current customer."""
 
     try:
         return Group.get((Group.id == gid) & (Group.customer == CUSTOMER.id))
