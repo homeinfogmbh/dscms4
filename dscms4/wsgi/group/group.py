@@ -60,7 +60,8 @@ def patch(ident):
     except KeyError:
         parent = KEEP_PARENT
     else:
-        parent = get_group(parent)
+        if parent is not None:
+            parent = get_group(parent)
 
     try:
         get_group(ident).patch(json, parent=parent).save()
