@@ -5,7 +5,7 @@ from wsgilib import JSON
 
 from dscms4.messages.ticker import NoSuchTickerURL, TickerURLAdded, \
     TickerURLPatched, TickerURLDeleted
-from dscms4.orm.ticker import URL
+from dscms4.orm.configuration import URL
 from dscms4.wsgi.ticker.ticker import get_ticker
 
 __all__ = ['ROUTES']
