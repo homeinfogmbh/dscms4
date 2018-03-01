@@ -43,7 +43,7 @@ def add(group_id, member_type):
     member_class = get_member_class(member_type)
     member = member_class.from_dict(group, DATA.json)
     member.save()
-    return MemberAdded()
+    return MemberAdded(id=member.id)
 
 
 @authenticated
