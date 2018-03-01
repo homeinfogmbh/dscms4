@@ -9,7 +9,8 @@ from peewee import ForeignKeyField, TimeField, IntegerField, \
 from hisfs.orm import File
 from peeweeplus import EnumField, CascadingFKField
 
-from .common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.ticker import Ticker
 
 __all__ = [
     'Colors',
@@ -162,36 +163,6 @@ class Configuration(CustomerModel):
         result = super().delete_instance()
         colors.delete_instance()
         return result
-
-
-class Ticker(DSCMS4Model):
-    """Tickers of the respective configuration."""
-
-    configuration = CascadingFKField(
-        Configuration, column_name='configuration')
-    typ = EnumField(TickerTypes, column_name='type')
-    text = TextField()
-
-    @classmethod
-    def from_dict(cls, dictionary, configuration=None):
-        """Creates a new ticker for the respective
-        configuration from the provided dictionary.
-        """
-        ticker = super().from_dict(dictionary)
-        ticker.configuration = configuration
-        return ticker
-
-    @classmethod
-    def by_configuration(cls, configuration):
-        """Yields backlight settings for the respective configuration."""
-        return cls.select().where(cls.configuration == configuration)
-
-    @classmethod
-    def list_for(cls, configuration):
-        """Returns a list of ticker settings
-        for the respective configuration.
-        """
-        return [tkr.to_dict() for tkr in cls.by_configuration(configuration)]
 
 
 class Backlight(DSCMS4Model):

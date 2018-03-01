@@ -1,36 +1,31 @@
 """Tickers."""
 
-from sys import stderr
 from contextlib import suppress
 
 from peewee import ForeignKeyField, SmallIntegerField, CharField, TextField
 
-from .common import DSCMS4Model, CustomerModel
+from peeweeplus import CascadingFKField
 
-__all__ = ['Ticker', 'Text', 'URL']
+from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.configuration import Configuration
 
-
-def create_tables():
-    """Creates database tables."""
-
-    for model in MODELS:
-        try:
-            model.create_table()
-        except Exception:
-            print('Could not create table for {}.'.format(model), file=stderr)
+__all__ = ['Ticker', 'Text', 'URL', 'MODELS]
 
 
-class Ticker(CustomerModel):
+class Ticker(DSCMS4Model):
     """Ticker."""
 
+    configuration = CascadingFKField(
+        Configuration, column_name='configuration')
     name = CharField(255)
 
     @classmethod
-    def from_dict(cls, customer, dictionary):
+    def from_dict(cls, configuration, dictionary):
         """Creates a new ticker from the respective dictionary."""
-        ticker = cls()
-        ticker.customer = customer
-        ticker.name = dictionary['name']
+        name = dictionary.pop('name')
+        ticker = super().from_dict(dictionary)
+        ticker.configuration = configuration
+        ticker.name = name
         ticker.save()
         return ticker
 
