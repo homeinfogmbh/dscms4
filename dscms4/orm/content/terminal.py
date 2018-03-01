@@ -8,7 +8,7 @@ from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.menu import Menu
-from dscms4.orm.ticker import Ticker
+from dscms4.orm.configuration import Ticker
 
 __all__ = [
     'TerminalBaseChart',
