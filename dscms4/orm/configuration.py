@@ -7,7 +7,7 @@ from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
 from hisfs.orm import File
-from peeweeplus import EnumField
+from peeweeplus import EnumField, CascadingFKField
 
 from .common import DSCMS4Model, CustomerModel
 
@@ -91,11 +91,11 @@ class Configuration(CustomerModel):
     title_size = SmallIntegerField()
     text_size = SmallIntegerField()
     logo = ForeignKeyField(
-        File, null=True, column_name='logo', on_delete='CASCADE')
+        File, null=True, column_name='logo', on_delete='SET NULL')
     background = ForeignKeyField(
-        File, null=True, column_name='background', on_delete='CASCADE')
+        File, null=True, column_name='background', on_delete='SET NULL')
     dummy_picture = ForeignKeyField(
-        File, null=True, column_name='dummy_picture', on_delete='CASCADE')
+        File, null=True, column_name='dummy_picture', on_delete='SET NULL')
     hide_cursor = BooleanField(default=True)
     rotation = SmallIntegerField(default=0)
     email_form = BooleanField()
@@ -158,21 +158,17 @@ class Configuration(CustomerModel):
 
     def delete_instance(self):
         """Deletes this instance."""
-        self.colors.delete_instance()
-
-        for ticker in Ticker.by_configuration(self):
-            ticker.delete_instance()
-
-        for backlight in Backlight.by_configuration(self):
-            backlight.delete_instance()
-
-        return super().delete_instance()
+        colors = self.colors
+        result = super().delete_instance()
+        colors.delete_instance()
+        return result
 
 
 class Ticker(DSCMS4Model):
     """Tickers of the respective configuration."""
 
-    configuration = ForeignKeyField(Configuration, column_name='configuration')
+    configuration = CascadingFKField(
+        Configuration, column_name='configuration')
     typ = EnumField(TickerTypes, column_name='type')
     text = TextField()
 
@@ -201,7 +197,8 @@ class Ticker(DSCMS4Model):
 class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
-    configuration = ForeignKeyField(Configuration, column_name='configuration')
+    configuration = CascadingFKField(
+        Configuration, column_name='configuration')
     time = TimeField()
     value = SmallIntegerField()     # Brightness in percent.
 
