@@ -26,6 +26,3 @@ MODELS = (
     Weather)
 CHARTS = {
     model.__name__: model for model in MODELS if issubclass(model, Chart)}
-
-
-print('Known chart types:', ', '.join(CHARTS), flush=True)
