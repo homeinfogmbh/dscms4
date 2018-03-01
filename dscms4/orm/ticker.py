@@ -9,7 +9,7 @@ from peeweeplus import CascadingFKField
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 
-__all__ = ['Ticker', 'Text', 'URL', 'MODELS]
+__all__ = ['Ticker', 'Text', 'URL', 'MODELS']
 
 
 class Ticker(DSCMS4Model):
