@@ -8,7 +8,7 @@ from terminallib import Terminal
 from wsgilib import JSON
 
 from dscms4.messages.terminal import NoSuchTerminal
-from dscms4.wsgi.paging import page, pages
+from dscms4.paging import page, pages
 
 __all__ = ['get_terminal', 'ROUTES']
 
