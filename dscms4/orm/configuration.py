@@ -126,11 +126,16 @@ class Configuration(CustomerModel):
                 backlights, configuration=configuration):
             yield backlight
 
+    @property
+    def tickers(self):
+        """Yields the respective tickers."""
+        return Ticker.select().where(Ticker.configuration == self)
+
     def to_dict(self, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
         dictionary = super().to_dict(**kwargs)
         dictionary['colors'] = self.colors.to_dict()
-        dictionary['tickers'] = Ticker.list_for(self)
+        dictionary['tickers'] = [ticker.id for ticker in self.tickers]
         dictionary['backlight'] = Backlight.dict_for(self)
         return dictionary
 
