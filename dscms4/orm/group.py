@@ -21,7 +21,7 @@ __all__ = [
     'MODELS']
 
 
-KEEP_PARENT = object()
+KEEP_PARENT = object()  # Sentinel value.
 
 
 class MemberProxy:
