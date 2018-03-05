@@ -3,11 +3,12 @@
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
-from his.messages import MissingData, InvalidData
+from his.messages import InvalidData
 from terminallib import Terminal
 from wsgilib import JSON
 
 from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.wsgi.paging import page, pages
 
 __all__ = ['get_terminal', 'ROUTES']
 
@@ -22,44 +23,35 @@ def get_terminal(tid):
         raise NoSuchTerminal()
 
 
-def _page():
-    """Returns the respective terminal page."""
-
-    try:
-        size = int(request.args['size'])
-    except KeyError:
-        raise MissingData(parameter='size')
-    except ValueError:
-        raise InvalidData(parameter='size')
-
-    try:
-        page_number = int(request.args['page'])
-    except KeyError:
-        raise MissingData(parameter='page')
-    except ValueError:
-        raise InvalidData(parameter='page')
-
-    offset = size * page_number
-    end = offset + size
-
-    for index, terminal in enumerate(Terminal.select().where(
-            Terminal.customer == CUSTOMER.id)):
-        if offset <= index < end:
-            yield terminal
-
-
 @authenticated
 @authorized('dscms4')
 def list_():
     """Lists all terminals of the respective customer."""
 
-    if 'page' in request.args or 'size' in request.args:
-        return JSON([terminal.to_dict(short=True) for terminal in _page()])
+    terminals = Terminal.select().where(Terminal.customer == CUSTOMER.id)
 
+    try:
+        size = int(request.args['size'])
+    except KeyError:
+        size = None
+    except ValueError:
+        raise InvalidData(parameter='size')
 
-    return JSON([
-        terminal.to_dict(short=True) for terminal in Terminal.select().where(
-            Terminal.customer == CUSTOMER.id)])
+    try:
+        pageno = int(request.args['page'])
+    except KeyError:
+        pageno = None
+    except ValueError:
+        raise InvalidData(parameter='page')
+
+    if size is not None:
+        if pageno is not None:
+            return JSON([terminal.to_dict(short=True) for terminal in page(
+                terminals, size, pageno)])
+
+        return JSON({'pages': pages(terminals, size)})
+
+    return JSON([terminal.to_dict(short=True) for terminal in terminals])
 
 
 @authenticated
