@@ -1,26 +1,9 @@
 """Paging."""
 
-from math import ceil
-
-from flask import request
-
-from his.messages import MissingData, InvalidData
-
-__all__ = ['page']
+__all__ = ['page', 'pages']
 
 
-def _count_pages(iterable, size):
-    """Counts the pages."""
-
-    items = 0
-
-    for items, _ in enumerate(iterable, start=1):
-        pass
-
-    return {'pages': ceil(items / size)}
-
-
-def _page(iterable, size, pageno):
+def page(iterable, size, pageno):
     """Pages the respective iterable."""
 
     offset = size * pageno
@@ -33,21 +16,17 @@ def _page(iterable, size, pageno):
             yield item
 
 
-def page(iterable):
-    """Returns the respective page or page count."""
+def pages(iterable, size):
+    """Counts the pages."""
 
-    try:
-        size = int(request.args['size'])
-    except KeyError:
-        raise MissingData(parameter='size')
-    except ValueError:
-        raise InvalidData(parameter='size')
+    items = 0
 
-    try:
-        pageno = int(request.args['page'])
-    except KeyError:
-        return _count_pages(iterable, size)
-    except ValueError:
-        raise InvalidData(parameter='page')
+    for items, _ in enumerate(iterable, start=1):
+        pass
 
-    return _page(iterable, size, pageno)
+    pages_ = items // size
+
+    if items % size:
+        return pages_ + 1
+
+    return pages_
