@@ -21,11 +21,12 @@ def get_terminal(tid):
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Lists all terminals of the respective customer."""
 
-    return JSON([terminal.to_dict() for terminal in Terminal.select().where(
-        Terminal.customer == CUSTOMER.id)])
+    return JSON([
+        terminal.to_dict(short=True) for terminal in Terminal.select().where(
+            Terminal.customer == CUSTOMER.id)])
 
 
 @authenticated
@@ -37,5 +38,5 @@ def get(tid):
 
 
 ROUTES = (
-    ('GET', '/terminal', lst, 'list_terminals'),
+    ('GET', '/terminal', list_, 'list_terminals'),
     ('GET', '/terminal/<int:tid>', get, 'get_terminal'))
