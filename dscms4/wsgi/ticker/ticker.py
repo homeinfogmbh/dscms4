@@ -29,7 +29,7 @@ def get_ticker(ident):
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """Lists tickers of the respective customer."""
 
     return JSON([ticker.to_dict() for ticker in get_tickers()])
@@ -82,7 +82,7 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/ticker', lst, 'list_tickers'),
+    ('GET', '/ticker', list_, 'list_tickers'),
     ('GET', '/ticker/<int:ident>', get, 'get_ticker'),
     ('POST', '/ticker', add, 'add_ticker'),
     ('PATCH', '/ticker/<int:ident>', patch, 'patch_ticker'),

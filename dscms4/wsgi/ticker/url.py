@@ -22,7 +22,7 @@ def get_url(ticker, ident):
 
 @authenticated
 @authorized('dscms4')
-def lst(ticker_id):
+def list_(ticker_id):
     """Lists all URLs of the respective ticker."""
 
     return JSON([url.to_dict() for url in URL.select().where(
@@ -72,7 +72,7 @@ def delete(ticker_id, url_id):
 
 
 ROUTES = (
-    ('GET', '/ticker/<int:ticker_id>/url', lst, 'list_ticker_urls'),
+    ('GET', '/ticker/<int:ticker_id>/url', list_, 'list_ticker_urls'),
     ('GET', '/ticker/<int:ticker_id>/url/<int:url_id>', get, 'get_ticker_url'),
     ('POST', '/ticker/<int:ticker_id>/url', add, 'add_ticker_url'),
     ('PATCH', '/ticker/<int:ticker_id>/url/<int:url_id>', patch,

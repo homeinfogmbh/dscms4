@@ -25,7 +25,7 @@ def get_text(ticker, ident):
 
 @authenticated
 @authorized('dscms4')
-def lst(ticker_id):
+def list_(ticker_id):
     """Lists all texts of the respective ticker."""
 
     return JSON([text.to_dict() for text in Text.select().where(
@@ -75,7 +75,7 @@ def delete(ticker_id, text_id):
 
 
 ROUTES = (
-    ('GET', '/ticker/<int:ticker_id>/text', lst, 'list_ticker_texts'),
+    ('GET', '/ticker/<int:ticker_id>/text', list_, 'list_ticker_texts'),
     ('GET', '/ticker/<int:ticker_id>/text/<int:text_id>', get,
      'get_ticker_text'),
     ('POST', '/ticker/<int:ticker_id>/text', add, 'add_ticker_text'),
