@@ -27,7 +27,7 @@ def get_menus():
 
 @authenticated
 @authorized('dscms4')
-def lst():
+def list_():
     """List menus."""
 
     return JSON([menu.to_dict() for menu in get_menus()])
@@ -65,7 +65,7 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/menu', lst, 'list_menu'),
+    ('GET', '/menu', list_, 'list_menu'),
     ('GET', '/menu/<int:ident>', get, 'get_menu'),
     ('POST', '/menu', add, 'add_menu'),
     ('DELETE', '/menu/<int:ident>', delete, 'delete_menu'))
