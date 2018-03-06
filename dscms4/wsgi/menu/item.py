@@ -31,12 +31,10 @@ def get_menu_item(menu, ident):
 def parent_menu_item(menu, dictionary):
     """Returns the respective parent menu item."""
 
-    parent = dictionary.get('parent')
-
-    if parent is None:
+    try:
+        parent = dictionary.pop('parent')
+    except KeyError:
         return None
-
-    parent = int(parent)
 
     try:
         return MenuItem.get(
@@ -48,12 +46,10 @@ def parent_menu_item(menu, dictionary):
 def menu_item_chart(dictionary):
     """Returns the respective chart for the menu item."""
 
-    chart = dictionary.get('chart')
-
-    if chart is None:
+    try:
+        chart = dictionary.pop('chart')
+    except KeyError:
         return None
-
-    chart = int(chart)
 
     try:
         return BaseChart.get(
@@ -64,7 +60,7 @@ def menu_item_chart(dictionary):
 
 @authenticated
 @authorized('dscms4')
-def lst(menu_id):
+def list_(menu_id):
     """Lists the respective menu's items."""
 
     return JSON([
@@ -87,11 +83,11 @@ def add(menu_id):
 
     menu = get_menu(menu_id)
     json = DATA.json
+    parent = parent_menu_item(menu, json)
+    chart = menu_item_chart(json)
 
     try:
-        menu_item = MenuItem.from_dict(
-            json, menu=menu, parent=parent_menu_item(menu, json),
-            chart=menu_item_chart(json))
+        menu_item = MenuItem.from_dict(menu, json, parent=parent, chart=chart)
     except ValueError:
         raise InvalidMenuData()
 
@@ -109,7 +105,7 @@ def delete(menu_id, item_id):
 
 
 ROUTES = (
-    ('GET', '/menu/<int:menu_id>/item', lst, 'list_menu_items'),
+    ('GET', '/menu/<int:menu_id>/item', list_, 'list_menu_items'),
     ('GET', '/menu/<int:menu_id>/item/<int:item_id>', get, 'get_menu_item'),
     ('POST', '/menu/<int:menu_id>/item', add, 'add_menu_item'),
     ('DELETE', '/menu/<int:menu_id>/item/<int:item_id>', delete,
