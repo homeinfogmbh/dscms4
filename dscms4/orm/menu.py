@@ -48,17 +48,16 @@ class MenuItem(DSCMS4Model):
         table_name = 'menu_item'
 
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
-    parent = ForeignKeyField(
-        'self', column_name='parent', null=True)
+    parent = ForeignKeyField('self', column_name='parent', null=True)
     name = CharField(255)
-    icon = EnumField(Icons)
+    icon = EnumField(Icons, null=True)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
         BaseChart, null=True, column_name='chart', on_delete='CASCADE')
 
     @classmethod
-    def from_dict(cls, dictionary, menu=None, parent=None, chart=None):
+    def from_dict(cls, menu, dictionary, parent=None, chart=None):
         """Creates a new menu item from the provided dictionary."""
         menu_item = super().from_dict(dictionary)
         menu_item.menu = menu
