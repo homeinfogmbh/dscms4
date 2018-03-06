@@ -4,7 +4,7 @@ from his import CUSTOMER, DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
-    MenuDeleted
+    MenuPatched, MenuDeleted
 from dscms4.orm.menu import Menu
 
 __all__ = ['get_menu', 'ROUTES']
@@ -57,6 +57,22 @@ def add():
 
 @authenticated
 @authorized('dscms4')
+def patch(ident):
+    """Patches the respective menu."""
+
+    menu = get_menu(ident)
+
+    try:
+        menu.patch(DATA.json)
+    except ValueError:
+        raise InvalidMenuData()
+
+    menu.save()
+    return MenuPatched()
+
+
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes a menu."""
 
@@ -68,4 +84,5 @@ ROUTES = (
     ('GET', '/menu', list_, 'list_menu'),
     ('GET', '/menu/<int:ident>', get, 'get_menu'),
     ('POST', '/menu', add, 'add_menu'),
+    ('PATCH', '/menu/<int:ident>', patch, 'patch_menu'),
     ('DELETE', '/menu/<int:ident>', delete, 'delete_menu'))

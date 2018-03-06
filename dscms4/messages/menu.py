@@ -45,6 +45,12 @@ class MenuAdded(MenuMessage):
     STATUS = 201
 
 
+class MenuPatched(MenuMessage):
+    """Indicates that the menu was successfully patched."""
+
+    STATUS = 200
+
+
 class MenuDeleted(MenuMessage):
     """Indicates that the menu was successfully deleted."""
 
