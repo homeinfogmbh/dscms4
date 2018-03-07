@@ -2,9 +2,9 @@
 
 from itertools import chain
 
-from his.messages.data import MissingData, InvalidData
 from peewee import ForeignKeyField, CharField, TextField
 
+from his.messages.data import MissingData, InvalidData
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
@@ -164,6 +164,17 @@ class Group(CustomerModel):
                 dictionary['parent'] = self.parent.id
 
         return dictionary
+
+    def delete_instance(self, *args, **kwargs):
+        """Deletes the respective instance from the group hierarchy
+        setting all child's parent reference to this groups parent.
+        """
+
+        for child in self.children:
+            child.parent = self.parent
+            child.save()
+
+        return super().delete_instance(*args, **kwargs)
 
 
 class GroupMember(DSCMS4Model):
