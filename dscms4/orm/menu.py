@@ -118,12 +118,11 @@ class MenuItem(DSCMS4Model):
 
         return self.delete_instance()
 
-    def to_dict(self):
+    def to_dict(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""
-        dictionary = super().to_dict(
-            ignore=(self.__class__.menu, self.__class__.parent))
+        dictionary = super().to_dict(*args, **kwargs)
         dictionary['chart'] = self.chart.tto_dict() if self.chart else None
-        dictionary['items'] = [item.to_dict() for item in self.submenus]
+        dictionary['items'] = [item.to_dict() for item in self.children]
         return dictionary
 
 
