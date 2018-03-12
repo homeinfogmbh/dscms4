@@ -63,20 +63,15 @@ def add(menu_id):
 
     menu = get_menu(menu_id)
     json = DATA.json
+    parent = json.pop('parent', None)
 
-    try:
-        parent_id = json.pop('parent')
-    except KeyError:
-        parent = None
-    else:
-        parent = get_menu_item(menu, parent_id)
+    if parent is not None:
+        parent = get_menu_item(menu, parent)
 
-    try:
-        chart_id = json.pop('chart')
-    except KeyError:
-        chart = None
-    else:
-        chart = get_chart(chart_id)
+    chart = json.pop('chart', None)
+
+    if chart is not None:
+        chart = get_chart(chart)
 
     try:
         menu_item = MenuItem.from_dict(menu, json, parent=parent, chart=chart)
