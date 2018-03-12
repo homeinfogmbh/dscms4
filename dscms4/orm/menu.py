@@ -140,8 +140,12 @@ class MenuItem(DSCMS4Model):
     def to_dict(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""
         dictionary = super().to_dict(*args, **kwargs)
-        dictionary['chart'] = self.chart.id if self.chart else None
+
+        if self.chart:
+            dictionary['chart'] = self.chart.id
+
         dictionary['items'] = [item.id for item in self.children]
+        dictionary['root'] = self.root
         return dictionary
 
 
