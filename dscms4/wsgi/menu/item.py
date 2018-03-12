@@ -99,7 +99,7 @@ def patch(menu_id, item_id):
         new_menu = get_menu(menu_id)
 
     try:
-        parent_id = json.pop('menu')
+        parent_id = json.pop('parent')
     except KeyError:
         new_parent = UNCHANGED
     else:
