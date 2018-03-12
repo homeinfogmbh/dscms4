@@ -84,4 +84,4 @@ class MenuItemPatched(MenuMessage):
 class MenuItemDeleted(MenuMessage):
     """Indicates that the respective menu item was successfully deleted."""
 
-    STATUS = 400
+    STATUS = 200
