@@ -11,10 +11,14 @@ from .charts import BaseChart
 from .exceptions import CircularReferenceError
 
 __all__ = [
+    'UNCHANGED',
     'Icons',
     'Menu',
     'MenuItem',
     'MODELS']
+
+
+UNCHANGED = object()
 
 
 class Icons(Enum):
@@ -117,6 +121,21 @@ class MenuItem(DSCMS4Model):
                 child.move(self.parent)
 
         return self.delete_instance()
+
+    def patch(self, menu, parent, chart, dictionary, *args, **kwargs):
+        """Patches the menu item."""
+        super().patch(dictionary, *args, **kwargs)
+
+        if menu is not UNCHANGED:
+            self.menu = menu
+
+        if parent is not UNCHANGED:
+            self.parent = parent
+
+        if chart is not UNCHANGED:
+            self.chart = chart
+
+        return self
 
     def to_dict(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""

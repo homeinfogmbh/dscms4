@@ -75,6 +75,12 @@ class MenuItemAdded(MenuMessage):
     STATUS = 201
 
 
+class MenuItemPatched(MenuMessage):
+    """Indicates that the respective menu item was successfully patched."""
+
+    STATUS = 200
+
+
 class MenuItemDeleted(MenuMessage):
     """Indicates that the respective menu item was successfully deleted."""
 
