@@ -28,21 +28,6 @@ def get_menu_item(menu, ident):
         raise NoSuchMenuItem()
 
 
-def parent_menu_item(menu, dictionary):
-    """Returns the respective parent menu item."""
-
-    try:
-        parent = dictionary.pop('parent')
-    except KeyError:
-        return None
-
-    try:
-        return MenuItem.get(
-            (MenuItem.menu == menu) & (MenuItem.parent == parent))
-    except MenuItem.DoesNotExist:
-        raise NoSuchMenuItem()
-
-
 def get_chart(ident):
     """Returns the respective chart for the menu item."""
 
@@ -78,7 +63,13 @@ def add(menu_id):
 
     menu = get_menu(menu_id)
     json = DATA.json
-    parent = parent_menu_item(menu, json)
+
+    try:
+        parent_id = json.pop('parent')
+    except KeyError:
+        parent = None
+    else:
+        parent = get_menu_item(menu, parent_id)
 
     try:
         chart_id = json.pop('chart')
