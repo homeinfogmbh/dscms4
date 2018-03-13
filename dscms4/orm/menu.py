@@ -1,30 +1,15 @@
 """Menus, menu items and chart members."""
 
-from enum import Enum
-
 from peewee import ForeignKeyField, CharField, IntegerField
-
-from peeweeplus import EnumField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import BaseChart
 from .exceptions import CircularReferenceError
 
-__all__ = [
-    'UNCHANGED',
-    'Icons',
-    'Menu',
-    'MenuItem',
-    'MODELS']
+__all__ = ['UNCHANGED', 'Menu', 'MenuItem', 'MODELS']
 
 
 UNCHANGED = object()
-
-
-class Icons(Enum):
-    """Valid icons."""
-
-    COOL_ICON = 'cool icon'
 
 
 class Menu(CustomerModel):
@@ -54,7 +39,7 @@ class MenuItem(DSCMS4Model):
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
     parent = ForeignKeyField('self', column_name='parent', null=True)
     name = CharField(255)
-    icon = EnumField(Icons, null=True)
+    icon = CharField(255, null=True)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     chart = ForeignKeyField(
