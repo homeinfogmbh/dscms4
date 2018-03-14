@@ -153,6 +153,9 @@ class MenuItem(DSCMS4Model):
 class MenuItemChart(DSCMS4Model):
     """Mapping in-between menu items and base charts."""
 
+    class Meta:
+        table_name = 'menu_item_chart'
+
     menu_item = ForeignKeyField(
         MenuItem, null=True, column_name='menu_item', on_delete='CASCADE')
     base_chart = ForeignKeyField(
