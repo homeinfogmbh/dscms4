@@ -78,7 +78,7 @@ def add():
         raise MissingData(key='chart→id')
 
     chart = get_chart(type_, chart_id)
-    menu_item_chart = MenuItemChart.add(menu_item, chart)
+    menu_item_chart = MenuItemChart.add(menu_item, chart.base)
     menu_item_chart.save()
     return MenuItemChartAdded(id=menu_item_chart.id)
 

@@ -162,5 +162,13 @@ class MenuItemChart(DSCMS4Model):
         BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
 
+    @classmethod
+    def add(cls, menu_item, base_chart):
+        """Creates a new menu item chart."""
+        menu_item_chart = cls()
+        menu_item_chart.menu_item = menu_item
+        menu_item_chart.base_chart = base_chart
+        return menu_item_chart
+
 
 MODELS = (Menu, MenuItem, MenuItemChart)
