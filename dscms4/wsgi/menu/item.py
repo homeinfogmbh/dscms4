@@ -1,13 +1,13 @@
 """DSCMS4 WSGI handlers for menu items."""
 
 from his import CUSTOMER, DATA, authenticated, authorized
+from his.messages import MissingData
 from wsgilib import JSON
 
-from dscms4.messages.charts import NoSuchChart
 from dscms4.messages.menu import InvalidMenuData, NoSuchMenuItem, \
-    MenuItemAdded, MenuItemPatched, MenuItemDeleted
-from dscms4.orm.charts import BaseChart
-from dscms4.orm.menu import UNCHANGED, MenuItem
+    MenuItemAdded, MenuItemPatched, MenuItemDeleted, MenuItemsSorted, \
+    DifferentMenusError
+from dscms4.orm.menu import UNCHANGED, Menu, MenuItem
 from dscms4.wsgi.menu.menu import get_menu
 
 __all__ = ['ROUTES']
@@ -19,62 +19,54 @@ def get_menu_items(menu):
     return MenuItem.select().where(MenuItem.menu == menu)
 
 
-def get_menu_item(menu, ident):
+def get_menu_item(ident):
     """Returns the respective menu item."""
 
     try:
-        return MenuItem.get((MenuItem.menu == menu) & (MenuItem.id == ident))
+        return MenuItem.select().join(Menu).where(
+            (Menu.customer == CUSTOMER.id) & (MenuItem.id == ident)).get()
     except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
 
-def get_chart(ident):
-    """Returns the respective chart for the menu item."""
-
-    try:
-        return BaseChart.get(
-            (BaseChart.customer == CUSTOMER.id) & (BaseChart.id == ident))
-    except BaseChart.DoesNotExist:
-        raise NoSuchChart()
-
-
 @authenticated
 @authorized('dscms4')
-def list_(menu_id):
+def list_(menu):
     """Lists the respective menu's items."""
 
     return JSON([
         menu_item.to_dict() for menu_item in
-        get_menu_items(get_menu(menu_id))])
+        get_menu_items(get_menu(menu))])
 
 
 @authenticated
 @authorized('dscms4')
-def get(menu_id, item_id):
+def get(ident):
     """Returns the respective menu item."""
 
-    return JSON(get_menu_item(get_menu(menu_id), item_id).to_dict())
+    return JSON(get_menu_item(ident).to_dict())
 
 
 @authenticated
 @authorized('dscms4')
-def add(menu_id):
+def add():
     """Adds a new menu item."""
 
-    menu = get_menu(menu_id)
     json = DATA.json
+
+    try:
+        menu = json.pop('menu')
+    except KeyError:
+        raise MissingData(key='menu')
+
+    menu = get_menu(menu)
     parent = json.pop('parent', None)
 
     if parent is not None:
-        parent = get_menu_item(menu, parent)
-
-    chart = json.pop('chart', None)
-
-    if chart is not None:
-        chart = get_chart(chart)
+        parent = get_menu_item(parent)
 
     try:
-        menu_item = MenuItem.from_dict(menu, json, parent=parent, chart=chart)
+        menu_item = MenuItem.from_dict(menu, json, parent=parent)
     except ValueError:
         raise InvalidMenuData()
 
@@ -84,36 +76,32 @@ def add(menu_id):
 
 @authenticated
 @authorized('dscms4')
-def patch(menu_id, item_id):
+def patch(ident):
     """Patches a new menu item."""
 
-    menu = get_menu(menu_id)
-    menu_item = get_menu_item(menu, item_id)
+    menu_item = get_menu_item(ident)
     json = DATA.json
 
     try:
-        menu_id = json.pop('menu')
+        menu = json.pop('menu')
     except KeyError:
-        new_menu = UNCHANGED
+        menu = UNCHANGED
     else:
-        new_menu = get_menu(menu_id)
+        menu = get_menu(menu)
 
     try:
-        parent_id = json.pop('parent')
+        parent = json.pop('parent')
     except KeyError:
-        new_parent = UNCHANGED
+        parent = UNCHANGED
     else:
-        new_parent = get_menu_item(new_menu or menu, parent_id)
+        parent = get_menu_item(parent)
+        common_menu = menu_item.menu if menu is UNCHANGED else menu
+
+        if parent.menu != common_menu:
+            raise DifferentMenusError()
 
     try:
-        chart_id = json.pop('chart')
-    except KeyError:
-        new_chart = UNCHANGED
-    else:
-        new_chart = get_chart(chart_id)
-
-    try:
-        menu_item.patch(new_menu, new_parent, new_chart, json)
+        menu_item.patch(json, menu=menu, parent=parent)
     except ValueError:
         raise InvalidMenuData()
 
@@ -123,18 +111,39 @@ def patch(menu_id, item_id):
 
 @authenticated
 @authorized('dscms4')
-def delete(menu_id, item_id):
+def delete(ident):
     """Deletes a menu or menu item."""
 
-    get_menu_item(get_menu(menu_id), item_id).delete_instance()
+    get_menu_item(ident).delete_instance()
     return MenuItemDeleted()
 
 
+@authenticated
+@authorized('dscms4')
+def order():
+    """Orders the respective menu items."""
+
+    menu_items = tuple(get_menu_item(ident) for ident in DATA.json)
+
+    try:
+        sentinel = menu_items[0].menu
+    except IndexError:
+        return MenuItemsSorted()    # Empty list.
+
+    if all(menu_item.group == sentinel for menu_item in menu_items[1:]):
+        for index, menu_item in enumerate(menu_items):
+            menu_item.index = index
+            menu_item.save()
+
+        return MenuItemsSorted()
+
+    return DifferentMenusError()
+
+
 ROUTES = (
-    ('GET', '/menu/<int:menu_id>/item', list_, 'list_menu_items'),
-    ('GET', '/menu/<int:menu_id>/item/<int:item_id>', get, 'get_menu_item'),
-    ('POST', '/menu/<int:menu_id>/item', add, 'add_menu_item'),
-    ('PATCH', '/menu/<int:menu_id>/item/<int:item_id>', patch,
-     'patch_menu_item'),
-    ('DELETE', '/menu/<int:menu_id>/item/<int:item_id>', delete,
-     'delete_menu_item'))
+    ('GET', '/menu/<int:menu>/items', list_, 'list_menu_items'),
+    ('GET', '/menu/item/<int:ident>', get, 'get_menu_item'),
+    ('POST', '/menu/item', add, 'add_menu_item'),
+    ('PATCH', '/menu/item/<int:ident>', patch, 'patch_menu_item'),
+    ('DELETE', '/menu/item/<int:ident>', delete, 'delete_menu_item'),
+    ('POST', '/menu/item/order', order, 'order_menu_items'))

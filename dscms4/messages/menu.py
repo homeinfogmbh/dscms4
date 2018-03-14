@@ -11,7 +11,14 @@ __all__ = [
     'NoMenuItemSpecified',
     'NoSuchMenuItem',
     'MenuItemAdded',
-    'MenuItemDeleted']
+    'MenuItemDeleted',
+    'MenuItemsSorted',
+    'DifferentMenusError',
+    'NoSuchMenuItemChart',
+    'MenuItemChartAdded',
+    'MenuItemChartDeleted',
+    'DifferentMenuItemsError',
+    'MenuItemChartsSorted']
 
 
 class MenuMessage(Message):
@@ -83,5 +90,50 @@ class MenuItemPatched(MenuMessage):
 
 class MenuItemDeleted(MenuMessage):
     """Indicates that the respective menu item was successfully deleted."""
+
+    STATUS = 200
+
+
+class MenuItemsSorted(MenuMessage):
+    """Indicates that the respective menu items have been sorted."""
+
+    STATUS = 200
+
+
+class DifferentMenusError(MenuMessage):
+    """Indicates that the respective menu items are in separate menus."""
+
+    STATUS = 400
+
+class NoSuchMenuItemChart(MenuMessage):
+    """Indicates that the respective menu item chart does not exist."""
+
+    STATUS = 404
+
+class MenuItemChartAdded(MenuMessage):
+    """Indicates that the respective menu
+    item chart has successfully been added.
+    """
+
+    STATUS = 200
+
+class MenuItemChartDeleted(MenuMessage):
+    """Indicates that the respective menu
+    item chart has successfully been deleted.
+    """
+
+    STATUS = 200
+
+
+class DifferentMenuItemsError(MenuMessage):
+    """Indicates that the respective menu
+    item charts are in separate menu items.
+    """
+
+    STATUS = 400
+
+
+class MenuItemChartsSorted(MenuMessage):
+    """Indicates that the respective menu item charts have been sorted."""
 
     STATUS = 200

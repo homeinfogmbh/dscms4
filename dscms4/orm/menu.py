@@ -1,15 +1,20 @@
 """Menus, menu items and chart members."""
 
+from logging import getLogger
+
 from peewee import ForeignKeyField, CharField, IntegerField
 
 from .common import DSCMS4Model, CustomerModel
 from .charts import BaseChart
-from .exceptions import CircularReferenceError
+from .exceptions import CircularReferenceError, OrphanedBaseChart, \
+    AmbiguousBaseChart
+from .util import chart_of
 
 __all__ = ['UNCHANGED', 'Menu', 'MenuItem', 'MODELS']
 
 
 UNCHANGED = object()
+LOGGER = getLogger('Menu')
 
 
 class Menu(CustomerModel):
@@ -42,16 +47,14 @@ class MenuItem(DSCMS4Model):
     icon = CharField(255, null=True)
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
-    chart = ForeignKeyField(
-        BaseChart, null=True, column_name='chart', on_delete='CASCADE')
+    index = IntegerField(default=0)
 
     @classmethod
-    def from_dict(cls, menu, dictionary, parent=None, chart=None):
+    def from_dict(cls, menu, dictionary, parent=None):
         """Creates a new menu item from the provided dictionary."""
         menu_item = super().from_dict(dictionary)
         menu_item.menu = menu
         menu_item.parent = parent
-        menu_item.chart = chart
         return menu_item
 
     @classmethod
@@ -86,6 +89,24 @@ class MenuItem(DSCMS4Model):
         for child in self.children:
             yield from child.tree
 
+    @property
+    def base_charts(self):
+        """Yields the respective charts."""
+        for menu_item_chart in MenuItemChart.select().where(
+                MenuItemChart.menu_item == self):
+            yield menu_item_chart.base_chart
+
+    @property
+    def charts(self):
+        """Yields the respective charts."""
+        for base_chart in self.base_charts:
+            try:
+                yield chart_of(base_chart)
+            except OrphanedBaseChart:
+                LOGGER.error('Base chart #%i is orphaned.', base_chart.id)
+            except AmbiguousBaseChart:
+                LOGGER.error('Base chart #%i is ambiguous.', base_chart.id)
+
     def move(self, parent):
         """Moves this menu entry to a new parent."""
         if parent in self.tree:
@@ -107,7 +128,8 @@ class MenuItem(DSCMS4Model):
 
         return self.delete_instance()
 
-    def patch(self, menu, parent, chart, dictionary, *args, **kwargs):
+    def patch(self, dictionary, *args, menu=UNCHANGED, parent=UNCHANGED,
+              **kwargs):
         """Patches the menu item."""
         super().patch(dictionary, *args, **kwargs)
 
@@ -117,21 +139,25 @@ class MenuItem(DSCMS4Model):
         if parent is not UNCHANGED:
             self.parent = parent
 
-        if chart is not UNCHANGED:
-            self.chart = chart
-
         return self
 
     def to_dict(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""
         dictionary = super().to_dict(*args, **kwargs)
-
-        if self.chart:
-            dictionary['chart'] = self.chart.id
-
+        dictionary['charts'] = [chart.to_dict() for chart in self.charts]
         dictionary['items'] = [item.id for item in self.children]
         dictionary['root'] = self.root
         return dictionary
 
 
-MODELS = (Menu, MenuItem)
+class MenuItemChart(DSCMS4Model):
+    """Mapping in-between menu items and base charts."""
+
+    menu_item = ForeignKeyField(
+        MenuItem, null=True, column_name='menu_item', on_delete='CASCADE')
+    base_chart = ForeignKeyField(
+        BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
+    index = IntegerField(default=0)
+
+
+MODELS = (Menu, MenuItem, MenuItemChart)
