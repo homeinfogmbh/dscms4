@@ -3,15 +3,12 @@
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
 
-from fancylog import logging
-
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Facebook', 'Account']
 
 
-@logging()
 class Facebook(Chart):
     """Facebook data chart."""
 
@@ -60,11 +57,11 @@ class Facebook(Chart):
             for account in accounts:
                 yield Account.from_dict(chart, account)
 
-    def to_dict(self, **kwargs):
+    def to_dict(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
+        dictionary = super().to_dict(*args, **kwargs)
         dictionary['accounts'] = [
-            account.to_dict(**kwargs) for account in self.accounts]
+            account.to_dict() for account in self.accounts]
         return dictionary
 
 
