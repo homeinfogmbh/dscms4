@@ -9,7 +9,7 @@ from dscms4.messages.menu import NoSuchMenuItemChart, MenuItemChartAdded, \
     MenuItemChartDeleted, DifferentMenuItemsError, MenuItemChartsSorted
 from dscms4.orm.charts import CHARTS, BaseChart
 from dscms4.orm.menu import MenuItemChart
-from dscms4.wsgi.menu import get_menu_item
+from dscms4.wsgi.menu.item import get_menu_item
 
 __all__ = ['ROUTES']
 
