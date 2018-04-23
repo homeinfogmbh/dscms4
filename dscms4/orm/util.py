@@ -18,7 +18,7 @@ def charts_of(base_chart):
     """Yields all charts that associate this base chart."""
 
     for cls in CHARTS.values():
-        for chart in cls.select().where(cls.base_chart == base_chart):
+        for chart in cls.select().where(cls.base == base_chart):
             yield chart
 
 
