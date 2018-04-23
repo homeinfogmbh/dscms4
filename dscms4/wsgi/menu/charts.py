@@ -23,8 +23,7 @@ def get_chart(type_, ident):
         raise InvalidChartType()
 
     try:
-        return type_.join(BaseChart).select().where(
-            (BaseChart.customer == CUSTOMER.id) & (type_.id == ident))
+        return type_.by_id(ident, customer=CUSTOMER.id)
     except type_.DoesNotExist:
         raise NoSuchChart()
 
