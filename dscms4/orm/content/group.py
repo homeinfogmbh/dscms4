@@ -17,13 +17,13 @@ __all__ = [
     'MODELS']
 
 
-class GroupContent:
+class _GroupContent(DSCMS4Model):
     """Common abstract content mapping."""
 
     group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
 
 
-class GroupBaseChart(DSCMS4Model, GroupContent):
+class GroupBaseChart(_GroupContent):
     """Association of a base chart with a group."""
 
     class Meta:
@@ -33,7 +33,7 @@ class GroupBaseChart(DSCMS4Model, GroupContent):
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 
-class GroupConfiguration(DSCMS4Model, GroupContent):
+class GroupConfiguration(_GroupContent):
     """Association of a configuration with a group."""
 
     class Meta:
@@ -43,7 +43,7 @@ class GroupConfiguration(DSCMS4Model, GroupContent):
         Configuration, column_name='configuration', on_delete='CASCADE')
 
 
-class GroupMenu(DSCMS4Model, GroupContent):
+class GroupMenu(_GroupContent):
     """Association of a menu with a group."""
 
     class Meta:
@@ -52,7 +52,7 @@ class GroupMenu(DSCMS4Model, GroupContent):
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class GroupTicker(DSCMS4Model, GroupContent):
+class GroupTicker(_GroupContent):
     """Association of a ticker with a group."""
 
     class Meta:

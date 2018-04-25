@@ -18,14 +18,14 @@ __all__ = [
     'MODELS']
 
 
-class TerminalContent:
+class _TerminalContent(DSCMS4Model):
     """Common abstract content mapping."""
 
     terminal = ForeignKeyField(
         Terminal, column_name='terminal', on_delete='CASCADE')
 
 
-class TerminalBaseChart(DSCMS4Model, TerminalContent):
+class TerminalBaseChart(_TerminalContent):
     """Association of a base chart with a terminal."""
 
     class Meta:
@@ -35,7 +35,7 @@ class TerminalBaseChart(DSCMS4Model, TerminalContent):
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 
-class TerminalConfiguration(DSCMS4Model, TerminalContent):
+class TerminalConfiguration(_TerminalContent):
     """Association of a configuration with a terminal."""
 
     class Meta:
@@ -45,7 +45,7 @@ class TerminalConfiguration(DSCMS4Model, TerminalContent):
         Configuration, column_name='configuration', on_delete='CASCADE')
 
 
-class TerminalMenu(DSCMS4Model, TerminalContent):
+class TerminalMenu(_TerminalContent):
     """Association of a menu with a terminal."""
 
     class Meta:
@@ -54,7 +54,7 @@ class TerminalMenu(DSCMS4Model, TerminalContent):
     content = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class TerminalTicker(DSCMS4Model, TerminalContent):
+class TerminalTicker(_TerminalContent):
     """Association of a ticker with a terminal."""
 
     class Meta:
