@@ -18,49 +18,48 @@ __all__ = [
     'MODELS']
 
 
-class TerminalBaseChart(DSCMS4Model):
+class _TerminalContent(DSCMS4Model):
+    """Common abstract content mapping."""
+
+    terminal = ForeignKeyField(
+        Terminal, column_name='terminal', on_delete='CASCADE')
+
+
+class TerminalBaseChart(_TerminalContent):
     """Association of a base chart with a terminal."""
 
     class Meta:
         table_name = 'terminal_base_chart'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
     content = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 
-class TerminalConfiguration(DSCMS4Model):
+class TerminalConfiguration(_TerminalContent):
     """Association of a configuration with a terminal."""
 
     class Meta:
         table_name = 'terminal_configuration'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
     content = ForeignKeyField(
         Configuration, column_name='configuration', on_delete='CASCADE')
 
 
-class TerminalMenu(DSCMS4Model):
+class TerminalMenu(_TerminalContent):
     """Association of a menu with a terminal."""
 
     class Meta:
         table_name = 'terminal_menu'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
     content = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class TerminalTicker(DSCMS4Model):
+class TerminalTicker(_TerminalContent):
     """Association of a ticker with a terminal."""
 
     class Meta:
         table_name = 'terminal_ticker'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
     content = ForeignKeyField(
         Ticker, column_name='ticker', on_delete='CASCADE')
 

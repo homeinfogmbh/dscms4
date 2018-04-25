@@ -17,45 +17,47 @@ __all__ = [
     'MODELS']
 
 
-class GroupBaseChart(DSCMS4Model):
+class _GroupContent(DSCMS4Model):
+    """Common abstract content mapping."""
+
+    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
+
+
+class GroupBaseChart(_GroupContent):
     """Association of a base chart with a group."""
 
     class Meta:
         table_name = 'group_base_chart'
 
-    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
     chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 
-class GroupConfiguration(DSCMS4Model):
+class GroupConfiguration(_GroupContent):
     """Association of a configuration with a group."""
 
     class Meta:
         table_name = 'group_configuration'
 
-    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
     configuration = ForeignKeyField(
         Configuration, column_name='configuration', on_delete='CASCADE')
 
 
-class GroupMenu(DSCMS4Model):
+class GroupMenu(_GroupContent):
     """Association of a menu with a group."""
 
     class Meta:
         table_name = 'group_menu'
 
-    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class GroupTicker(DSCMS4Model):
+class GroupTicker(_GroupContent):
     """Association of a ticker with a group."""
 
     class Meta:
         table_name = 'group_ticker'
 
-    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
     ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
 
 
