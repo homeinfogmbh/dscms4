@@ -1,5 +1,6 @@
 """Management of tickers in groups."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,19 +12,23 @@ from dscms4.wsgi.ticker import get_ticker
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
     return JSON([
         group_ticker.ticker.id for group_ticker in GroupTicker.select().where(
-            GroupTicker.group == _get_group(gid))])
+            GroupTicker.group == get_group(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the menu to the respective group."""
 
-    group = _get_group(gid)
-    ticker = _get_ticker(ident)
+    group = get_group(gid)
+    ticker = get_ticker(ident)
 
     try:
         GroupTicker.get(
@@ -38,12 +43,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
     try:
         group_ticker = GroupTicker.get(
-            (GroupTicker.group == _get_group(gid)) & (GroupTicker.id == ident))
+            (GroupTicker.group == get_group(gid)) & (GroupTicker.id == ident))
     except GroupTicker.DoesNotExist:
         raise NoSuchContent()
 

@@ -1,5 +1,6 @@
 """Management of charts in terminals."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,18 +12,23 @@ from dscms4.wsgi.terminal import get_terminal
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
-    return JSON([tbc.chart.id for tbc in TerminalBaseChart.select().where(
-        TerminalBaseChart.terminal == _get_terminal(tid))])
+    return JSON([
+        tbc.chart.id for tbc in TerminalBaseChart.select().where(
+            TerminalBaseChart.terminal == get_terminal(tid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(tid, ident):
     """Adds the chart to the respective terminal."""
 
-    terminal = _get_terminal(tid)
-    chart = _get_chart(ident)
+    terminal = get_terminal(tid)
+    chart = get_chart(ident)
 
     try:
         TerminalBaseChart.get(
@@ -38,12 +44,14 @@ def add(tid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
     try:
         terminal_chart = TerminalBaseChart.get(
-            (TerminalBaseChart.terminal == _get_terminal(tid))
+            (TerminalBaseChart.terminal == get_terminal(tid))
             & (TerminalBaseChart.id == ident))
     except TerminalBaseChart.DoesNotExist:
         raise NoSuchContent()

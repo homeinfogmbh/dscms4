@@ -1,5 +1,6 @@
 """Management of menus in groups."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,18 +12,23 @@ from dscms4.wsgi.menu import get_menu
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
-    return JSON([group_menu.menu.id for group_menu in GroupMenu.select().where(
-        GroupMenu.group == _get_group(gid))])
+    return JSON([
+        group_menu.menu.id for group_menu in GroupMenu.select().where(
+            GroupMenu.group == get_group(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the menu to the respective group."""
 
-    group = _get_group(gid)
-    menu = _get_menu(ident)
+    group = get_group(gid)
+    menu = get_menu(ident)
 
     try:
         GroupMenu.get(
@@ -37,12 +43,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
     try:
         group_menu = GroupMenu.get(
-            (GroupMenu.group == _get_group(gid)) & (GroupMenu.id == ident))
+            (GroupMenu.group == get_group(gid)) & (GroupMenu.id == ident))
     except GroupMenu.DoesNotExist:
         raise NoSuchContent()
 

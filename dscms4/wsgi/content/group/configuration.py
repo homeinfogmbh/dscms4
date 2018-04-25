@@ -1,5 +1,6 @@
 """Management of configurations in groups."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,20 +12,24 @@ from dscms4.wsgi.group import get_group
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the configurations in the respective group."""
 
     return JSON([
         group_configuration.configuration.id for group_configuration
         in GroupConfiguration.select().where(
-            GroupConfiguration.group == _get_group(gid))])
+            GroupConfiguration.group == get_group(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the configuration to the respective group."""
 
-    group = _get_group(gid)
-    configuration = _get_configuration(ident)
+    group = get_group(gid)
+    configuration = get_configuration(ident)
 
     try:
         GroupConfiguration.get(
@@ -40,12 +45,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the configuration from the respective group."""
 
     try:
         group_configuration = GroupConfiguration.get(
-            (GroupConfiguration.group == _get_group(gid))
+            (GroupConfiguration.group == get_group(gid))
             & (GroupConfiguration.id == ident))
     except GroupConfiguration.DoesNotExist:
         raise NoSuchContent()

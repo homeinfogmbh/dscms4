@@ -1,5 +1,6 @@
 """Management of tickers in terminals."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,20 +12,24 @@ from dscms4.wsgi.ticker import get_ticker
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
         terminal_ticker.ticker.id for terminal_ticker
         in TerminalTicker.select().where(
-            TerminalTicker.terminal == _get_terminal(gid))])
+            TerminalTicker.terminal == get_terminal(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the menu to the respective terminal."""
 
-    terminal = _get_terminal(gid)
-    ticker = _get_ticker(ident)
+    terminal = get_terminal(gid)
+    ticker = get_ticker(ident)
 
     try:
         TerminalTicker.get(
@@ -40,12 +45,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
     try:
         terminal_ticker = TerminalTicker.get(
-            (TerminalTicker.terminal == _get_terminal(gid))
+            (TerminalTicker.terminal == get_terminal(gid))
             & (TerminalTicker.id == ident))
     except TerminalTicker.DoesNotExist:
         raise NoSuchContent()

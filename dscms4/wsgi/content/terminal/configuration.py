@@ -1,5 +1,6 @@
 """Management of configurations in terminals."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,6 +12,8 @@ from dscms4.wsgi.terminal import get_terminal
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the configurations
     in the respective terminal.
@@ -19,14 +22,16 @@ def get(gid):
     return JSON([
         terminal_configuration.configuration.id for terminal_configuration
         in TerminalConfiguration.select().where(
-            TerminalConfiguration.terminal == _get_terminal(gid))])
+            TerminalConfiguration.terminal == get_terminal(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the configuration to the respective terminal."""
 
-    terminal = _get_terminal(gid)
-    configuration = _get_configuration(ident)
+    terminal = get_terminal(gid)
+    configuration = get_configuration(ident)
 
     try:
         TerminalConfiguration.get(
@@ -42,12 +47,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the configuration from the respective terminal."""
 
     try:
         terminal_configuration = TerminalConfiguration.get(
-            (TerminalConfiguration.terminal == _get_terminal(gid))
+            (TerminalConfiguration.terminal == get_terminal(gid))
             & (TerminalConfiguration.id == ident))
     except TerminalConfiguration.DoesNotExist:
         raise NoSuchContent()

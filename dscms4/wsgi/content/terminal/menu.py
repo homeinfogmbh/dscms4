@@ -1,5 +1,6 @@
 """Management of menus in terminals."""
 
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -11,19 +12,23 @@ from dscms4.wsgi.menu import get_menu
 __all__ = ['ROUTES']
 
 
+@authenticated
+@authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the menus in the respective terminal."""
 
     return JSON([
         terminal_menu.menu.id for terminal_menu in TerminalMenu.select().where(
-            TerminalMenu.terminal == _get_terminal(gid))])
+            TerminalMenu.terminal == get_terminal(gid))])
 
 
+@authenticated
+@authorized('dscms4')
 def add(gid, ident):
     """Adds the menu to the respective terminal."""
 
-    terminal = _get_terminal(gid)
-    menu = _get_menu(ident)
+    terminal = get_terminal(gid)
+    menu = get_menu(ident)
 
     try:
         TerminalMenu.get(
@@ -38,12 +43,14 @@ def add(gid, ident):
     return ContentExists()
 
 
+@authenticated
+@authorized('dscms4')
 def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
     try:
         terminal_menu = TerminalMenu.get(
-            (TerminalMenu.terminal == _get_terminal(gid))
+            (TerminalMenu.terminal == get_terminal(gid))
             & (TerminalMenu.id == ident))
     except TerminalMenu.DoesNotExist:
         raise NoSuchContent()
