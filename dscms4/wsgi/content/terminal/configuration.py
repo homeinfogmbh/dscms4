@@ -66,7 +66,7 @@ def delete(gid, ident):
 ROUTES = (
     ('GET', '/content/terminal/<int:gid>/configuration', get,
      'list_terminal_configurations'),
-    ('POST', '/content/terminal/<int:gid>/configuration', add,
+    ('POST', '/content/terminal/<int:gid>/configuration/<int:ident>', add,
      'add_terminal_configuration'),
     ('DELETE', '/content/terminal/<int:gid>/configuration/<int:ident>', delete,
      'delete_terminal_configuration'))

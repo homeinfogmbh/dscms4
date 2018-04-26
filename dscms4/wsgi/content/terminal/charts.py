@@ -62,6 +62,7 @@ def delete(tid, ident):
 
 ROUTES = (
     ('GET', '/content/terminal/<int:gid>/chart', get, 'list_terminal_charts'),
-    ('POST', '/content/terminal/<int:gid>/chart', add, 'add_terminal_chart'),
+    ('POST', '/content/terminal/<int:gid>/chart/<int:ident>', add,
+     'add_terminal_chart'),
     ('DELETE', '/content/terminal/<int:gid>/chart/<int:ident>', delete,
      'delete_terminal_chart'))
