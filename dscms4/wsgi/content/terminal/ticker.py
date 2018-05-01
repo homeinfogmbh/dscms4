@@ -50,10 +50,13 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
+    terminal = get_terminal(gid)
+    ticker = get_ticker(ident)
+
     try:
         terminal_ticker = TerminalTicker.get(
-            (TerminalTicker.terminal == get_terminal(gid))
-            & (TerminalTicker.id == ident))
+            (TerminalTicker.terminal == terminal)
+            & (TerminalTicker.ticker == ticker))
     except TerminalTicker.DoesNotExist:
         raise NoSuchContent()
 

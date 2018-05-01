@@ -48,9 +48,12 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
+    group = get_group(gid)
+    menu = get_menu(ident)
+
     try:
         group_menu = GroupMenu.get(
-            (GroupMenu.group == get_group(gid)) & (GroupMenu.id == ident))
+            (GroupMenu.group == group) & (GroupMenu.menu == menu))
     except GroupMenu.DoesNotExist:
         raise NoSuchContent()
 

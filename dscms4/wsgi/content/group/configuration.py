@@ -50,10 +50,13 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the configuration from the respective group."""
 
+    group = get_group(gid)
+    configuration = get_configuration(ident)
+
     try:
         group_configuration = GroupConfiguration.get(
-            (GroupConfiguration.group == get_group(gid))
-            & (GroupConfiguration.id == ident))
+            (GroupConfiguration.group == group)
+            & (GroupConfiguration.configuration == configuration))
     except GroupConfiguration.DoesNotExist:
         raise NoSuchContent()
 

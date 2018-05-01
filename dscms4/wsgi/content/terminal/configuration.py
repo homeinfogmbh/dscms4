@@ -52,10 +52,13 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the configuration from the respective terminal."""
 
+    terminal = get_terminal(gid)
+    configuration = get_configuration(ident)
+
     try:
         terminal_configuration = TerminalConfiguration.get(
-            (TerminalConfiguration.terminal == get_terminal(gid))
-            & (TerminalConfiguration.id == ident))
+            (TerminalConfiguration.terminal == terminal)
+            & (TerminalConfiguration.configuration == configuration))
     except TerminalConfiguration.DoesNotExist:
         raise NoSuchContent()
 

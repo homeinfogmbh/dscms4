@@ -48,9 +48,12 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
+    group = get_group(gid)
+    ticker = get_ticker(ident)
+
     try:
         group_ticker = GroupTicker.get(
-            (GroupTicker.group == get_group(gid)) & (GroupTicker.id == ident))
+            (GroupTicker.group == group) & (GroupTicker.ticker == ticker))
     except GroupTicker.DoesNotExist:
         raise NoSuchContent()
 

@@ -49,10 +49,13 @@ def add(tid, ident):
 def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
+    terminal = get_terminal(tid)
+    chart = get_chart(ident)
+
     try:
         terminal_chart = TerminalBaseChart.get(
-            (TerminalBaseChart.terminal == get_terminal(tid))
-            & (TerminalBaseChart.id == ident))
+            (TerminalBaseChart.terminal == terminal)
+            & (TerminalBaseChart.chart == chart))
     except TerminalBaseChart.DoesNotExist:
         raise NoSuchContent()
 

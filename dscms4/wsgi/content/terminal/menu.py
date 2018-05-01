@@ -48,10 +48,12 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
+    terminal = get_terminal(gid)
+    menu = get_menu(ident)
+
     try:
         terminal_menu = TerminalMenu.get(
-            (TerminalMenu.terminal == get_terminal(gid))
-            & (TerminalMenu.id == ident))
+            (TerminalMenu.terminal == terminal) & (TerminalMenu.menu == menu))
     except TerminalMenu.DoesNotExist:
         raise NoSuchContent()
 
