@@ -48,10 +48,12 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the chart from the respective group."""
 
+    group = get_group(gid)
+    chart = get_chart(ident)
+
     try:
         group_chart = GroupBaseChart.get(
-            (GroupBaseChart.group == get_group(gid))
-            & (GroupBaseChart.id == ident))
+            (GroupBaseChart.group == group) & (GroupBaseChart.chart == chart))
     except GroupBaseChart.DoesNotExist:
         raise NoSuchContent()
 
