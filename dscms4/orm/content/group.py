@@ -29,7 +29,7 @@ class GroupBaseChart(_GroupContent):
     class Meta:
         table_name = 'group_base_chart'
 
-    chart = ForeignKeyField(
+    base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 

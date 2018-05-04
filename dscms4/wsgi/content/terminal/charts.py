@@ -6,6 +6,7 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.terminal import TerminalBaseChart
+from dscms4.orm.util import chart_of
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.terminal import get_terminal
 
@@ -18,7 +19,8 @@ def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
     return JSON([
-        tbc.chart.id for tbc in TerminalBaseChart.select().where(
+        chart_of(tbc.base_chart).to_dict()
+        for tbc in TerminalBaseChart.select().where(
             TerminalBaseChart.terminal == get_terminal(tid))])
 
 
@@ -28,16 +30,16 @@ def add(tid, ident):
     """Adds the chart to the respective terminal."""
 
     terminal = get_terminal(tid)
-    chart = get_chart(ident)
+    base_chart = get_chart(ident).base
 
     try:
         TerminalBaseChart.get(
             (TerminalBaseChart.terminal == terminal)
-            & (TerminalBaseChart.chart == chart))
+            & (TerminalBaseChart.base_chart == base_chart))
     except TerminalBaseChart.DoesNotExist:
         tbc = TerminalBaseChart()
         tbc.terminal = terminal
-        tbc.chart = chart
+        tbc.base_chart = base_chart
         tbc.save()
         return ContentAdded()
 
@@ -50,12 +52,12 @@ def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
     terminal = get_terminal(tid)
-    chart = get_chart(ident)
+    base_chart = get_chart(ident).base
 
     try:
         terminal_chart = TerminalBaseChart.get(
             (TerminalBaseChart.terminal == terminal)
-            & (TerminalBaseChart.chart == chart))
+            & (TerminalBaseChart.base_chart == base_chart))
     except TerminalBaseChart.DoesNotExist:
         raise NoSuchContent()
 

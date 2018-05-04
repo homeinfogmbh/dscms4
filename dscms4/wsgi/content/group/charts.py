@@ -6,6 +6,7 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.orm.content.group import GroupBaseChart
+from dscms4.orm.util import chart_of
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.group import get_group
 
@@ -18,7 +19,8 @@ def get(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
     return JSON([
-        gbc.chart.id for gbc in GroupBaseChart.select().where(
+        chart_of(gbc.base_chart).to_dict()
+        for gbc in GroupBaseChart.select().where(
             GroupBaseChart.group == get_group(gid))])
 
 
@@ -28,15 +30,16 @@ def add(gid, ident):
     """Adds the chart to the respective group."""
 
     group = get_group(gid)
-    chart = get_chart(ident)
+    base_chart = get_chart(ident).base
 
     try:
         GroupBaseChart.get(
-            (GroupBaseChart.group == group) & (GroupBaseChart.chart == chart))
+            (GroupBaseChart.group == group)
+            & (GroupBaseChart.base_chart == base_chart))
     except GroupBaseChart.DoesNotExist:
         gbc = GroupBaseChart()
         gbc.group = group
-        gbc.chart = chart
+        gbc.base_chart = base_chart
         gbc.save()
         return ContentAdded()
 
@@ -49,11 +52,12 @@ def delete(gid, ident):
     """Deletes the chart from the respective group."""
 
     group = get_group(gid)
-    chart = get_chart(ident)
+    base_chart = get_chart(ident).base
 
     try:
         group_chart = GroupBaseChart.get(
-            (GroupBaseChart.group == group) & (GroupBaseChart.chart == chart))
+            (GroupBaseChart.group == group)
+            & (GroupBaseChart.base_chart == base_chart))
     except GroupBaseChart.DoesNotExist:
         raise NoSuchContent()
 

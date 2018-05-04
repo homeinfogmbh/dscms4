@@ -31,7 +31,7 @@ class TerminalBaseChart(_TerminalContent):
     class Meta:
         table_name = 'terminal_base_chart'
 
-    content = ForeignKeyField(
+    base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
 
@@ -41,7 +41,7 @@ class TerminalConfiguration(_TerminalContent):
     class Meta:
         table_name = 'terminal_configuration'
 
-    content = ForeignKeyField(
+    configuration = ForeignKeyField(
         Configuration, column_name='configuration', on_delete='CASCADE')
 
 
@@ -51,7 +51,7 @@ class TerminalMenu(_TerminalContent):
     class Meta:
         table_name = 'terminal_menu'
 
-    content = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
+    menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
 class TerminalTicker(_TerminalContent):
@@ -60,7 +60,7 @@ class TerminalTicker(_TerminalContent):
     class Meta:
         table_name = 'terminal_ticker'
 
-    content = ForeignKeyField(
+    ticker = ForeignKeyField(
         Ticker, column_name='ticker', on_delete='CASCADE')
 
 
