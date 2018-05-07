@@ -233,7 +233,7 @@ class GroupMemberTerminal(GroupMember):
     def to_dict(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
         dictionary = super().to_dict(*args, **kwargs)
-        dictionary['tid'] = self.terminal.id
+        dictionary['tid'] = self.terminal.tid
         return dictionary
 
 
