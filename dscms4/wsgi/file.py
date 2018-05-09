@@ -54,10 +54,10 @@ def get(ident):
 
     file = get_file(ident)
 
-    if request.args.get('metadata', False):
+    if 'metadata' in request.args:
         return JSON(file.to_dict())
 
-    filename = file.name if request.args.get('named', False) else None
+    filename = file.name if 'named' in request.args else None
     return Binary(file.data, filename=filename)
 
 
