@@ -3,9 +3,11 @@
 from his.messages import locales, Message
 
 __all__ = [
+    'NoSuchContent',
     'NoTypeSpecified',
     'InvalidContentType',
     'ContentAdded',
+    'ContentExists',
     'ContentDeleted']
 
 
