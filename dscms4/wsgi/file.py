@@ -57,7 +57,8 @@ def get(ident):
     if request.args.get('metadata', False):
         return JSON(file.to_dict())
 
-    return Binary(file.data, filename=file.name)
+    filename = file.name if request.args.get('named', False) else None
+    return Binary(file.data, filename=filename)
 
 
 @authenticated
