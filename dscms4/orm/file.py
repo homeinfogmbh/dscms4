@@ -2,7 +2,8 @@
 
 from uuid import uuid4
 
-from filedb import FileError, add, get, delete, sha256sum, mimetype, size, File
+from filedb import FileError, add, get, delete, sha256sum, mimetype, size, \
+    File as File_
 from peewee import ForeignKeyField, CharField
 
 from dscms4.orm.common import CustomerModel
@@ -17,7 +18,7 @@ class FileExists(Exception):
 class File(CustomerModel):
     """Represents files associated with a customer."""
 
-    file = ForeignKeyField(File, column_name='file')
+    file = ForeignKeyField(File_, column_name='file')
     name = CharField(255)
 
     @classmethod
@@ -32,7 +33,6 @@ class File(CustomerModel):
             file = cls()
             file.file = add(data)
             file.name = name
-            file.save()
             return file
 
         raise FileExists()
@@ -51,7 +51,7 @@ class File(CustomerModel):
             'mimetype': mimetype(self.file),
             'size': size(self.file)}
 
-    def delete_instance(self):
+    def delete_instance(self, recursive=False, delete_nullable=False):
         """Removes the respective file."""
         try:
             delete(self.file)
@@ -60,4 +60,5 @@ class File(CustomerModel):
         else:
             file_del = True
 
-        return super().delete_instance() and file_del
+        return super().delete_instance(
+            recursive=recursive, delete_nullable=delete_nullable) and file_del
