@@ -13,6 +13,9 @@ from dscms4.orm.file import File
 __all__ = ['ImageText', 'Image', 'Text']
 
 
+_UNCHANGED = object()
+
+
 class Style(Enum):
     """Chart styles."""
 
@@ -73,11 +76,34 @@ class ImageText(Chart):
         for text_model in self.text_models:
             yield text_model.text
 
-    def to_dict(self):
+    def patch(self, dictionary, **kwargs):
+        """Patches the respective chart."""
+        images = dictionary.pop('images', _UNCHANGED) or ()
+        texts = dictionary.pop('texts', _UNCHANGED) or ()
+        base, chart = super().patch(dictionary, **kwargs)
+        yield base
+        yield chart
+
+        if images is not _UNCHANGED:
+            for image in self.images:
+                image.delete_instance()
+
+            for image in images:
+                yield Image.add(chart, image)
+
+        if texts is not _UNCHANGED:
+            for text in self.texts:
+                text.delete_instance()
+
+            for text in texts:
+                yield Text.add(chart, text)
+
+    def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        dictionary = super().to_dict()
-        dictionary['texts'] = tuple(self.texts)
-        dictionary['images'] = tuple(image.to_dict() for image in self.images)
+        dictionary = super().to_dict(
+            *args, base_chart=base_chart, type_=type_, **kwargs)
+        dictionary['texts'] = list(self.texts)
+        dictionary['images'] = [image.to_dict() for image in self.images]
         return dictionary
 
 
