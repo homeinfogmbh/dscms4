@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from filedb import FileError, add, get, delete, sha256sum, mimetype, size, \
     File as File_
-from peewee import ForeignKeyField, CharField
+from peewee import IntegerField, CharField
 
 from dscms4.orm.common import CustomerModel
 
@@ -18,7 +18,7 @@ class FileExists(Exception):
 class File(CustomerModel):
     """Represents files associated with a customer."""
 
-    file = ForeignKeyField(File_, column_name='file')
+    file = IntegerField()
     name = CharField(255)
 
     @classmethod
