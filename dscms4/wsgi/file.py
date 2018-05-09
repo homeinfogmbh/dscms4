@@ -8,7 +8,8 @@ from his.messages import InvalidData
 from peeweeplus import InvalidKeys
 from wsgilib import JSON
 
-from dscms4.messages.file import NoSuchFile, FileExists, FileDeleted
+from dscms4.messages.file import NoSuchFile, FilesAdded, FileExists, \
+    FileDeleted
 from dscms4.orm.file import FileExists as FileExists_, File
 
 __all__ = ['ROUTES']
