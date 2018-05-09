@@ -31,6 +31,7 @@ class File(CustomerModel):
             cls.get((cls.customer == customer) & (cls.name == name))
         except cls.DoesNotExist:
             file = cls()
+            file.customer = customer
             file.file = add(data)
             file.name = name
             return file
