@@ -1,12 +1,9 @@
 """DSCMS4 WSGI handlers for files."""
 
 from flask import request
-from werkzeug.local import LocalProxy
 
-from his import CUSTOMER, DATA, authenticated, authorized
-from his.messages import InvalidData
-from peeweeplus import InvalidKeys
-from wsgilib import JSON
+from his import CUSTOMER, authenticated, authorized
+from wsgilib import Binary, JSON
 
 from dscms4.messages.file import NoSuchFile, FilesAdded, FileExists, \
     FileDeleted
@@ -55,7 +52,12 @@ def list_():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_file(ident).to_dict())
+    file = get_file(ident)
+
+    if request.args.get('metadata', False):
+        return JSON(file.to_dict())
+
+    return Binary(file.data, filename=file.name)
 
 
 @authenticated
