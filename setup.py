@@ -32,6 +32,7 @@ setup(
             'files/locales/common.ini',
             'files/locales/configuration.ini',
             'files/locales/content.ini',
+            'files/locales/file.ini',
             'files/locales/group.ini',
             'files/locales/menu.ini',
             'files/locales/terminal.ini',
