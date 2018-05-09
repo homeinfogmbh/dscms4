@@ -6,10 +6,9 @@ from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 from peeweeplus import EnumField
 
-from hisfs.orm import File
-
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.file import File
 
 __all__ = ['ImageText', 'Image', 'Text']
 

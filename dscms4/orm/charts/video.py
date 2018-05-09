@@ -2,9 +2,8 @@
 
 from peewee import ForeignKeyField
 
-from hisfs.orm import File
-
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.file import File
 
 __all__ = ['Video']
 

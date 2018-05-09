@@ -6,10 +6,10 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
-from hisfs.orm import File
 from peeweeplus import EnumField, CascadingFKField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.file import File
 
 __all__ = [
     'Colors',
