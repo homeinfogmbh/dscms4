@@ -7,6 +7,7 @@ from his.messages import InvalidData
 from terminallib import Terminal
 from wsgilib import JSON
 
+from dscms4.content.terminal.presentation import presentation
 from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.paging import page, pages
 
@@ -21,6 +22,16 @@ def get_terminal(tid):
             (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid))
     except Terminal.DoesNotExist:
         raise NoSuchTerminal()
+
+
+def with_terminal(function):
+    """Converts a TID into a terminal."""
+
+    def wrapper(tid, *args, **kwargs):
+        """Wraps the function."""
+        return function(get_terminal(tid, *args, **kwargs))
+
+    return wrapper
 
 
 @authenticated
@@ -56,12 +67,24 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(tid):
+@with_terminal
+def get(terminal):
     """Returns the respective terminal."""
 
-    return JSON(get_terminal(tid).to_dict())
+    return JSON(terminal.to_dict())
+
+
+@authenticated
+@authorized('dscms4')
+@with_terminal
+def get_presentation(terminal):
+    """Returns the presentation for the respective terminal."""
+
+    return JSON(presentation(terminal))
 
 
 ROUTES = (
     ('GET', '/terminal', list_, 'list_terminals'),
-    ('GET', '/terminal/<int:tid>', get, 'get_terminal'))
+    ('GET', '/terminal/<int:tid>', get, 'get_terminal'),
+    ('GET', '/terminal/<int:tid>/presentation', get_presentation,
+     'get_terminal_presentation'))
