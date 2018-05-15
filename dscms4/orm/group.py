@@ -82,10 +82,6 @@ class Group(CustomerModel):
     description = TextField(null=True)
     parent = ForeignKeyField('self', column_name='parent', null=True)
 
-    def __str__(self):
-        """Returns the group's class and ID."""
-        return '{}@{}'.format(self.id, self.__class__.__name__)
-
     @classmethod
     def toplevel(cls, customer=None):
         """Yields root-level groups."""

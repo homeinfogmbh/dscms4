@@ -44,6 +44,10 @@ class DSCMS4Model(JSONModel):
 
     id = PrimaryKeyField()
 
+    def __str__(self):
+        """Returns the models's ID and class."""
+        return '{}@{}'.format(self.id, self.__class__.__name__)
+
     @classmethod
     def by_id(cls, ident):
         """Yields records for the respective ID."""
