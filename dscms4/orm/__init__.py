@@ -1,4 +1,4 @@
-"""Object relatinal mappings.
+"""Object-relational mappings.
 
 This package provides the CMS's database models.
 """
