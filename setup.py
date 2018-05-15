@@ -14,6 +14,8 @@ setup(
     packages=[
         'dscms4',
         'dscms4.content',
+        'dscms4.content.group',
+        'dscms4.content.terminal',
         'dscms4.messages',
         'dscms4.orm',
         'dscms4.orm.charts',
