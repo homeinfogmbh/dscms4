@@ -13,6 +13,7 @@ setup(
     requires=['his'],
     packages=[
         'dscms4',
+        'dscms4.content',
         'dscms4.messages',
         'dscms4.orm',
         'dscms4.orm.charts',
