@@ -5,7 +5,7 @@ from peewee import CharField
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.common import CustomerModel
 
-__all__ = ['ChartType']
+__all__ = ['ChartType', 'MODELS']
 
 
 class ChartType(CustomerModel):
@@ -41,3 +41,6 @@ class ChartType(CustomerModel):
     def to_dict(self):
         """Converts the record into a JSON compliant dictionary."""
         return self.chart_type
+
+
+MODELS = (ChartType,)

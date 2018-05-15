@@ -4,7 +4,7 @@ This package provides the CMS's database models.
 """
 from sys import stderr
 
-from dscms4.orm import charts, content, configuration, group, menu
+from dscms4.orm import charts, content, chart_types, configuration, group, menu
 
 __all__ = ['create_tables']
 
@@ -12,7 +12,7 @@ __all__ = ['create_tables']
 # Order matters here!
 MODELS = (
     charts.MODELS + configuration.MODELS + group.MODELS + menu.MODELS
-    + content.MODELS)
+    + content.MODELS + chart_types.MODELS)
 
 
 def create_tables(fail_silently=True):
