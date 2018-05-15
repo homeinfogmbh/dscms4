@@ -1,4 +1,4 @@
-"""Content of groups."""
+"""Group content resolver."""
 
 from dscms4.content.group.charts import charts
 from dscms4.content.group.configuration import configurations

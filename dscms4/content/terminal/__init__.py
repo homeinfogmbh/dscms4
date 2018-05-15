@@ -1,1 +1,1 @@
-"""Content of terminals."""
+"""Terminal content resolver."""

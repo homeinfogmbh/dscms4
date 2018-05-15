@@ -1,1 +1,1 @@
-"""Content accumulation."""
+"""Content resolver."""
