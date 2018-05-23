@@ -17,9 +17,7 @@ __all__ = [
     'RecordGroup']
 
 
-DATABASE = MySQLDatabase(
-    CONFIG['db']['db'], host=CONFIG['db']['host'], user=CONFIG['db']['user'],
-    passwd=CONFIG['db']['passwd'], closing=True)
+DATABASE = MySQLDatabase.from_config(CONFIG['db'])
 
 
 def create_tables(models, fail_silently=True):
