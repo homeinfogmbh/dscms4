@@ -8,6 +8,9 @@ from dscms4.orm.common import DSCMS4Model
 __all__ = ['Weather', 'Image']
 
 
+_UNCHANGED = object()
+
+
 class Weather(Chart):
     """Weather data."""
 
@@ -44,20 +47,17 @@ class Weather(Chart):
 
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
+        images = dictionary.pop('images', _UNCHANGED) or ()
         base, chart = super().patch(dictionary, **kwargs)
         yield base
         yield chart
 
-        try:
-            images = dictionary.pop('images') or ()
-        except KeyError:
-            return
+        if images is not _UNCHANGED:
+            for image in self.images:
+                image.delete_instance()
 
-        for image in self.images:
-            image.delete_instance()
-
-        for image in images:
-            yield Image.add(chart, image)
+            for image in images:
+                yield Image.add(chart, image)
 
     def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
         """Returns the dictionary representation of this chart's fields."""

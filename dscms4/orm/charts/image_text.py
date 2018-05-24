@@ -66,26 +66,20 @@ class ImageText(Chart):
 
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
+        images = dictionary.pop('images', _UNCHANGED) or ()
+        texts = dictionary.pop('texts', _UNCHANGED) or ()
         base, chart = super().patch(dictionary, **kwargs)
         yield base
         yield chart
 
-        try:
-            images = dictionary.pop('images') or ()
-        except KeyError:
-            pass
-        else:
+        if images is not _UNCHANGED:
             for image in self.images:
                 image.delete_instance()
 
             for image in images:
                 yield Image.add(chart, image)
 
-        try:
-            texts = dictionary.pop('texts') or ()
-        except KeyError:
-            pass
-        else:
+        if texts is not _UNCHANGED:
             for text in self.texts:
                 text.delete_instance()
 
