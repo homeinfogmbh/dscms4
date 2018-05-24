@@ -66,8 +66,6 @@ class ImageText(Chart):
 
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
-        images = dictionary.pop('images', _UNCHANGED) or ()
-        texts = dictionary.pop('texts', _UNCHANGED) or ()
         base, chart = super().patch(dictionary, **kwargs)
         yield base
         yield chart
