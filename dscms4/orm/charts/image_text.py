@@ -99,7 +99,7 @@ class ImageText(Chart):
         dictionary = super().to_dict(
             *args, base_chart=base_chart, type_=type_, **kwargs)
         dictionary['texts'] = [text.text for text in self.texts]
-        dictionary['images'] = [image.id for image in self.images]
+        dictionary['images'] = [image.image for image in self.images]
         return dictionary
 
 

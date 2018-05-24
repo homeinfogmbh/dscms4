@@ -63,7 +63,7 @@ class Weather(Chart):
         """Returns the dictionary representation of this chart's fields."""
         dictionary = super().to_dict(
             *args, base_chart=base_chart, type_=type_, **kwargs)
-        dictionary['images'] = [image.id for image in self.images]
+        dictionary['images'] = [image.image for image in self.images]
         return dictionary
 
 
