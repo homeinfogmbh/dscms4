@@ -55,26 +55,14 @@ class ImageText(Chart):
             yield Text.add(chart, text)
 
     @property
-    def image_models(self):
+    def images(self):
         """Yields appropriate image mappings."""
         return Image.select().where(Image.chart == self)
 
     @property
-    def text_models(self):
+    def texts(self):
         """Yields appropriate text mappings."""
         return Text.select().where(Text.chart == self)
-
-    @property
-    def images(self):
-        """Yields appropriate images."""
-        for image_model in self.image_models:
-            yield image_model.image
-
-    @property
-    def texts(self):
-        """Yields appropriate texts."""
-        for text_model in self.text_models:
-            yield text_model.text
 
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
@@ -84,16 +72,24 @@ class ImageText(Chart):
         yield base
         yield chart
 
-        if images is not _UNCHANGED:
-            for image_model in self.image_models:
-                image_model.delete_instance()
+        try:
+            images = dictionary.pop('images') or ()
+        except KeyError:
+            pass
+        else:
+            for image in self.images:
+                image.delete_instance()
 
             for image in images:
                 yield Image.add(chart, image)
 
-        if texts is not _UNCHANGED:
-            for text_model in self.text_models:
-                text_model.delete_instance()
+        try:
+            texts = dictionary.pop('texts') or ()
+        except KeyError:
+            pass
+        else:
+            for text in self.texts:
+                text.delete_instance()
 
             for text in texts:
                 yield Text.add(chart, text)
@@ -102,13 +98,13 @@ class ImageText(Chart):
         """Returns the dictionary representation of this chart's fields."""
         dictionary = super().to_dict(
             *args, base_chart=base_chart, type_=type_, **kwargs)
-        dictionary['texts'] = list(self.texts)
-        dictionary['images'] = [image.to_dict() for image in self.images]
+        dictionary['texts'] = [text.text for text in self.texts]
+        dictionary['images'] = [image.id for image in self.images]
         return dictionary
 
 
 class Image(DSCMS4Model):
-    """Image for an ImageTextChart."""
+    """Image for an ImageText chart."""
 
     class Meta:
         table_name = 'chart_image_text_image'
@@ -119,7 +115,7 @@ class Image(DSCMS4Model):
 
     @classmethod
     def add(cls, chart, image):
-        """Adds a new image for the respective ImageTextChart."""
+        """Adds a new image for the respective ImageText chart."""
         record = cls()
         record.chart = chart
         record.image = image
@@ -127,7 +123,7 @@ class Image(DSCMS4Model):
 
 
 class Text(DSCMS4Model):
-    """Text for an ImageTextChart."""
+    """Text for an ImageText chart."""
 
     class Meta:
         table_name = 'chart_image_text_text'
@@ -138,7 +134,7 @@ class Text(DSCMS4Model):
 
     @classmethod
     def add(cls, chart, text):
-        """Adds a new text for the respective ImageTextChart."""
+        """Adds a new text for the respective ImageText chart."""
         record = cls()
         record.chart = chart
         record.text = text
