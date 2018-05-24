@@ -5,7 +5,6 @@ from enum import Enum
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 
-from hisfs import File
 from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
@@ -116,7 +115,7 @@ class Image(DSCMS4Model):
 
     chart = ForeignKeyField(
         ImageText, column_name='chart', on_delete='CASCADE')
-    image = ForeignKeyField(File, column_name='image', on_delete='CASCADE')
+    image = IntegerField()
 
     @classmethod
     def add(cls, chart, image):

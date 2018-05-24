@@ -1,8 +1,6 @@
 """Video charts."""
 
-from peewee import ForeignKeyField
-
-from hisfs import File
+from peewee import IntegerField
 
 from dscms4.orm.charts.common import Chart
 
@@ -15,4 +13,4 @@ class Video(Chart):
     class Meta:
         table_name = 'chart_video'
 
-    video = ForeignKeyField(File, column_name='video', on_delete='CASCADE')
+    video = IntegerField()

@@ -6,7 +6,6 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
-from hisfs import File
 from peeweeplus import EnumField, CascadingFKField
 
 from dscms4.orm.common import DSCMS4Model, CustomerModel
@@ -93,12 +92,9 @@ class Configuration(CustomerModel):
     colors = ForeignKeyField(Colors, column_name='colors')
     title_size = SmallIntegerField()
     text_size = SmallIntegerField()
-    logo = ForeignKeyField(
-        File, null=True, column_name='logo', on_delete='SET NULL')
-    background = ForeignKeyField(
-        File, null=True, column_name='background', on_delete='SET NULL')
-    dummy_picture = ForeignKeyField(
-        File, null=True, column_name='dummy_picture', on_delete='SET NULL')
+    logo = IntegerField(null=True)
+    background = IntegerField(null=True)
+    dummy_picture = IntegerField(null=True)
     hide_cursor = BooleanField(default=True)
     rotation = SmallIntegerField(default=0)
     email_form = BooleanField()
