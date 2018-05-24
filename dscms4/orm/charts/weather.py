@@ -3,6 +3,7 @@
 from peewee import ForeignKeyField, IntegerField, CharField
 
 from dscms4.orm.charts.common import Chart
+from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Weather', 'Image']
 
