@@ -47,15 +47,20 @@ def get(ident):
 def add():
     """Adds a new configuration."""
 
+    ident = None
+
     try:
         for record in Configuration.from_dict(CUSTOMER.id, DATA.json):
             record.save()
+
+            if ident is None and isinstance(record, Configuration):
+                ident = record.id
     except MissingData as missing_data:
         raise IncompleteData(missing_data.missing)
     except InvalidData as invalid_data:
         raise InvalidData(invalid_data.invalid)
 
-    return ConfigurationAdded()
+    return ConfigurationAdded(id=ident)
 
 
 @authenticated
