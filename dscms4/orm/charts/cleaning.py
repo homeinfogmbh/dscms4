@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from peewee import TextField, SmallIntegerField, IntegerField
+from peewee import CharField, TextField, SmallIntegerField, IntegerField
 from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
