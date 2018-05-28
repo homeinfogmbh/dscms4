@@ -23,6 +23,7 @@ class Cleaning(Chart):
     class Meta:
         table_name = 'chart_cleaning'
 
+    title = CharField(255)
     mode = EnumField(Mode)
     text = TextField(null=True)
     font_size = SmallIntegerField(default=8)
