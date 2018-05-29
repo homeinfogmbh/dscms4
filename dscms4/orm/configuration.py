@@ -181,7 +181,7 @@ class Ticker(DSCMS4Model):
     """Ticker."""
 
     configuration = CascadingFKField(
-        Configuration, column_name='configuration')
+        Configuration, column_name='configuration', backref='tickers')
     type_ = EnumField(TickerTypes, column_name='type')
 
     @classmethod
