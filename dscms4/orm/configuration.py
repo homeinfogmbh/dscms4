@@ -1,6 +1,7 @@
 """Configurations, colors, tickers and brightness settings."""
 
 from contextlib import suppress
+from datetime import datetime
 from enum import Enum
 
 from peewee import ForeignKeyField, TimeField, IntegerField, \
@@ -118,23 +119,29 @@ class Configuration(CustomerModel):
         yield configuration
 
         for ticker in tickers:
-            yield Ticker.from_dict(configuration, ticker)
+            yield from Ticker.from_dict(configuration, ticker)
 
         for backlight in Backlight.from_dict(
                 backlights, configuration=configuration):
             yield backlight
 
     @property
-    def tickers(self):
-        """Yields the respective tickers."""
-        return Ticker.select().where(Ticker.configuration == self)
+    def backlight_dict(self):
+        """Returns a backlight settings dictionary for this configuration."""
+        backlights = {}
+
+        for backlight in self.backlights:
+            with suppress(ValueError):
+                backlights.update(backlight.to_dict())
+
+        return backlights
 
     def to_dict(self, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
         dictionary = super().to_dict(**kwargs)
         dictionary['colors'] = self.colors.to_dict()
         dictionary['tickers'] = [ticker.id for ticker in self.tickers]
-        dictionary['backlight'] = Backlight.dict_for(self)
+        dictionary['backlight'] = self.backlight_dict
         return dictionary
 
     def patch(self, dictionary, **kwargs):
@@ -152,7 +159,7 @@ class Configuration(CustomerModel):
                 ticker.delete_instance()
 
             for ticker in tickers:
-                yield Ticker.from_dict(self, ticker)
+                yield from Ticker.from_dict(self, ticker)
 
         if backlights is not None:
             for backlight in Backlight.by_configuration(self):
@@ -175,46 +182,67 @@ class Ticker(DSCMS4Model):
 
     configuration = CascadingFKField(
         Configuration, column_name='configuration')
-    name = CharField(255)
+    type_ = EnumField(TickerTypes, column_name='type')
 
     @classmethod
     def from_dict(cls, configuration, dictionary):
         """Creates a new ticker from the respective dictionary."""
-        name = dictionary.pop('name')
+        type_ = dictionary.pop('type')
+        texts = dictionary.pop('texts', ())
+        urls = dictionary.pop('urls', ())
         ticker = super().from_dict(dictionary)
         ticker.configuration = configuration
-        ticker.name = name
-        ticker.save()
-        return ticker
+        ticker.type_ = type_
+        yield ticker
 
-    @property
-    def texts(self):
-        """Yields the ticker's texts."""
-        return Text.select().where(Text.ticker == self)
+        for text in texts:
+            yield Text.from_dict(ticker, text)
 
-    @property
-    def urls(self):
-        """Yields the ticker's URLs."""
-        return URL.select().where(URL.ticker == self)
+        for url in urls:
+            yield URL.from_dict(ticker, url)
 
     def to_dict(self, recursive=False):
         """Returns a JSON-compliant dictionary."""
-        dictionary = {'name': self.name}
+        dictionary = {'type': self.type_}
 
         if recursive:
-            dictionary['texts'] = [
-                ticker_text.text.to_dict() for ticker_text in self.texts]
-            dictionary['urls'] = [
-                ticker_url.url.to_dict() for ticker_url in self.urls]
+            dictionary['texts'] = [text.to_dict() for text in self.texts]
+            dictionary['urls'] = [url.to_dict() for url in self.urls]
 
         return dictionary
 
     def patch(self, dictionary):
-        """Patches the ticker with the given dictionary."""
+        """Patches the ticker."""
         with suppress(KeyError):
-            self.name = dictionary['name']
+            self.type_ = dictionary['type']
 
-        self.save()
+        yield self
+
+        try:
+            texts = dictionary['texts']
+        except KeyError:
+            pass
+        else:
+            texts = texts or ()
+
+            for text in self.texts:
+                text.delete_instance()
+
+            for text in texts:
+                yield Text.from_dict(self, text)
+
+        try:
+            urls = dictionary['urls']
+        except KeyError:
+            pass
+        else:
+            urls = urls or ()
+
+            for url in self.urls:
+                url.delete_instance()
+
+            for url in urls:
+                yield URL.from_dict(self, url)
 
 
 class Text(DSCMS4Model):
@@ -223,7 +251,8 @@ class Text(DSCMS4Model):
     class Meta:
         table_name = 'ticker_text'
 
-    ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
+    ticker = ForeignKeyField(
+        Ticker, column_name='ticker', backref='texts', on_delete='CASCADE')
     text = TextField()
     index = SmallIntegerField()
 
@@ -239,19 +268,7 @@ class Text(DSCMS4Model):
 
     def to_dict(self):
         """Returns a JSON-compliant dictionary."""
-        return {
-            'text': self.text,
-            'index': self.index}
-
-    def patch(self, dictionary):
-        """Patches the ticker text with the given dictionary."""
-        with suppress(KeyError):
-            self.text = dictionary['text']
-
-        with suppress(KeyError):
-            self.index = dictionary['index']
-
-        self.save()
+        return {'text': self.text, 'index': self.index}
 
 
 class URL(DSCMS4Model):
@@ -260,7 +277,8 @@ class URL(DSCMS4Model):
     class Meta:
         table_name = 'ticker_url'
 
-    ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
+    ticker = ForeignKeyField(
+        Ticker, column_name='ticker', backref='urls', on_delete='CASCADE')
     url = CharField(255)
     index = SmallIntegerField()
 
@@ -276,26 +294,14 @@ class URL(DSCMS4Model):
 
     def to_dict(self):
         """Returns a JSON-compliant dictionary."""
-        return {
-            'url': self.url,
-            'index': self.index}
-
-    def patch(self, dictionary):
-        """Patches the ticker text with the given dictionary."""
-        with suppress(KeyError):
-            self.url = dictionary['url']
-
-        with suppress(KeyError):
-            self.index = dictionary['index']
-
-        self.save()
+        return {'url': self.url, 'index': self.index}
 
 
 class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
     configuration = CascadingFKField(
-        Configuration, column_name='configuration')
+        Configuration, column_name='configuration', backref='backlights')
     time = TimeField()
     value = SmallIntegerField()     # Brightness in percent.
 
@@ -303,27 +309,10 @@ class Backlight(DSCMS4Model):
     def from_dict(cls, dictionary, configuration=None):
         """Yields new records from the provided dictionary."""
         for timestamp, percent in dictionary.items():
+            timestamp = datetime.strptime(timestamp, '%H:%M').time()
             record = super().from_dict({'time': timestamp, 'value': percent})
             record.configuration = configuration
             yield record
-
-    @classmethod
-    def by_configuration(cls, configuration):
-        """Yields backlight settings for the respective configuration."""
-        return cls.select().where(cls.configuration == configuration)
-
-    @classmethod
-    def dict_for(cls, configuration):
-        """Returns a dictionary of backlight settings
-        for the respective configuration.
-        """
-        dictionary = {}
-
-        for backlight in cls.by_configuration(configuration):
-            with suppress(ValueError):
-                dictionary.update(backlight.to_dict())
-
-        return dictionary
 
     @property
     def percent(self):
