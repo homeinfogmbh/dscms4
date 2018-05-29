@@ -155,14 +155,14 @@ class Configuration(CustomerModel):
             yield self.colors.patch(colors)
 
         if tickers is not None:
-            for ticker in Ticker.by_configuration(self):
+            for ticker in self.tickers:
                 ticker.delete_instance()
 
             for ticker in tickers:
                 yield from Ticker.from_dict(self, ticker)
 
         if backlights is not None:
-            for backlight in Backlight.by_configuration(self):
+            for backlight in self.backlights:
                 backlight.delete_instance()
 
             for backlight in Backlight.from_dict(
