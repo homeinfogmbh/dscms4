@@ -37,7 +37,7 @@ def stripped_time_str(time):
     representation of the provided time.
     """
 
-    return '{}:{}'.format(time.hour, time.minute)
+    return ':'.join((str(time.hour).zfill(2), str(time.minute).zfill(2)))
 
 
 class Font(Enum):
