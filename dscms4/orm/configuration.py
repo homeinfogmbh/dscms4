@@ -21,7 +21,7 @@ __all__ = [
 
 
 def percentage(value):
-    """Returns the percentage of a decimal number."""
+    """Restricts a number to 0-100 %."""
 
     value = round(value)
 
