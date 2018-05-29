@@ -138,11 +138,6 @@ class RealEstates(Chart):
             yield ZipCodeFilter.from_dict(chart, zip_code_filter)
 
     @property
-    def id_filters(self):
-        """Yields ID filters of this chart."""
-        return IdFilter.select().where(IdFilter.chart == self)
-
-    @property
     def zip_code_whitelist(self):
         """Yields ZIP code whitelist filters."""
         return ZipCodeFilter.select().where(
@@ -217,7 +212,8 @@ class IdFilter(DSCMS4Model):
         table_name = 'filter_id'
 
     chart = ForeignKeyField(
-        RealEstates, column_name='chart', on_delete='CASCADE')
+        RealEstates, column_name='chart', backref='id_filters',
+        on_delete='CASCADE')
     value = CharField(255)
     typ = EnumField(IdTypes, column_name='types')
 

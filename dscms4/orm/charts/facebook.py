@@ -32,11 +32,6 @@ class Facebook(Chart):
         for account in accounts:
             yield Account.from_dict(chart, account)
 
-    @property
-    def accounts(self):
-        """Yields accounts configured for this chart."""
-        return Account.select().where(Account.chart == self)
-
     def patch(self, dictionary, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
@@ -71,7 +66,8 @@ class Account(DSCMS4Model):
     class Meta:
         table_name = 'facebook_account'
 
-    chart = ForeignKeyField(Facebook, column_name='chart', on_delete='CASCADE')
+    chart = ForeignKeyField(
+        Facebook, column_name='chart', backref='accounts', on_delete='CASCADE')
     facebook_id = CharField(255)
     recent_days = SmallIntegerField(default=14)
     max_posts = SmallIntegerField(default=10)

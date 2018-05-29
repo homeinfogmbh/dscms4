@@ -54,16 +54,6 @@ class ImageText(Chart):
         for text in texts:
             yield Text.add(chart, text)
 
-    @property
-    def images(self):
-        """Yields appropriate image mappings."""
-        return Image.select().where(Image.chart == self)
-
-    @property
-    def texts(self):
-        """Yields appropriate text mappings."""
-        return Text.select().where(Text.chart == self)
-
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
         images = dictionary.pop('images', _UNCHANGED) or ()
@@ -102,7 +92,7 @@ class Image(DSCMS4Model):
         table_name = 'chart_image_text_image'
 
     chart = ForeignKeyField(
-        ImageText, column_name='chart', on_delete='CASCADE')
+        ImageText, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
 
     @classmethod
@@ -121,7 +111,7 @@ class Text(DSCMS4Model):
         table_name = 'chart_image_text_text'
 
     chart = ForeignKeyField(
-        ImageText, column_name='chart', on_delete='CASCADE')
+        ImageText, column_name='chart', backref='texts', on_delete='CASCADE')
     text = TextField()
 
     @classmethod

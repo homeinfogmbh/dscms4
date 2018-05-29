@@ -40,11 +40,6 @@ class Weather(Chart):
         for image in images:
             yield Image.add(chart, image)
 
-    @property
-    def images(self):
-        """Yields appropriate image mappings."""
-        return Image.select().where(Image.chart == self)
-
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
         images = dictionary.pop('images', _UNCHANGED) or ()
@@ -73,7 +68,8 @@ class Image(DSCMS4Model):
     class Meta:
         table_name = 'chart_weather_image'
 
-    chart = ForeignKeyField(Weather, column_name='chart', on_delete='CASCADE')
+    chart = ForeignKeyField(
+        Weather, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
 
     @classmethod
