@@ -21,6 +21,9 @@ __all__ = [
     'MODELS']
 
 
+TIME_FORMAT = '%H:%M'
+
+
 def percentage(value):
     """Restricts a number to 0-100 %."""
 
@@ -30,14 +33,6 @@ def percentage(value):
         return value
 
     raise ValueError('Invalid percentage: {}.'.format(value))
-
-
-def stripped_time_str(time):
-    """Returns the hour and minute string
-    representation of the provided time.
-    """
-
-    return ':'.join((str(time.hour).zfill(2), str(time.minute).zfill(2)))
 
 
 class Font(Enum):
@@ -309,7 +304,7 @@ class Backlight(DSCMS4Model):
     def from_dict(cls, dictionary, configuration=None):
         """Yields new records from the provided dictionary."""
         for timestamp, percent in dictionary.items():
-            timestamp = datetime.strptime(timestamp, '%H:%M').time()
+            timestamp = datetime.strptime(timestamp, TIME_FORMAT).time()
             record = super().from_dict({'time': timestamp, 'value': percent})
             record.configuration = configuration
             yield record
@@ -326,7 +321,7 @@ class Backlight(DSCMS4Model):
 
     def to_dict(self):
         """Returns the backlight as dictionary."""
-        return {stripped_time_str(self.time): self.percent}
+        return {self.time.strftime(TIME_FORMAT): self.percent}
 
 
 MODELS = (Colors, Configuration, Ticker, Text, URL, Backlight)
