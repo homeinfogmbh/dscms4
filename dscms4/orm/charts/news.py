@@ -18,3 +18,4 @@ class News(Chart):
     font_size_text = SmallIntegerField(default=8)
     text_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(null=True)
+    news_token = CharField(36, null=True)
