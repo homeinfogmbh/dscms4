@@ -182,12 +182,10 @@ class Ticker(DSCMS4Model):
     @classmethod
     def from_dict(cls, configuration, dictionary):
         """Creates a new ticker from the respective dictionary."""
-        type_ = dictionary.pop('type')
         texts = dictionary.pop('texts', ())
         urls = dictionary.pop('urls', ())
         ticker = super().from_dict(dictionary)
         ticker.configuration = configuration
-        ticker.type_ = type_
         yield ticker
 
         for text in texts:
@@ -249,16 +247,13 @@ class Text(DSCMS4Model):
     ticker = ForeignKeyField(
         Ticker, column_name='ticker', backref='texts', on_delete='CASCADE')
     text = TextField()
-    index = SmallIntegerField()
+    index = SmallIntegerField(default=0)
 
     @classmethod
     def from_dict(cls, ticker, dictionary):
         """Creates a ticker text from the given dictionary."""
-        ticker_text = cls()
+        ticker_text = super().from_dict(dictionary)
         ticker_text.ticker = ticker
-        ticker_text.text = dictionary['text']
-        ticker_text.index = dictionary.get('index', 0)
-        ticker_text.save()
         return ticker_text
 
     def to_dict(self):
@@ -275,16 +270,13 @@ class URL(DSCMS4Model):
     ticker = ForeignKeyField(
         Ticker, column_name='ticker', backref='urls', on_delete='CASCADE')
     url = CharField(255)
-    index = SmallIntegerField()
+    index = SmallIntegerField(default=0)
 
     @classmethod
     def from_dict(cls, ticker, dictionary):
         """Creates a ticker URL from the given dictionary."""
-        ticker_url = cls()
+        ticker_url = super().from_dict(dictionary)
         ticker_url.ticker = ticker
-        ticker_url.url = dictionary['url']
-        ticker_url.index = dictionary.get('index', 0)
-        ticker_url.save()
         return ticker_url
 
     def to_dict(self):
