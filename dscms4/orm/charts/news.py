@@ -1,6 +1,6 @@
 """New charts."""
 
-from peewee import IntegerField, SmallIntegerField, BooleanField
+from peewee import IntegerField, SmallIntegerField, BooleanField, CharField
 
 from dscms4.orm.charts.common import Chart
 
