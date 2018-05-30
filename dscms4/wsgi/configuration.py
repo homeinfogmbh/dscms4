@@ -71,12 +71,14 @@ def patch(ident):
     """Modifies an existing configuration."""
 
     try:
-        for record in get_configuration(ident).patch(DATA.json):
-            record.save()
+        records = tuple(get_configuration(ident).patch(DATA.json))
     except MissingData as missing_data:
         raise IncompleteData(missing_data.missing)
     except InvalidData as invalid_data:
         raise InvalidData(invalid_data.invalid)
+
+    for record in records:
+        record.save()
 
     return ConfigurationPatched()
 
