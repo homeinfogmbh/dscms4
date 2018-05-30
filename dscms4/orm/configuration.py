@@ -196,10 +196,10 @@ class Ticker(DSCMS4Model):
 
     def to_dict(self):
         """Returns a JSON-compliant dictionary."""
-        return {
-            'type': self.type_,
-            'texts': [text.to_dict() for text in self.texts],
-            'urls': [url.to_dict() for url in self.urls]}
+        dictionary = super().to_dict()
+        dictionary['texts'] = [text.to_dict() for text in self.texts]
+        dictionary['urls'] = [url.to_dict() for url in self.urls]
+        return dictionary
 
     def patch(self, dictionary):
         """Patches the ticker."""
