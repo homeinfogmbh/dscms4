@@ -135,7 +135,7 @@ class Configuration(CustomerModel):
         """Converts the configuration into a JSON-like dictionary."""
         dictionary = super().to_dict(**kwargs)
         dictionary['colors'] = self.colors.to_dict()
-        dictionary['tickers'] = [ticker.id for ticker in self.tickers]
+        dictionary['tickers'] = [ticker.to_dict() for ticker in self.tickers]
         dictionary['backlight'] = self.backlight_dict
         return dictionary
 
@@ -194,15 +194,12 @@ class Ticker(DSCMS4Model):
         for url in urls:
             yield URL.from_dict(ticker, url)
 
-    def to_dict(self, recursive=False):
+    def to_dict(self):
         """Returns a JSON-compliant dictionary."""
-        dictionary = {'type': self.type_}
-
-        if recursive:
-            dictionary['texts'] = [text.to_dict() for text in self.texts]
-            dictionary['urls'] = [url.to_dict() for url in self.urls]
-
-        return dictionary
+        return {
+            'type': self.type_,
+            'texts': [text.to_dict() for text in self.texts],
+            'urls': [url.to_dict() for url in self.urls]}
 
     def patch(self, dictionary):
         """Patches the ticker."""
