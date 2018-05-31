@@ -29,7 +29,7 @@ def with_terminal(function):
 
     def wrapper(tid, *args, **kwargs):
         """Wraps the function."""
-        return function(get_terminal(tid, *args, **kwargs))
+        return function(get_terminal(tid), *args, **kwargs)
 
     return wrapper
 
