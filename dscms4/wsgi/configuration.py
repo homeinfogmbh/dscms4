@@ -8,6 +8,7 @@ from wsgilib import JSON
 from dscms4.messages.configuration import NoSuchConfiguration, \
     ConfigurationAdded, ConfigurationPatched, ConfigurationDeleted
 from dscms4.orm.configuration import Configuration
+from dscms4.wsgi.common import get_brief
 
 __all__ = ['get_configuration', 'ROUTES']
 
@@ -29,7 +30,7 @@ def list_():
     """Returns a list of IDs of the customer's configurations."""
 
     return JSON([
-        configuration.to_dict() for configuration
+        configuration.to_dict(brief=get_brief()) for configuration
         in Configuration.select().where(
             Configuration.customer == CUSTOMER.id)])
 
@@ -39,7 +40,7 @@ def list_():
 def get(ident):
     """Returns the respective configuration."""
 
-    return JSON(get_configuration(ident).to_dict())
+    return JSON(get_configuration(ident).to_dict(brief=get_brief()))
 
 
 @authenticated

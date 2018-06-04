@@ -12,6 +12,7 @@ from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
     NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS, ChartGroup
+from dscms4.wsgi.common import get_brief
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -84,7 +85,7 @@ def get_chart(ident):
 def list_():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_dict() for chart in get_charts()])
+    return JSON([chart.to_dict(brief=get_brief()) for chart in get_charts()])
 
 
 @authenticated
@@ -92,7 +93,7 @@ def list_():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_chart(ident).to_dict())
+    return JSON(get_chart(ident).to_dict(brief=get_brief()))
 
 
 @authenticated

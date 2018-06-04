@@ -126,16 +126,17 @@ class Chart(DSCMS4Model):
 
         yield super().patch(dictionary, **kwargs)
 
-    def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
+    def to_dict(self, *args, brief=False, **kwargs):
         """Converts the chart into a JSON compliant dictionary."""
-        dictionary = super().to_dict(*args, **kwargs)
+        if brief:
+            dictionary = {'id': self.id}
+        else:
+            dictionary = super().to_dict(*args, **kwargs)
 
-        if base_chart:
+        if not brief:
             dictionary['base'] = self.base.to_dict(primary_key=False)
 
-        if type_:
-            dictionary['type'] = self.__class__.__name__
-
+        dictionary['type'] = self.__class__.__name__
         return dictionary
 
     def delete_instance(self):

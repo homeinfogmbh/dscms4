@@ -54,11 +54,13 @@ class Weather(Chart):
             for image in images:
                 yield Image.add(chart, image)
 
-    def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
+    def to_dict(self, *args, brief=False, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        dictionary = super().to_dict(
-            *args, base_chart=base_chart, type_=type_, **kwargs)
-        dictionary['images'] = [image.image for image in self.images]
+        dictionary = super().to_dict(*args, brief=brief, **kwargs)
+
+        if not brief:
+            dictionary['images'] = [image.image for image in self.images]
+
         return dictionary
 
 

@@ -76,12 +76,14 @@ class ImageText(Chart):
             for text in texts:
                 yield Text.add(chart, text)
 
-    def to_dict(self, *args, base_chart=True, type_=True, **kwargs):
+    def to_dict(self, *args, brief=False, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        dictionary = super().to_dict(
-            *args, base_chart=base_chart, type_=type_, **kwargs)
-        dictionary['texts'] = [text.text for text in self.texts]
-        dictionary['images'] = [image.image for image in self.images]
+        dictionary = super().to_dict(*args, brief=brief, **kwargs)
+
+        if not brief:
+            dictionary['texts'] = [text.text for text in self.texts]
+            dictionary['images'] = [image.image for image in self.images]
+
         return dictionary
 
 
