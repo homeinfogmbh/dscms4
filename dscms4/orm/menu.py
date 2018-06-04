@@ -28,11 +28,8 @@ class Menu(CustomerModel):
         """Yields this menu's items."""
         return MenuItem.by_menu(self)
 
-    def to_dict(self, brief=False):
+    def to_dict(self):
         """Returns the menu as a dictionary."""
-        if brief:
-            return {'id': self.id}
-
         dictionary = super().to_dict()
         dictionary['items'] = [item.to_dict() for item in self.items]
         return dictionary

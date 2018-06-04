@@ -131,11 +131,8 @@ class Configuration(CustomerModel):
 
         return backlights
 
-    def to_dict(self, brief=False, **kwargs):
+    def to_dict(self, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
-        if brief:
-            return {'id': self.id}
-
         dictionary = super().to_dict(**kwargs)
         dictionary['colors'] = self.colors.to_dict()
         dictionary['tickers'] = [ticker.to_dict() for ticker in self.tickers]

@@ -19,7 +19,7 @@ def get(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
     return JSON([
-        chart_of(gbc.base_chart).to_dict()
+        chart_of(gbc.base_chart).to_dict(brief=True)
         for gbc in GroupBaseChart.select().where(
             GroupBaseChart.group == get_group(gid))])
 

@@ -12,7 +12,6 @@ from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
     NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS, ChartGroup
-from dscms4.wsgi.common import get_brief
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
@@ -78,6 +77,17 @@ def get_chart(ident):
         return CHART_TYPE.by_id(ident, customer=CUSTOMER.id)
     except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
+
+
+def get_brief():
+    """Returns whether a brief data set is requested."""
+
+    try:
+        request.args['brief']
+    except KeyError:
+        return False
+
+    return True
 
 
 @authenticated

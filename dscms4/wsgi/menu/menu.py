@@ -6,7 +6,6 @@ from wsgilib import JSON
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
     MenuPatched, MenuDeleted
 from dscms4.orm.menu import Menu
-from dscms4.wsgi.common import get_brief
 
 __all__ = ['get_menu', 'ROUTES']
 
@@ -31,7 +30,7 @@ def get_menus():
 def list_():
     """List menus."""
 
-    return JSON([menu.to_dict(brief=get_brief()) for menu in get_menus()])
+    return JSON([menu.to_dict() for menu in get_menus()])
 
 
 @authenticated
@@ -39,7 +38,7 @@ def list_():
 def get(ident):
     """Returns the respective menu."""
 
-    return JSON(get_menu(ident).to_dict(brief=get_brief()))
+    return JSON(get_menu(ident).to_dict())
 
 
 @authenticated
