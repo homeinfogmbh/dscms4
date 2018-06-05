@@ -6,10 +6,10 @@ from peeweeplus import EnumField
 
 from dscms4.orm.charts.common import Chart
 
-__all__ = ['Type', 'Form']
+__all__ = ['Mode', 'Form']
 
 
-class Type(Enum):
+class Mode(Enum):
     """Form type."""
 
     REPAIR = 'repair'
@@ -22,4 +22,4 @@ class Form(Chart):
     class Meta:
         table_name = 'chart_form'
 
-    type_ = EnumField(Type, column_name='type')
+    mode = EnumField(Mode, column_name='mode')
