@@ -11,7 +11,7 @@ __all__ = ['presentation']
 def _presentation_xml(terminal):
     """Returns an XML dom presentation."""
 
-    xml = dom.Presentation()
+    xml = dom.presentation()
     xml.configuration = [
         configuration.to_dom() for _, configuration in
         accumulated_configurations(terminal)]
