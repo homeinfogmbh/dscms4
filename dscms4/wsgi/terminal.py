@@ -5,7 +5,7 @@ from flask import request
 from his import CUSTOMER, authenticated, authorized
 from his.messages import InvalidData
 from terminallib import Terminal
-from wsgilib import JSON
+from wsgilib import JSON, XML
 
 from dscms4.content.terminal.presentation import presentation
 from dscms4.messages.terminal import NoSuchTerminal
@@ -80,7 +80,12 @@ def get(terminal):
 def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
 
-    return JSON(presentation(terminal))
+    try:
+        request.args['xml']
+    except KeyError:
+        return JSON(presentation(terminal))
+
+    return XML(presentation(terminal, xml=True))
 
 
 ROUTES = (
