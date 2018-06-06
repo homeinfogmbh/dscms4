@@ -98,6 +98,11 @@ class Chart(DSCMS4Model):
             (cls.id == ident) & (BaseChart.customer == customer)).get()
 
     @property
+    def type_(self):
+        """Returns the chart type."""
+        return self.__class__.__name__
+
+    @property
     def customer(self):
         """Returns the base chart's customer."""
         return self.base.customer
