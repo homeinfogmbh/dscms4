@@ -26,5 +26,4 @@ MODELS = (
     BaseChart, Cleaning, Facebook, Account, Form, GarbageCollection,
     GuessPicture, ImageText, Image, Text, News, PublicTransport, Quotes,
     RealEstates, IdFilter, ZipCodeFilter, Video, Weather, Image_)
-CHARTS = {
-    model.__name__: model for model in MODELS if issubclass(model, Chart)}
+CHARTS = {model.type_: model for model in MODELS if issubclass(model, Chart)}
