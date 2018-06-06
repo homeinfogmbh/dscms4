@@ -12,6 +12,8 @@ from peeweeplus import EnumField
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
 
+__all__ = ['RealEstates', 'IdFilter', 'ZipCodeFilter']
+
 
 class DisplayFormat(Enum):
     """Display formats."""
@@ -90,7 +92,7 @@ class RealEstates(Chart):
     stone = BooleanField(default=True)
     swimming_pool = BooleanField(default=True)
     carpet = BooleanField(default=True)
-    uderground_carpark = BooleanField(default=True)
+    underground_carpark = BooleanField(default=True)
     lavatory = BooleanField(default=True)
     # Rooms selector:
     rooms_1 = BooleanField(default=True)
@@ -215,7 +217,7 @@ class IdFilter(DSCMS4Model):
         RealEstates, column_name='chart', backref='id_filters',
         on_delete='CASCADE')
     value = CharField(255)
-    typ = EnumField(IdTypes, column_name='types')
+    type_ = EnumField(IdTypes, column_name='type')
 
     def __call__(self, real_estate):
         """Checks the filter against the respective real estate."""

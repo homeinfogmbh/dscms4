@@ -13,6 +13,8 @@ from dscms4.orm.charts.image_text import ImageText, Image, Text
 from dscms4.orm.charts.news import News
 from dscms4.orm.charts.public_transport import PublicTransport
 from dscms4.orm.charts.quotes import Quotes
+from dscms4.orm.charts.real_estates import RealEstates, IdFilter, \
+    ZipCodeFilter
 from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Weather, Image as Image_
 
@@ -22,7 +24,7 @@ __all__ = ['MODELS', 'CHARTS']
 
 MODELS = (
     BaseChart, Cleaning, Facebook, Account, Form, GarbageCollection,
-    GuessPicture, ImageText, Image, Text, News, PublicTransport, Quotes, Video,
-    Weather, Image_)
+    GuessPicture, ImageText, Image, Text, News, PublicTransport, Quotes,
+    RealEstates, IdFilter, ZipCodeFilter, Video, Weather, Image_)
 CHARTS = {
     model.__name__: model for model in MODELS if issubclass(model, Chart)}
