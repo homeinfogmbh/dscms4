@@ -1,7 +1,9 @@
 """Weather chart."""
 
+from filedb import mimetype, sha256sum
 from peewee import ForeignKeyField, IntegerField, CharField
 
+from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
@@ -63,6 +65,19 @@ class Weather(Chart):
 
         return dictionary
 
+    def to_dom(self):
+        """Returns an XML DOM of this chart."""
+        xml = dom.Attachment()
+        xml.location = self.location
+        xml.font_color = self.font_color
+        xml.icon_color = self.icon_color
+        xml.box_color_top = self.box_color_top
+        xml.box_color_middle = self.box_color_middle
+        xml.box_color_bottom = self.box_color_bottom
+        xml.transparency = self.transparency
+        xml.image = [image.to_dom() for image in self.images]
+        return xml
+
 
 class Image(DSCMS4Model):
     """Image for an ImageTextChart."""
@@ -81,3 +96,11 @@ class Image(DSCMS4Model):
         record.chart = chart
         record.image = image
         return record
+
+    def to_dom(self):
+        """Returns an XML DOM of this model."""
+        xml = dom.Attachment()
+        xml.mimetype = mimetype(self.image)
+        xml.filename = str(uuid4())
+        xml.sha256sum = sha256sum(self.image)
+        return xml

@@ -5,6 +5,7 @@ from enum import Enum
 from peewee import CharField, TextField, SmallIntegerField, IntegerField
 from peeweeplus import EnumField
 
+from dscms4.dom import Cleaning as CleaningDOM
 from dscms4.orm.charts.common import Chart
 
 __all__ = ['Mode', 'Cleaning']
@@ -28,3 +29,12 @@ class Cleaning(Chart):
     text = TextField(null=True)
     font_size = SmallIntegerField(default=8)
     text_color = IntegerField(default=0x000000)
+
+    def to_dom(self):
+        """Returns an XML DOM of this chart."""
+        dom = super().to_dom(CleaningDOM)
+        dom.mode = self.mode
+        dom.text = self.text
+        dom.font_size = self.font_size
+        dom.text_color = self.text_color
+        return dom

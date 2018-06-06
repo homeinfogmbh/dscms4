@@ -1,12 +1,15 @@
 """Image / text charts."""
 
 from enum import Enum
+from uuid import uuid4
 
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 
+from filedb import mimetype, sha256sum
 from peeweeplus import EnumField
 
+from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
@@ -86,6 +89,18 @@ class ImageText(Chart):
 
         return dictionary
 
+    def to_dom(self):
+        """Returns an XML DOM of this chart."""
+        xml = super().to_dom(dom.ImageText)
+        xml.style = self.style
+        xml.title = self.title
+        xml.font_size = self.font_size
+        xml.title_color = self.title_color
+        xml.ken_burns = self.ken_burns
+        xml.image = [image.to_dom() for image in self.images]
+        xml.text = [text.text for text in self.texts]
+        return xml
+
 
 class Image(DSCMS4Model):
     """Image for an ImageText chart."""
@@ -104,6 +119,14 @@ class Image(DSCMS4Model):
         record.chart = chart
         record.image = image
         return record
+
+    def to_dom(self):
+        """Returns an XML DOM of this model."""
+        xml = dom.Attachment()
+        xml.mimetype = mimetype(self.image)
+        xml.filename = str(uuid4())
+        xml.sha256sum = sha256sum(self.image)
+        return xml
 
 
 class Text(DSCMS4Model):

@@ -4,11 +4,12 @@ from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
-from .common import DSCMS4Model, CustomerModel
-from .charts import BaseChart
-from .exceptions import CircularReferenceError, OrphanedBaseChart, \
+from dscms4 import dom
+from dscms4.common import DSCMS4Model, CustomerModel
+from dscms4.charts import BaseChart
+from dscms4.exceptions import CircularReferenceError, OrphanedBaseChart, \
     AmbiguousBaseChart
-from .util import chart_of
+from dscms4.util import chart_of
 
 __all__ = ['UNCHANGED', 'Menu', 'MenuItem', 'MODELS']
 
@@ -33,6 +34,14 @@ class Menu(CustomerModel):
         dictionary = super().to_dict()
         dictionary['items'] = [item.to_dict() for item in self.items]
         return dictionary
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.Menu()
+        xml.name = self.name
+        xml.description = self.description
+        xml.item = [item.to_dom() for item in self.items]
+        return xml
 
 
 class MenuItem(DSCMS4Model):
@@ -92,8 +101,7 @@ class MenuItem(DSCMS4Model):
     @property
     def base_charts(self):
         """Yields the respective charts."""
-        for menu_item_chart in MenuItemChart.select().where(
-                MenuItemChart.menu_item == self):
+        for menu_item_chart in self.menu_item_charts:
             yield menu_item_chart.base_chart
 
     @property
@@ -149,6 +157,18 @@ class MenuItem(DSCMS4Model):
         dictionary['root'] = self.root
         return dictionary
 
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.MenuItem()
+        xml.name = self.name
+        xml.icon = self.icon
+        xml.text_color = self.text_color
+        xml.background_color = self.background_color
+        xml.index = self.index
+        xml.item = [item.to_dom() for item in self.children]
+        xml.chart = [chart.to_dom() for chart in self.menu_item_charts]
+        return xml
+
 
 class MenuItemChart(DSCMS4Model):
     """Mapping in-between menu items and base charts."""
@@ -157,7 +177,8 @@ class MenuItemChart(DSCMS4Model):
         table_name = 'menu_item_chart'
 
     menu_item = ForeignKeyField(
-        MenuItem, null=True, column_name='menu_item', on_delete='CASCADE')
+        MenuItem, null=True, column_name='menu_item',
+        backref='menu_item_charts', on_delete='CASCADE')
     base_chart = ForeignKeyField(
         BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
@@ -169,6 +190,15 @@ class MenuItemChart(DSCMS4Model):
         menu_item_chart.menu_item = menu_item
         menu_item_chart.base_chart = base_chart
         return menu_item_chart
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.MenuItemChart()
+        chart = chart_of(self.base_chart)
+        xml.chart_id = chart.id
+        xml.chart_type = chart.__class__.__name__
+        xml.index = self.index
+        return xml
 
 
 MODELS = (Menu, MenuItem, MenuItemChart)

@@ -13,6 +13,7 @@ from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
 from his.messages import MissingData
 from peeweeplus import EnumField
 
+from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel, RecordGroup
 
 __all__ = ['BaseChart', 'Chart']
@@ -61,6 +62,19 @@ class BaseChart(CustomerModel):
         return all((
             self.display_from is None or self.display_from > now,
             self.display_until is None or self.display_until < now))
+
+    def to_dom(self):
+        """Returns an XML DOM of the base chart."""
+        xml = dom.BaseChart()
+        xml.title = self.title
+        xml.description = self.description
+        xml.duration = self.duration
+        xml.display_from = self.display_from
+        xml.display_until = self.display_until
+        xml.transition = self.transition
+        xml.created = self.created
+        xml.trashed = self.trashed
+        return xml
 
 
 class Chart(DSCMS4Model):
@@ -143,6 +157,12 @@ class Chart(DSCMS4Model):
 
         dictionary['type'] = self.__class__.__name__
         return dictionary
+
+    def to_dom(self, model):
+        """Returns an XML DOM of this chart."""
+        xml = model()
+        xml.base = self.base.to_dom()
+        return xml
 
     def delete_instance(self):
         """Deletes the base chart and thus (CASCADE) this chart."""

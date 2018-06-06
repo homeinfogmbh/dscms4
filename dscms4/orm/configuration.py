@@ -9,6 +9,7 @@ from peewee import ForeignKeyField, TimeField, IntegerField, \
 
 from peeweeplus import EnumField, CascadingFKField
 
+from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = [
@@ -74,6 +75,21 @@ class Colors(DSCMS4Model):
     title = IntegerField()
     text = IntegerField()
     text_background = IntegerField()
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.Backlight()
+        xml.header = self.header
+        xml.header_background = self.header_background
+        xml.background_left = self.background_left
+        xml.background_right = self.background_right
+        xml.ticker = self.ticker
+        xml.ticker_background = self.ticker_background
+        xml.clock = self.clock
+        xml.title = self.title
+        xml.text = self.text
+        xml.text_background = self.text_background
+        return xml
 
 
 class Configuration(CustomerModel):
@@ -164,6 +180,31 @@ class Configuration(CustomerModel):
                     backlights, configuration=self):
                 yield backlight
 
+    def to_dom(self):
+        """Returns an XML DOM of the configuration."""
+        xml = dom.Configuration
+        xml.name = self.name
+        xml.description = self.description
+        xml.font = self.font
+        xml.portrait = self.portrait
+        xml.touch = self.touch
+        xml.design = self.design
+        xml.effects = self.effects
+        xml.ticker_speed = self.ticker_speed
+        xml.colors = self.colors.to_dom()
+        xml.title_size = self.title_size
+        xml.text_size = self.text_size
+        xml.logo = self.logo
+        xml.background = self.background
+        xml.dummy_picture = self.dummy_picture
+        xml.hide_cursor = self.hide_cursor
+        xml.rotation = self.rotation
+        xml.email_form = self.email_form
+        xml.volume = self.volume
+        xml.ticker = [ticker.to_dom() for ticker in self.tickers]
+        xml.backlight = [backlight.to_dom() for backlight in self.backlights]
+        return xml
+
     def delete_instance(self):
         """Deletes this instance."""
         colors = self.colors
@@ -234,6 +275,14 @@ class Ticker(DSCMS4Model):
             for url in urls:
                 yield URL.from_dict(self, url)
 
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.Ticker()
+        xml.type = self.type_
+        xml.text = [text.to_dom() for text in self.texts]
+        xml.url = [url.to_dom() for url in self.urls]
+        return xml
+
 
 class Text(DSCMS4Model):
     """Text for a ticker."""
@@ -257,6 +306,10 @@ class Text(DSCMS4Model):
         """Returns a JSON-compliant dictionary."""
         return {'text': self.text, 'index': self.index}
 
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        return dom.Text(self.text, index=self.index)
+
 
 class URL(DSCMS4Model):
     """Text for a ticker."""
@@ -279,6 +332,10 @@ class URL(DSCMS4Model):
     def to_dict(self):
         """Returns a JSON-compliant dictionary."""
         return {'url': self.url, 'index': self.index}
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        return dom.URL(self.text, index=self.index)
 
 
 class Backlight(DSCMS4Model):
@@ -312,6 +369,13 @@ class Backlight(DSCMS4Model):
     def to_dict(self):
         """Returns the backlight as dictionary."""
         return {self.time.strftime(TIME_FORMAT): self.percent}
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.Backlight()
+        xml.time = self.time
+        xml.brightness = self.brightness
+        return xml
 
 
 MODELS = (Colors, Configuration, Ticker, Text, URL, Backlight)

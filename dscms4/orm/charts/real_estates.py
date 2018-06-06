@@ -9,6 +9,7 @@ from peewee import BooleanField, SmallIntegerField, IntegerField, \
 from openimmodb import Immobilie
 from peeweeplus import EnumField
 
+from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
 
@@ -206,6 +207,100 @@ class RealEstates(Chart):
         dictionary['filters'] = self.filters_dictionary
         return dictionary
 
+    def to_dom(self):
+        """Returns an XML DOM of this chart."""
+        xml = super().to_dom(dom.RealEstates)
+        xml.display_format = self.display_format
+        xml.ken_burns = self.ken_burns
+        xml.scaling = self.scaling
+        xml.slideshow = self.slideshow
+        xml.qr_codes = self.qr_codes
+        xml.show_contact = self.show_contact
+        xml.contact_picture = self.contact_picture
+        xml.font_size = self.font_size
+        xml.font_color = self.font_color
+        # Data field selections:
+        xml.amenities = self.amenities
+        xml.construction = self.construction
+        xml.courtage = self.courtage
+        xml.floor = self.floor
+        xml.area = self.area
+        xml.free_from = self.free_from
+        xml.coop_share = self.coop_share
+        xml.total_area = self.total_area
+        xml.plot_area = self.plot_area
+        xml.cold_rent = self.cold_rent
+        xml.purchase_price = self.purchase_price
+        xml.security_deposit = self.security_deposit
+        xml.service_charge = self.service_charge
+        xml.object_id = self.object_id
+        xml.description = self.description
+        xml.warm_rent = self.warm_rent
+        xml.rooms = self.rooms
+        # Amenities tags:
+        xml.lift = self.lift
+        xml.bathtub = self.bathtub
+        xml.balcony = self.balcony
+        xml.accessibility = self.accessibility
+        xml.assited_living = self.assited_living
+        xml.carport = self.carport
+        xml.floorboards = self.floorboards
+        xml.duplex = self.duplex
+        xml.shower = self.shower
+        xml.builtin_kitchen = self.builtin_kitchen
+        xml.screed = self.screed
+        xml.tiles = self.tiles
+        xml.outdoor_parking = self.outdoor_parking
+        xml.garage = self.garage
+        xml.cable_sat_tv = self.cable_sat_tv
+        xml.fireplace = self.fireplace
+        xml.basement = self.basement
+        xml.plastic = self.plastic
+        xml.furnished = self.furnished
+        xml.parquet = self.parquet
+        xml.car_park = self.car_park
+        xml.wheelchair_accessible = self.wheelchair_accessible
+        xml.sauna = self.sauna
+        xml.stone = self.stone
+        xml.swimming_pool = self.swimming_pool
+        xml.carpet = self.carpet
+        xml.underground_carpark = self.underground_carpark
+        xml.lavatory = self.lavatory
+        # Rooms selector:
+        xml.rooms_1 = self.rooms_1
+        xml.rooms_2 = self.rooms_2
+        xml.rooms_3 = self.rooms_3
+        xml.rooms_4 = self.rooms_4
+        xml.rooms_5 = self.rooms_5
+        xml.rooms_5_or_more = self.rooms_5_or_more
+        # Real estate type:
+        xml.finance_project = self.finance_project
+        xml.business_realty = self.business_realty
+        xml.short_term_accommocation = self.short_term_accommocation
+        xml.living_realty = self.living_realty
+        # Subtypes:
+        xml.office = self.office
+        xml.retail = self.retail
+        xml.recreational = self.recreational
+        xml.hospitality_industry = self.hospitality_industry
+        xml.plot = self.plot
+        xml.hall_warehouse_production = self.hall_warehouse_production
+        xml.house = self.house
+        xml.agriculture_forestry = self.agriculture_forestry
+        xml.miscellaneous = self.miscellaneous
+        xml.flat = self.flat
+        xml.room = self.room
+        xml.income_property = self.income_property
+        # Sale type:
+        xml.emphyteusis = self.emphyteusis
+        xml.leasing = self.leasing
+        xml.rent = self.rent
+        xml.sale = self.sale
+        xml.filter = [
+            filter.to_dom() for filter in chain(
+                self.id_filters, self.zip_code_filters)]
+        return xml
+
 
 class IdFilter(DSCMS4Model):
     """Filter for the object IDs."""
@@ -239,6 +334,13 @@ class IdFilter(DSCMS4Model):
         record.chart = chart
         return record
 
+    def to_dom(self):
+        """Returns an XML DOM of this model."""
+        xml = dom.IdFilter()
+        xml.value_ = self.value
+        xml.type = self.type
+        return xml
+
 
 class ZipCodeFilter(DSCMS4Model):
     """Filter for real estate ZIP codes."""
@@ -247,7 +349,8 @@ class ZipCodeFilter(DSCMS4Model):
         table_name = 'filter_zip_code'
 
     chart = ForeignKeyField(
-        RealEstates, column_name='chart', on_delete='CASCADE')
+        RealEstates, column_name='chart', backref='zip_code_filters',
+        on_delete='CASCADE')
     zip_code = CharField(255)
     # True: blacklist, False: whitelist.
     blacklist = BooleanField(default=False)
@@ -275,3 +378,10 @@ class ZipCodeFilter(DSCMS4Model):
     def whitelist(self, whitelist):
         """Sets whether this is a whitelist record."""
         self.blacklist = not whitelist
+
+    def to_dom(self):
+        """Returns an XML DOM of this model."""
+        xml = dom.ZipCodeFilter()
+        xml.zip_code = self.zip_code
+        xml.blacklist = self.blacklist
+        return xml

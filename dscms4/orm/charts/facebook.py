@@ -3,6 +3,7 @@
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
 
+from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
@@ -59,6 +60,15 @@ class Facebook(Chart):
             account.to_dict() for account in self.accounts]
         return dictionary
 
+    def to_dom(self):
+        """Returns an XML DOM of this chart."""
+        xml = super().to_dom(dom.Facebook)
+        xml.font_size = self.font_size
+        xml.title_color = self.title_color
+        xml.ken_burns = self.ken_burns
+        xml.account = [account.to_dom() for account in self.accounts]
+        return xml
+
 
 class Account(DSCMS4Model):
     """Facebook account settings."""
@@ -81,3 +91,12 @@ class Account(DSCMS4Model):
         account = super().from_dict(dictionary, **kwargs)
         account.chart = chart
         return account
+
+    def to_dom(self):
+        """Returns an XML DOM of this model."""
+        xml = dom.FacebookAccount()
+        xml.facebook_id = self.facebook_id
+        xml.recent_days = self.recent_days
+        xml.max_posts = self.max_posts
+        xml.name = self.name
+        return xml
