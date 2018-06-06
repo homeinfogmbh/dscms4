@@ -1,9 +1,9 @@
 """Weather chart."""
 
-from filedb import mimetype, sha256sum
 from peewee import ForeignKeyField, IntegerField, CharField
 
 from dscms4 import dom
+from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
@@ -99,8 +99,4 @@ class Image(DSCMS4Model):
 
     def to_dom(self):
         """Returns an XML DOM of this model."""
-        xml = dom.Attachment()
-        xml.mimetype = mimetype(self.image)
-        xml.filename = str(uuid4())
-        xml.sha256sum = sha256sum(self.image)
-        return xml
+        return attachment_dom(self.image)

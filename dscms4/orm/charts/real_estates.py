@@ -210,7 +210,7 @@ class RealEstates(Chart):
     def to_dom(self):
         """Returns an XML DOM of this chart."""
         xml = super().to_dom(dom.RealEstates)
-        xml.display_format = self.display_format
+        xml.display_format = self.display_format.value
         xml.ken_burns = self.ken_burns
         xml.scaling = self.scaling
         xml.slideshow = self.slideshow
@@ -338,7 +338,7 @@ class IdFilter(DSCMS4Model):
         """Returns an XML DOM of this model."""
         xml = dom.IdFilter()
         xml.value_ = self.value
-        xml.type = self.type
+        xml.type = self.type_.value
         return xml
 
 

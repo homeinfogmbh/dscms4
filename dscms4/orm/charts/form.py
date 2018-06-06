@@ -28,5 +28,5 @@ class Form(Chart):
     def to_dom(self):
         """Returns an XML DOM of this chart."""
         xml = super().to_dom(dom.Form)
-        xml.mode = self.mode
+        xml.mode = self.mode.value
         return xml

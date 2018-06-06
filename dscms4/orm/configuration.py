@@ -10,6 +10,7 @@ from peewee import ForeignKeyField, TimeField, IntegerField, \
 from peeweeplus import EnumField, CascadingFKField
 
 from dscms4 import dom
+from dscms4.domutil import attachment_dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = [
@@ -185,18 +186,18 @@ class Configuration(CustomerModel):
         xml = dom.Configuration()
         xml.name = self.name
         xml.description = self.description
-        xml.font = self.font
+        xml.font = self.font.value
         xml.portrait = self.portrait
         xml.touch = self.touch
-        xml.design = self.design
+        xml.design = self.design.value
         xml.effects = self.effects
         xml.ticker_speed = self.ticker_speed
         xml.colors = self.colors.to_dom()
         xml.title_size = self.title_size
         xml.text_size = self.text_size
-        xml.logo = self.logo
-        xml.background = self.background
-        xml.dummy_picture = self.dummy_picture
+        xml.logo = attachment_dom(self.logo)
+        xml.background = attachment_dom(self.background)
+        xml.dummy_picture = attachment_dom(self.dummy_picture)
         xml.hide_cursor = self.hide_cursor
         xml.rotation = self.rotation
         xml.email_form = self.email_form
@@ -278,7 +279,7 @@ class Ticker(DSCMS4Model):
     def to_dom(self):
         """Returns an XML DOM of the model."""
         xml = dom.Ticker()
-        xml.type = self.type_
+        xml.type = self.type_.value
         xml.text = [text.to_dom() for text in self.texts]
         xml.url = [url.to_dom() for url in self.urls]
         return xml
