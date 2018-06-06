@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Menu type definitions.
+
+Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
+-->
+
+<xs:schema  xmlns="http://xml.homeinfo.de/schema/presentation"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+            targetNamespace="http://xml.homeinfo.de/schema/presentation">
+    <xs:complexType name="Menu">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Ein Menü.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Name des Menüs.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Beschreibung des Menüs.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="item" type="MenuItem" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Menüelemente.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="MenuItem">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Menüelemente.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Name des Menüelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="icon" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Symbol des Menüelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="text_color" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Schriftfarbe des Menüelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="background_color" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe des Menüelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="index" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Position des Menüelements.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="child" type="MenuItem" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Menüelemente.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="chart" type="MenuItemChart" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Charts, welche diesem Menüelement zugeordnet sind.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="MenuItemChart">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Chart eines Menüelements.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="chart_id" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ID des entsprechenden Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="chart_type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Der Typ des entsprechenden Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="index" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Position des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+New XML presentation definitions.
+
+Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
+-->
+
+<xs:schema  xmlns="http://xml.homeinfo.de/schema/presentation"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+            targetNamespace="http://xml.homeinfo.de/schema/presentation">
+    <xs:include schemaLocation="charts.xsd"/>
+    <xs:include schemaLocation="configuration.xsd"/>
+    <xs:include schemaLocation="menu.xsd"/>
+
+
+    <xs:element name="presentation" type="Presentation">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Wurzelelement.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+
+    <xs:complexType name="Presentation">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Hauptobjekt für Präsentationsdaten.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="configuration" type="Configuration" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Konfigurationen.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="menu" type="Menu" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Menüs.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="chart" type="Chart" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="customer" type="xs:positiveInteger">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Die Kundennummer.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

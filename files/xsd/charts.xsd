@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Chart type definitions.
+
+Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
+-->
+
+<xs:schema  xmlns="http://xml.homeinfo.de/schema/presentation"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+            targetNamespace="http://xml.homeinfo.de/schema/presentation">
+    <xs:include schemaLocation="misc.xsd"/>
+    <xs:include schemaLocation="attachments.xsd"/>
+
+    <xs:complexType name="BaseChart" abstract="true">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Basis Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="title" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Der Titel des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Die Beschreibung des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="duration" type="xs:unsignedShort">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Die Anzeigedauer des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="transition" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Übergangseffekt.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="created" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Datum der Erstellung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="display_from" type="xs:dateTime">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Anzeigedatum Beginn.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="display_until" type="xs:dateTime">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Anzeigedatum Ende.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+
+    <xs:complexType name="Chart" abstract="true">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Abstrakter Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="base" type="BaseChart">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Der zugehörige Basis-Chart.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:positiveInteger">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Die Chart ID.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Der Charttyp.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+
+    <xs:complexType name="Cleaning">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Reinigungs Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="title" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Überschrift.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="mode" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Modus des Charts.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="text" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Textinhalt.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_size" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="text_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Textfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Facebook">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Facebook Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="font_size" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="title_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Textfarbe des Titels.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ken_burns" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Ken Burns Effekt.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="account" type="FacebookAccount" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Facebook Konten.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Form">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Formular Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="mode" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Typ (Modus) des Formulars.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="GarbageCollection">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Müllabfuhr Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="GuessPicture">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Bilderraten Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="ImageText">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Bilderraten Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="style" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Stil des Charts.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="title" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Titel des Charts.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_size" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="title_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Titelfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ken_burns" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Ken Burns Effekt.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="image" type="Attachment" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Bilder.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="text" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Texte.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="News">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Bilderraten Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="font_size_title" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße des Titles.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="title_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Titelfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_size_text" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße des Texts.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="text_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Textfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ken_burns" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Ken Burns Effekt.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="news_token" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Token zur Abfrage von News.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="PublicTransport">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                ÖPNV Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Quotes">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Zitate Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="font_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="background_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Hintergrundfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="RealEstates">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Immobilien Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="display_format" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Anzeigeformat.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ken_burns" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Ken Burns Effekt.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="scaling" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Soll die Application skalieren?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="slideshow" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Soll die Application eine Slideshow anzeigen?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="qr_codes" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Sollen QR Codes angezeigt werden?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="show_contact" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Sollen Kontaktpersonen angezeigt werden?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="contact_picture" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Sollen Bilder von Kontaktpersonen angezeigt werden?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_size" type="xs:unsignedShort">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftgröße.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <!-- Data fields. -->
+                    <xs:element name="amenities" type="xs:boolean"/>
+                    <xs:element name="construction" type="xs:boolean"/>
+                    <xs:element name="courtage" type="xs:boolean"/>
+                    <xs:element name="floor" type="xs:boolean"/>
+                    <xs:element name="area" type="xs:boolean"/>
+                    <xs:element name="free_from" type="xs:boolean"/>
+                    <xs:element name="coop_share" type="xs:boolean"/>
+                    <xs:element name="total_area" type="xs:boolean"/>
+                    <xs:element name="plot_area" type="xs:boolean"/>
+                    <xs:element name="cold_rent" type="xs:boolean"/>
+                    <xs:element name="purchase_price" type="xs:boolean"/>
+                    <xs:element name="security_deposit" type="xs:boolean"/>
+                    <xs:element name="service_charge" type="xs:boolean"/>
+                    <xs:element name="object_id" type="xs:boolean"/>
+                    <xs:element name="description" type="xs:boolean"/>
+                    <xs:element name="warm_rent" type="xs:boolean"/>
+                    <xs:element name="rooms" type="xs:boolean"/>
+                    <!-- Amenities tags. -->
+                    <xs:element name="lift" type="xs:boolean"/>
+                    <xs:element name="bathtub" type="xs:boolean"/>
+                    <xs:element name="balcony" type="xs:boolean"/>
+                    <xs:element name="accessibility" type="xs:boolean"/>
+                    <xs:element name="assited_living" type="xs:boolean"/>
+                    <xs:element name="carport" type="xs:boolean"/>
+                    <xs:element name="floorboards" type="xs:boolean"/>
+                    <xs:element name="duplex" type="xs:boolean"/>
+                    <xs:element name="shower" type="xs:boolean"/>
+                    <xs:element name="builtin_kitchen" type="xs:boolean"/>
+                    <xs:element name="screed" type="xs:boolean"/>
+                    <xs:element name="tiles" type="xs:boolean"/>
+                    <xs:element name="outdoor_parking" type="xs:boolean"/>
+                    <xs:element name="garage" type="xs:boolean"/>
+                    <xs:element name="cable_sat_tv" type="xs:boolean"/>
+                    <xs:element name="fireplace" type="xs:boolean"/>
+                    <xs:element name="basement" type="xs:boolean"/>
+                    <xs:element name="plastic" type="xs:boolean"/>
+                    <xs:element name="furnished" type="xs:boolean"/>
+                    <xs:element name="parquet" type="xs:boolean"/>
+                    <xs:element name="car_park" type="xs:boolean"/>
+                    <xs:element name="wheelchair_accessible" type="xs:boolean"/>
+                    <xs:element name="sauna" type="xs:boolean"/>
+                    <xs:element name="stone" type="xs:boolean"/>
+                    <xs:element name="swimming_pool" type="xs:boolean"/>
+                    <xs:element name="carpet" type="xs:boolean"/>
+                    <xs:element name="underground_carpark" type="xs:boolean"/>
+                    <xs:element name="lavatory" type="xs:boolean"/>
+                    <!-- Rooms selector. -->
+                    <xs:element name="rooms_1" type="xs:boolean"/>
+                    <xs:element name="rooms_2" type="xs:boolean"/>
+                    <xs:element name="rooms_3" type="xs:boolean"/>
+                    <xs:element name="rooms_4" type="xs:boolean"/>
+                    <xs:element name="rooms_5" type="xs:boolean"/>
+                    <xs:element name="rooms_5_or_more" type="xs:boolean"/>
+                    <!-- Real estate type. -->
+                    <xs:element name="finance_project" type="xs:boolean"/>
+                    <xs:element name="business_realty" type="xs:boolean"/>
+                    <xs:element name="short_term_accommocation" type="xs:boolean"/>
+                    <xs:element name="living_realty" type="xs:boolean"/>
+                    <!-- Subtypes -->
+                    <xs:element name="office" type="xs:boolean"/>
+                    <xs:element name="retail" type="xs:boolean"/>
+                    <xs:element name="recreational" type="xs:boolean"/>
+                    <xs:element name="hospitality_industry" type="xs:boolean"/>
+                    <xs:element name="plot" type="xs:boolean"/>
+                    <xs:element name="hall_warehouse_production" type="xs:boolean"/>
+                    <xs:element name="house" type="xs:boolean"/>
+                    <xs:element name="agriculture_forestry" type="xs:boolean"/>
+                    <xs:element name="miscellaneous" type="xs:boolean"/>
+                    <xs:element name="flat" type="xs:boolean"/>
+                    <xs:element name="room" type="xs:boolean"/>
+                    <xs:element name="income_property" type="xs:boolean"/>
+                    <!-- Sale type. -->
+                    <xs:element name="emphyteusis" type="xs:boolean"/>
+                    <xs:element name="leasing" type="xs:boolean"/>
+                    <xs:element name="rent" type="xs:boolean"/>
+                    <xs:element name="sale" type="xs:boolean"/>
+                    <!-- Filters -->
+                    <xs:element name="filter" type="Filter" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Video">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Video Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="video" type="Attachment">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Das entsprechende Video.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Weather">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Wetter Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="location" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Ort des Wetters.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="font_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Schriftfarbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="icon_color" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Icon Farbe.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="box_color_top" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Obere Farbe der Box.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="box_color_middle" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Mittlere Farbe der Box.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="box_color_bottom" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Untere Farbe der Box.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="transparency" type="xs:positiveInteger">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Transparenz.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="image" type="Attachment" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Bilder.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>
