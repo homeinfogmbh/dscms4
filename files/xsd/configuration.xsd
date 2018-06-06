@@ -143,6 +143,20 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="ticker" type="Ticker" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ticker.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="backlight" type="Backlight" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundbeleuchtung.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
@@ -151,6 +165,87 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         <xs:annotation>
             <xs:documentation xml:lang="de">
                 Farben der Konfiguration.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="header" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Farbe der Kopfzeile.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="header_background" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe der Kopfzeile.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="background_left" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe links.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="background_right" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe rechts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ticker" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Farbe des Tickers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ticker_background" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe des Tickers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="clock" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Farbe der Uhr.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="title" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Farbe des Titels.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="text" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Textfarbe.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="text_background" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Hintergrundfarbe des Texts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="Ticker">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Ein Ticker.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>

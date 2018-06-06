@@ -13,7 +13,6 @@ __all__ = [
     'GroupBaseChart',
     'GroupConfiguration',
     'GroupMenu',
-    'GroupTicker',
     'MODELS']
 
 
@@ -52,13 +51,4 @@ class GroupMenu(_GroupContent):
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class GroupTicker(_GroupContent):
-    """Association of a ticker with a group."""
-
-    class Meta:
-        table_name = 'group_ticker'
-
-    ticker = ForeignKeyField(Ticker, column_name='ticker', on_delete='CASCADE')
-
-
-MODELS = (GroupBaseChart, GroupConfiguration, GroupMenu, GroupTicker)
+MODELS = (GroupBaseChart, GroupConfiguration, GroupMenu)

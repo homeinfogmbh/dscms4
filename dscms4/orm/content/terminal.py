@@ -8,13 +8,11 @@ from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.menu import Menu
-from dscms4.orm.configuration import Ticker
 
 __all__ = [
     'TerminalBaseChart',
     'TerminalConfiguration',
     'TerminalMenu',
-    'TerminalTicker',
     'MODELS']
 
 
@@ -54,15 +52,4 @@ class TerminalMenu(_TerminalContent):
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
 
 
-class TerminalTicker(_TerminalContent):
-    """Association of a ticker with a terminal."""
-
-    class Meta:
-        table_name = 'terminal_ticker'
-
-    ticker = ForeignKeyField(
-        Ticker, column_name='ticker', on_delete='CASCADE')
-
-
-MODELS = (
-    TerminalBaseChart, TerminalConfiguration, TerminalMenu, TerminalTicker)
+MODELS = (TerminalBaseChart, TerminalConfiguration, TerminalMenu)

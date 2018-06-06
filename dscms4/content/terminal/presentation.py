@@ -3,7 +3,6 @@
 from dscms4.content.terminal.charts import accumulated_charts
 from dscms4.content.terminal.configuration import accumulated_configurations
 from dscms4.content.terminal.menu import accumulated_menus
-from dscms4.content.terminal.ticker import accumulated_tickers
 
 __all__ = ['presentation']
 
@@ -19,6 +18,4 @@ def presentation(terminal):
         'configurations': [
             configuration.to_dict() for _, configuration in
             accumulated_configurations(terminal)],
-        'menus': [menu.to_dict() for _, menu in accumulated_menus(terminal)],
-        'tickers': [ticker.to_dict() for _, ticker in accumulated_tickers(
-            terminal)]}
+        'menus': [menu.to_dict() for _, menu in accumulated_menus(terminal)]}
