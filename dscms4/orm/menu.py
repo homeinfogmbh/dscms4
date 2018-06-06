@@ -5,11 +5,11 @@ from logging import getLogger
 from peewee import ForeignKeyField, CharField, IntegerField
 
 from dscms4 import dom
-from dscms4.common import DSCMS4Model, CustomerModel
-from dscms4.charts import BaseChart
-from dscms4.exceptions import CircularReferenceError, OrphanedBaseChart, \
+from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.charts import BaseChart
+from dscms4.orm.exceptions import CircularReferenceError, OrphanedBaseChart, \
     AmbiguousBaseChart
-from dscms4.util import chart_of
+from dscms4.orm.util import chart_of
 
 __all__ = ['UNCHANGED', 'Menu', 'MenuItem', 'MODELS']
 
