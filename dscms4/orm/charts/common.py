@@ -112,11 +112,6 @@ class Chart(DSCMS4Model):
             (cls.id == ident) & (BaseChart.customer == customer)).get()
 
     @property
-    def type_(self):
-        """Returns the chart type."""
-        return self.__class__.__name__
-
-    @property
     def customer(self):
         """Returns the base chart's customer."""
         return self.base.customer
@@ -161,6 +156,8 @@ class Chart(DSCMS4Model):
     def to_dom(self, model):
         """Returns an XML DOM of this chart."""
         xml = model()
+        xml.id = self.id
+        xml.type = self.__class__.__name__
         xml.base = self.base.to_dom()
         return xml
 
