@@ -8,7 +8,7 @@ from dscms4.orm.charts.common import BaseChart
 from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
 
-__all__ = ['create_tables', 'charts_of', 'chart_of', 'check_base_charts']
+__all__ = ['charts_of', 'chart_of', 'check_base_charts']
 
 
 CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
