@@ -3,7 +3,6 @@
 from dscms4.content.group.charts import charts
 from dscms4.content.group.configuration import configurations
 from dscms4.content.group.menu import menus
-from dscms4.content.group.ticker import tickers
 
 
 def content(group):
@@ -12,7 +11,6 @@ def content(group):
     yield from charts(group)
     yield from configurations(group)
     yield from menus(group)
-    yield from tickers(group)
 
 
 def accumulated_content(group):
