@@ -12,7 +12,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
     <xs:include schemaLocation="misc.xsd"/>
     <xs:include schemaLocation="attachments.xsd"/>
 
-    <xs:complexType name="BaseChart" abstract="true">
+    <xs:complexType name="BaseChart">
         <xs:annotation>
             <xs:documentation xml:lang="de">
                 Basis Chart.
