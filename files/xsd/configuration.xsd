@@ -168,70 +168,70 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="header" type="xs:positiveInteger">
+            <xs:element name="header" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Farbe der Kopfzeile.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="header_background" type="xs:positiveInteger">
+            <xs:element name="header_background" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe der Kopfzeile.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="background_left" type="xs:positiveInteger">
+            <xs:element name="background_left" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe links.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="background_right" type="xs:positiveInteger">
+            <xs:element name="background_right" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe rechts.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="ticker" type="xs:positiveInteger">
+            <xs:element name="ticker" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Farbe des Tickers.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="ticker_background" type="xs:positiveInteger">
+            <xs:element name="ticker_background" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe des Tickers.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="clock" type="xs:positiveInteger">
+            <xs:element name="clock" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Farbe der Uhr.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="title" type="xs:positiveInteger">
+            <xs:element name="title" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Farbe des Titels.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="text" type="xs:positiveInteger">
+            <xs:element name="text" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Textfarbe.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="text_background" type="xs:positiveInteger">
+            <xs:element name="text_background" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe des Texts.
@@ -282,7 +282,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="index" type="xs:positiveInteger">
+                <xs:attribute name="index" type="xs:nonNegativeInteger">
                     <xs:annotation>
                         <xs:documentation xml:lang="de">
                             Position.
@@ -302,7 +302,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="index" type="xs:positiveInteger">
+                <xs:attribute name="index" type="xs:nonNegativeInteger">
                     <xs:annotation>
                         <xs:documentation xml:lang="de">
                             Position.

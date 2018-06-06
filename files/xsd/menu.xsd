@@ -62,21 +62,21 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="text_color" type="xs:positiveInteger">
+            <xs:element name="text_color" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Schriftfarbe des Menüelements.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="background_color" type="xs:positiveInteger">
+            <xs:element name="background_color" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Hintergrundfarbe des Menüelements.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="index" type="xs:positiveInteger">
+            <xs:element name="index" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Position des Menüelements.
@@ -122,7 +122,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="index" type="xs:positiveInteger">
+            <xs:element name="index" type="xs:nonNegativeInteger">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Position des Charts.

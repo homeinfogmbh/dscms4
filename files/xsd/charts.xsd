@@ -141,7 +141,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="text_color" type="xs:positiveInteger">
+                    <xs:element name="text_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Textfarbe.
@@ -170,7 +170,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="title_color" type="xs:positiveInteger">
+                    <xs:element name="title_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Textfarbe des Titels.
@@ -273,7 +273,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="title_color" type="xs:positiveInteger">
+                    <xs:element name="title_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Titelfarbe.
@@ -323,7 +323,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="title_color" type="xs:positiveInteger">
+                    <xs:element name="title_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Titelfarbe.
@@ -337,7 +337,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="text_color" type="xs:positiveInteger">
+                    <xs:element name="text_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Textfarbe.
@@ -385,14 +385,14 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         <xs:complexContent>
             <xs:extension base="Chart">
                 <xs:sequence>
-                    <xs:element name="font_color" type="xs:positiveInteger">
+                    <xs:element name="font_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Schriftfarbe.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="background_color" type="xs:positiveInteger">
+                    <xs:element name="background_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Hintergrundfarbe.
@@ -470,7 +470,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="font_color" type="xs:positiveInteger">
+                    <xs:element name="font_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Schriftfarbe.
@@ -600,42 +600,42 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="font_color" type="xs:positiveInteger">
+                    <xs:element name="font_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Schriftfarbe.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="icon_color" type="xs:positiveInteger">
+                    <xs:element name="icon_color" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Icon Farbe.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="box_color_top" type="xs:positiveInteger">
+                    <xs:element name="box_color_top" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Obere Farbe der Box.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="box_color_middle" type="xs:positiveInteger">
+                    <xs:element name="box_color_middle" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Mittlere Farbe der Box.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="box_color_bottom" type="xs:positiveInteger">
+                    <xs:element name="box_color_bottom" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Untere Farbe der Box.
                             </xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="transparency" type="xs:positiveInteger">
+                    <xs:element name="transparency" type="xs:nonNegativeInteger">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Transparenz.
