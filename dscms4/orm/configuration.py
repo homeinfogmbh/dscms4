@@ -182,7 +182,7 @@ class Configuration(CustomerModel):
 
     def to_dom(self):
         """Returns an XML DOM of the configuration."""
-        xml = dom.Configuration
+        xml = dom.Configuration()
         xml.name = self.name
         xml.description = self.description
         xml.font = self.font
