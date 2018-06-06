@@ -79,7 +79,7 @@ class Colors(DSCMS4Model):
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
-        xml = dom.Backlight()
+        xml = dom.Colors()
         xml.header = self.header
         xml.header_background = self.header_background
         xml.background_left = self.background_left
