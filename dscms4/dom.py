@@ -1,7 +1,7 @@
 # ./dscms4/dom.py
 # -*- coding: utf-8 -*-
 # PyXB bindings for NM:6153fdd8733ad32a3c6c6645b5e2ca64d0d4be50
-# Generated 2018-06-06 12:00:43.946241 by PyXB version 1.2.6-DEV using Python 3.6.5.final.0
+# Generated 2018-06-06 13:05:36.802016 by PyXB version 1.2.6-DEV using Python 3.6.5.final.0
 # Namespace http://xml.homeinfo.de/schema/presentation
 
 from __future__ import unicode_literals
@@ -14,7 +14,7 @@ import pyxb.utils.domutils
 import sys
 import pyxb.utils.six as _six
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:79f0eeb0-6970-11e8-b0c5-7427eaa9df7d')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:8a4260a6-6979-11e8-8044-7427eaa9df7d')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.6-DEV'
@@ -387,6 +387,20 @@ class Configuration (pyxb.binding.basis.complexTypeDefinition):
     
     volume = property(__volume.value, __volume.set, None, '\n                        Lautstärke.\n                    ')
 
+    
+    # Element ticker uses Python identifier ticker
+    __ticker = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'ticker'), 'ticker', '__httpxml_homeinfo_deschemapresentation_Configuration_ticker', True, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 146, 12), )
+
+    
+    ticker = property(__ticker.value, __ticker.set, None, '\n                        Ticker.\n                    ')
+
+    
+    # Element backlight uses Python identifier backlight
+    __backlight = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'backlight'), 'backlight', '__httpxml_homeinfo_deschemapresentation_Configuration_backlight', True, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 153, 12), )
+
+    
+    backlight = property(__backlight.value, __backlight.set, None, '\n                        Hintergrundbeleuchtung.\n                    ')
+
     _ElementMap.update({
         __name.name() : __name,
         __description.name() : __description,
@@ -405,7 +419,9 @@ class Configuration (pyxb.binding.basis.complexTypeDefinition):
         __hide_cursor.name() : __hide_cursor,
         __rotation.name() : __rotation,
         __email_form.name() : __email_form,
-        __volume.name() : __volume
+        __volume.name() : __volume,
+        __ticker.name() : __ticker,
+        __backlight.name() : __backlight
     })
     _AttributeMap.update({
         
@@ -423,76 +439,76 @@ class Colors (pyxb.binding.basis.complexTypeDefinition):
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Colors')
-    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 150, 4)
+    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 164, 4)
     _ElementMap = {}
     _AttributeMap = {}
     # Base type is pyxb.binding.datatypes.anyType
     
     # Element header uses Python identifier header
-    __header = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'header'), 'header', '__httpxml_homeinfo_deschemapresentation_Colors_header', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 157, 12), )
+    __header = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'header'), 'header', '__httpxml_homeinfo_deschemapresentation_Colors_header', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12), )
 
     
     header = property(__header.value, __header.set, None, '\n                        Farbe der Kopfzeile.\n                    ')
 
     
     # Element header_background uses Python identifier header_background
-    __header_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'header_background'), 'header_background', '__httpxml_homeinfo_deschemapresentation_Colors_header_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 164, 12), )
+    __header_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'header_background'), 'header_background', '__httpxml_homeinfo_deschemapresentation_Colors_header_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12), )
 
     
     header_background = property(__header_background.value, __header_background.set, None, '\n                        Hintergrundfarbe der Kopfzeile.\n                    ')
 
     
     # Element background_left uses Python identifier background_left
-    __background_left = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'background_left'), 'background_left', '__httpxml_homeinfo_deschemapresentation_Colors_background_left', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12), )
+    __background_left = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'background_left'), 'background_left', '__httpxml_homeinfo_deschemapresentation_Colors_background_left', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12), )
 
     
     background_left = property(__background_left.value, __background_left.set, None, '\n                        Hintergrundfarbe links.\n                    ')
 
     
     # Element background_right uses Python identifier background_right
-    __background_right = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'background_right'), 'background_right', '__httpxml_homeinfo_deschemapresentation_Colors_background_right', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12), )
+    __background_right = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'background_right'), 'background_right', '__httpxml_homeinfo_deschemapresentation_Colors_background_right', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12), )
 
     
     background_right = property(__background_right.value, __background_right.set, None, '\n                        Hintergrundfarbe rechts.\n                    ')
 
     
     # Element ticker uses Python identifier ticker
-    __ticker = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'ticker'), 'ticker', '__httpxml_homeinfo_deschemapresentation_Colors_ticker', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12), )
+    __ticker = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'ticker'), 'ticker', '__httpxml_homeinfo_deschemapresentation_Colors_ticker', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12), )
 
     
     ticker = property(__ticker.value, __ticker.set, None, '\n                        Farbe des Tickers.\n                    ')
 
     
     # Element ticker_background uses Python identifier ticker_background
-    __ticker_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'ticker_background'), 'ticker_background', '__httpxml_homeinfo_deschemapresentation_Colors_ticker_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12), )
+    __ticker_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'ticker_background'), 'ticker_background', '__httpxml_homeinfo_deschemapresentation_Colors_ticker_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12), )
 
     
     ticker_background = property(__ticker_background.value, __ticker_background.set, None, '\n                        Hintergrundfarbe des Tickers.\n                    ')
 
     
     # Element clock uses Python identifier clock
-    __clock = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'clock'), 'clock', '__httpxml_homeinfo_deschemapresentation_Colors_clock', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12), )
+    __clock = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'clock'), 'clock', '__httpxml_homeinfo_deschemapresentation_Colors_clock', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12), )
 
     
     clock = property(__clock.value, __clock.set, None, '\n                        Farbe der Uhr.\n                    ')
 
     
     # Element title uses Python identifier title
-    __title = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'title'), 'title', '__httpxml_homeinfo_deschemapresentation_Colors_title', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12), )
+    __title = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'title'), 'title', '__httpxml_homeinfo_deschemapresentation_Colors_title', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12), )
 
     
     title = property(__title.value, __title.set, None, '\n                        Farbe des Titels.\n                    ')
 
     
     # Element text uses Python identifier text
-    __text = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'text'), 'text', '__httpxml_homeinfo_deschemapresentation_Colors_text', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12), )
+    __text = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'text'), 'text', '__httpxml_homeinfo_deschemapresentation_Colors_text', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 227, 12), )
 
     
     text = property(__text.value, __text.set, None, '\n                        Textfarbe.\n                    ')
 
     
     # Element text_background uses Python identifier text_background
-    __text_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'text_background'), 'text_background', '__httpxml_homeinfo_deschemapresentation_Colors_text_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12), )
+    __text_background = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'text_background'), 'text_background', '__httpxml_homeinfo_deschemapresentation_Colors_text_background', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 234, 12), )
 
     
     text_background = property(__text_background.value, __text_background.set, None, '\n                        Hintergrundfarbe des Texts.\n                    ')
@@ -514,6 +530,152 @@ class Colors (pyxb.binding.basis.complexTypeDefinition):
     })
 _module_typeBindings.Colors = Colors
 Namespace.addCategoryObject('typeBinding', 'Colors', Colors)
+
+
+# Complex type {http://xml.homeinfo.de/schema/presentation}Ticker with content type ELEMENT_ONLY
+class Ticker (pyxb.binding.basis.complexTypeDefinition):
+    """
+                Ein Ticker.
+            """
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Ticker')
+    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 245, 4)
+    _ElementMap = {}
+    _AttributeMap = {}
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element type uses Python identifier type
+    __type = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'type'), 'type', '__httpxml_homeinfo_deschemapresentation_Ticker_type', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 252, 12), )
+
+    
+    type = property(__type.value, __type.set, None, '\n                        Typ des Tickers.\n                    ')
+
+    
+    # Element text uses Python identifier text
+    __text = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'text'), 'text', '__httpxml_homeinfo_deschemapresentation_Ticker_text', True, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 259, 12), )
+
+    
+    text = property(__text.value, __text.set, None, '\n                        Ticker Texte.\n                    ')
+
+    
+    # Element url uses Python identifier url
+    __url = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'url'), 'url', '__httpxml_homeinfo_deschemapresentation_Ticker_url', True, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 266, 12), )
+
+    
+    url = property(__url.value, __url.set, None, '\n                        Ticker Texte.\n                    ')
+
+    _ElementMap.update({
+        __type.name() : __type,
+        __text.name() : __text,
+        __url.name() : __url
+    })
+    _AttributeMap.update({
+        
+    })
+_module_typeBindings.Ticker = Ticker
+Namespace.addCategoryObject('typeBinding', 'Ticker', Ticker)
+
+
+# Complex type {http://xml.homeinfo.de/schema/presentation}Text with content type SIMPLE
+class Text (pyxb.binding.basis.complexTypeDefinition):
+    """
+                Ein Ticker Text.
+            """
+    _TypeDefinition = pyxb.binding.datatypes.string
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_SIMPLE
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Text')
+    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 277, 4)
+    _ElementMap = {}
+    _AttributeMap = {}
+    # Base type is pyxb.binding.datatypes.string
+    
+    # Attribute index uses Python identifier index
+    __index = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, 'index'), 'index', '__httpxml_homeinfo_deschemapresentation_Text_index', pyxb.binding.datatypes.positiveInteger)
+    __index._DeclarationLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 285, 16)
+    __index._UseLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 285, 16)
+    
+    index = property(__index.value, __index.set, None, '\n                            Position.\n                        ')
+
+    _ElementMap.update({
+        
+    })
+    _AttributeMap.update({
+        __index.name() : __index
+    })
+_module_typeBindings.Text = Text
+Namespace.addCategoryObject('typeBinding', 'Text', Text)
+
+
+# Complex type {http://xml.homeinfo.de/schema/presentation}URL with content type SIMPLE
+class URL (pyxb.binding.basis.complexTypeDefinition):
+    """
+                Eine Ticker URL.
+            """
+    _TypeDefinition = pyxb.binding.datatypes.string
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_SIMPLE
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'URL')
+    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 297, 4)
+    _ElementMap = {}
+    _AttributeMap = {}
+    # Base type is pyxb.binding.datatypes.string
+    
+    # Attribute index uses Python identifier index
+    __index = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, 'index'), 'index', '__httpxml_homeinfo_deschemapresentation_URL_index', pyxb.binding.datatypes.positiveInteger)
+    __index._DeclarationLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 305, 16)
+    __index._UseLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 305, 16)
+    
+    index = property(__index.value, __index.set, None, '\n                            Position.\n                        ')
+
+    _ElementMap.update({
+        
+    })
+    _AttributeMap.update({
+        __index.name() : __index
+    })
+_module_typeBindings.URL = URL
+Namespace.addCategoryObject('typeBinding', 'URL', URL)
+
+
+# Complex type {http://xml.homeinfo.de/schema/presentation}Backlight with content type ELEMENT_ONLY
+class Backlight (pyxb.binding.basis.complexTypeDefinition):
+    """
+                Einstellung zur Hintergrundbeleuchtung.
+            """
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, 'Backlight')
+    _XSDLocation = pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 317, 4)
+    _ElementMap = {}
+    _AttributeMap = {}
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element time uses Python identifier time
+    __time = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'time'), 'time', '__httpxml_homeinfo_deschemapresentation_Backlight_time', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 324, 12), )
+
+    
+    time = property(__time.value, __time.set, None, '\n                        Zeitstempel.\n                    ')
+
+    
+    # Element brightness uses Python identifier brightness
+    __brightness = pyxb.binding.content.ElementDeclaration(pyxb.namespace.ExpandedName(None, 'brightness'), 'brightness', '__httpxml_homeinfo_deschemapresentation_Backlight_brightness', False, pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 331, 12), )
+
+    
+    brightness = property(__brightness.value, __brightness.set, None, '\n                        Helligkeit in Prozent.\n                    ')
+
+    _ElementMap.update({
+        __time.name() : __time,
+        __brightness.name() : __brightness
+    })
+    _AttributeMap.update({
+        
+    })
+_module_typeBindings.Backlight = Backlight
+Namespace.addCategoryObject('typeBinding', 'Backlight', Backlight)
 
 
 # Complex type {http://xml.homeinfo.de/schema/presentation}Menu with content type ELEMENT_ONLY
@@ -2315,6 +2477,10 @@ Configuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName
 
 Configuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'volume'), pyxb.binding.datatypes.unsignedShort, scope=Configuration, documentation='\n                        Lautstärke.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 139, 12)))
 
+Configuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'ticker'), Ticker, scope=Configuration, documentation='\n                        Ticker.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 146, 12)))
+
+Configuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'backlight'), Backlight, scope=Configuration, documentation='\n                        Hintergrundbeleuchtung.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 153, 12)))
+
 def _BuildAutomaton_3 ():
     # Remove this helper function from the namespace after it is invoked
     global _BuildAutomaton_3
@@ -2330,6 +2496,10 @@ def _BuildAutomaton_3 ():
     counters.add(cc_2)
     cc_3 = fac.CounterCondition(min=0, max=1, metadata=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 111, 12))
     counters.add(cc_3)
+    cc_4 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 146, 12))
+    counters.add(cc_4)
+    cc_5 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 153, 12))
+    counters.add(cc_5)
     states = []
     final_update = None
     symbol = pyxb.binding.content.ElementUse(Configuration._UseForTag(pyxb.namespace.ExpandedName(None, 'name')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 20, 12))
@@ -2403,6 +2573,16 @@ def _BuildAutomaton_3 ():
     symbol = pyxb.binding.content.ElementUse(Configuration._UseForTag(pyxb.namespace.ExpandedName(None, 'volume')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 139, 12))
     st_17 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_17)
+    final_update = set()
+    final_update.add(fac.UpdateInstruction(cc_4, False))
+    symbol = pyxb.binding.content.ElementUse(Configuration._UseForTag(pyxb.namespace.ExpandedName(None, 'ticker')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 146, 12))
+    st_18 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_18)
+    final_update = set()
+    final_update.add(fac.UpdateInstruction(cc_5, False))
+    symbol = pyxb.binding.content.ElementUse(Configuration._UseForTag(pyxb.namespace.ExpandedName(None, 'backlight')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 153, 12))
+    st_19 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_19)
     transitions = []
     transitions.append(fac.Transition(st_1, [
          ]))
@@ -2494,32 +2674,46 @@ def _BuildAutomaton_3 ():
          ]))
     st_16._set_transitionSet(transitions)
     transitions = []
+    transitions.append(fac.Transition(st_18, [
+         ]))
+    transitions.append(fac.Transition(st_19, [
+         ]))
     st_17._set_transitionSet(transitions)
+    transitions = []
+    transitions.append(fac.Transition(st_18, [
+        fac.UpdateInstruction(cc_4, True) ]))
+    transitions.append(fac.Transition(st_19, [
+        fac.UpdateInstruction(cc_4, False) ]))
+    st_18._set_transitionSet(transitions)
+    transitions = []
+    transitions.append(fac.Transition(st_19, [
+        fac.UpdateInstruction(cc_5, True) ]))
+    st_19._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
 Configuration._Automaton = _BuildAutomaton_3()
 
 
 
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'header'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe der Kopfzeile.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 157, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'header'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe der Kopfzeile.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'header_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe der Kopfzeile.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 164, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'header_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe der Kopfzeile.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'background_left'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe links.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'background_left'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe links.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'background_right'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe rechts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'background_right'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe rechts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'ticker'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe des Tickers.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'ticker'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe des Tickers.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'ticker_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe des Tickers.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'ticker_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe des Tickers.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'clock'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe der Uhr.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'clock'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe der Uhr.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'title'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe des Titels.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'title'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Farbe des Titels.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Textfarbe.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Textfarbe.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 227, 12)))
 
-Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe des Texts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12)))
+Colors._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text_background'), pyxb.binding.datatypes.positiveInteger, scope=Colors, documentation='\n                        Hintergrundfarbe des Texts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 234, 12)))
 
 def _BuildAutomaton_4 ():
     # Remove this helper function from the namespace after it is invoked
@@ -2530,43 +2724,43 @@ def _BuildAutomaton_4 ():
     counters = set()
     states = []
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'header')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 157, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'header')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12))
     st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
     states.append(st_0)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'header_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 164, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'header_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12))
     st_1 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_1)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'background_left')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 171, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'background_left')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12))
     st_2 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_2)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'background_right')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 178, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'background_right')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12))
     st_3 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_3)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'ticker')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 185, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'ticker')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12))
     st_4 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_4)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'ticker_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 192, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'ticker_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12))
     st_5 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_5)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'clock')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 199, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'clock')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12))
     st_6 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_6)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'title')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 206, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'title')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12))
     st_7 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_7)
     final_update = None
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'text')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 213, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'text')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 227, 12))
     st_8 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_8)
     final_update = set()
-    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'text_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 220, 12))
+    symbol = pyxb.binding.content.ElementUse(Colors._UseForTag(pyxb.namespace.ExpandedName(None, 'text_background')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 234, 12))
     st_9 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
     states.append(st_9)
     transitions = []
@@ -2613,16 +2807,102 @@ Colors._Automaton = _BuildAutomaton_4()
 
 
 
+Ticker._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'type'), pyxb.binding.datatypes.string, scope=Ticker, documentation='\n                        Typ des Tickers.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 252, 12)))
+
+Ticker._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text'), Text, scope=Ticker, documentation='\n                        Ticker Texte.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 259, 12)))
+
+Ticker._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'url'), URL, scope=Ticker, documentation='\n                        Ticker Texte.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 266, 12)))
+
+def _BuildAutomaton_5 ():
+    # Remove this helper function from the namespace after it is invoked
+    global _BuildAutomaton_5
+    del _BuildAutomaton_5
+    import pyxb.utils.fac as fac
+
+    counters = set()
+    cc_0 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 259, 12))
+    counters.add(cc_0)
+    cc_1 = fac.CounterCondition(min=0, max=None, metadata=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 266, 12))
+    counters.add(cc_1)
+    states = []
+    final_update = set()
+    symbol = pyxb.binding.content.ElementUse(Ticker._UseForTag(pyxb.namespace.ExpandedName(None, 'type')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 252, 12))
+    st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_0)
+    final_update = set()
+    final_update.add(fac.UpdateInstruction(cc_0, False))
+    symbol = pyxb.binding.content.ElementUse(Ticker._UseForTag(pyxb.namespace.ExpandedName(None, 'text')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 259, 12))
+    st_1 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_1)
+    final_update = set()
+    final_update.add(fac.UpdateInstruction(cc_1, False))
+    symbol = pyxb.binding.content.ElementUse(Ticker._UseForTag(pyxb.namespace.ExpandedName(None, 'url')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 266, 12))
+    st_2 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_2)
+    transitions = []
+    transitions.append(fac.Transition(st_1, [
+         ]))
+    transitions.append(fac.Transition(st_2, [
+         ]))
+    st_0._set_transitionSet(transitions)
+    transitions = []
+    transitions.append(fac.Transition(st_1, [
+        fac.UpdateInstruction(cc_0, True) ]))
+    transitions.append(fac.Transition(st_2, [
+        fac.UpdateInstruction(cc_0, False) ]))
+    st_1._set_transitionSet(transitions)
+    transitions = []
+    transitions.append(fac.Transition(st_2, [
+        fac.UpdateInstruction(cc_1, True) ]))
+    st_2._set_transitionSet(transitions)
+    return fac.Automaton(states, counters, False, containing_state=None)
+Ticker._Automaton = _BuildAutomaton_5()
+
+
+
+
+Backlight._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'time'), pyxb.binding.datatypes.time, scope=Backlight, documentation='\n                        Zeitstempel.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 324, 12)))
+
+Backlight._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'brightness'), pyxb.binding.datatypes.unsignedShort, scope=Backlight, documentation='\n                        Helligkeit in Prozent.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 331, 12)))
+
+def _BuildAutomaton_6 ():
+    # Remove this helper function from the namespace after it is invoked
+    global _BuildAutomaton_6
+    del _BuildAutomaton_6
+    import pyxb.utils.fac as fac
+
+    counters = set()
+    states = []
+    final_update = None
+    symbol = pyxb.binding.content.ElementUse(Backlight._UseForTag(pyxb.namespace.ExpandedName(None, 'time')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 324, 12))
+    st_0 = fac.State(symbol, is_initial=True, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_0)
+    final_update = set()
+    symbol = pyxb.binding.content.ElementUse(Backlight._UseForTag(pyxb.namespace.ExpandedName(None, 'brightness')), pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/configuration.xsd', 331, 12))
+    st_1 = fac.State(symbol, is_initial=False, final_update=final_update, is_unordered_catenation=False)
+    states.append(st_1)
+    transitions = []
+    transitions.append(fac.Transition(st_1, [
+         ]))
+    st_0._set_transitionSet(transitions)
+    transitions = []
+    st_1._set_transitionSet(transitions)
+    return fac.Automaton(states, counters, False, containing_state=None)
+Backlight._Automaton = _BuildAutomaton_6()
+
+
+
+
 Menu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'name'), pyxb.binding.datatypes.string, scope=Menu, documentation='\n                        Name des Menüs.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/menu.xsd', 19, 12)))
 
 Menu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'description'), pyxb.binding.datatypes.string, scope=Menu, documentation='\n                        Beschreibung des Menüs.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/menu.xsd', 26, 12)))
 
 Menu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'item'), MenuItem, scope=Menu, documentation='\n                        Menüelemente.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/menu.xsd', 33, 12)))
 
-def _BuildAutomaton_5 ():
+def _BuildAutomaton_7 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_5
-    del _BuildAutomaton_5
+    global _BuildAutomaton_7
+    del _BuildAutomaton_7
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2662,7 +2942,7 @@ def _BuildAutomaton_5 ():
         fac.UpdateInstruction(cc_1, True) ]))
     st_2._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Menu._Automaton = _BuildAutomaton_5()
+Menu._Automaton = _BuildAutomaton_7()
 
 
 
@@ -2681,10 +2961,10 @@ MenuItem._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None
 
 MenuItem._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'chart'), MenuItemChart, scope=MenuItem, documentation='\n                        Charts, welche diesem Menüelement zugeordnet sind.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/menu.xsd', 93, 12)))
 
-def _BuildAutomaton_6 ():
+def _BuildAutomaton_8 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_6
-    del _BuildAutomaton_6
+    global _BuildAutomaton_8
+    del _BuildAutomaton_8
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2762,7 +3042,7 @@ def _BuildAutomaton_6 ():
         fac.UpdateInstruction(cc_2, True) ]))
     st_6._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-MenuItem._Automaton = _BuildAutomaton_6()
+MenuItem._Automaton = _BuildAutomaton_8()
 
 
 
@@ -2773,10 +3053,10 @@ MenuItemChart._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName
 
 MenuItemChart._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'index'), pyxb.binding.datatypes.positiveInteger, scope=MenuItemChart, documentation='\n                        Position des Charts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/menu.xsd', 125, 12)))
 
-def _BuildAutomaton_7 ():
+def _BuildAutomaton_9 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_7
-    del _BuildAutomaton_7
+    global _BuildAutomaton_9
+    del _BuildAutomaton_9
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2804,7 +3084,7 @@ def _BuildAutomaton_7 ():
     transitions = []
     st_2._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-MenuItemChart._Automaton = _BuildAutomaton_7()
+MenuItemChart._Automaton = _BuildAutomaton_9()
 
 
 
@@ -2817,10 +3097,10 @@ FacebookAccount._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedNa
 
 FacebookAccount._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'name'), pyxb.binding.datatypes.string, scope=FacebookAccount, documentation='\n                        Name des Kontos.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/misc.xsd', 40, 12)))
 
-def _BuildAutomaton_8 ():
+def _BuildAutomaton_10 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_8
-    del _BuildAutomaton_8
+    global _BuildAutomaton_10
+    del _BuildAutomaton_10
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2862,7 +3142,7 @@ def _BuildAutomaton_8 ():
     transitions = []
     st_3._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-FacebookAccount._Automaton = _BuildAutomaton_8()
+FacebookAccount._Automaton = _BuildAutomaton_10()
 
 
 
@@ -2873,10 +3153,10 @@ Presentation._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(
 
 Presentation._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'chart'), Chart, scope=Presentation, documentation='\n                        Charts.\n                    ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/presentation.xsd', 47, 12)))
 
-def _BuildAutomaton_9 ():
+def _BuildAutomaton_11 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_9
-    del _BuildAutomaton_9
+    global _BuildAutomaton_11
+    del _BuildAutomaton_11
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2921,7 +3201,7 @@ def _BuildAutomaton_9 ():
         fac.UpdateInstruction(cc_2, True) ]))
     st_2._set_transitionSet(transitions)
     return fac.Automaton(states, counters, True, containing_state=None)
-Presentation._Automaton = _BuildAutomaton_9()
+Presentation._Automaton = _BuildAutomaton_11()
 
 
 
@@ -2936,10 +3216,10 @@ Cleaning._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None
 
 Cleaning._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text_color'), pyxb.binding.datatypes.positiveInteger, scope=Cleaning, documentation='\n                                Textfarbe.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 144, 20)))
 
-def _BuildAutomaton_10 ():
+def _BuildAutomaton_12 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_10
-    del _BuildAutomaton_10
+    global _BuildAutomaton_12
+    del _BuildAutomaton_12
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -2997,7 +3277,7 @@ def _BuildAutomaton_10 ():
     transitions = []
     st_5._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Cleaning._Automaton = _BuildAutomaton_10()
+Cleaning._Automaton = _BuildAutomaton_12()
 
 
 
@@ -3010,10 +3290,10 @@ Facebook._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None
 
 Facebook._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'account'), FacebookAccount, scope=Facebook, documentation='\n                                Facebook Konten.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 187, 20)))
 
-def _BuildAutomaton_11 ():
+def _BuildAutomaton_13 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_11
-    del _BuildAutomaton_11
+    global _BuildAutomaton_13
+    del _BuildAutomaton_13
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3062,17 +3342,17 @@ def _BuildAutomaton_11 ():
         fac.UpdateInstruction(cc_0, True) ]))
     st_4._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Facebook._Automaton = _BuildAutomaton_11()
+Facebook._Automaton = _BuildAutomaton_13()
 
 
 
 
 Form._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'mode'), pyxb.binding.datatypes.string, scope=Form, documentation='\n                                Typ (Modus) des Formulars.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 209, 20)))
 
-def _BuildAutomaton_12 ():
+def _BuildAutomaton_14 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_12
-    del _BuildAutomaton_12
+    global _BuildAutomaton_14
+    del _BuildAutomaton_14
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3092,15 +3372,15 @@ def _BuildAutomaton_12 ():
     transitions = []
     st_1._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Form._Automaton = _BuildAutomaton_12()
+Form._Automaton = _BuildAutomaton_14()
 
 
 
 
-def _BuildAutomaton_13 ():
+def _BuildAutomaton_15 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_13
-    del _BuildAutomaton_13
+    global _BuildAutomaton_15
+    del _BuildAutomaton_15
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3112,15 +3392,15 @@ def _BuildAutomaton_13 ():
     transitions = []
     st_0._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-GarbageCollection._Automaton = _BuildAutomaton_13()
+GarbageCollection._Automaton = _BuildAutomaton_15()
 
 
 
 
-def _BuildAutomaton_14 ():
+def _BuildAutomaton_16 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_14
-    del _BuildAutomaton_14
+    global _BuildAutomaton_16
+    del _BuildAutomaton_16
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3132,7 +3412,7 @@ def _BuildAutomaton_14 ():
     transitions = []
     st_0._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-GuessPicture._Automaton = _BuildAutomaton_14()
+GuessPicture._Automaton = _BuildAutomaton_16()
 
 
 
@@ -3151,10 +3431,10 @@ ImageText._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Non
 
 ImageText._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'text'), pyxb.binding.datatypes.string, scope=ImageText, documentation='\n                                Texte.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 297, 20)))
 
-def _BuildAutomaton_15 ():
+def _BuildAutomaton_17 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_15
-    del _BuildAutomaton_15
+    global _BuildAutomaton_17
+    del _BuildAutomaton_17
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3234,7 +3514,7 @@ def _BuildAutomaton_15 ():
         fac.UpdateInstruction(cc_1, True) ]))
     st_7._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-ImageText._Automaton = _BuildAutomaton_15()
+ImageText._Automaton = _BuildAutomaton_17()
 
 
 
@@ -3251,10 +3531,10 @@ News._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'k
 
 News._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'news_token'), pyxb.binding.datatypes.string, scope=News, documentation='\n                                Token zur Abfrage von News.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 354, 20)))
 
-def _BuildAutomaton_16 ():
+def _BuildAutomaton_18 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_16
-    del _BuildAutomaton_16
+    global _BuildAutomaton_18
+    del _BuildAutomaton_18
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3326,15 +3606,15 @@ def _BuildAutomaton_16 ():
         fac.UpdateInstruction(cc_1, True) ]))
     st_6._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-News._Automaton = _BuildAutomaton_16()
+News._Automaton = _BuildAutomaton_18()
 
 
 
 
-def _BuildAutomaton_17 ():
+def _BuildAutomaton_19 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_17
-    del _BuildAutomaton_17
+    global _BuildAutomaton_19
+    del _BuildAutomaton_19
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3346,7 +3626,7 @@ def _BuildAutomaton_17 ():
     transitions = []
     st_0._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-PublicTransport._Automaton = _BuildAutomaton_17()
+PublicTransport._Automaton = _BuildAutomaton_19()
 
 
 
@@ -3355,10 +3635,10 @@ Quotes._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 
 
 Quotes._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'background_color'), pyxb.binding.datatypes.positiveInteger, scope=Quotes, documentation='\n                                Hintergrundfarbe.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 395, 20)))
 
-def _BuildAutomaton_18 ():
+def _BuildAutomaton_20 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_18
-    del _BuildAutomaton_18
+    global _BuildAutomaton_20
+    del _BuildAutomaton_20
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -3386,7 +3666,7 @@ def _BuildAutomaton_18 ():
     transitions = []
     st_2._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Quotes._Automaton = _BuildAutomaton_18()
+Quotes._Automaton = _BuildAutomaton_20()
 
 
 
@@ -3553,10 +3833,10 @@ RealEstates._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(N
 
 RealEstates._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'filter'), Filter, scope=RealEstates, location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 558, 20)))
 
-def _BuildAutomaton_19 ():
+def _BuildAutomaton_21 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_19
-    del _BuildAutomaton_19
+    global _BuildAutomaton_21
+    del _BuildAutomaton_21
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -4221,17 +4501,17 @@ def _BuildAutomaton_19 ():
         fac.UpdateInstruction(cc_0, True) ]))
     st_81._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-RealEstates._Automaton = _BuildAutomaton_19()
+RealEstates._Automaton = _BuildAutomaton_21()
 
 
 
 
 Video._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'video'), Attachment, scope=Video, documentation='\n                                Das entsprechende Video.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 574, 20)))
 
-def _BuildAutomaton_20 ():
+def _BuildAutomaton_22 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_20
-    del _BuildAutomaton_20
+    global _BuildAutomaton_22
+    del _BuildAutomaton_22
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -4251,7 +4531,7 @@ def _BuildAutomaton_20 ():
     transitions = []
     st_1._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Video._Automaton = _BuildAutomaton_20()
+Video._Automaton = _BuildAutomaton_22()
 
 
 
@@ -4272,10 +4552,10 @@ Weather._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None,
 
 Weather._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'image'), Attachment, scope=Weather, documentation='\n                                Bilder.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/charts.xsd', 645, 20)))
 
-def _BuildAutomaton_21 ():
+def _BuildAutomaton_23 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_21
-    del _BuildAutomaton_21
+    global _BuildAutomaton_23
+    del _BuildAutomaton_23
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -4356,7 +4636,7 @@ def _BuildAutomaton_21 ():
         fac.UpdateInstruction(cc_0, True) ]))
     st_8._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-Weather._Automaton = _BuildAutomaton_21()
+Weather._Automaton = _BuildAutomaton_23()
 
 
 
@@ -4365,10 +4645,10 @@ IdFilter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None
 
 IdFilter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'type'), pyxb.binding.datatypes.string, scope=IdFilter, documentation='\n                                Typ der ID.\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/misc.xsd', 76, 20)))
 
-def _BuildAutomaton_22 ():
+def _BuildAutomaton_24 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_22
-    del _BuildAutomaton_22
+    global _BuildAutomaton_24
+    del _BuildAutomaton_24
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -4388,7 +4668,7 @@ def _BuildAutomaton_22 ():
     transitions = []
     st_1._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-IdFilter._Automaton = _BuildAutomaton_22()
+IdFilter._Automaton = _BuildAutomaton_24()
 
 
 
@@ -4397,10 +4677,10 @@ ZipCodeFilter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName
 
 ZipCodeFilter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, 'blacklist'), pyxb.binding.datatypes.boolean, scope=ZipCodeFilter, documentation='\n                                Handelt es sich um eine Blacklist (true) oder Whitelist(false)?\n                            ', location=pyxb.utils.utility.Location('/home/neumann/Projects/dscms4/files/xsd/misc.xsd', 105, 20)))
 
-def _BuildAutomaton_23 ():
+def _BuildAutomaton_25 ():
     # Remove this helper function from the namespace after it is invoked
-    global _BuildAutomaton_23
-    del _BuildAutomaton_23
+    global _BuildAutomaton_25
+    del _BuildAutomaton_25
     import pyxb.utils.fac as fac
 
     counters = set()
@@ -4420,5 +4700,5 @@ def _BuildAutomaton_23 ():
     transitions = []
     st_1._set_transitionSet(transitions)
     return fac.Automaton(states, counters, False, containing_state=None)
-ZipCodeFilter._Automaton = _BuildAutomaton_23()
+ZipCodeFilter._Automaton = _BuildAutomaton_25()
 

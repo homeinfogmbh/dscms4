@@ -287,26 +287,27 @@ class Backlight(DSCMS4Model):
     configuration = CascadingFKField(
         Configuration, column_name='configuration', backref='backlights')
     time = TimeField()
-    value = SmallIntegerField()     # Brightness in percent.
+    brightness = SmallIntegerField()     # Brightness in percent.
 
     @classmethod
     def from_dict(cls, dictionary, configuration=None):
         """Yields new records from the provided dictionary."""
-        for timestamp, percent in dictionary.items():
-            timestamp = datetime.strptime(timestamp, TIME_FORMAT).time()
-            record = super().from_dict({'time': timestamp, 'value': percent})
+        for time, brightness in dictionary.items():
+            time = datetime.strptime(time, TIME_FORMAT).time()
+            record = super().from_dict(
+                {'time': time, 'brightness': brightness})
             record.configuration = configuration
             yield record
 
     @property
     def percent(self):
         """Returns the percentage as an integer."""
-        return percentage(self.value)
+        return percentage(self.brightness)
 
     @percent.setter
-    def percent(self, value):
+    def percent(self, brightness):
         """Sets the percentage."""
-        self.value = percentage(value)
+        self.brightness = percentage(brightness)
 
     def to_dict(self):
         """Returns the backlight as dictionary."""

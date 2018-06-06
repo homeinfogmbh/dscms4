@@ -249,73 +249,89 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="header" type="xs:positiveInteger">
+            <xs:element name="type" type="xs:string">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Farbe der Kopfzeile.
+                        Typ des Tickers.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="header_background" type="xs:positiveInteger">
+            <xs:element name="text" type="Text" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Hintergrundfarbe der Kopfzeile.
+                        Ticker Texte.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="background_left" type="xs:positiveInteger">
+            <xs:element name="url" type="URL" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Hintergrundfarbe links.
+                        Ticker Texte.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="background_right" type="xs:positiveInteger">
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="Text">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Ein Ticker Text.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="index" type="xs:positiveInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="de">
+                            Position.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="URL">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Eine Ticker URL.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="index" type="xs:positiveInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="de">
+                            Position.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Backlight">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Einstellung zur Hintergrundbeleuchtung.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="time" type="xs:time">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Hintergrundfarbe rechts.
+                        Zeitstempel.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="ticker" type="xs:positiveInteger">
+            <xs:element name="brightness" type="xs:unsignedShort">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Farbe des Tickers.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="ticker_background" type="xs:positiveInteger">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Hintergrundfarbe des Tickers.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="clock" type="xs:positiveInteger">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Farbe der Uhr.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="title" type="xs:positiveInteger">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Farbe des Titels.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="text" type="xs:positiveInteger">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Textfarbe.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="text_background" type="xs:positiveInteger">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Hintergrundfarbe des Texts.
+                        Helligkeit in Prozent.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
