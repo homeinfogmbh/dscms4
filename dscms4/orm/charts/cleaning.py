@@ -33,7 +33,7 @@ class Cleaning(Chart):
     def to_dom(self):
         """Returns an XML DOM of this chart."""
         dom = super().to_dom(CleaningDOM)
-        dom.mode = self.mode
+        dom.mode = self.mode.value
         dom.text = self.text
         dom.font_size = self.font_size
         dom.text_color = self.text_color
