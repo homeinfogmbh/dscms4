@@ -336,7 +336,7 @@ class URL(DSCMS4Model):
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
-        return dom.URL(self.text, index=self.index)
+        return dom.URL(self.url, index=self.index)
 
 
 class Backlight(DSCMS4Model):
