@@ -129,7 +129,7 @@ class Configuration(CustomerModel):
         yield configuration
 
         for ticker in tickers:
-            yield from Ticker.from_dict(configuration, ticker)
+            yield Ticker.from_dict(configuration, ticker)
 
         for backlight in Backlight.from_dict(
                 backlights, configuration=configuration):
@@ -169,7 +169,7 @@ class Configuration(CustomerModel):
                 ticker.delete_instance()
 
             for ticker in tickers:
-                yield from Ticker.from_dict(self, ticker)
+                yield Ticker.from_dict(self, ticker)
 
         if backlights is not None:
             for backlight in self.backlights:
