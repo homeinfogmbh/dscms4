@@ -2,7 +2,7 @@
 
 from itertools import chain
 
-from wsgilib import Application
+from his import Application
 
 from dscms4.wsgi import charts, configuration, content, group, menu, \
     terminal
