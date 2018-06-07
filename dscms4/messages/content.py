@@ -9,7 +9,7 @@ __all__ = [
     'ContentAdded',
     'ContentExists',
     'ContentDeleted',
-    'NoConfigurationConfigured']
+    'NoConfigurationAssigned']
 
 
 class ContentMessage(Message):
@@ -55,9 +55,9 @@ class ContentDeleted(ContentMessage):
     STATUS = 200
 
 
-class NoConfigurationConfigured(ContentMessage):
+class NoConfigurationAssigned(ContentMessage):
     """Indicates that no configuration has been
-    configured for the respective presentation.
+    assigned to the respective presentation.
     """
 
     STATUS = 404

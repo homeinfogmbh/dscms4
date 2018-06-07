@@ -1,9 +1,9 @@
 """Content exceptions."""
 
-__all__ = ['NoConfigurationConfigured']
+__all__ = ['NoConfigurationFound']
 
 
-class NoConfigurationConfigured(Exception):
-    """Indicates that no configuration has been configured."""
+class NoConfigurationFound(Exception):
+    """Indicates that no configuration has been found."""
 
     pass
