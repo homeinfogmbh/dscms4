@@ -1,22 +1,25 @@
 """DOM utilities."""
 
-from uuid import uuid4
-
-from filedb import mimetype, sha256sum
+from hisfs import File
 
 from dscms4.dom import Attachment
 
 __all__ = ['attachment']
 
 
-def attachment_dom(file_id):
+def attachment_dom(ident):
     """Returns an attachment for the respective file ID."""
 
-    if file_id is None:
+    if ident is None:
+        return None
+
+    try:
+        file = File[ident]
+    except File.DoesNotExist:
         return None
 
     xml = Attachment()
-    xml.mimetype = mimetype(file_id)
-    xml.filename = str(uuid4())
-    xml.sha256sum = sha256sum(file_id)
+    xml.mimetype = file.mimetype
+    xml.filename = file.name
+    xml.sha256sum = file.sha256sum
     return xml

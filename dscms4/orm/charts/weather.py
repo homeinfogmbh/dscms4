@@ -75,7 +75,7 @@ class Weather(Chart):
         xml.box_color_middle = self.box_color_middle
         xml.box_color_bottom = self.box_color_bottom
         xml.transparency = self.transparency
-        xml.image = [image.to_dom() for image in self.images]
+        xml.image = list(filter(None, (img.to_dom() for img in self.images)))
         return xml
 
 

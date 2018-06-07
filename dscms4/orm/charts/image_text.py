@@ -96,7 +96,7 @@ class ImageText(Chart):
         xml.font_size = self.font_size
         xml.title_color = self.title_color
         xml.ken_burns = self.ken_burns
-        xml.image = [image.to_dom() for image in self.images]
+        xml.image = list(filter(None, (img.to_dom() for img in self.images)))
         xml.text = [text.text for text in self.texts]
         return xml
 
