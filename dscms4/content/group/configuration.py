@@ -1,9 +1,10 @@
 """Group configuration content."""
 
 from dscms4.content.common import ContentInformation
+from dscms4.content.exceptions import NoConfigurationConfigured
 from dscms4.orm.content.group import GroupConfiguration
 
-__all__ = ['configurations', 'accumulated_configurations']
+__all__ = ['configurations', 'first_configuration']
 
 
 def configurations(group):
@@ -14,11 +15,15 @@ def configurations(group):
         yield ContentInformation(group, group_configuration.configuration)
 
 
-def accumulated_configurations(group):
+def first_configuration(group):
     """Yields the accumulated configurations for this group."""
 
-    yield from configurations(group)
+    for configuration in configurations(group):
+        return configuration
+
     parent = group.parent
 
     if parent:
-        yield from accumulated_configurations(parent)
+        return first_configuration(parent)
+
+    raise NoConfigurationConfigured()

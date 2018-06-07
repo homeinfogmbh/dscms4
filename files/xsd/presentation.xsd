@@ -30,7 +30,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="configuration" type="Configuration" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="configuration" type="Configuration">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
                         Konfigurationen.

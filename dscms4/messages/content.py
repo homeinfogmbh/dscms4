@@ -8,7 +8,8 @@ __all__ = [
     'InvalidContentType',
     'ContentAdded',
     'ContentExists',
-    'ContentDeleted']
+    'ContentDeleted',
+    'NoConfigurationConfigured']
 
 
 class ContentMessage(Message):
@@ -52,3 +53,11 @@ class ContentDeleted(ContentMessage):
     """Indicates that the respective content was deleted."""
 
     STATUS = 200
+
+
+class NoConfigurationConfigured(ConfigurationMessage):
+    """Indicates that no configuration has been
+    configured for the respective presentation.
+    """
+
+    STATUS = 404

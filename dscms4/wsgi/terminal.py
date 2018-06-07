@@ -8,6 +8,9 @@ from terminallib import Terminal
 from wsgilib import JSON, XML
 
 from dscms4.content.terminal.presentation import presentation
+from dscms4.content.exceptions import \
+    NoConfigurationConfigured as NoConfigurationConfigured_
+from dscms4.messages.content import NoConfigurationConfigured
 from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.paging import page, pages
 
@@ -85,7 +88,12 @@ def get_presentation(terminal):
     except KeyError:
         return JSON(presentation(terminal))
 
-    return XML(presentation(terminal, xml=True))
+    try:
+        presentation_dom = presentation(terminal, xml=True)
+    except NoConfigurationConfigured_:
+        return NoConfigurationConfigured()
+
+    return XML(presentation_dom)
 
 
 ROUTES = (
