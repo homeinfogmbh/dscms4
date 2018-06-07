@@ -18,7 +18,7 @@ def configurations(group):
 def first_configuration(group):
     """Yields the accumulated configurations for this group."""
 
-    for configuration in configurations(group):
+    for _, configuration in configurations(group):
         return configuration
 
     parent = group.parent

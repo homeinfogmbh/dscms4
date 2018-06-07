@@ -21,7 +21,7 @@ def configurations(terminal):
 def first_configuration(terminal):
     """Yields accumulated configurations for the terminal."""
 
-    for configuration in configurations(terminal):
+    for _, configuration in configurations(terminal):
         return configuration
 
     for group in terminal_groups(terminal):
