@@ -7,7 +7,6 @@ from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.group import Group
 from dscms4.orm.menu import Menu
-from dscms4.orm.configuration import Ticker
 
 __all__ = [
     'GroupBaseChart',

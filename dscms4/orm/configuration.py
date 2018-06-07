@@ -17,8 +17,6 @@ __all__ = [
     'Colors',
     'Configuration',
     'Ticker',
-    'Text',
-    'URL',
     'Backlight',
     'MODELS']
 
@@ -220,123 +218,21 @@ class Ticker(DSCMS4Model):
     configuration = CascadingFKField(
         Configuration, column_name='configuration', backref='tickers')
     type_ = EnumField(TickerTypes, column_name='type')
+    content = TextField()
 
     @classmethod
     def from_dict(cls, configuration, dictionary):
         """Creates a new ticker from the respective dictionary."""
-        texts = dictionary.pop('texts', ())
-        urls = dictionary.pop('urls', ())
         ticker = super().from_dict(dictionary)
         ticker.configuration = configuration
-        yield ticker
-
-        for text in texts:
-            yield Text.from_dict(ticker, text)
-
-        for url in urls:
-            yield URL.from_dict(ticker, url)
-
-    def to_dict(self):
-        """Returns a JSON-compliant dictionary."""
-        dictionary = super().to_dict(primary_key=False)
-        dictionary['texts'] = [text.to_dict() for text in self.texts]
-        dictionary['urls'] = [url.to_dict() for url in self.urls]
-        return dictionary
-
-    def patch(self, dictionary):
-        """Patches the ticker."""
-        with suppress(KeyError):
-            self.type_ = dictionary['type']
-
-        yield self
-
-        try:
-            texts = dictionary['texts']
-        except KeyError:
-            pass
-        else:
-            texts = texts or ()
-
-            for text in self.texts:
-                text.delete_instance()
-
-            for text in texts:
-                yield Text.from_dict(self, text)
-
-        try:
-            urls = dictionary['urls']
-        except KeyError:
-            pass
-        else:
-            urls = urls or ()
-
-            for url in self.urls:
-                url.delete_instance()
-
-            for url in urls:
-                yield URL.from_dict(self, url)
+        return ticker
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
         xml = dom.Ticker()
         xml.type = self.type_.value
-        xml.text = [text.to_dom() for text in self.texts]
-        xml.url = [url.to_dom() for url in self.urls]
+        xml.content = self.content
         return xml
-
-
-class Text(DSCMS4Model):
-    """Text for a ticker."""
-
-    class Meta:
-        table_name = 'ticker_text'
-
-    ticker = ForeignKeyField(
-        Ticker, column_name='ticker', backref='texts', on_delete='CASCADE')
-    text = TextField()
-    index = SmallIntegerField(default=0)
-
-    @classmethod
-    def from_dict(cls, ticker, dictionary):
-        """Creates a ticker text from the given dictionary."""
-        ticker_text = super().from_dict(dictionary)
-        ticker_text.ticker = ticker
-        return ticker_text
-
-    def to_dict(self):
-        """Returns a JSON-compliant dictionary."""
-        return {'text': self.text, 'index': self.index}
-
-    def to_dom(self):
-        """Returns an XML DOM of the model."""
-        return dom.Text(self.text, index=self.index)
-
-
-class URL(DSCMS4Model):
-    """Text for a ticker."""
-
-    class Meta:
-        table_name = 'ticker_url'
-
-    ticker = ForeignKeyField(
-        Ticker, column_name='ticker', backref='urls', on_delete='CASCADE')
-    url = CharField(255)
-    index = SmallIntegerField(default=0)
-
-    @classmethod
-    def from_dict(cls, ticker, dictionary):
-        """Creates a ticker URL from the given dictionary."""
-        ticker_url = super().from_dict(dictionary)
-        ticker_url.ticker = ticker
-        return ticker_url
-
-    def to_dict(self):
-        """Returns a JSON-compliant dictionary."""
-        return {'url': self.url, 'index': self.index}
-
-    def to_dom(self):
-        """Returns an XML DOM of the model."""
-        return dom.URL(self.url, index=self.index)
 
 
 class Backlight(DSCMS4Model):
@@ -379,4 +275,4 @@ class Backlight(DSCMS4Model):
         return xml
 
 
-MODELS = (Colors, Configuration, Ticker, Text, URL, Backlight)
+MODELS = (Colors, Configuration, Ticker, Backlight)
