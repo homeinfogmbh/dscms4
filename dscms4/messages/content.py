@@ -55,7 +55,7 @@ class ContentDeleted(ContentMessage):
     STATUS = 200
 
 
-class NoConfigurationConfigured(ConfigurationMessage):
+class NoConfigurationConfigured(ContentMessage):
     """Indicates that no configuration has been
     configured for the respective presentation.
     """
