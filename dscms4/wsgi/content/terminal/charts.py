@@ -1,16 +1,28 @@
 """Management of charts in terminals."""
 
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
+from terminallib import Terminal
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentDeleted
 from dscms4.orm.content.terminal import TerminalBaseChart
-from dscms4.orm.util import chart_of
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.terminal import get_terminal
 
 __all__ = ['ROUTES']
+
+
+def _get_tbc(tid, ident):
+    """Returns the respective terminal base chart."""
+
+    try:
+        return TerminalBaseChart.select().join(Terminal).where(
+            (TerminalBaseChart.id == ident)
+            & (Terminal.customer == CUSTOMER.id)
+            & (Terminal.tid == tid)).get()
+    except TerminalBaseChart.DoesNotExist:
+        raise NoSuchContent()
 
 
 @authenticated
@@ -19,8 +31,7 @@ def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
     return JSON([
-        chart_of(tbc.base_chart).to_dict(brief=True)
-        for tbc in TerminalBaseChart.select().where(
+        tbc.to_dict() for tbc in TerminalBaseChart.select().where(
             TerminalBaseChart.terminal == get_terminal(tid))])
 
 
@@ -43,17 +54,7 @@ def add(tid, ident):
 def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
-    terminal = get_terminal(tid)
-    base_chart = get_chart(ident).base
-
-    try:
-        terminal_chart = TerminalBaseChart.get(
-            (TerminalBaseChart.terminal == terminal)
-            & (TerminalBaseChart.base_chart == base_chart))
-    except TerminalBaseChart.DoesNotExist:
-        raise NoSuchContent()
-
-    terminal_chart.delete_instance()
+    _get_tbc(tid, ident).delete_instance()
     return ContentDeleted()
 
 

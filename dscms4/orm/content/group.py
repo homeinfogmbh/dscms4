@@ -7,6 +7,7 @@ from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.group import Group
 from dscms4.orm.menu import Menu
+from dscms4.orm.util import chart_of
 
 __all__ = [
     'GroupBaseChart',
@@ -29,6 +30,13 @@ class GroupBaseChart(_GroupContent):
 
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
+
+    def to_dict(self):
+        """Returns a JSON-ish dictionary."""
+        return {
+            'id': self.id,
+            'group': self.group.id,
+            'chart': chart_of(self.base_chart).to_dict(brief=True)}
 
 
 class GroupConfiguration(_GroupContent):

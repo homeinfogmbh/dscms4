@@ -8,6 +8,7 @@ from dscms4.orm.charts import BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.menu import Menu
+from dscms4.orm.util import chart_of
 
 __all__ = [
     'TerminalBaseChart',
@@ -31,6 +32,13 @@ class TerminalBaseChart(_TerminalContent):
 
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
+
+    def to_dict(self):
+        """Returns a JSON-ish dictionary."""
+        return {
+            'id': self.id,
+            'terminal': self.terminal.to_dict(short=True),
+            'chart': chart_of(self.base_chart).to_dict(brief=True)}
 
 
 class TerminalConfiguration(_TerminalContent):
