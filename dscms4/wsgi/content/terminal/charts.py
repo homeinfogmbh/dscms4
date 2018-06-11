@@ -46,7 +46,7 @@ def add(tid, ident):
     tbc.terminal = terminal
     tbc.base_chart = base_chart
     tbc.save()
-    return ContentAdded()
+    return ContentAdded(id=tbc.id)
 
 
 @authenticated

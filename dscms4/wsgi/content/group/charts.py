@@ -45,7 +45,7 @@ def add(gid, ident):
     gbc.group = group
     gbc.base_chart = base_chart
     gbc.save()
-    return ContentAdded()
+    return ContentAdded(id=gbc.id)
 
 
 @authenticated
