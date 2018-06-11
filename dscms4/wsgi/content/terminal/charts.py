@@ -4,7 +4,7 @@ from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentExists, ContentDeleted
+    ContentDeleted
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.orm.util import chart_of
 from dscms4.wsgi.charts import get_chart
@@ -31,19 +31,11 @@ def add(tid, ident):
 
     terminal = get_terminal(tid)
     base_chart = get_chart(ident).base
-
-    try:
-        TerminalBaseChart.get(
-            (TerminalBaseChart.terminal == terminal)
-            & (TerminalBaseChart.base_chart == base_chart))
-    except TerminalBaseChart.DoesNotExist:
-        tbc = TerminalBaseChart()
-        tbc.terminal = terminal
-        tbc.base_chart = base_chart
-        tbc.save()
-        return ContentAdded()
-
-    return ContentExists()
+    tbc = TerminalBaseChart()
+    tbc.terminal = terminal
+    tbc.base_chart = base_chart
+    tbc.save()
+    return ContentAdded()
 
 
 @authenticated

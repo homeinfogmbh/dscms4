@@ -4,7 +4,7 @@ from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentExists, ContentDeleted
+    ContentDeleted
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.util import chart_of
 from dscms4.wsgi.charts import get_chart
@@ -31,19 +31,11 @@ def add(gid, ident):
 
     group = get_group(gid)
     base_chart = get_chart(ident).base
-
-    try:
-        GroupBaseChart.get(
-            (GroupBaseChart.group == group)
-            & (GroupBaseChart.base_chart == base_chart))
-    except GroupBaseChart.DoesNotExist:
-        gbc = GroupBaseChart()
-        gbc.group = group
-        gbc.base_chart = base_chart
-        gbc.save()
-        return ContentAdded()
-
-    return ContentExists()
+    gbc = GroupBaseChart()
+    gbc.group = group
+    gbc.base_chart = base_chart
+    gbc.save()
+    return ContentAdded()
 
 
 @authenticated
