@@ -37,7 +37,6 @@ class TerminalBaseChart(_TerminalContent):
         """Returns a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'terminal': self.terminal.to_dict(short=True),
             'chart': chart_of(self.base_chart).to_dict(brief=True)}
 
 

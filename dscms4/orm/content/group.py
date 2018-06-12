@@ -35,7 +35,6 @@ class GroupBaseChart(_GroupContent):
         """Returns a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'group': self.group.id,
             'chart': chart_of(self.base_chart).to_dict(brief=True)}
 
 
