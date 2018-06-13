@@ -67,7 +67,7 @@ class Weather(Chart):
 
     def to_dom(self):
         """Returns an XML DOM of this chart."""
-        xml = dom.Attachment()
+        xml = super().to_dom(dom.Weather)
         xml.location = self.location
         xml.font_color = self.font_color
         xml.icon_color = self.icon_color
