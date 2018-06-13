@@ -1,6 +1,6 @@
 """Common messages."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified', 'CircularReference']
 
@@ -8,8 +8,7 @@ __all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified', 'CircularReference']
 class DSCMS4Message(Message):
     """Basic real estates message."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/common.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/common.ini'
 
 
 class InvalidId(DSCMS4Message):

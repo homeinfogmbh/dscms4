@@ -1,6 +1,6 @@
 """Messages for content handlers."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = [
     'NoSuchContent',
@@ -15,8 +15,7 @@ __all__ = [
 class ContentMessage(Message):
     """Base class for content related messages."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/content.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/content.ini'
 
 
 class NoSuchContent(ContentMessage):

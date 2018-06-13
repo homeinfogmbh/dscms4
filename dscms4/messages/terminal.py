@@ -1,6 +1,6 @@
 """Terminal related messages."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = ['NoSuchTerminal']
 
@@ -8,8 +8,7 @@ __all__ = ['NoSuchTerminal']
 class TerminalMessage(Message):
     """Base class for terminal related messages."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/terminal.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/terminal.ini'
 
 
 class NoSuchTerminal(TerminalMessage):

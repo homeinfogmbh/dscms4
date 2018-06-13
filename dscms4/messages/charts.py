@@ -1,6 +1,6 @@
 """Charts related messages."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = [
     'ChartDataIncomplete',
@@ -18,8 +18,7 @@ __all__ = [
 class ChartsMessage(Message):
     """Base for charts related messages."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/charts.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/charts.ini'
 
 
 class ChartDataIncomplete(ChartsMessage):

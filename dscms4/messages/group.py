@@ -1,6 +1,6 @@
 """Group messages."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = [
     'NoSuchGroup',
@@ -16,8 +16,7 @@ __all__ = [
 class GroupMessage(Message):
     """Base class for content related messages."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/group.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/group.ini'
 
 
 class NoSuchGroup(GroupMessage):

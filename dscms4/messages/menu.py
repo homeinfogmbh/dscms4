@@ -1,6 +1,6 @@
 """Menu realted messages."""
 
-from his.messages import locales, Message
+from his.messages import Message
 
 __all__ = [
     'NoMenuSpecified',
@@ -24,8 +24,7 @@ __all__ = [
 class MenuMessage(Message):
     """Base class for menu related messages."""
 
-    LOCALES = locales('/etc/dscms4.d/locales/menu.ini')
-    ABSTRACT = True
+    LOCALES = '/etc/dscms4.d/locales/menu.ini'
 
 
 class NoMenuSpecified(MenuMessage):
