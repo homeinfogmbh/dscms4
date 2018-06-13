@@ -231,7 +231,7 @@ class Ticker(DSCMS4Model):
         """Returns an XML DOM of the model."""
         xml = dom.Ticker()
         xml.type = self.type_.value
-        xml.content = self.content
+        xml.content_ = self.content     # xml.content is reserved by PyXB.
         return xml
 
 
