@@ -154,7 +154,7 @@ class MenuItem(DSCMS4Model):
         """Returns a dictionary representation for the respective menu."""
         dictionary = super().to_dict(*args, **kwargs)
         dictionary['charts'] = [chart.to_dict() for chart in self.charts]
-        dictionary['children'] = [
+        dictionary['items'] = [
             item.to_dict(*args, **kwargs) for item in self.children]
         dictionary['root'] = self.root
         return dictionary
