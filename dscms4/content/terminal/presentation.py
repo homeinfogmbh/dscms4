@@ -12,6 +12,8 @@ def _presentation_xml(terminal):
     """Returns an XML dom presentation."""
 
     xml = dom.presentation()
+    xml.customer = terminal.customer.id
+    xml.tid = terminal.tid
     xml.configuration = first_configuration(terminal).to_dom()
     xml.chart = [chart.to_dom() for _, chart in accumulated_charts(terminal)]
     xml.menu = [menu.to_dom() for _, menu in accumulated_menus(terminal)]
