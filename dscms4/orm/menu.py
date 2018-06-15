@@ -27,7 +27,13 @@ class Menu(CustomerModel):
     @property
     def items(self):
         """Yields this menu's items."""
-        return MenuItem.by_menu(self)
+        return MenuItem.select().where(MenuItem.menu == self)
+
+    @property
+    def root_items(self):
+        """Yields root items."""
+        return MenuItem.select().where(
+            (MenuItem.menu == self) & (MenuItem.parent >> None))
 
     def to_dict(self):
         """Returns the menu as a dictionary."""
@@ -40,7 +46,7 @@ class Menu(CustomerModel):
         xml = dom.Menu()
         xml.name = self.name
         xml.description = self.description
-        xml.item = [item.to_dom() for item in self.items]
+        xml.item = [item.to_dom() for item in self.root_items]
         return xml
 
 
@@ -65,11 +71,6 @@ class MenuItem(DSCMS4Model):
         menu_item.menu = menu
         menu_item.parent = parent
         return menu_item
-
-    @classmethod
-    def by_menu(cls, menu):
-        """Yields menu items belonging to the respective menu."""
-        return cls.select().where(cls.menu == menu)
 
     @property
     def root(self):
@@ -153,7 +154,8 @@ class MenuItem(DSCMS4Model):
         """Returns a dictionary representation for the respective menu."""
         dictionary = super().to_dict(*args, **kwargs)
         dictionary['charts'] = [chart.to_dict() for chart in self.charts]
-        dictionary['items'] = [item.id for item in self.children]
+        dictionary['children'] = [
+            item.to_dict(*args, **kwargs) for item in self.children]
         dictionary['root'] = self.root
         return dictionary
 
