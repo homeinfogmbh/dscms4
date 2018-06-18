@@ -26,12 +26,7 @@ class Menu(CustomerModel):
 
     @property
     def items(self):
-        """Yields this menu's items."""
-        return MenuItem.select().where(MenuItem.menu == self)
-
-    @property
-    def root_items(self):
-        """Yields root items."""
+        """Yields this menu's root items."""
         return MenuItem.select().where(
             (MenuItem.menu == self) & (MenuItem.parent >> None))
 
@@ -46,7 +41,7 @@ class Menu(CustomerModel):
         xml = dom.Menu()
         xml.name = self.name
         xml.description = self.description
-        xml.item = [item.to_dom() for item in self.root_items]
+        xml.item = [item.to_dom() for item in self.items]
         return xml
 
 
