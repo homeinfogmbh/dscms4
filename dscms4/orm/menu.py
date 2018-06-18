@@ -151,7 +151,6 @@ class MenuItem(DSCMS4Model):
         dictionary['charts'] = [chart.to_dict() for chart in self.charts]
         dictionary['items'] = [
             item.to_dict(*args, **kwargs) for item in self.children]
-        dictionary['root'] = self.root
         return dictionary
 
     def to_dom(self):
