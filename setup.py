@@ -25,5 +25,6 @@ setup(
         'dscms4.wsgi.content.group',
         'dscms4.wsgi.content.terminal',
         'dscms4.wsgi.group',
-        'dscms4.wsgi.menu'],
+        'dscms4.wsgi.menu'
+        'dscms4.wsgi.preview',],
     description='HOMEINFO Digital Signage Content Management System v4.')
