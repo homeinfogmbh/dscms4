@@ -45,7 +45,7 @@ class Presentation:
     @property
     def files(self):
         """Yields the presentation's used file IDs."""
-        files = set(self.configuration.files)
+        files = self.configuration.files
 
         for _, chart in self.charts:
             with suppress(AttributeError):
