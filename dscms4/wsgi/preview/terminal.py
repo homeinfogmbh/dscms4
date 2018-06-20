@@ -39,7 +39,6 @@ def get_file(file):
 
 
 ROUTES = (
-    ('GET', '/preview/terminal/<int:tid>', get_presentation,
+    ('GET', '/preview/terminal', get_presentation,
      'preview_terminal_presentation'),
-    ('GET', '/preview/terminal/<int:tid>/file/<int:ident>', get_file,
-     'preview_terminal_file'))
+    ('GET', '/preview/file/<int:ident>', get_file, 'preview_terminal_file'))
