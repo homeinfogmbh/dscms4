@@ -40,13 +40,13 @@ def file_preview(presentation_class):
         """Decorator so secure the respective function."""
 
         @wraps(function)
-        def wrapper(obj, file_id, *args, **kwargs):
+        def wrapper(obj, ident, *args, **kwargs):
             """Receives a token and arguments for the original function."""
             presentation = presentation_class(obj)
 
-            if file_id in presentation.files:
+            if ident in presentation.files:
                 file = File.get(
-                    (File.id == file_id) & (File.customer == presentation.cid))
+                    (File.id == ident) & (File.customer == presentation.cid))
                 return function(file, *args, **kwargs)
 
             raise Unauthorized
