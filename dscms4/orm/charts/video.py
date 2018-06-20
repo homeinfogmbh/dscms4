@@ -20,7 +20,7 @@ class Video(Chart):
     @property
     def files(self):
         """Yields the file IDs used by the chart."""
-        yield self.video
+        return {self.video}
 
     def to_dom(self):
         """Returns an XML DOM of this chart."""

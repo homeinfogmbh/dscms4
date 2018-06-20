@@ -138,14 +138,18 @@ class Configuration(CustomerModel):
     @property
     def files(self):
         """Yields the configuration's files."""
+        files = set()
+
         if self.logo is not None:
-            yield self.logo
+            files.add(self.logo)
 
         if self.background is not None:
-            yield self.background
+            files.add(self.background)
 
         if self.dummy_picture is not None:
-            yield self.dummy_picture
+            files.add(self.dummy_picture)
+
+        return files
 
     @property
     def backlight_dict(self):

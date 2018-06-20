@@ -45,8 +45,12 @@ class Weather(Chart):
     @property
     def files(self):
         """Yields IDs used by the chart"""
+        files = set()
+
         for image in self.images:
-            yield image.image
+            files.add(image.image)
+
+        return files
 
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
