@@ -49,7 +49,7 @@ class Presentation:
 
         for _, chart in self.charts:
             with suppress(AttributeError):
-                files += set(chart.files)
+                files |= chart.files
 
         return files
 
