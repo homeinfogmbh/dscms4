@@ -8,7 +8,7 @@ __all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified', 'CircularReference']
 class DSCMS4Message(Message):
     """Basic real estates message."""
 
-    LOCALES = '/etc/dscms4.d/locales/common.ini'
+    DOMAIN = 'dscms4'
 
 
 class InvalidId(DSCMS4Message):

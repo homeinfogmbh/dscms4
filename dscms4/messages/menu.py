@@ -1,6 +1,6 @@
 """Menu realted messages."""
 
-from his.messages import Message
+from dscms4.messages.common import DSCMS4Message
 
 __all__ = [
     'NoMenuSpecified',
@@ -21,102 +21,96 @@ __all__ = [
     'MenuItemChartsSorted']
 
 
-class MenuMessage(Message):
-    """Base class for menu related messages."""
-
-    LOCALES = '/etc/dscms4.d/locales/menu.ini'
-
-
-class NoMenuSpecified(MenuMessage):
+class NoMenuSpecified(DSCMS4Message):
     """Indicates that no menu was specified."""
 
     STATUS = 400
 
 
-class NoSuchMenu(MenuMessage):
+class NoSuchMenu(DSCMS4Message):
     """Indicates that the requested menu does not exist."""
 
     STATUS = 404
 
 
-class InvalidMenuData(MenuMessage):
+class InvalidMenuData(DSCMS4Message):
     """Indicates that invalid menu data has been specified."""
 
     STATUS = 400
 
 
-class MenuAdded(MenuMessage):
+class MenuAdded(DSCMS4Message):
     """Indicates that the menu was successfully added."""
 
     STATUS = 201
 
 
-class MenuPatched(MenuMessage):
+class MenuPatched(DSCMS4Message):
     """Indicates that the menu was successfully patched."""
 
     STATUS = 200
 
 
-class MenuDeleted(MenuMessage):
+class MenuDeleted(DSCMS4Message):
     """Indicates that the menu was successfully deleted."""
 
     STATUS = 200
 
 
-class NoMenuItemSpecified(MenuMessage):
+class NoMenuItemSpecified(DSCMS4Message):
     """Indicates that no menu item was specified."""
 
     STATUS = 400
 
 
-class NoSuchMenuItem(MenuMessage):
+class NoSuchMenuItem(DSCMS4Message):
     """Indicates that the requested menu item does not exist."""
 
     STATUS = 404
 
 
-class MenuItemAdded(MenuMessage):
+class MenuItemAdded(DSCMS4Message):
     """Indicates that the respective menu item was successfully added."""
 
     STATUS = 201
 
 
-class MenuItemPatched(MenuMessage):
+class MenuItemPatched(DSCMS4Message):
     """Indicates that the respective menu item was successfully patched."""
 
     STATUS = 200
 
 
-class MenuItemDeleted(MenuMessage):
+class MenuItemDeleted(DSCMS4Message):
     """Indicates that the respective menu item was successfully deleted."""
 
     STATUS = 200
 
 
-class MenuItemsSorted(MenuMessage):
+class MenuItemsSorted(DSCMS4Message):
     """Indicates that the respective menu items have been sorted."""
 
     STATUS = 200
 
 
-class DifferentMenusError(MenuMessage):
+class DifferentMenusError(DSCMS4Message):
     """Indicates that the respective menu items are in separate menus."""
 
     STATUS = 400
 
-class NoSuchMenuItemChart(MenuMessage):
+class NoSuchMenuItemChart(DSCMS4Message):
     """Indicates that the respective menu item chart does not exist."""
 
     STATUS = 404
 
-class MenuItemChartAdded(MenuMessage):
+class MenuItemChartAdded(DSCMS4Message):
     """Indicates that the respective menu
     item chart has successfully been added.
     """
 
     STATUS = 200
 
-class MenuItemChartDeleted(MenuMessage):
+class MenuItemChartDeleted(DSCMS4Message):
     """Indicates that the respective menu
     item chart has successfully been deleted.
     """
@@ -124,7 +118,7 @@ class MenuItemChartDeleted(MenuMessage):
     STATUS = 200
 
 
-class DifferentMenuItemsError(MenuMessage):
+class DifferentMenuItemsError(DSCMS4Message):
     """Indicates that the respective menu
     item charts are in separate menu items.
     """
@@ -132,7 +126,7 @@ class DifferentMenuItemsError(MenuMessage):
     STATUS = 400
 
 
-class MenuItemChartsSorted(MenuMessage):
+class MenuItemChartsSorted(DSCMS4Message):
     """Indicates that the respective menu item charts have been sorted."""
 
     STATUS = 200

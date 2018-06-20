@@ -1,6 +1,6 @@
 """Group messages."""
 
-from his.messages import Message
+from dscms4.messages.common import DSCMS4Message
 
 __all__ = [
     'NoSuchGroup',
@@ -13,55 +13,49 @@ __all__ = [
     'MemberDeleted']
 
 
-class GroupMessage(Message):
-    """Base class for content related messages."""
-
-    LOCALES = '/etc/dscms4.d/locales/group.ini'
-
-
-class NoSuchGroup(GroupMessage):
+class NoSuchGroup(DSCMS4Message):
     """Indicates that the respective group does not exist."""
 
     STATUS = 404
 
 
-class NoSuchMemberType(GroupMessage):
+class NoSuchMemberType(DSCMS4Message):
     """Indicates that the respective member type does not exist."""
 
     STATUS = 404
 
 
-class NoSuchMember(GroupMessage):
+class NoSuchMember(DSCMS4Message):
     """Indicates that the respective member does not exist."""
 
     STATUS = 404
 
 
-class GroupAdded(GroupMessage):
+class GroupAdded(DSCMS4Message):
     """Indicates that the group was successfully added."""
 
     STATUS = 201
 
 
-class GroupPatched(GroupMessage):
+class GroupPatched(DSCMS4Message):
     """Indicates that the group was successfully patched."""
 
     STATUS = 200
 
 
-class GroupDeleted(GroupMessage):
+class GroupDeleted(DSCMS4Message):
     """Indicates that the group was successfully deleted."""
 
     STATUS = 200
 
 
-class MemberAdded(GroupMessage):
+class MemberAdded(DSCMS4Message):
     """Indicates that the group member was successfully added."""
 
     STATUS = 201
 
 
-class MemberDeleted(GroupMessage):
+class MemberDeleted(DSCMS4Message):
     """Indicates that the group member was successfully deleted."""
 
     STATUS = 200

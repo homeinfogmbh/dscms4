@@ -26,15 +26,4 @@ setup(
         'dscms4.wsgi.content.terminal',
         'dscms4.wsgi.group',
         'dscms4.wsgi.menu'],
-    scripts=['files/dscms4d'],
-    data_files=[
-        ('/usr/lib/systemd/system', ['files/dscms4.service']),
-        ('/etc/dscms4.d/locales', [
-            'files/locales/charts.ini',
-            'files/locales/common.ini',
-            'files/locales/configuration.ini',
-            'files/locales/content.ini',
-            'files/locales/group.ini',
-            'files/locales/menu.ini',
-            'files/locales/terminal.ini'])],
     description='HOMEINFO Digital Signage Content Management System v4.')
