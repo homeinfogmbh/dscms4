@@ -50,7 +50,7 @@ class Presentation:
         yield configuration.background
         yield configuration.dummy_picture
 
-        for chart in self.charts:
+        for _, chart in self.charts:
             with suppress(AttributeError):
                 yield from chart.files
 
