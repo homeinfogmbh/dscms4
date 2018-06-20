@@ -39,37 +39,37 @@ class InvalidChartType(DSCMS4Message):
     STATUS = 406
 
 
-class NoChartIdSpecified(ChartsMessage):
+class NoChartIdSpecified(DSCMS4Message):
     """Indicates that no chart ID has been specified."""
 
     STATUS = 422
 
 
-class NoSuchChart(ChartsMessage):
+class NoSuchChart(DSCMS4Message):
     """Indicates that the specified chart does not exist."""
 
     STATUS = 404
 
 
-class NoSuchBaseChart(ChartsMessage):
+class NoSuchBaseChart(DSCMS4Message):
     """Indicates that the respective base chart does not exist."""
 
     STATUS = 404
 
 
-class ChartAdded(ChartsMessage):
+class ChartAdded(DSCMS4Message):
     """Indicates that a new chart was successfully added."""
 
     STATUS = 201
 
 
-class ChartDeleted(ChartsMessage):
+class ChartDeleted(DSCMS4Message):
     """Indicates that a chart was successfully deleted."""
 
     STATUS = 200
 
 
-class ChartPatched(ChartsMessage):
+class ChartPatched(DSCMS4Message):
     """Indicates that a chart was successfully patched."""
 
     STATUS = 200
