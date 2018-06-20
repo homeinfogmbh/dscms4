@@ -56,6 +56,12 @@ class ImageText(Chart):
         for text in texts:
             yield Text.add(chart, text)
 
+    @property
+    def files(self):
+        """Yields IDs used by the chart"""
+        for image in self.images:
+            yield image.image
+
     def patch(self, dictionary, **kwargs):
         """Patches the respective chart."""
         images = dictionary.pop('images', _UNCHANGED) or ()

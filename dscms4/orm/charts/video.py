@@ -17,6 +17,11 @@ class Video(Chart):
 
     video = IntegerField()
 
+    @property
+    def files(self):
+        """Yields the file IDs used by the chart."""
+        yield self.video
+
     def to_dom(self):
         """Returns an XML DOM of this chart."""
         xml = super().to_dom(dom.Video)

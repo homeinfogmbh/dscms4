@@ -1,41 +1,74 @@
 """Terminal presentation."""
 
+from contextlib import suppress
+
 from dscms4 import dom
 from dscms4.content.terminal.charts import accumulated_charts
 from dscms4.content.terminal.configuration import first_configuration
 from dscms4.content.terminal.menu import accumulated_menus
 
-__all__ = ['presentation']
+__all__ = ['Presentation']
 
 
-def _presentation_xml(terminal):
-    """Returns an XML dom presentation."""
+class Presentation:
+    """Represents presentation data for a terminal."""
 
-    xml = dom.presentation()
-    xml.customer = terminal.customer.id
-    xml.tid = terminal.tid
-    xml.configuration = first_configuration(terminal).to_dom()
-    xml.chart = [chart.to_dom() for _, chart in accumulated_charts(terminal)]
-    xml.menu = [menu.to_dom() for _, menu in accumulated_menus(terminal)]
-    return xml
+    def __init__(self, terminal):
+        """Sets the respective terminal."""
+        self.terminal = terminal
 
+    @property
+    def tid(self):
+        """Returns the terminal ID."""
+        return self.terminal.tid
 
-def _presentation_json(terminal):
-    """Returns a JSON presentation."""
+    @property
+    def cid(self):
+        """Returns the customer ID."""
+        return self.terminal.customer.id
 
-    return {
-        'customer': terminal.customer.id,
-        'tid': terminal.tid,
-        'charts': [
-            chart.to_dict() for _, chart in accumulated_charts(terminal)],
-        'configuration': first_configuration(terminal).to_dict(),
-        'menus': [menu.to_dict() for _, menu in accumulated_menus(terminal)]}
+    @property
+    def configuration(self):
+        """Returns the respective configuration."""
+        return first_configuration(self.terminal)
 
+    @property
+    def charts(self):
+        """Yields the terminal's charts."""
+        return accumulated_charts(self.terminal)
 
-def presentation(terminal, xml=False):
-    """Generates a terminal configuration dictionary."""
+    @property
+    def menus(self):
+        """Yields the terminal's menus."""
+        return accumulated_menus(self.terminal)
 
-    if xml:
-        return _presentation_xml(terminal)
+    @property
+    def files(self):
+        """Yields the presentation's used file IDs."""
+        configuration = self.configuration
+        yield configuration.logo
+        yield configuration.background
+        yield configuration.dummy_picture
 
-    return _presentation_json(terminal)
+        for chart in self.charts:
+            with suppress(AttributeError):
+                yield from chart.files
+
+    def to_dom(self):
+        """Returns an XML dom presentation."""
+        xml = dom.presentation()
+        xml.customer = self.cid
+        xml.tid = self.tid
+        xml.configuration = self.configuration.to_dom()
+        xml.chart = [chart.to_dom() for _, chart in self.charts]
+        xml.menu = [menu.to_dom() for _, menu in self.menus]
+        return xml
+
+    def to_dict(self):
+        """Returns a JSON presentation."""
+        return {
+            'customer': self.cid,
+            'tid': self.tid,
+            'configuration': self.configuration.to_dict(),
+            'charts': [chart.to_dict() for _, chart in self.charts],
+            'menus': [menu.to_dict() for _, menu in self.menus]}

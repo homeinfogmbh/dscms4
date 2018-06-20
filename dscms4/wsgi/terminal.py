@@ -7,7 +7,7 @@ from his.messages import InvalidData
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
-from dscms4.content.terminal.presentation import presentation
+from dscms4.content.terminal.presentation import Presentation
 from dscms4.content.exceptions import NoConfigurationFound
 from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.messages.terminal import NoSuchTerminal
@@ -82,13 +82,15 @@ def get(terminal):
 def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
 
+    presentation = Presentation(terminal)
+
     try:
         request.args['xml']
     except KeyError:
-        return JSON(presentation(terminal))
+        return JSON(presentation.to_dict())
 
     try:
-        presentation_dom = presentation(terminal, xml=True)
+        presentation_dom = presentation.to_dom()
     except NoConfigurationFound:
         return NoConfigurationAssigned()
 

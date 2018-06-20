@@ -28,3 +28,11 @@ def preview(token_class):
         return wrapper
 
     return decorator
+
+
+def terminal_files(terminal):
+    """Yields file IDs used for the respective terminal."""
+
+    configuration = first_configuration(terminal)
+    xml.chart = [chart.to_dom() for _, chart in accumulated_charts(terminal)]
+    xml.menu = [menu.to_dom() for _, menu in accumulated_menus(terminal)]
