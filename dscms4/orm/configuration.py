@@ -136,6 +136,18 @@ class Configuration(CustomerModel):
             yield backlight
 
     @property
+    def files(self):
+        """Yields the configuration's files."""
+        if self.logo is not None:
+            yield self.logo
+
+        if self.background is not None:
+            yield self.background
+
+        if self.dummy_picture is not None:
+            yield self.dummy_picture
+
+    @property
     def backlight_dict(self):
         """Returns a backlight settings dictionary for this configuration."""
         backlights = {}

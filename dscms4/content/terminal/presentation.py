@@ -45,10 +45,7 @@ class Presentation:
     @property
     def files(self):
         """Yields the presentation's used file IDs."""
-        configuration = self.configuration
-        yield configuration.logo
-        yield configuration.background
-        yield configuration.dummy_picture
+        yield from self.configuration.files
 
         for _, chart in self.charts:
             with suppress(AttributeError):
