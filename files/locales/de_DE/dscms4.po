@@ -178,6 +178,11 @@ msgstr "Menüelementcharts befinden sich in unterschiedlichen Menüelementen."
 msgid "MenuItemChartsSorted"
 msgstr "Menüelementcharts sortiert."
 
+### Preview messages. ###
+
+msgid "Unauthorized"
+msgstr "Vorschau nicht gestattet."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"

@@ -178,6 +178,11 @@ msgstr "Menu item charts are contained within different menu items."
 msgid "MenuItemChartsSorted"
 msgstr "Menu item charts sorted."
 
+### Preview messages. ###
+
+msgid "Unauthorized"
+msgstr "Preview not permitted."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"
