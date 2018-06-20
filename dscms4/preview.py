@@ -8,6 +8,8 @@ from his import CUSTOMER
 
 from dscms4.messages.preview import Unauthorized
 
+__all__ = ['preview', 'file_preview']
+
 
 def preview(token_class):
     """Decorator to secure a WSGI function with a preview token."""
@@ -23,16 +25,29 @@ def preview(token_class):
             except token_class.DoesNotExist:
                 raise Unauthorized()
 
-            return function(*args, **kwargs)
+            return function(obj, *args, **kwargs)
 
         return wrapper
 
     return decorator
 
 
-def terminal_files(terminal):
-    """Yields file IDs used for the respective terminal."""
+def file_preview(presentation_class):
+    """Decorator to secure a WSGI function with a preview token."""
 
-    configuration = first_configuration(terminal)
-    xml.chart = [chart.to_dom() for _, chart in accumulated_charts(terminal)]
-    xml.menu = [menu.to_dom() for _, menu in accumulated_menus(terminal)]
+    def decorator(function):
+        """Decorator so secure the respective function."""
+
+        @wraps(function)
+        def wrapper(obj, file_id, *args, **kwargs):
+            """Receives a token and arguments for the original function."""
+            presentation = presentation_class(obj)
+
+            if file_id in presentation.files:
+                return function(file_id, *args, **kwargs)
+
+            raise Unauthorized
+
+        return wrapper
+
+    return decorator
