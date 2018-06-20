@@ -2,8 +2,6 @@
 
 from flask import request
 
-from hisfs import File
-from his import CUSTOMER
 from wsgilib import JSON, XML, Binary
 
 from dscms4.content.exceptions import NoConfigurationFound
@@ -11,12 +9,10 @@ from dscms4.content.terminal.presentation import Presentation
 from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.orm.preview import TerminalPreviewToken
 from dscms4.preview import preview, file_preview
-from dscms4.wsgi.terminal import with_terminal
 
 __all__ = ['ROUTES']
 
 
-@with_terminal
 @preview(TerminalPreviewToken)
 def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
@@ -34,13 +30,11 @@ def get_presentation(terminal):
         return NoConfigurationAssigned()
 
 
-@with_terminal
 @preview(TerminalPreviewToken)
 @file_preview(Presentation)
-def get_file(ident):
+def get_file(file):
     """Returns the presentation for the respective terminal."""
 
-    file = File.get((File.id == ident) & (File.customer == CUSTOMER.id))
     return Binary(file.bytes)
 
 

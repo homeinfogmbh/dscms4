@@ -4,7 +4,7 @@ from functools import wraps
 
 from flask import request
 
-from his import CUSTOMER
+from hisfs import File
 
 from dscms4.messages.preview import Unauthorized
 
@@ -18,14 +18,15 @@ def preview(token_class):
         """Decorator so secure the respective function."""
 
         @wraps(function)
-        def wrapper(obj, *args, **kwargs):
+        def wrapper(*args, **kwargs):
             """Receives a token and arguments for the original function."""
             try:
-                token_class.fetch(request.args.get('token'), CUSTOMER.id, obj)
+                token = token_class.get(
+                    token_class.token == request.args.get('token'))
             except token_class.DoesNotExist:
                 raise Unauthorized()
 
-            return function(obj, *args, **kwargs)
+            return function(token.obj, *args, **kwargs)
 
         return wrapper
 
@@ -44,7 +45,9 @@ def file_preview(presentation_class):
             presentation = presentation_class(obj)
 
             if file_id in presentation.files:
-                return function(file_id, *args, **kwargs)
+                file = File.get(
+                    (File.id == file_id) & (File.customer == presentation.cid))
+                return function(file, *args, **kwargs)
 
             raise Unauthorized
 
