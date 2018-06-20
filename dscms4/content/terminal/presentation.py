@@ -45,11 +45,13 @@ class Presentation:
     @property
     def files(self):
         """Yields the presentation's used file IDs."""
-        yield from self.configuration.files
+        files = set(self.configuration.files)
 
         for _, chart in self.charts:
             with suppress(AttributeError):
-                yield from chart.files
+                files += set(chart.files)
+
+        return files
 
     def to_dom(self):
         """Returns an XML dom presentation."""
