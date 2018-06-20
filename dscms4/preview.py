@@ -49,7 +49,7 @@ def file_preview(presentation_class):
                     (File.id == ident) & (File.customer == presentation.cid))
                 return function(file, *args, **kwargs)
 
-            raise Unauthorized
+            raise Unauthorized(files=list(presentation.files))
 
         return wrapper
 
