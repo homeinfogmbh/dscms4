@@ -21,7 +21,7 @@ def generate(type_, ident):
         raise InvalidTokenType()
 
     token = token_class.generate(ident)
-    return token.token
+    return token.token.hex
 
 
 ROUTES = (
