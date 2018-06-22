@@ -183,6 +183,9 @@ msgstr "Menu item charts sorted."
 msgid "Unauthorized"
 msgstr "Preview not permitted."
 
+msgid "InvalidTokenType"
+msgstr "Invalid token type."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"
