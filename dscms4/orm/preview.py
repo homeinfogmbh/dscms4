@@ -2,7 +2,6 @@
 
 from peewee import ForeignKeyField
 
-from his import CUSTOMER
 from peeweeplus import UUID4Field
 from terminallib import Terminal
 
@@ -18,7 +17,7 @@ class _PreviewToken(DSCMS4Model):
     token = UUID4Field()
 
     @classmethod
-    def generate(cls, ident):
+    def generate(cls, ident, customer):
         """Returns a token for the respective resource."""
         raise NotImplementedError()
 
@@ -38,11 +37,11 @@ class TerminalPreviewToken(_PreviewToken):
         Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
-    def generate(cls, ident):
+    def generate(cls, ident, customer):
         """Returns a token for the respective terminal."""
         try:
             terminal = Terminal.get(
-                (Terminal.id == ident) & (Terminal.customer == CUSTOMER.id))
+                (Terminal.id == ident) & (Terminal.customer == customer))
         except Terminal.DoesNotExist:
             raise NoSuchTerminal()
 
