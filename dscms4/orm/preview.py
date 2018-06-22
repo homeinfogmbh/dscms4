@@ -7,13 +7,18 @@ from terminallib import Terminal
 
 from dscms4.orm.common import DSCMS4Model
 
-__all__ = ['TerminalPreviewToken']
+__all__ = ['TYPES', 'TerminalPreviewToken']
 
 
 class _PreviewToken(DSCMS4Model):
     """Common abstract preview token."""
 
     token = UUID4Field()
+
+    @classmethod
+    def generate(cls, ident):
+        """Returns a token for the respective resource."""
+        raise NotImplementedError()
 
     @property
     def obj(self):
@@ -30,7 +35,20 @@ class TerminalPreviewToken(_PreviewToken):
     terminal = ForeignKeyField(
         Terminal, column_name='terminal', on_delete='CASCADE')
 
+    @classmethod
+    def generate(cls, ident):
+        """Returns a token for the respective terminal."""
+        token = cls()
+        token.terminal = ident
+        token.save()
+        return token
+
     @property
     def obj(self):
         """Returns the terminal."""
         return self.terminal
+
+
+TYPES = {
+    'terminal': TerminalPreviewToken
+}
