@@ -1,6 +1,7 @@
 """Authenticated generation of preview tokens."""
 
 from his import authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.messages.preview import InvalidTokenType
 from dscms4.orm.preview import TYPES
@@ -21,7 +22,7 @@ def generate(type_, ident):
         raise InvalidTokenType()
 
     token = token_class.generate(ident)
-    return token.token.hex
+    return JSON({'token': token.token.hex})
 
 
 ROUTES = (
