@@ -2,9 +2,11 @@
 
 from peewee import ForeignKeyField
 
+from his import CUSTOMER
 from peeweeplus import UUID4Field
 from terminallib import Terminal
 
+from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['TYPES', 'TerminalPreviewToken']
@@ -39,10 +41,16 @@ class TerminalPreviewToken(_PreviewToken):
     def generate(cls, ident):
         """Returns a token for the respective terminal."""
         try:
-            return cls.get(cls.terminal == ident)
+            terminal = Terminal.get(
+                (Terminal.id == ident) & (Terminal.customer == CUSTOMER.id))
+        except Terminal.DoesNotExist:
+            raise NoSuchTerminal()
+
+        try:
+            return cls.get(cls.terminal == terminal)
         except cls.DoesNotExist:
             token = cls()
-            token.terminal = ident
+            token.terminal = terminal
             token.save()
             return token
 
