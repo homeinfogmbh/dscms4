@@ -38,10 +38,13 @@ class TerminalPreviewToken(_PreviewToken):
     @classmethod
     def generate(cls, ident):
         """Returns a token for the respective terminal."""
-        token = cls()
-        token.terminal = ident
-        token.save()
-        return token
+        try:
+            return cls.get(cls.terminal == ident)
+        except cls.DoesNotExist:
+            token = cls()
+            token.terminal = ident
+            token.save()
+            return token
 
     @property
     def obj(self):
