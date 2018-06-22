@@ -25,5 +25,5 @@ def generate(type_, ident):
 
 
 ROUTES = (
-    ('GET', '/previewgen/<str:type_>/<int:ident>', generate,
+    ('GET', '/previewgen/<type_>/<int:ident>', generate,
      'generate_preview_token'),)
