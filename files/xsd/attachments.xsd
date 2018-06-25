@@ -31,6 +31,13 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="id" type="xs:positiveInteger">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Datei-ID des hisfs.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="sha256sum" type="xs:string">
             <xs:annotation>
                 <xs:documentation xml:lang="de">
