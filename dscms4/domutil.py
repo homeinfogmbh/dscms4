@@ -19,6 +19,7 @@ def attachment_dom(ident):
         return None
 
     xml = Attachment()
+    xml.id = file.id
     xml.mimetype = file.mimetype
     xml.filename = file.name
     xml.sha256sum = file.sha256sum
