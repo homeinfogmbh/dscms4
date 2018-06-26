@@ -12,6 +12,9 @@ class PublicTransport(Chart):
     class Meta:
         table_name = 'chart_public_transport'
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         return super().to_dom(dom.PublicTransport)

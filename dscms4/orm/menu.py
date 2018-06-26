@@ -95,15 +95,11 @@ class MenuItem(DSCMS4Model):
             yield from child.tree
 
     @property
-    def base_charts(self):
-        """Yields the respective charts."""
-        for menu_item_chart in self.menu_item_charts:
-            yield menu_item_chart.base_chart
-
-    @property
     def charts(self):
         """Yields the respective charts."""
-        for base_chart in self.base_charts:
+        for menu_item_chart in self.menu_item_charts:
+            base_chart = menu_item_chart.base_chart
+
             try:
                 yield chart_of(base_chart)
             except OrphanedBaseChart:
@@ -148,7 +144,8 @@ class MenuItem(DSCMS4Model):
     def to_dict(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""
         dictionary = super().to_dict(*args, **kwargs)
-        dictionary['charts'] = [chart.to_dict() for chart in self.charts]
+        dictionary['charts'] = [
+            chart.to_dict() for chart in self.menu_item_charts]
         dictionary['items'] = [
             item.to_dict(*args, **kwargs) for item in self.children]
         return dictionary
@@ -187,12 +184,19 @@ class MenuItemChart(DSCMS4Model):
         menu_item_chart.base_chart = base_chart
         return menu_item_chart
 
+    def to_dict(self):
+        """Returns a JSON-ish dictionary."""
+        chart = chart_of(self.base_chart)
+        dictionary = chart.to_dict(brief=True)
+        dictionary['index'] = self.index
+        return dictionary
+
     def to_dom(self):
         """Returns an XML DOM of the model."""
         xml = dom.MenuItemChart()
         chart = chart_of(self.base_chart)
-        xml.chart_id = chart.id
-        xml.chart_type = chart.__class__.__name__
+        xml.id = chart.id
+        xml.type = chart.__class__.__name__
         xml.index = self.index
         return xml
 

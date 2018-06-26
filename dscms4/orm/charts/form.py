@@ -25,8 +25,11 @@ class Form(Chart):
 
     mode = EnumField(Mode, column_name='mode')
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         xml = super().to_dom(dom.Form)
         xml.mode = self.mode.value
         return xml

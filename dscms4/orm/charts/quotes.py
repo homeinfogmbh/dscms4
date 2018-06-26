@@ -17,8 +17,11 @@ class Quotes(Chart):
     font_color = IntegerField(0x000000)
     background_color = IntegerField(0x000000)
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         xml = super().to_dom(dom.Quotes)
         xml.font_color = self.font_color
         xml.background_color = self.background_color

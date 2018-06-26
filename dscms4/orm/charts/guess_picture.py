@@ -12,6 +12,9 @@ class GuessPicture(Chart):
     class Meta:
         table_name = 'chart_guess_picture'
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         return super().to_dom(dom.GuessPicture)

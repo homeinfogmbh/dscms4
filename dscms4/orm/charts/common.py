@@ -158,6 +158,10 @@ class Chart(DSCMS4Model):
         xml = model()
         xml.id = self.id
         xml.type = self.__class__.__name__
+
+        if model is dom.BriefChart:
+            return xml
+
         xml.base = self.base.to_dom()
         return xml
 

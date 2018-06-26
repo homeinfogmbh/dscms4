@@ -21,8 +21,11 @@ class News(Chart):
     ken_burns = BooleanField(null=True)
     news_token = CharField(36, null=True)
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         xml = super().to_dom(dom.News)
         xml.font_size_title = self.font_size_title
         xml.title_color = self.title_color

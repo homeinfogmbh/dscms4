@@ -104,6 +104,31 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
     </xs:complexType>
 
 
+    <xs:complexType name="BriefChart">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Kurzinformation über einen Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="id" type="xs:positiveInteger">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        ID des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Der Typ des Charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
     <xs:complexType name="Cleaning">
         <xs:annotation>
             <xs:documentation xml:lang="de">

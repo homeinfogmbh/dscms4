@@ -60,8 +60,11 @@ class Facebook(Chart):
             account.to_dict() for account in self.accounts]
         return dictionary
 
-    def to_dom(self):
+    def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
+        if brief:
+            return super().to_dom(dom.BriefChart)
+
         xml = super().to_dom(dom.Facebook)
         xml.font_size = self.font_size
         xml.title_color = self.title_color
