@@ -44,10 +44,17 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="chart" type="Chart" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="playlist" type="BriefChart" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Charts.
+                        Playlist of charts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="charts" type="Chart" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Playlist of charts.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>

@@ -75,7 +75,7 @@ class Presentation:
         xml.customer = self.cid
         xml.tid = self.tid
         xml.configuration = self.configuration.to_dom()
-        xml.chart = [chart.to_dom(brief=True) for chart in self.charts]
+        xml.playlist = [chart.to_dom(brief=True) for chart in self.charts]
         xml.menu = [menu.to_dom() for menu in self.menus]
         xml.chart = [chart.to_dom() for chart in self.chart_set]
         return xml
