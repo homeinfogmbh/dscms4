@@ -35,7 +35,7 @@ class Cleaning(Chart):
         if brief:
             return super().to_dom(dom.BriefChart)
 
-        dom = super().to_dom(dom.CleaningDOM)
+        dom = super().to_dom(dom.Cleaning)
         dom.title = self.title
         dom.mode = self.mode.value
         dom.text = self.text
