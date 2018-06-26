@@ -1,7 +1,10 @@
 """Terminal presentation."""
 
 from contextlib import suppress
+from functools import lru_cache
 from itertools import chain
+
+from functoolsplus import returning
 
 from dscms4 import dom
 from dscms4.content.terminal.charts import accumulated_charts
@@ -20,56 +23,53 @@ class Presentation:
         self.terminal = terminal
 
     @property
+    @lru_cache(maxsize=1)
     def configuration(self):
         """Returns the respective configuration."""
         return first_configuration(self.terminal)
 
     @property
+    @lru_cache(maxsize=1)
+    @returning(tuple)
     def charts(self):
         """Yields the terminal's charts."""
         for _, chart in accumulated_charts(self.terminal):
             yield chart
 
     @property
+    @lru_cache(maxsize=1)
+    @returning(tuple)
     def menus(self):
         """Yields the terminal's menus."""
         for _, menu in accumulated_menus(self.terminal):
             yield menu
 
-    def file_set(self, configuration=None, chart_set=None, charts=None):
+    @property
+    @lru_cache(maxsize=1)
+    def files(self):
         """Yields the presentation's used file IDs."""
-        if configuration is None:
-            configuration = self.configuration
+        files = self.configuration.files
 
-        if chart_set is None:
-            chart_set = self.chart_set(charts=charts)
-
-        files = configuration.files
-
-        for chart in chart_set:
+        for chart in self.chart_set:
             with suppress(AttributeError):
                 files |= chart.files
 
         return files
 
-    def menu_charts(self, menus=None):
+    @property
+    @lru_cache(maxsize=1)
+    @returning(tuple)
+    def menu_charts(self):
         """Yields accumulated charts from menus."""
-        if menus is None:
-            menus = self.menus
-
-        for menu in menus:
+        for menu in self.menus:
             for _, chart in accumulated_menu_charts(menu):
                 yield chart
 
-    def chart_set(self, charts=None, menu_charts=None, menus=None):
+    @property
+    @lru_cache(maxsize=1)
+    def chart_set(self):
         """Returns a set of unique charts."""
-        if charts is None:
-            charts = self.charts
-
-        if menu_charts is None:
-            menu_charts = self.menu_charts(menus=menus)
-
-        return set(chain(charts, menu_charts))
+        return set(chain(self.charts, self.menu_charts))
 
     def to_dom(self):
         """Returns an XML dom presentation."""
@@ -77,24 +77,17 @@ class Presentation:
         xml.customer = self.terminal.customer.id
         xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
-        charts = tuple(self.charts)
-        xml.playlist = [chart.to_dom(brief=True) for chart in charts]
-        menus = tuple(self.menus)
-        xml.menu = [menu.to_dom() for menu in menus]
-        xml.chart = [
-            chart.to_dom() for chart in self.chart_set(
-                charts=charts, menus=menus)]
+        xml.playlist = [chart.to_dom(brief=True) for chart in self.charts]
+        xml.menu = [menu.to_dom() for menu in self.menus]
+        xml.chart = [chart.to_dom() for chart in self.chart_set]
         return xml
 
     def to_dict(self):
         """Returns a JSON presentation."""
-        charts = tuple(self.charts)
-        menus = tuple(self.menus)
         return {
             'customer': self.terminal.customer.id,
             'tid': self.terminal.tid,
             'configuration': self.configuration.to_dict(),
-            'playlist': [chart.to_dict(brief=True) for chart in charts],
-            'menus': [menu.to_dict() for menu in menus],
-            'charts': [chart.to_dict() for chart in self.chart_set(
-                charts=charts, menus=menus)]}
+            'playlist': [chart.to_dict(brief=True) for chart in self.charts],
+            'menus': [menu.to_dict() for menu in self.menus],
+            'charts': [chart.to_dict() for chart in self.chart_set]}
