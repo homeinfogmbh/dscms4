@@ -35,10 +35,10 @@ class Cleaning(Chart):
         if brief:
             return super().to_dom(dom.BriefChart)
 
-        dom = super().to_dom(dom.Cleaning)
-        dom.title = self.title
-        dom.mode = self.mode.value
-        dom.text = self.text
-        dom.font_size = self.font_size
-        dom.text_color = self.text_color
-        return dom
+        xml = super().to_dom(dom.Cleaning)
+        xml.title = self.title
+        xml.mode = self.mode.value
+        xml.text = self.text
+        xml.font_size = self.font_size
+        xml.text_color = self.text_color
+        return xml
