@@ -43,7 +43,7 @@ class Presentation:
     @property
     def menus(self):
         """Yields the terminal's menus."""
-        for menu in accumulated_menus(self.terminal):
+        for _, menu in accumulated_menus(self.terminal):
             yield menu
 
     @property
