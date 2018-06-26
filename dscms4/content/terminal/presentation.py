@@ -20,16 +20,6 @@ class Presentation:
         self.terminal = terminal
 
     @property
-    def tid(self):
-        """Returns the terminal ID."""
-        return self.terminal.tid
-
-    @property
-    def cid(self):
-        """Returns the customer ID."""
-        return self.terminal.customer.id
-
-    @property
     def configuration(self):
         """Returns the respective configuration."""
         return first_configuration(self.terminal)
@@ -46,46 +36,65 @@ class Presentation:
         for _, menu in accumulated_menus(self.terminal):
             yield menu
 
-    @property
-    def menu_charts(self):
-        """Yields accumulated charts from menus."""
-        for menu in self.menus:
-            for _, chart in accumulated_menu_charts(menu):
-                yield chart
-
-    @property
-    def chart_set(self):
-        """Returns a set of unique charts."""
-        return set(chain(self.charts, self.menu_charts))
-
-    @property
-    def files(self):
+    def file_set(self, configuration=None, chart_set=None, charts=None):
         """Yields the presentation's used file IDs."""
-        files = self.configuration.files
+        if configuration is None:
+            configuration = self.configuration
 
-        for _, chart in self.charts:
+        if chart_set is None:
+            chart_set = self.chart_set(charts=charts)
+
+        files = configuration.files
+
+        for chart in chart_set:
             with suppress(AttributeError):
                 files |= chart.files
 
         return files
 
+    def menu_charts(self, menus=None):
+        """Yields accumulated charts from menus."""
+        if menus is None:
+            menus = self.menus
+
+        for menu in menus:
+            for _, chart in accumulated_menu_charts(menu):
+                yield chart
+
+    def chart_set(self, charts=None, menu_charts=None, menus=None):
+        """Returns a set of unique charts."""
+        if charts is None:
+            charts = self.charts
+
+        if menu_charts is None:
+            menu_charts = self.menu_charts(menus=menus)
+
+        return set(chain(charts, menu_charts))
+
     def to_dom(self):
         """Returns an XML dom presentation."""
         xml = dom.presentation()
-        xml.customer = self.cid
-        xml.tid = self.tid
+        xml.customer = self.terminal.customer.id
+        xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
-        xml.playlist = [chart.to_dom(brief=True) for chart in self.charts]
-        xml.menu = [menu.to_dom() for menu in self.menus]
-        xml.chart = [chart.to_dom() for chart in self.chart_set]
+        charts = tuple(self.charts)
+        xml.playlist = [chart.to_dom(brief=True) for chart in charts]
+        menus = tuple(self.menus)
+        xml.menu = [menu.to_dom() for menu in menus]
+        xml.chart = [
+            chart.to_dom() for chart in self.chart_set(
+                charts=charts, menus=menus)]
         return xml
 
     def to_dict(self):
         """Returns a JSON presentation."""
+        charts = tuple(self.charts)
+        menus = tuple(self.menus)
         return {
-            'customer': self.cid,
-            'tid': self.tid,
+            'customer': self.terminal.customer.id,
+            'tid': self.terminal.tid,
             'configuration': self.configuration.to_dict(),
-            'playlist': [chart.to_dict(brief=True) for chart in self.charts],
-            'menus': [menu.to_dict() for menu in self.menus],
-            'charts': [chart.to_dict() for chart in self.chart_set]}
+            'playlist': [chart.to_dict(brief=True) for chart in charts],
+            'menus': [menu.to_dict() for menu in menus],
+            'charts': [chart.to_dict() for chart inself.chart_set(
+                charts=charts, menus=menus)]}
