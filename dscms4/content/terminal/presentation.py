@@ -96,5 +96,5 @@ class Presentation:
             'configuration': self.configuration.to_dict(),
             'playlist': [chart.to_dict(brief=True) for chart in charts],
             'menus': [menu.to_dict() for menu in menus],
-            'charts': [chart.to_dict() for chart inself.chart_set(
+            'charts': [chart.to_dict() for chart in self.chart_set(
                 charts=charts, menus=menus)]}
