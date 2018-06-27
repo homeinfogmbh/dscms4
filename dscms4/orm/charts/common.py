@@ -93,6 +93,7 @@ class BaseChart(CustomerModel):
         """Returns a JSON-ish dictionary."""
         dictionary = super().to_dict(*args, **kwargs)
         dictionary['uuid'] = self.uuid
+        return dictionary
 
     def to_dom(self):
         """Returns an XML DOM of the base chart."""
