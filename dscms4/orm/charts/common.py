@@ -6,6 +6,7 @@ for chart model implementation.
 
 from datetime import datetime
 from enum import Enum
+from uuid import uuid4
 
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     SmallIntegerField, BooleanField
@@ -54,7 +55,25 @@ class BaseChart(CustomerModel):
     transition = EnumField(Transitions)
     created = DateTimeField(default=datetime.now)
     trashed = BooleanField(default=False)
-    uuid = UUID4Field(null=True)
+    log = BooleanField(default=False)
+    _uuid = UUID4Field(column_name='uuid', null=True, default=None)
+
+    @classmethod
+    def from_dict(cls, customer, dictionary, *kwargs):
+        """Creates the base chart from the provided dictionary."""
+        record = super().from_dict(customer, dictionary, **kwargs)
+        record._uuid = uuid4() if record.log else None
+        return record
+
+    @property
+    def uuid(self):
+        """Returns the UUID."""
+        return self._uuid
+
+    @uuid.setter
+    def uuid(self, uuid):
+        """Sets the UUID."""
+        self._uuid = uuid
 
     @property
     def active(self):
@@ -63,6 +82,17 @@ class BaseChart(CustomerModel):
         return all((
             self.display_from is None or self.display_from > now,
             self.display_until is None or self.display_until < now))
+
+    def patch(self, dictionary, **kwargs):
+        """Patches the base chart."""
+        record = super().patch(dictionary, **kwargs)
+        record._uuid = uuid4() if record.log else None
+        return record
+
+    def to_dict(self, *args, **kwargs):
+        """Returns a JSON-ish dictionary."""
+        dictionary = super().to_dict(*args, **kwargs)
+        dictionary['uuid'] = self.uuid
 
     def to_dom(self):
         """Returns an XML DOM of the base chart."""
