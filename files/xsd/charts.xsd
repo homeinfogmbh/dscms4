@@ -69,6 +69,13 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="uuid" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Eideutige Entitäts-ID.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
 

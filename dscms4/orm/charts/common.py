@@ -11,7 +11,7 @@ from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
     SmallIntegerField, BooleanField
 
 from his.messages import MissingData
-from peeweeplus import EnumField
+from peeweeplus import EnumField, UUID4Field
 
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel, RecordGroup
@@ -54,6 +54,7 @@ class BaseChart(CustomerModel):
     transition = EnumField(Transitions)
     created = DateTimeField(default=datetime.now)
     trashed = BooleanField(default=False)
+    uuid = UUID4Field(null=True)
 
     @property
     def active(self):
@@ -74,6 +75,7 @@ class BaseChart(CustomerModel):
         xml.transition = self.transition.value
         xml.created = self.created
         xml.trashed = self.trashed
+        xml.uuid = self.uuid
         return xml
 
 
