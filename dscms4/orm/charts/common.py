@@ -62,7 +62,7 @@ class BaseChart(CustomerModel):
     def from_dict(cls, customer, dictionary, *kwargs):
         """Creates the base chart from the provided dictionary."""
         record = super().from_dict(customer, dictionary, **kwargs)
-        record._uuid = uuid4() if record.log else None
+        record.uuid = uuid4() if record.log else None
         return record
 
     @property
@@ -86,7 +86,7 @@ class BaseChart(CustomerModel):
     def patch(self, dictionary, **kwargs):
         """Patches the base chart."""
         record = super().patch(dictionary, **kwargs)
-        record._uuid = uuid4() if record.log else None
+        record.uuid = uuid4() if record.log else None
         return record
 
     def to_dict(self, *args, **kwargs):
@@ -105,7 +105,7 @@ class BaseChart(CustomerModel):
         xml.transition = self.transition.value
         xml.created = self.created
         xml.trashed = self.trashed
-        xml.uuid = self.uuid
+        xml.uuid = self.uuid.hex
         return xml
 
 
