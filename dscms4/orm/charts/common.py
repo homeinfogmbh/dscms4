@@ -165,11 +165,7 @@ class Chart(DSCMS4Model):
 
     def patch(self, dictionary, **kwargs):
         """Pathes the chart with the provided dictionary."""
-        try:
-            yield self.base.patch(dictionary.pop('base'))
-        except KeyError:
-            yield self.base
-
+        yield self.base.patch(dictionary.pop('base', {}))  # Generate new UUID.
         yield super().patch(dictionary, **kwargs)
 
     def to_dict(self, *args, brief=False, **kwargs):
