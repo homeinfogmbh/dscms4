@@ -109,7 +109,7 @@ class BaseChart(CustomerModel):
         xml.transition = self.transition.value
         xml.created = self.created
         xml.trashed = self.trashed
-        xml.uuid = self.uuid.hex
+        xml.uuid = self._uuid.hex
         return xml
 
 
