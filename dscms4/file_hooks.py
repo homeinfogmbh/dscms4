@@ -23,8 +23,9 @@ def _remove_wc_image(ident):
 def _remove_video_charts(ident):
     """Removes the respective video charts."""
 
-    for video_chart in Video.select().where(Video.video == ident):
-        video_chart.delete_instance()
+    for video in Video.select().where(Video.video == ident):
+        video.video = None
+        video.save()
 
 
 def _null_configurations(ident):

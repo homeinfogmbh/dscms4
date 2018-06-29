@@ -15,7 +15,7 @@ class Video(Chart):
     class Meta:
         table_name = 'chart_video'
 
-    video = IntegerField()
+    video = IntegerField(null=True)
 
     @property
     def files(self):
