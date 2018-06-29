@@ -28,7 +28,7 @@ def _remove_itc_images(ident):
 def _remove_wc_image(ident):
     """Removes the respective Images of Weather charts."""
 
-    for image in WCImage.delete().where(WCImage.image == ident):
+    for image in WCImage.select().where(WCImage.image == ident):
         LOGGER.info(
             'Deleting weather.Image %i with image %i.',
             image.id, ident)
