@@ -59,7 +59,7 @@ class BaseChart(CustomerModel):
     _uuid = UUID4Field(column_name='uuid', null=True, default=None)
 
     @classmethod
-    def from_dict(cls, customer, dictionary, *kwargs):
+    def from_dict(cls, customer, dictionary, **kwargs):
         """Creates the base chart from the provided dictionary."""
         record = super().from_dict(customer, dictionary, **kwargs)
         record.uuid = uuid4() if record.log else None
