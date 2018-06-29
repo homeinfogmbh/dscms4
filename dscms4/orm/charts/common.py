@@ -92,7 +92,10 @@ class BaseChart(CustomerModel):
     def to_dict(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
         dictionary = super().to_dict(*args, **kwargs)
-        dictionary['uuid'] = self.uuid.hex
+
+        if self._uuid:
+            dictionary['uuid'] = self._uuid.hex
+
         return dictionary
 
     def to_dom(self):
