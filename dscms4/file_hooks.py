@@ -11,7 +11,7 @@ from dscms4.orm.configuration import Configuration
 __all__ = ['on_delete']
 
 
-LOGGER = getLogger('dscms4.hooks')
+LOGGER = getLogger('dscms4.file_hooks')
 basicConfig(level=INFO, format=LOG_FORMAT)
 
 
