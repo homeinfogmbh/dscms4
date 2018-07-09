@@ -28,5 +28,5 @@ class Video(Chart):
             return super().to_dom(dom.BriefChart)
 
         xml = super().to_dom(dom.Video)
-        xml.video = attachment_dom(self.image)
+        xml.video = attachment_dom(self.video)
         return xml
