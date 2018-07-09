@@ -46,6 +46,12 @@ class Presentation:
 
     @property
     @lru_cache(maxsize=1)
+    def menu_set(self):
+        """Returns a set of unique menus."""
+        return set(self.menus)
+
+    @property
+    @lru_cache(maxsize=1)
     def files(self):
         """Yields the presentation's used file IDs."""
         files = self.configuration.files
@@ -78,7 +84,7 @@ class Presentation:
         xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
         xml.playlist = [chart.to_dom(brief=True) for chart in self.charts]
-        xml.menu = [menu.to_dom() for menu in self.menus]
+        xml.menu = [menu.to_dom() for menu in self.menu_set]
         xml.chart = [chart.to_dom() for chart in self.chart_set]
         return xml
 
@@ -89,5 +95,5 @@ class Presentation:
             'tid': self.terminal.tid,
             'configuration': self.configuration.to_dict(),
             'playlist': [chart.to_dict(brief=True) for chart in self.charts],
-            'menus': [menu.to_dict() for menu in self.menus],
+            'menus': [menu.to_dict() for menu in self.menu_set],
             'charts': [chart.to_dict() for chart in self.chart_set]}
