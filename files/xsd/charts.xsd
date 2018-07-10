@@ -603,7 +603,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         <xs:complexContent>
             <xs:extension base="Chart">
                 <xs:sequence>
-                    <xs:element name="video" type="Attachment">
+                    <xs:element name="video" type="Attachment" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
                                 Das entsprechende Video.
