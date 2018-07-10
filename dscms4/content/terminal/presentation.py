@@ -22,6 +22,11 @@ class Presentation:
         self.terminal = terminal
 
     @property
+    def customer(self):
+        """Returns the respective customer."""
+        return self.terminal.customer
+
+    @property
     def configuration(self):
         """Returns the respective configuration."""
         return first_configuration(self.terminal)
