@@ -46,7 +46,8 @@ def file_preview(presentation_class):
 
             if ident in presentation.files:
                 file = File.get(
-                    (File.id == ident) & (File.customer == presentation.cid))
+                    (File.id == ident)
+                    & (File.customer == presentation.customer))
                 return function(file, *args, **kwargs)
 
             raise Unauthorized(files=list(presentation.files))
