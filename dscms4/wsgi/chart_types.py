@@ -3,7 +3,7 @@
 from his import CUSTOMER, authenticated, authorized, root
 from wsgilib import JSON
 
-from homeinfo.crm import Customer
+from mdb import Customer
 
 from dscms4.orm.chart_types import ChartType
 from dscms4.orm.charts import CHARTS

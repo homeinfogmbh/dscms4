@@ -2,7 +2,7 @@
 
 from peewee import PrimaryKeyField, ForeignKeyField
 
-from homeinfo.crm import Customer
+from mdb import Customer
 from peeweeplus import MySQLDatabase, JSONModel
 
 from dscms4.config import CONFIG
