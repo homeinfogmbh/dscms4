@@ -1,7 +1,6 @@
 """Terminal presentation."""
 
 from contextlib import suppress
-from functools import lru_cache
 from itertools import chain
 
 from functoolsplus import returning
@@ -23,13 +22,11 @@ class Presentation:
         self.terminal = terminal
 
     @property
-    @lru_cache(maxsize=1)
     def configuration(self):
         """Returns the respective configuration."""
         return first_configuration(self.terminal)
 
     @property
-    @lru_cache(maxsize=1)
     @returning(tuple)
     def charts(self):
         """Yields the terminal's charts."""
@@ -37,7 +34,6 @@ class Presentation:
             yield chart
 
     @property
-    @lru_cache(maxsize=1)
     @returning(tuple)
     def menus(self):
         """Yields the terminal's menus."""
@@ -45,13 +41,11 @@ class Presentation:
             yield menu
 
     @property
-    @lru_cache(maxsize=1)
     def menu_set(self):
         """Returns a set of unique menus."""
         return set(self.menus)
 
     @property
-    @lru_cache(maxsize=1)
     def files(self):
         """Yields the presentation's used file IDs."""
         files = self.configuration.files
@@ -63,7 +57,6 @@ class Presentation:
         return files
 
     @property
-    @lru_cache(maxsize=1)
     @returning(tuple)
     def menu_charts(self):
         """Yields accumulated charts from menus."""
@@ -72,7 +65,6 @@ class Presentation:
                 yield chart
 
     @property
-    @lru_cache(maxsize=1)
     def chart_set(self):
         """Returns a set of unique charts."""
         return set(chain(self.charts, self.menu_charts))
