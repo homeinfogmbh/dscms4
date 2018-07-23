@@ -41,10 +41,12 @@ def with_terminal(function):
 def list_():
     """Lists all terminals of the respective customer."""
 
-    terminals = Terminal.select().where(Terminal.customer == CUSTOMER.id)
+    expression = Terminal.customer == CUSTOMER.id
 
     if 'testing' not in request.args:
-        terminals &= Terminal.testing == 0
+        expression &= Terminal.testing == 0
+
+    terminals = Terminal.select().where(expression)
 
     try:
         size = int(request.args['size'])
