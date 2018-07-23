@@ -43,6 +43,9 @@ def list_():
 
     terminals = Terminal.select().where(Terminal.customer == CUSTOMER.id)
 
+    if 'testing' not in request.args:
+        terminals &= Terminal.testing == 0
+
     try:
         size = int(request.args['size'])
     except KeyError:
