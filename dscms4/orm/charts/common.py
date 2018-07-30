@@ -183,7 +183,7 @@ class Chart(DSCMS4Model):
             dictionary = super().to_dict(*args, **kwargs)
 
         if not brief:
-            dictionary['base'] = self.base.to_dict(primary_key=False)
+            dictionary['base'] = self.base.to_dict(autofields=False)
 
         dictionary['type'] = self.__class__.__name__
         return dictionary
