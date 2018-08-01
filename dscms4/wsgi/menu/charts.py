@@ -1,13 +1,15 @@
 """DSCMS4 WSGI handlers for menu item charts."""
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from flask import request
+
+from his import CUSTOMER, authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
 from dscms4.messages.charts import InvalidChartType, NoSuchChart
 from dscms4.messages.menu import NoSuchMenuItemChart, MenuItemChartAdded, \
     MenuItemChartDeleted, DifferentMenuItemsError, MenuItemChartsSorted
-from dscms4.orm.charts import CHARTS, BaseChart
+from dscms4.orm.charts import CHARTS
 from dscms4.orm.menu import MenuItemChart
 from dscms4.wsgi.menu.item import get_menu_item
 
@@ -52,27 +54,25 @@ def list_(ident):
 def add():
     """Adds a new menu item."""
 
-    menu_item_chart = DATA.json
-
     try:
-        menu_item = menu_item_chart.pop('menu_item')
+        menu_item = request.json['menu_item']
     except KeyError:
         raise MissingData(key='menu_item')
 
     menu_item = get_menu_item(menu_item)
 
     try:
-        chart = menu_item_chart.pop('chart')
+        chart = request.json['chart']
     except KeyError:
         raise MissingData(key='chart')
 
     try:
-        type_ = chart.pop('type')
+        type_ = chart['type']
     except KeyError:
         raise MissingData(key='chart→type')
 
     try:
-        chart_id = chart.pop('id')
+        chart_id = chart['id']
     except KeyError:
         raise MissingData(key='chart→id')
 
@@ -96,7 +96,7 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    mi_charts = tuple(get_menu_item_chart(ident) for ident in DATA.json)
+    mi_charts = tuple(get_menu_item_chart(ident) for ident in request.json)
 
     try:
         sentinel = mi_charts[0].menu_item

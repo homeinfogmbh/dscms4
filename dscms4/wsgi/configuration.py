@@ -1,6 +1,8 @@
 """Configurations controller."""
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from flask import request
+
+from his import CUSTOMER, authenticated, authorized
 from his.messages import IncompleteData, InvalidData, MissingData
 
 from wsgilib import JSON
@@ -48,7 +50,7 @@ def add():
     """Adds a new configuration."""
 
     try:
-        records = tuple(Configuration.from_dict(CUSTOMER.id, DATA.json))
+        records = tuple(Configuration.from_dict(CUSTOMER.id, request.json))
     except MissingData as missing_data:
         raise IncompleteData(missing_data.missing)
     except InvalidData as invalid_data:
@@ -71,7 +73,7 @@ def patch(ident):
     """Modifies an existing configuration."""
 
     try:
-        records = tuple(get_configuration(ident).patch(DATA.json))
+        records = tuple(get_configuration(ident).patch(request.json))
     except MissingData as missing_data:
         raise IncompleteData(missing_data.missing)
     except InvalidData as invalid_data:

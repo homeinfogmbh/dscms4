@@ -1,6 +1,8 @@
 """DSCMS4 WSGI handlers for menus."""
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from flask import request
+
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
@@ -47,7 +49,7 @@ def add():
     """Adds a new menu."""
 
     try:
-        menu = Menu.from_dict(CUSTOMER.id, DATA.json)
+        menu = Menu.from_dict(CUSTOMER.id, request.json)
     except ValueError:
         raise InvalidMenuData()
 
@@ -63,7 +65,7 @@ def patch(ident):
     menu = get_menu(ident)
 
     try:
-        menu.patch(DATA.json)
+        menu.patch(request.json)
     except ValueError:
         raise InvalidMenuData()
 

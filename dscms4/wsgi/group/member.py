@@ -1,6 +1,8 @@
 """Group member controllers."""
 
-from his import DATA, authenticated, authorized
+from flask import request
+
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.group import NoSuchMemberType, NoSuchMember, MemberAdded,\
@@ -41,7 +43,7 @@ def add(group_id, member_type):
 
     group = get_group(group_id)
     member_class = get_member_class(member_type)
-    member = member_class.from_dict(group, DATA.json)
+    member = member_class.from_dict(group, request.json)
     member.save()
     return MemberAdded(id=member.id)
 

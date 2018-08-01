@@ -3,7 +3,7 @@
 from flask import request
 from werkzeug.local import LocalProxy
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from his.messages import InvalidData
 from peeweeplus import InvalidKeys
 from wsgilib import JSON
@@ -112,7 +112,7 @@ def add():
     """Adds new charts."""
 
     try:
-        records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, DATA.json))
+        records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, request.json))
     except InvalidKeys as invalid_keys:
         raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
@@ -128,7 +128,7 @@ def patch(ident):
     chart = get_chart(ident)
 
     try:
-        records = ChartGroup(chart.patch(DATA.json))
+        records = ChartGroup(chart.patch(request.json))
     except InvalidKeys as invalid_keys:
         raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 

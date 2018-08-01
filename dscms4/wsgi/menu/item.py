@@ -1,6 +1,8 @@
 """DSCMS4 WSGI handlers for menu items."""
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from flask import request
+
+from his import CUSTOMER, authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
@@ -52,21 +54,19 @@ def get(ident):
 def add():
     """Adds a new menu item."""
 
-    json = DATA.json
-
     try:
-        menu = json.pop('menu')
+        menu = request.json.pop('menu')
     except KeyError:
         raise MissingData(key='menu')
 
     menu = get_menu(menu)
-    parent = json.pop('parent', None)
+    parent = request.json.pop('parent', None)
 
     if parent is not None:
         parent = get_menu_item(parent)
 
     try:
-        menu_item = MenuItem.from_dict(menu, json, parent=parent)
+        menu_item = MenuItem.from_dict(menu, request.json, parent=parent)
     except ValueError:
         raise InvalidMenuData()
 
@@ -80,17 +80,16 @@ def patch(ident):
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-    json = DATA.json
 
     try:
-        menu = json.pop('menu')
+        menu = request.json.pop('menu')
     except KeyError:
         menu = UNCHANGED
     else:
         menu = get_menu(menu)
 
     try:
-        parent = json.pop('parent')
+        parent = request.json.pop('parent')
     except KeyError:
         parent = UNCHANGED
     else:
@@ -101,7 +100,7 @@ def patch(ident):
             raise DifferentMenusError()
 
     try:
-        menu_item.patch(json, menu=menu, parent=parent)
+        menu_item.patch(request.json, menu=menu, parent=parent)
     except ValueError:
         raise InvalidMenuData()
 
@@ -123,7 +122,7 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    menu_items = tuple(get_menu_item(ident) for ident in DATA.json)
+    menu_items = tuple(get_menu_item(ident) for ident in request.json)
 
     try:
         sentinel = menu_items[0].menu

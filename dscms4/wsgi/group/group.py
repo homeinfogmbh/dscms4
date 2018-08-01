@@ -1,6 +1,8 @@
 """Group Controllers."""
 
-from his import CUSTOMER, DATA, authenticated, authorized
+from flask import request
+
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.common import CircularReference
@@ -43,7 +45,7 @@ def get(ident):
 def add():
     """Adds a new group."""
 
-    group = Group.from_dict(CUSTOMER.id, DATA.json)
+    group = Group.from_dict(CUSTOMER.id, request.json)
     group.save()
     return GroupAdded(id=group.id)
 
@@ -53,10 +55,8 @@ def add():
 def patch(ident):
     """Patches the respective group."""
 
-    json = DATA.json
-
     try:
-        parent = json.pop('parent')
+        parent = request.json.pop('parent')
     except KeyError:
         parent = KEEP_PARENT
     else:
@@ -64,7 +64,7 @@ def patch(ident):
             parent = get_group(parent)
 
     try:
-        get_group(ident).patch(json, parent=parent).save()
+        get_group(ident).patch(request.json, parent=parent).save()
     except CircularReferenceError:
         return CircularReference()
 
