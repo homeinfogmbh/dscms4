@@ -2,7 +2,7 @@
 
 from peewee import CharField
 
-from peeeweeplus import JSONField
+from peeweeplus import JSONField
 
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.common import CustomerModel
