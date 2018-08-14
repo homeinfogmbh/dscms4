@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 from enum import Enum
+from itertools import chain
 
 from peewee import BooleanField, SmallIntegerField, IntegerField, \
     ForeignKeyField, CharField
@@ -95,7 +96,7 @@ class RealEstates(Chart):
     parquet = JSONField(BooleanField, default=True)
     car_park = JSONField(BooleanField, default=True, key='carPark')
     wheelchair_accessible = JSONField(
-        BooleanFielddefault=True, key='wheelchairAccessible')
+        BooleanField, default=True, key='wheelchairAccessible')
     sauna = JSONField(BooleanField, default=True)
     stone = JSONField(BooleanField, default=True)
     swimming_pool = JSONField(BooleanField, default=True, key='swimmingPool')
