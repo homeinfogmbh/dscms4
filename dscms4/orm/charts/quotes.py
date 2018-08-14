@@ -2,6 +2,8 @@
 
 from peewee import IntegerField
 
+from peeweeplus import JSONField
+
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 
@@ -14,8 +16,8 @@ class Quotes(Chart):
     class Meta:
         table_name = 'chart_quotes'
 
-    font_color = IntegerField(0x000000)
-    background_color = IntegerField(0x000000)
+    font_color = JSONField(IntegerField, 0x000000, key='fontColor')
+    background_color = JSONField(IntegerField, 0x000000, key='backgroundColor')
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

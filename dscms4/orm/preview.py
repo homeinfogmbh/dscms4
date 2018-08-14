@@ -1,8 +1,10 @@
 """Preview tokens."""
 
-from peewee import ForeignKeyField
+from uuid import uuid4
 
-from peeweeplus import UUID4Field
+from peewee import ForeignKeyField, UUIDField
+
+from peeweeplus import JSONField
 from terminallib import Terminal
 
 from dscms4.messages.terminal import NoSuchTerminal
@@ -14,7 +16,7 @@ __all__ = ['TYPES', 'TerminalPreviewToken']
 class _PreviewToken(DSCMS4Model):
     """Common abstract preview token."""
 
-    token = UUID4Field()
+    token = JSONField(UUIDField, default=uuid4)
 
     @classmethod
     def generate(cls, ident, customer):
@@ -33,8 +35,8 @@ class TerminalPreviewToken(_PreviewToken):
     class Meta:
         table_name = 'terminal_preview_token'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
+    terminal = JSONField(
+        ForeignKeyField, Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def generate(cls, ident, customer):

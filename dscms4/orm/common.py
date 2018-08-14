@@ -1,9 +1,9 @@
 """Common ORM models."""
 
-from peewee import PrimaryKeyField, ForeignKeyField
+from peewee import AutoField, ForeignKeyField
 
 from mdb import Customer
-from peeweeplus import MySQLDatabase, JSONModel
+from peeweeplus import MySQLDatabase, JSONModel, JSONField
 
 from dscms4.config import CONFIG
 
@@ -40,7 +40,7 @@ class DSCMS4Model(JSONModel):
         database = DATABASE
         schema = database.database
 
-    id = PrimaryKeyField()
+    id = JSONField(AutoField)
 
     def __str__(self):
         """Returns the models's ID and class."""
@@ -55,7 +55,7 @@ class DSCMS4Model(JSONModel):
 class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer."""
 
-    customer = ForeignKeyField(Customer, column_name='customer')
+    customer = JSONField(ForeignKeyField, Customer, column_name='customer')
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):

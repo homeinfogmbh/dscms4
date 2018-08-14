@@ -7,7 +7,7 @@ from peewee import BooleanField, SmallIntegerField, IntegerField, \
     ForeignKeyField, CharField
 
 from openimmodb import Immobilie
-from peeweeplus import EnumField
+from peeweeplus import JSONField, EnumField
 
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model
@@ -38,93 +38,108 @@ class RealEstates(Chart):
     class Meta:
         table_name = 'chart_real_estates'
 
-    display_format = EnumField(
-        DisplayFormat, default=DisplayFormat.BIG_PICTURE)
-    ken_burns = BooleanField(default=False)
-    scaling = BooleanField(default=False)
-    slideshow = BooleanField(default=True)
-    qr_codes = BooleanField(default=False)
-    show_contact = BooleanField(default=True)
-    contact_picture = BooleanField(default=True)
-    font_size = SmallIntegerField(default=8)
-    font_color = IntegerField(default=0x000000)
+    display_format = JSONField(
+        EnumField, DisplayFormat, default=DisplayFormat.BIG_PICTURE,
+        key='displayFormat')
+    ken_burns = JSONField(BooleanField, default=False, key='kenBurns')
+    scaling = JSONField(BooleanField, default=False, key='scaling')
+    slideshow = JSONField(BooleanField, default=True, key='slideshow')
+    qr_codes = JSONField(BooleanField, default=False, key='qrCodes')
+    show_contact = JSONField(BooleanField, default=True, key='showContact')
+    contact_picture = JSONField(
+        BooleanField, default=True, key='contactPicture')
+    font_size = JSONField(SmallIntegerField, default=8, key='fontSize')
+    font_color = JSONField(IntegerField, default=0x000000, key='fontColor')
     # Data field selections:
-    amenities = BooleanField(default=True)
-    construction = BooleanField(default=True)
-    courtage = BooleanField(default=True)
-    floor = BooleanField(default=True)
-    area = BooleanField(default=True)
-    free_from = BooleanField(default=True)
-    coop_share = BooleanField(default=True)
-    total_area = BooleanField(default=True)
-    plot_area = BooleanField(default=True)
-    cold_rent = BooleanField(default=True)
-    purchase_price = BooleanField(default=True)
-    security_deposit = BooleanField(default=True)
-    service_charge = BooleanField(default=True)
-    object_id = BooleanField(default=True)
-    description = BooleanField(default=True)
-    warm_rent = BooleanField(default=True)
-    rooms = BooleanField(default=True)
+    amenities = JSONField(BooleanField, default=True)
+    construction = JSONField(BooleanField, default=True)
+    courtage = JSONField(BooleanField, default=True)
+    floor = JSONField(BooleanField, default=True)
+    area = JSONField(BooleanField, default=True)
+    free_from = JSONField(BooleanField, default=True, key='freeFrom')
+    coop_share = JSONField(BooleanField, default=True, key='coopShare')
+    total_area = JSONField(BooleanField, default=True, key='totalArea')
+    plot_area = JSONField(BooleanField, default=True, key='plotArea')
+    cold_rent = JSONField(BooleanField, default=True, key='coldRent')
+    purchase_price = JSONField(BooleanField, default=True, key='purchasePrice')
+    security_deposit = JSONField(
+        BooleanField, default=True, key='securityDeposit')
+    service_charge = JSONField(BooleanField, default=True, key='serviceCharge')
+    object_id = JSONField(BooleanField, default=True, key='objectId')
+    description = JSONField(BooleanField, default=True)
+    warm_rent = JSONField(BooleanField, default=True, key='warmRent')
+    rooms = JSONField(BooleanField, default=True)
     # Amenities tags:
-    lift = BooleanField(default=True)
-    bathtub = BooleanField(default=True)
-    balcony = BooleanField(default=True)
-    accessibility = BooleanField(default=True)
-    assited_living = BooleanField(default=True)
-    carport = BooleanField(default=True)
-    floorboards = BooleanField(default=True)
-    duplex = BooleanField(default=True)
-    shower = BooleanField(default=True)
-    builtin_kitchen = BooleanField(default=True)
-    screed = BooleanField(default=True)     # Estrich.
-    tiles = BooleanField(default=True)
-    outdoor_parking = BooleanField(default=True)
-    garage = BooleanField(default=True)
-    cable_sat_tv = BooleanField(default=True)
-    fireplace = BooleanField(default=True)
-    basement = BooleanField(default=True)
-    plastic = BooleanField(default=True)
-    furnished = BooleanField(default=True)
-    parquet = BooleanField(default=True)
-    car_park = BooleanField(default=True)
-    wheelchair_accessible = BooleanField(default=True)
-    sauna = BooleanField(default=True)
-    stone = BooleanField(default=True)
-    swimming_pool = BooleanField(default=True)
-    carpet = BooleanField(default=True)
-    underground_carpark = BooleanField(default=True)
-    lavatory = BooleanField(default=True)
+    lift = JSONField(BooleanField, default=True)
+    bathtub = JSONField(BooleanField, default=True)
+    balcony = JSONField(BooleanField, default=True)
+    accessibility = JSONField(BooleanField, default=True)
+    assited_living = JSONField(
+        BooleanField, default=True, key='assistedLiving')
+    carport = JSONField(BooleanField, default=True)
+    floorboards = JSONField(BooleanField, default=True)
+    duplex = JSONField(BooleanField, default=True)
+    shower = JSONField(BooleanField, default=True)
+    builtin_kitchen = JSONField(
+        BooleanField, default=True, key='builtinKitchen')
+    screed = JSONField(BooleanField, default=True)  # Estrich.
+    tiles = JSONField(BooleanField, default=True)
+    outdoor_parking = JSONField(
+        BooleanField, default=True, key='outdoorParking')
+    garage = JSONField(BooleanField, default=True)
+    cable_sat_tv = JSONField(BooleanField, default=True, key='cableSatTv')
+    fireplace = JSONField(BooleanField, default=True)
+    basement = JSONField(BooleanField, default=True)
+    plastic = JSONField(BooleanField, default=True)
+    furnished = JSONField(BooleanField, default=True)
+    parquet = JSONField(BooleanField, default=True)
+    car_park = JSONField(BooleanField, default=True, key='carPark')
+    wheelchair_accessible = JSONField(
+        BooleanFielddefault=True, key='wheelchairAccessible')
+    sauna = JSONField(BooleanField, default=True)
+    stone = JSONField(BooleanField, default=True)
+    swimming_pool = JSONField(BooleanField, default=True, key='swimmingPool')
+    carpet = JSONField(BooleanField, default=True)
+    underground_carpark = JSONField(
+        BooleanField, default=True, key='undergroundCarpark')
+    lavatory = JSONField(BooleanField, default=True)
     # Rooms selector:
-    rooms_1 = BooleanField(default=True)
-    rooms_2 = BooleanField(default=True)
-    rooms_3 = BooleanField(default=True)
-    rooms_4 = BooleanField(default=True)
-    rooms_5 = BooleanField(default=True)
-    rooms_5_or_more = BooleanField(default=True)
+    rooms_1 = JSONField(BooleanField, default=True, key='rooms1')
+    rooms_2 = JSONField(BooleanField, default=True, key='rooms2')
+    rooms_3 = JSONField(BooleanField, default=True, key='rooms3')
+    rooms_4 = JSONField(BooleanField, default=True, key='rooms4')
+    rooms_5 = JSONField(BooleanField, default=True, key='rooms5')
+    rooms_5_or_more = JSONField(BooleanField, default=True, key='rooms5orMore')
     # Real estate type:
-    finance_project = BooleanField(default=True)
-    business_realty = BooleanField(default=True)
-    short_term_accommocation = BooleanField(default=True)
-    living_realty = BooleanField(default=True)
+    finance_project = JSONField(
+        BooleanField, default=True, key='financeProject')
+    business_realty = JSONField(
+        BooleanField, default=True, key='businessRealty')
+    short_term_accommodation = JSONField(
+        BooleanField, default=True, key='shortTermAccomodation')
+    living_realty = JSONField(BooleanField, default=True, key='livingRealty')
     # Subtypes:
-    office = BooleanField(default=True)
-    retail = BooleanField(default=True)
-    recreational = BooleanField(default=True)
-    hospitality_industry = BooleanField(default=True)
-    plot = BooleanField(default=True)
-    hall_warehouse_production = BooleanField(default=True)
-    house = BooleanField(default=True)
-    agriculture_forestry = BooleanField(default=True)
-    miscellaneous = BooleanField(default=True)
-    flat = BooleanField(default=True)
-    room = BooleanField(default=True)
-    income_property = BooleanField(default=True)
+    office = JSONField(BooleanField, default=True)
+    retail = JSONField(BooleanField, default=True)
+    recreational = JSONField(BooleanField, default=True)
+    hospitality_industry = JSONField(
+        BooleanField, default=True, key='hospitalityIndustry')
+    plot = JSONField(BooleanField, default=True)
+    hall_warehouse_production = JSONField(
+        BooleanField, default=True, key='hallWarehouseProduction')
+    house = JSONField(BooleanField, default=True)
+    agriculture_forestry = JSONField(
+        BooleanField, default=True, key='agricultureForestry')
+    miscellaneous = JSONField(BooleanField, default=True)
+    flat = JSONField(BooleanField, default=True)
+    room = JSONField(BooleanField, default=True)
+    income_property = JSONField(
+        BooleanField, default=True, key='incomeProperty')
     # Sale type:
-    emphyteusis = BooleanField(default=True)    # Erbpacht.
-    leasing = BooleanField(default=True)
-    rent = BooleanField(default=True)
-    sale = BooleanField(default=True)
+    emphyteusis = JSONField(BooleanField, default=True)     # Erbpacht.
+    leasing = JSONField(BooleanField, default=True)
+    rent = JSONField(BooleanField, default=True)
+    sale = JSONField(BooleanField, default=True)
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
@@ -311,19 +326,21 @@ class IdFilter(DSCMS4Model):
     class Meta:
         table_name = 'filter_id'
 
-    chart = ForeignKeyField(
-        RealEstates, column_name='chart', backref='id_filters',
-        on_delete='CASCADE')
-    value = CharField(255)
-    type_ = EnumField(IdTypes, column_name='type')
+    chart = JSONField(
+        ForeignKeyField, RealEstates, column_name='chart',
+        backref='id_filters', on_delete='CASCADE')
+    value = JSONField(CharField, 255)
+    type_ = JSONField(EnumField, IdTypes, column_name='type')
 
     def __call__(self, real_estate):
         """Checks the filter against the respective real estate."""
         if self.typ == IdTypes.INTERN:
             return self.value == real_estate.objektnr_intern
-        elif self.typ == IdTypes.EXTERN:
+
+        if self.typ == IdTypes.EXTERN:
             return self.value == real_estate.objektnr_extern
-        elif self.typ == IdTypes.OPENIMMO:
+
+        if self.typ == IdTypes.OPENIMMO:
             return self.value == real_estate.openimmo_obid
 
         raise ValueError('Unexpected ID type.')
@@ -351,12 +368,12 @@ class ZipCodeFilter(DSCMS4Model):
     class Meta:
         table_name = 'filter_zip_code'
 
-    chart = ForeignKeyField(
-        RealEstates, column_name='chart', backref='zip_code_filters',
-        on_delete='CASCADE')
-    zip_code = CharField(255)
+    chart = JSONField(
+        ForeignKeyField, RealEstates, column_name='chart',
+        backref='zip_code_filters', on_delete='CASCADE')
+    zip_code = JSONField(CharField, 255, key='zipCode')
     # True: blacklist, False: whitelist.
-    blacklist = BooleanField(default=False)
+    blacklist = JSONField(BooleanField, default=False)
 
     def __call__(self, real_estate):
         """Checks the filter against the respective real estate."""

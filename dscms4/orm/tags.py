@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from peewee import ForeignKeyField, CharField
 
+from peeweeplus import JSONField
 from tenements import ApartmentBuilding
 from terminallib import Terminal
 
@@ -78,7 +79,7 @@ def find_top(tags):
 class Tag(CustomerModel):
     """A basic, abstract tag."""
 
-    tag = CharField(255)
+    tag = JSONField(CharField, 255)
 
     def to_dict(self):
         """Returns a JSON-ish dictionary."""
@@ -91,8 +92,8 @@ class TerminalTag(Tag):
     class Meta:
         table_name = 'tags_terminal'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
+    terminal = JSONField(
+        ForeignKeyField, Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, terminal, lst):
@@ -119,8 +120,9 @@ class ComCatAccountTag(Tag):
     class Meta:
         table_name = 'tags_comcat_account'
 
-    comcat_account = ForeignKeyField(
-        ComCatAccount, column_name='comcat_account', on_delete='CASCADE')
+    comcat_account = JSONField(
+        ForeignKeyField, ComCatAccount, column_name='comcat_account',
+        on_delete='CASCADE', key='comcatAccount')
 
     @classmethod
     def from_list(cls, customer, comcat_account, lst):
@@ -147,9 +149,9 @@ class ApartmentBuildingTag(Tag):
     class Meta:
         table_name = 'tags_apartment_building'
 
-    apartment_building = ForeignKeyField(
-        ApartmentBuilding, column_name='apartment_building',
-        on_delete='CASCADE')
+    apartment_building = JSONField(
+        ForeignKeyField, ApartmentBuilding, column_name='apartment_building',
+        on_delete='CASCADE', key='apartmentBuilding')
 
     @classmethod
     def from_list(cls, customer, apartment_building, lst):

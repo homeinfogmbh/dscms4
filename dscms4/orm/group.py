@@ -5,6 +5,7 @@ from itertools import chain
 from peewee import ForeignKeyField, CharField, TextField
 
 from his.messages.data import MissingData, InvalidData
+from peeweeplus import JSONField
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
@@ -78,9 +79,10 @@ class MemberProxy:
 class Group(CustomerModel):
     """Groups of 'clients' that can be assigned content."""
 
-    name = CharField(255)
-    description = TextField(null=True)
-    parent = ForeignKeyField('self', column_name='parent', null=True)
+    name = JSONField(CharField, 255)
+    description = JSONField(TextField, null=True)
+    parent = JSONField(
+        ForeignKeyField, 'self', column_name='parent', null=True)
 
     @classmethod
     def toplevel(cls, customer=None):
@@ -180,7 +182,8 @@ class Group(CustomerModel):
 class GroupMember(DSCMS4Model):
     """An abstract group member model."""
 
-    group = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
+    group = JSONField(
+        ForeignKeyField, Group, column_name='group', on_delete='CASCADE')
 
     @classmethod
     def by_group(cls, group):
@@ -201,8 +204,8 @@ class GroupMemberTerminal(GroupMember):
         """Meta information for the database model."""
         table_name = 'group_member_terminal'
 
-    terminal = ForeignKeyField(
-        Terminal, column_name='terminal', on_delete='CASCADE')
+    terminal = JSONField(
+        ForeignKeyField, Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def add(cls, group, terminal):
@@ -244,8 +247,9 @@ class GroupMemberApartmentBuilding(GroupMember):
         """Meta information for the database model."""
         table_name = 'group_member_apartment_building'
 
-    apartment_building = ApartmentBuilding(
-        Terminal, column_name='apartment_building', on_delete='CASCADE')
+    apartment_building = JSONField(
+        ApartmentBuilding, Terminal, column_name='apartment_building',
+        on_delete='CASCADE', key='apartmentBuilding')
 
     @classmethod
     def add(cls, group, apartment_building):

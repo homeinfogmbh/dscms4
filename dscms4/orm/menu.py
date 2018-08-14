@@ -4,6 +4,8 @@ from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
+from peeweeplus import JSONField
+
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.charts import BaseChart
@@ -21,8 +23,8 @@ LOGGER = getLogger('Menu')
 class Menu(CustomerModel):
     """Menus trees."""
 
-    name = CharField(255)
-    description = CharField(255, null=True)
+    name = JSONField(CharField, 255)
+    description = JSONField(CharField, 255, null=True)
 
     @property
     def items(self):
@@ -51,13 +53,16 @@ class MenuItem(DSCMS4Model):
     class Meta:
         table_name = 'menu_item'
 
-    menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
-    parent = ForeignKeyField('self', column_name='parent', null=True)
-    name = CharField(255)
-    icon = CharField(255, null=True)
-    text_color = IntegerField(default=0x000000)
-    background_color = IntegerField(default=0xffffff)
-    index = IntegerField(default=0)
+    menu = JSONField(
+        ForeignKeyField, Menu, column_name='menu', on_delete='CASCADE')
+    parent = JSONField(
+        ForeignKeyField, 'self', column_name='parent', null=True)
+    name = JSONField(CharField, 255)
+    icon = JSONField(CharField, 255, null=True)
+    text_color = JSONField(IntegerField, default=0x000000, key='textColor')
+    background_color = JSONField(
+        IntegerField, default=0xffffff, key='backgroundColor')
+    index = JSONField(IntegerField, default=0)
 
     @classmethod
     def from_dict(cls, menu, dictionary, parent=None):
@@ -169,12 +174,13 @@ class MenuItemChart(DSCMS4Model):
     class Meta:
         table_name = 'menu_item_chart'
 
-    menu_item = ForeignKeyField(
-        MenuItem, null=True, column_name='menu_item',
-        backref='menu_item_charts', on_delete='CASCADE')
-    base_chart = ForeignKeyField(
-        BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
-    index = IntegerField(default=0)
+    menu_item = JSONField(
+        ForeignKeyField, MenuItem, null=True, column_name='menu_item',
+        backref='menu_item_charts', on_delete='CASCADE', key='menuItem')
+    base_chart = JSONField(
+        ForeignKeyField, BaseChart, null=True, column_name='base_chart',
+        on_delete='CASCADE', key='baseChart')
+    index = JSONField(IntegerField, default=0)
 
     @classmethod
     def add(cls, menu_item, base_chart):

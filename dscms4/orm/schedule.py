@@ -3,7 +3,9 @@
 from datetime import datetime
 from peewee import DateTimeField, SmallIntegerField
 
-from .common import CustomerModel
+from peeeweeplus import JSONField
+
+from dscms4.orm.common import CustomerModel
 
 __all__ = ['Schedule']
 
@@ -24,9 +26,9 @@ class Schedule(CustomerModel):
         2^6   2^5   2^4   2^3   2^2   2^1   2^0
     """
 
-    begin = DateTimeField(null=True)
-    end = DateTimeField(null=True)
-    weekdays = SmallIntegerField(default=ALL_WEEK)
+    begin = JSONField(DateTimeField, null=True)
+    end = JSONField(DateTimeField, null=True)
+    weekdays = JSONField(SmallIntegerField, default=ALL_WEEK)
 
     def __str__(self):
         """Returns a human-readable representation of the schedule."""

@@ -9,10 +9,10 @@ from enum import Enum
 from uuid import uuid4
 
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
-    SmallIntegerField, BooleanField
+    SmallIntegerField, BooleanField, UUIDField
 
 from his.messages import MissingData
-from peeweeplus import EnumField, UUID4Field
+from peeweeplus import JSONField, EnumField
 
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel, RecordGroup
@@ -40,6 +40,8 @@ class ChartGroup(RecordGroup):
             if isinstance(record, Chart):
                 return record
 
+        raise ValueError('No chart found.')
+
 
 class BaseChart(CustomerModel):
     """Common basic chart data model."""
@@ -47,16 +49,17 @@ class BaseChart(CustomerModel):
     class Meta:
         table_name = 'base_chart'
 
-    title = CharField(255)
-    description = TextField(null=True)
-    duration = SmallIntegerField(default=10)
-    display_from = DateTimeField(null=True)
-    display_until = DateTimeField(null=True)
-    transition = EnumField(Transitions)
-    created = DateTimeField(default=datetime.now)
-    trashed = BooleanField(default=False)
-    log = BooleanField(default=False)
-    _uuid = UUID4Field(column_name='uuid', null=True, default=None)
+    title = JSONField(CharField, 255)
+    description = JSONField(TextField, null=True)
+    duration = JSONField(SmallIntegerField, default=10)
+    display_from = JSONField(DateTimeField, null=True)
+    display_until = JSONField(DateTimeField, null=True)
+    transition = JSONField(EnumField, Transitions)
+    created = JSONField(DateTimeField, default=datetime.now)
+    trashed = JSONField(BooleanField, default=False)
+    log = JSONField(BooleanField, default=False)
+    uuid = JSONField(
+        UUIDField, column_name='uuid', null=True, deserialize=False)
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
@@ -64,16 +67,6 @@ class BaseChart(CustomerModel):
         record = super().from_dict(customer, dictionary, **kwargs)
         record.uuid = uuid4() if record.log else None
         return record
-
-    @property
-    def uuid(self):
-        """Returns the UUID."""
-        return self._uuid
-
-    @uuid.setter
-    def uuid(self, uuid):
-        """Sets the UUID."""
-        self._uuid = uuid
 
     @property
     def active(self):
@@ -119,7 +112,8 @@ class BaseChart(CustomerModel):
 class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
-    base = ForeignKeyField(BaseChart, column_name='base', on_delete='CASCADE')
+    base = JSONField(
+        ForeignKeyField, BaseChart, column_name='base', on_delete='CASCADE')
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
