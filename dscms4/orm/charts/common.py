@@ -86,8 +86,8 @@ class BaseChart(CustomerModel):
         """Returns a JSON-ish dictionary."""
         dictionary = super().to_dict(*args, **kwargs)
 
-        if self._uuid:
-            dictionary['uuid'] = self._uuid.hex
+        if self.uuid:
+            dictionary['uuid'] = self.uuid.hex
 
         return dictionary
 
@@ -103,8 +103,8 @@ class BaseChart(CustomerModel):
         xml.created = self.created
         xml.trashed = self.trashed
 
-        if self._uuid:
-            xml.uuid = self._uuid.hex
+        if self.uuid:
+            xml.uuid = self.uuid.hex
 
         return xml
 
