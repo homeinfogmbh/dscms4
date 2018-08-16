@@ -7,18 +7,19 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
-from peeweeplus import JSONField, EnumField, CascadingFKField
+from peeweeplus import EnumField, CascadingFKField
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = [
+    'TIME_FORMAT',
+    'MODELS',
     'Colors',
     'Configuration',
     'Ticker',
-    'Backlight',
-    'MODELS']
+    'Backlight']
 
 
 TIME_FORMAT = '%H:%M'
@@ -64,16 +65,22 @@ class TickerTypes(Enum):
 class Colors(DSCMS4Model):
     """Colors of a configuration."""
 
-    header = JSONField(IntegerField)
-    header_background = JSONField(IntegerField, key='headerBackground')
-    background_left = JSONField(IntegerField, key='backgroundLeft')
-    background_right = JSONField(IntegerField, key='backgroundRight')
-    ticker = JSONField(IntegerField)
-    ticker_background = JSONField(IntegerField, key='tickerBackground')
-    clock = JSONField(IntegerField)
-    title = JSONField(IntegerField)
-    text = JSONField(IntegerField)
-    text_background = JSONField(IntegerField, key='textBackground')
+    header = IntegerField()
+    header_background = IntegerField()
+    background_left = IntegerField()
+    background_right = IntegerField()
+    ticker = IntegerField()
+    ticker_background = IntegerField()
+    clock = IntegerField()
+    title = IntegerField()
+    text = IntegerField()
+    text_background = IntegerField()
+    JSON_KEYS = {
+        'headerBackground': header_background,
+        'backgroundLeft': background_left,
+        'backgroundRight': background_right,
+        'tickerBackground': ticker_background,
+        'textBackground': text_background}
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
@@ -94,46 +101,40 @@ class Colors(DSCMS4Model):
 class Configuration(CustomerModel):
     """Customer configuration for charts."""
 
-    name = JSONField(CharField, 255)
-    description = JSONField(CharField, 255, null=True)
-    font = JSONField(EnumField, Font)
-    portrait = JSONField(BooleanField, default=False)
-    touch = JSONField(BooleanField)
-    design = JSONField(EnumField, Design)
-    effects = JSONField(BooleanField)
-    ticker_speed = JSONField(SmallIntegerField, key='tickerSpeed')
-    colors = JSONField(ForeignKeyField, Colors, column_name='colors')
-    title_size = JSONField(SmallIntegerField, key='titleSize')
-    text_size = JSONField(SmallIntegerField, key='textSize')
-    logo = JSONField(IntegerField, null=True)
-    background = JSONField(IntegerField, null=True)
-    dummy_picture = JSONField(IntegerField, null=True)
-    hide_cursor = JSONField(BooleanField, default=True, key='hideCursor')
-    rotation = JSONField(SmallIntegerField, default=0)
-    email_form = JSONField(BooleanField, key='emailForm')
-    volume = JSONField(SmallIntegerField)
+    name = CharField(255)
+    description = CharField(255, null=True)
+    font = EnumField(Font)
+    portrait = BooleanField(default=False)
+    touch = BooleanField()
+    design = EnumField(Design)
+    effects = BooleanField()
+    ticker_speed = SmallIntegerField()
+    colors = ForeignKeyField(Colors, column_name='colors')
+    title_size = SmallIntegerField()
+    text_size = SmallIntegerField()
+    logo = IntegerField(null=True)
+    background = IntegerField(null=True)
+    dummy_picture = IntegerField(null=True)
+    hide_cursor = BooleanField(default=True)
+    rotation = SmallIntegerField(default=0)
+    email_form = BooleanField()
+    volume = SmallIntegerField()
+    JSON_KEYS = {
+        'tickerSpeed': ticker_speed, 'titleSize': title_size,
+        'textSize': text_size, 'hideCursor': hide_cursor,
+        'emailForm': email_form}
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, customer, dictionary, **kwargs):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
-        colors = dictionary.pop('colors', {})
-        tickers = dictionary.pop('tickers', ())
-        backlights = dictionary.pop('backlight', {})
-        configuration = super().from_dict(customer, dictionary, **kwargs)
+        configuration = super().from_json(customer, dictionary, **kwargs)
         configuration.customer = customer
-        colors = Colors.from_dict(colors)
+        colors = Colors.from_json(colors)
         yield colors
         configuration.colors = colors
         yield configuration
-
-        for ticker in tickers:
-            yield Ticker.from_dict(configuration, ticker)
-
-        for backlight in Backlight.from_dict(
-                backlights, configuration=configuration):
-            yield backlight
 
     @property
     def files(self):
@@ -158,42 +159,23 @@ class Configuration(CustomerModel):
 
         for backlight in self.backlights:
             with suppress(ValueError):
-                backlights.update(backlight.to_dict())
+                backlights.update(backlight.to_json())
 
         return backlights
 
-    def to_dict(self, **kwargs):
+    def to_json(self, cascade=False, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
-        dictionary = super().to_dict(**kwargs)
-        dictionary['colors'] = self.colors.to_dict()
-        dictionary['tickers'] = [ticker.to_dict() for ticker in self.tickers]
-        dictionary['backlight'] = self.backlight_dict
+        dictionary = super().to_json(**kwargs)
+
+        if cascade:
+            dictionary['colors'] = self.colors.to_json(
+                **kwargs, autofields=False, fk_fields=False)
+            dictionary['tickers'] = [
+                ticker.to_json(autofields=False, fk_fields=False)
+                for ticker in self.tickers]
+            dictionary['backlight'] = self.backlight_dict
+
         return dictionary
-
-    def patch(self, dictionary, **kwargs):
-        """Patches the configuration."""
-        colors = dictionary.pop('colors', None)
-        tickers = dictionary.pop('tickers', None)
-        backlights = dictionary.pop('backlight', None)
-        yield super().patch(dictionary, **kwargs)
-
-        if colors is not None:
-            yield self.colors.patch(colors)
-
-        if tickers is not None:
-            for ticker in self.tickers:
-                ticker.delete_instance()
-
-            for ticker in tickers:
-                yield Ticker.from_dict(self, ticker)
-
-        if backlights is not None:
-            for backlight in self.backlights:
-                backlight.delete_instance()
-
-            for backlight in Backlight.from_dict(
-                    backlights, configuration=self):
-                yield backlight
 
     def to_dom(self):
         """Returns an XML DOM of the configuration."""
@@ -231,16 +213,15 @@ class Configuration(CustomerModel):
 class Ticker(DSCMS4Model):
     """Ticker."""
 
-    configuration = JSONField(
-        CascadingFKField, Configuration, column_name='configuration',
-        backref='tickers')
-    type_ = JSONField(EnumField, TickerTypes, column_name='type')
-    content = JSONField(TextField)
+    configuration = CascadingFKField(
+        Configuration, column_name='configuration', backref='tickers')
+    type_ = EnumField(TickerTypes, column_name='type')
+    content = TextField()
 
     @classmethod
-    def from_dict(cls, configuration, dictionary):
+    def from_json(cls, dictionary, configuration):
         """Creates a new ticker from the respective dictionary."""
-        ticker = super().from_dict(dictionary)
+        ticker = super().from_json(dictionary)
         ticker.configuration = configuration
         return ticker
 
@@ -255,21 +236,17 @@ class Ticker(DSCMS4Model):
 class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
-    configuration = JSONField(
-        CascadingFKField, Configuration, column_name='configuration',
-        backref='backlights')
-    time = JSONField(TimeField)
-    brightness = JSONField(SmallIntegerField)   # Brightness in percent.
+    configuration = CascadingFKField(
+        Configuration, column_name='configuration', backref='backlights')
+    time = TimeField()
+    brightness = SmallIntegerField()   # Brightness in percent.
 
     @classmethod
-    def from_dict(cls, dictionary, configuration=None):
-        """Yields new records from the provided dictionary."""
-        for time, brightness in dictionary.items():
-            time = datetime.strptime(time, TIME_FORMAT).time()
-            record = super().from_dict(
-                {'time': time, 'brightness': brightness})
-            record.configuration = configuration
-            yield record
+    def from_json(cls, json, configuration):
+        """Yields new records from the provided JSON-ish dictionary."""
+        backlight = super().from_json(json)
+        backlight.configuration = configuration
+        return backlight
 
     @property
     def percent(self):

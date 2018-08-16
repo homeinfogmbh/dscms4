@@ -49,12 +49,22 @@ def get(ident):
 def add():
     """Adds a new configuration."""
 
-    try:
-        records = tuple(Configuration.from_dict(CUSTOMER.id, request.json))
-    except MissingData as missing_data:
-        raise IncompleteData(missing_data.missing)
-    except InvalidData as invalid_data:
-        raise InvalidData(invalid_data.invalid)
+    json = request.json
+    colors = json.pop('colors', {})
+    tickers = json.pop('tickers', ())
+    backlight = json.pop('backlight', {})
+    configuration = Configuration.from_dict(json, CUSTOMER.id)
+    configuration.save()
+
+    for ticker in tickers:
+        ticker = Ticker.from_json(ticker, configuration)
+        ticker.save()
+
+    for time, brightness in backlight.items():
+        time = datetime.strptime(time, TIME_FORMAT).time()
+        backlight = {'time': time, 'brightness': brightness}
+        backlight = Backlight.from_json(backlight, configuration):
+        backlight.save()
 
     ident = None
 
@@ -72,15 +82,35 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    try:
-        records = tuple(get_configuration(ident).patch(request.json))
-    except MissingData as missing_data:
-        raise IncompleteData(missing_data.missing)
-    except InvalidData as invalid_data:
-        raise InvalidData(invalid_data.invalid)
+    json = request.json
+    colors = json.pop('colors', None)
+    tickers = json.pop('tickers', None)
+    backlight = json.pop('backlight', None)
+    configuration = get_configuration(ident)
+    configuration.patch(json)
+    configuration.save()
 
-    for record in records:
-        record.save()
+    # Patch related colors.
+    if colors is not None:
+        configuration.colors.patch_json(colors)
+        configuration.colors.save()
+
+    # Update related tickers.
+    if tickers is not None:
+        for ticker in configuration.tickers:
+            ticker.delete_instance()
+
+        for ticker in tickers:
+            ticker = Ticker.from_json(ticker, configuration)
+            ticker.save()
+
+    # Update backlight settings.
+    if backlight is not None:
+        for backlight_ in configuration.backlights:
+            backlight_.delete_instance()
+
+        for backlight in Backlight.from_json(backlight, configuration):
+            backlight.save()
 
     return ConfigurationPatched()
 
