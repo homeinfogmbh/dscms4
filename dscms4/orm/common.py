@@ -12,10 +12,8 @@ from dscms4.messages.common import InvalidReference
 __all__ = [
     'DATABASE',
     'create_tables',
-    'save',
     'DSCMS4Model',
-    'CustomerModel',
-    'RecordGroup']
+    'CustomerModel']
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG['db'])
@@ -26,12 +24,6 @@ def create_tables(models, fail_silently=True):
 
     for model in models:
         model.create_table(fail_silently=fail_silently)
-
-
-def save(models):
-    """Saves an iterable of models."""
-    for model in models:
-        model.save()
 
 
 class DSCMS4Model(JSONModel):
@@ -91,12 +83,3 @@ class CustomerModel(DSCMS4Model):
                 (cls.id == record_or_id) & (cls.customer == self.customer))
         except cls.DoesNotExist:
             raise InvalidReference()
-
-
-class RecordGroup(tuple):
-    """A group of records that shall be handled together."""
-
-    def save(self, *args, **kwargs):
-        """Saves the records."""
-        for record in self:
-            record.save(*args, **kwargs)
