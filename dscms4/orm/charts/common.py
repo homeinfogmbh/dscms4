@@ -15,7 +15,7 @@ from his.messages import MissingData
 from peeweeplus import JSONField, EnumField
 
 from dscms4 import dom
-from dscms4.orm.common import DSCMS4Model, CustomerModel, RecordGroup
+from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = ['BaseChart', 'Chart']
 
@@ -28,19 +28,6 @@ class Transitions(Enum):
     SLIDE_IN = 'slide-in'
     RANDOM = 'random'
     NONE = None
-
-
-class ChartGroup(RecordGroup):
-    """A Record group with a chart property."""
-
-    @property
-    def chart(self):
-        """Reutns the chart record."""
-        for record in self:
-            if isinstance(record, Chart):
-                return record
-
-        raise ValueError('No chart found.')
 
 
 class BaseChart(CustomerModel):
