@@ -179,14 +179,14 @@ class Chart(DSCMS4Model):
         if not brief:
             dictionary['base'] = self.base.to_dict(autofields=False)
 
-        dictionary['type'] = self.__class__.__name__
+        dictionary['type'] = type(self).__name__
         return dictionary
 
     def to_dom(self, model):
         """Returns an XML DOM of this chart."""
         xml = model()
         xml.id = self.id
-        xml.type = self.__class__.__name__
+        xml.type = type(self).__name__
 
         if model is dom.BriefChart:
             return xml
