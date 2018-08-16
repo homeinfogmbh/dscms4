@@ -1,7 +1,6 @@
 """Configurations, colors, tickers and brightness settings."""
 
 from contextlib import suppress
-from datetime import datetime
 from enum import Enum
 
 from peewee import ForeignKeyField, TimeField, IntegerField, \
@@ -125,16 +124,13 @@ class Configuration(CustomerModel):
         'emailForm': email_form}
 
     @classmethod
-    def from_json(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, customer, colors, **kwargs):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
-        configuration = super().from_json(customer, dictionary, **kwargs)
-        configuration.customer = customer
-        colors = Colors.from_json(colors)
-        yield colors
+        configuration = super().from_json(json, customer, **kwargs)
         configuration.colors = colors
-        yield configuration
+        return configuration
 
     @property
     def files(self):
@@ -165,17 +161,17 @@ class Configuration(CustomerModel):
 
     def to_json(self, cascade=False, **kwargs):
         """Converts the configuration into a JSON-like dictionary."""
-        dictionary = super().to_json(**kwargs)
+        json = super().to_json(**kwargs)
 
         if cascade:
-            dictionary['colors'] = self.colors.to_json(
+            json['colors'] = self.colors.to_json(
                 **kwargs, autofields=False, fk_fields=False)
-            dictionary['tickers'] = [
+            json['tickers'] = [
                 ticker.to_json(autofields=False, fk_fields=False)
                 for ticker in self.tickers]
-            dictionary['backlight'] = self.backlight_dict
+            json['backlight'] = self.backlight_dict
 
-        return dictionary
+        return json
 
     def to_dom(self):
         """Returns an XML DOM of the configuration."""
@@ -219,9 +215,9 @@ class Ticker(DSCMS4Model):
     content = TextField()
 
     @classmethod
-    def from_json(cls, dictionary, configuration):
+    def from_json(cls, json, configuration, **kwargs):
         """Creates a new ticker from the respective dictionary."""
-        ticker = super().from_json(dictionary)
+        ticker = super().from_json(json, **kwargs)
         ticker.configuration = configuration
         return ticker
 
@@ -242,9 +238,9 @@ class Backlight(DSCMS4Model):
     brightness = SmallIntegerField()   # Brightness in percent.
 
     @classmethod
-    def from_json(cls, json, configuration):
+    def from_json(cls, json, configuration, **kwargs):
         """Yields new records from the provided JSON-ish dictionary."""
-        backlight = super().from_json(json)
+        backlight = super().from_json(json, **kwargs)
         backlight.configuration = configuration
         return backlight
 

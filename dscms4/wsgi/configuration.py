@@ -1,15 +1,16 @@
 """Configurations controller."""
 
+from datetime import datetime
+
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
-from his.messages import IncompleteData, InvalidData, MissingData
-
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \
     ConfigurationAdded, ConfigurationPatched, ConfigurationDeleted
-from dscms4.orm.configuration import Configuration
+from dscms4.orm.configuration import TIME_FORMAT, Colors, Configuration, \
+    Ticker, Backlight
 
 __all__ = ['get_configuration', 'ROUTES']
 
@@ -53,28 +54,25 @@ def add():
     colors = json.pop('colors', {})
     tickers = json.pop('tickers', ())
     backlight = json.pop('backlight', {})
-    configuration = Configuration.from_dict(json, CUSTOMER.id)
+    # Create related colors first.
+    colors = Colors.from_json(colors)
+    colors.save()
+    configuration = Configuration.from_dict(json, CUSTOMER.id, colors)
     configuration.save()
 
+    # Create related tickers.
     for ticker in tickers:
         ticker = Ticker.from_json(ticker, configuration)
         ticker.save()
 
+    # Create related backlight records.
     for time, brightness in backlight.items():
         time = datetime.strptime(time, TIME_FORMAT).time()
         backlight = {'time': time, 'brightness': brightness}
-        backlight = Backlight.from_json(backlight, configuration):
+        backlight = Backlight.from_json(backlight, configuration)
         backlight.save()
 
-    ident = None
-
-    for record in records:
-        record.save()
-
-        if ident is None and isinstance(record, Configuration):
-            ident = record.id
-
-    return ConfigurationAdded(id=ident)
+    return ConfigurationAdded(id=configuration.id)
 
 
 @authenticated
