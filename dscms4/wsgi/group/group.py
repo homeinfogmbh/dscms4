@@ -9,7 +9,7 @@ from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
     GroupDeleted
 from dscms4.orm.exceptions import CircularReferenceError
-from dscms4.orm.group import KEEP_PARENT, Group
+from dscms4.orm.group import Group
 
 __all__ = ['get_group', 'ROUTES']
 
@@ -28,7 +28,7 @@ def get_group(gid):
 def list_():
     """Lists IDs of groups of the respective customer."""
 
-    return JSON([group.to_dict() for group in Group.select().where(
+    return JSON([group.to_json() for group in Group.select().where(
         Group.customer == CUSTOMER.id)])
 
 
@@ -37,7 +37,7 @@ def list_():
 def get(ident):
     """Returns the respective group."""
 
-    return JSON(get_group(ident).to_dict())
+    return JSON(get_group(ident).to_json())
 
 
 @authenticated
@@ -45,7 +45,7 @@ def get(ident):
 def add():
     """Adds a new group."""
 
-    group = Group.from_dict(CUSTOMER.id, request.json)
+    group = Group.from_json(request.json, CUSTOMER.id)
     group.save()
     return GroupAdded(id=group.id)
 
@@ -56,15 +56,7 @@ def patch(ident):
     """Patches the respective group."""
 
     try:
-        parent = request.json.pop('parent')
-    except KeyError:
-        parent = KEEP_PARENT
-    else:
-        if parent is not None:
-            parent = get_group(parent)
-
-    try:
-        get_group(ident).patch(request.json, parent=parent).save()
+        get_group(ident).patch_json(request.json).save()
     except CircularReferenceError:
         return CircularReference()
 

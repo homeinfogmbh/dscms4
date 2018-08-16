@@ -2,7 +2,12 @@
 
 from his.messages import Message
 
-__all__ = ['DSCMS4Message', 'InvalidId', 'NoIdSpecified', 'CircularReference']
+__all__ = [
+    'DSCMS4Message',
+    'InvalidId',
+    'NoIdSpecified',
+    'CircularReference',
+    'InvalidReference']
 
 
 class DSCMS4Message(Message):
@@ -27,3 +32,11 @@ class CircularReference(DSCMS4Message):
     """Indicates that a circular reference was tried to be designed."""
 
     STATUS = 406
+
+
+class InvalidReference(DSCMS4Message):
+    """Indicates that an instance of a model was requested
+    that is not a valid peer of the original record.
+    """
+
+    STATUS = 400

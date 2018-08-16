@@ -59,6 +59,9 @@ msgstr "No ID specified."
 msgid "CircularReference"
 msgstr "Circular reference detected."
 
+msgid "InvalidReference"
+msgstr "Invalid reference."
+
 ### Configuration messages. ###
 
 msgid "NoSuchConfiguration"

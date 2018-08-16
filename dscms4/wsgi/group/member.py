@@ -7,7 +7,7 @@ from wsgilib import JSON
 
 from dscms4.messages.group import NoSuchMemberType, NoSuchMember, MemberAdded,\
     MemberDeleted
-from dscms4.orm.group import GROUP_MEMBERS
+from dscms4.orm.group import GROUP_MEMBERS, GroupMember
 from dscms4.wsgi.group.group import get_group
 
 __all__ = ['ROUTES']
@@ -30,7 +30,7 @@ def get(group_id):
     group = get_group(group_id)
     members = {
         member_type: [
-            member.to_dict() for member in member_class.select().where(
+            member.to_json() for member in member_class.select().where(
                 member_class.group == group)]
         for member_type, member_class in GROUP_MEMBERS.items()}
     return JSON(members)
@@ -38,12 +38,11 @@ def get(group_id):
 
 @authenticated
 @authorized('dscms4')
-def add(group_id, member_type):
+def add(group_id):
     """Adds the member to the respective group."""
 
     group = get_group(group_id)
-    member_class = get_member_class(member_type)
-    member = member_class.from_dict(group, request.json)
+    member = GroupMember.from_json(request.json, group)
     member.save()
     return MemberAdded(id=member.id)
 
@@ -68,7 +67,6 @@ def delete(group_id, member_type, member_id):
 
 ROUTES = (
     ('GET', '/group/<int:group_id>/member', get, 'get_group_members'),
-    ('POST', '/group/<int:group_id>/member/<member_type>', add,
-     'add_group_member'),
+    ('POST', '/group/<int:group_id>/member', add, 'add_group_member'),
     ('DELETE', '/group/<int:group_id>/member/<member_type>/<int:member_id>',
      delete, 'delete_group_member'))

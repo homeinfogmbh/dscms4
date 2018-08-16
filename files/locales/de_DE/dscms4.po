@@ -59,6 +59,9 @@ msgstr "Keine ID angegeben."
 msgid "CircularReference"
 msgstr "Zirkelbezug entdeckt."
 
+msgid "InvalidReference"
+msgstr "Ungültige Referenz."
+
 ### Configuration messages. ###
 
 msgid "NoSuchConfiguration"

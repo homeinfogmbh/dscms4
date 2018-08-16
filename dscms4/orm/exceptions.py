@@ -9,7 +9,9 @@ __all__ = [
     'QuotaExceeded',
     'NoSuchTerminal',
     'NoSuchComCatAccount',
-    'NoSuchApartment']
+    'NoSuchApartment',
+    'InvalidReferenceError',
+    'NoSuchMemberTypeError']
 
 
 class DSCMS4Error(Exception):
@@ -95,5 +97,19 @@ class NoSuchComCatAccount(DSCMS4Error):
 
 class NoSuchApartment(DSCMS4Error):
     """Indicates that the respective apartment does not exist."""
+
+    pass
+
+
+class InvalidReferenceError(DSCMS4Error):
+    """Indicates that the referenced record
+    does not belong to the same customer.
+    """
+
+    pass
+
+
+class NoSuchMemberTypeError(DSCMS4Error):
+    """Indicates that the respective member type does not exist."""
 
     pass
