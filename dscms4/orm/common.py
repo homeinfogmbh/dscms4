@@ -1,7 +1,9 @@
 """Common ORM models."""
 
+from flask import has_request_context
 from peewee import ForeignKeyField
 
+from his import CUSTOMER
 from mdb import Customer
 from peeweeplus import MySQLDatabase, JSONModel
 
@@ -59,9 +61,27 @@ class CustomerModel(DSCMS4Model):
         return record
 
     @classmethod
-    def by_customer(cls, customer):
-        """Yields records for the respective customer."""
+    def by_customer(cls, customer=None):
+        """Yields records of the respective customer."""
+        if customer is None:
+            customer = CUSTOMER.id
+
         return cls.select().where(cls.customer == customer)
+
+    @classmethod
+    def get(cls, *query, **filters):
+        """Returns the respective records for the customer in the current
+        HIS context iff no customer was explicitely specified in the filters.
+        """
+        try:
+            customer = filters.pop('customer')
+        except KeyError:
+            if not has_request_context():
+                return super().get(*query, **filters)
+
+            customer = CUSTOMER.id
+
+        return super().get(*query, customer=customer, **filters)
 
     def get_peer(self, record_or_id):
         """Ensures that the provided record or ID is of the same
