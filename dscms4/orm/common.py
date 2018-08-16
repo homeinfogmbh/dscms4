@@ -7,7 +7,7 @@ from his import CUSTOMER
 from mdb import Customer
 from peeweeplus import MySQLDatabase, JSONModel
 
-from dscms4.config import CONFIG
+from dscms4.config import CONFIG, LOGGER
 from dscms4.messages.common import InvalidReference
 
 
@@ -19,6 +19,15 @@ __all__ = [
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG['db'])
+
+
+def _log_warning():
+    """Logs warning and info message if no request context is
+    available and filtering for customer context is omitted.
+    """
+
+    LOGGER.warning('Querying outside of request context.')
+    LOGGER.info('Will not filter for customers.')
 
 
 def create_tables(models, fail_silently=True):
@@ -61,14 +70,6 @@ class CustomerModel(DSCMS4Model):
         return record
 
     @classmethod
-    def by_customer(cls, customer=None):
-        """Yields records of the respective customer."""
-        if customer is None:
-            customer = CUSTOMER.id
-
-        return cls.select().where(cls.customer == customer)
-
-    @classmethod
     def get(cls, *query, **filters):
         """Returns the respective records for the customer in the current
         HIS context iff no customer was explicitely specified in the filters.
@@ -76,6 +77,7 @@ class CustomerModel(DSCMS4Model):
         if has_request_context():
             return super().get(*query, customer=CUSTOMER.id, **filters)
 
+        _log_warning()
         return super().get(*query, **filters)
 
 
@@ -89,6 +91,8 @@ class CustomerModel(DSCMS4Model):
         if has_request_context():
             where = cls.customer == CUSTOMER.id
             model_select._where = where     # pylint: disable=W0212
+        else:
+            _log_warning()
 
         return model_select
 
