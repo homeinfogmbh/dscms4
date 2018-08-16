@@ -125,7 +125,7 @@ class MenuItem(DSCMS4Model):
 
         return self.delete_instance()
 
-    def patch_json(self, dictionary, *args, menu=UNCHANGED, parent=UNCHANGED,
+    def patch_json(self, json, *args, menu=UNCHANGED, parent=UNCHANGED,
                    **kwargs):
         """Patches the menu item."""
         super().patch_json(dictionary, *args, **kwargs)
