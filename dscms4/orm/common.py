@@ -73,15 +73,24 @@ class CustomerModel(DSCMS4Model):
         """Returns the respective records for the customer in the current
         HIS context iff no customer was explicitely specified in the filters.
         """
-        try:
-            customer = filters.pop('customer')
-        except KeyError:
-            if not has_request_context():
-                return super().get(*query, **filters)
+        if has_request_context():
+            return super().get(*query, customer=CUSTOMER.id, **filters)
 
-            customer = CUSTOMER.id
+        return super().get(*query, **filters)
 
-        return super().get(*query, customer=customer, **filters)
+
+    @classmethod
+    def select(cls, *fields):
+        """Returns a selection with additional filtering for
+        the current HIS customer iff within HIS context.
+        """
+        model_select = super().select(*fields)
+
+        if has_request_context():
+            where = cls.customer == CUSTOMER.id
+            model_select._where = where     # pylint: disable=W0212
+
+        return model_select
 
     def get_peer(self, record_or_id):
         """Ensures that the provided record or ID is of the same
