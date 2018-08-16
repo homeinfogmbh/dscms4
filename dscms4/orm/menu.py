@@ -4,8 +4,6 @@ from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
-from peeweeplus import JSONField
-
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.charts import BaseChart
@@ -23,8 +21,8 @@ LOGGER = getLogger('Menu')
 class Menu(CustomerModel):
     """Menus trees."""
 
-    name = JSONField(CharField, 255)
-    description = JSONField(CharField, 255, null=True)
+    name = CharField(255)
+    description = CharField(255, null=True)
 
     @property
     def items(self):
@@ -32,10 +30,10 @@ class Menu(CustomerModel):
         return MenuItem.select().where(
             (MenuItem.menu == self) & (MenuItem.parent >> None))
 
-    def to_dict(self):
+    def to_json(self):
         """Returns the menu as a dictionary."""
-        dictionary = super().to_dict()
-        dictionary['items'] = [item.to_dict() for item in self.items]
+        dictionary = super().to_json()
+        dictionary['items'] = [item.to_json() for item in self.items]
         return dictionary
 
     def to_dom(self):
@@ -53,21 +51,20 @@ class MenuItem(DSCMS4Model):
     class Meta:
         table_name = 'menu_item'
 
-    menu = JSONField(
-        ForeignKeyField, Menu, column_name='menu', on_delete='CASCADE')
-    parent = JSONField(
-        ForeignKeyField, 'self', column_name='parent', null=True)
-    name = JSONField(CharField, 255)
-    icon = JSONField(CharField, 255, null=True)
-    text_color = JSONField(IntegerField, default=0x000000, key='textColor')
-    background_color = JSONField(
-        IntegerField, default=0xffffff, key='backgroundColor')
-    index = JSONField(IntegerField, default=0)
+    menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
+    parent = ForeignKeyField(
+        'self', column_name='parent', null=True, backref='children')
+    name = CharField(255)
+    icon = CharField(255, null=True)
+    text_color = IntegerField(default=0x000000)
+    background_color = IntegerField(default=0xffffff)
+    index = IntegerField(default=0)
+    JSON_KEYS = {'textColor': text_color, 'backgroundColor': background_color}
 
     @classmethod
-    def from_dict(cls, menu, dictionary, parent=None):
+    def from_json(cls, json, menu, parent=None, **kwargs):
         """Creates a new menu item from the provided dictionary."""
-        menu_item = super().from_dict(dictionary)
+        menu_item = super().from_json(json, **kwargs)
         menu_item.menu = menu
         menu_item.parent = parent
         return menu_item
@@ -85,11 +82,6 @@ class MenuItem(DSCMS4Model):
                 yield parent
 
         yield self
-
-    @property
-    def children(self):
-        """Yields child menu items."""
-        return self.__class__.select().where(self.__class__.parent == self)
 
     @property
     def tree(self):
@@ -133,10 +125,10 @@ class MenuItem(DSCMS4Model):
 
         return self.delete_instance()
 
-    def patch(self, dictionary, *args, menu=UNCHANGED, parent=UNCHANGED,
-              **kwargs):
+    def patch_json(self, dictionary, *args, menu=UNCHANGED, parent=UNCHANGED,
+                   **kwargs):
         """Patches the menu item."""
-        super().patch(dictionary, *args, **kwargs)
+        super().patch_json(dictionary, *args, **kwargs)
 
         if menu is not UNCHANGED:
             self.menu = menu
@@ -146,13 +138,13 @@ class MenuItem(DSCMS4Model):
 
         return self
 
-    def to_dict(self, *args, **kwargs):
+    def to_json(self, *args, **kwargs):
         """Returns a dictionary representation for the respective menu."""
-        dictionary = super().to_dict(*args, **kwargs)
+        dictionary = super().to_json(*args, **kwargs)
         dictionary['charts'] = [
-            chart.to_dict() for chart in self.menu_item_charts]
+            chart.to_json() for chart in self.menu_item_charts]
         dictionary['items'] = [
-            item.to_dict(*args, **kwargs) for item in self.children]
+            item.to_json(*args, **kwargs) for item in self.children]
         return dictionary
 
     def to_dom(self):
@@ -174,26 +166,18 @@ class MenuItemChart(DSCMS4Model):
     class Meta:
         table_name = 'menu_item_chart'
 
-    menu_item = JSONField(
-        ForeignKeyField, MenuItem, null=True, column_name='menu_item',
-        backref='menu_item_charts', on_delete='CASCADE', key='menuItem')
-    base_chart = JSONField(
-        ForeignKeyField, BaseChart, null=True, column_name='base_chart',
-        on_delete='CASCADE', key='baseChart')
-    index = JSONField(IntegerField, default=0)
+    menu_item = ForeignKeyField(
+        MenuItem, null=True, column_name='menu_item',
+        backref='menu_item_charts', on_delete='CASCADE')
+    base_chart = ForeignKeyField(
+        BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
+    index = IntegerField(default=0)
+    JSON_KEYS = {'menuItem': menu_item, 'baseChart': base_chart}
 
-    @classmethod
-    def add(cls, menu_item, base_chart):
-        """Creates a new menu item chart."""
-        menu_item_chart = cls()
-        menu_item_chart.menu_item = menu_item
-        menu_item_chart.base_chart = base_chart
-        return menu_item_chart
-
-    def to_dict(self):
+    def to_json(self):
         """Returns a JSON-ish dictionary."""
         chart = chart_of(self.base_chart)
-        dictionary = chart.to_dict(brief=True)
+        dictionary = chart.to_json(brief=True)
         dictionary['index'] = self.index
         return dictionary
 
@@ -202,7 +186,7 @@ class MenuItemChart(DSCMS4Model):
         xml = dom.MenuItemChart()
         chart = chart_of(self.base_chart)
         xml.id = chart.id
-        xml.type = chart.__class__.__name__
+        xml.type = type(chart).__name__
         xml.index = self.index
         return xml
 
