@@ -93,7 +93,6 @@ class CustomerModel(DSCMS4Model):
             raise InvalidReference()
 
 
-
 class RecordGroup(tuple):
     """A group of records that shall be handled together."""
 
