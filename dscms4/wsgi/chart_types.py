@@ -42,7 +42,7 @@ def _get_chart_types():
 def list_():
     """Lists available chart types."""
 
-    return JSON([chart_type.to_dict() for chart_type in _get_chart_types()])
+    return JSON([chart_type.to_json() for chart_type in _get_chart_types()])
 
 
 @authenticated
