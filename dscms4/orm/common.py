@@ -128,17 +128,7 @@ class RelatedModel(DSCMS4Model):
         """Yields the respective models leading to the customer model."""
         rel_model = cls.get_related_model()
 
-        while True:
-            try:
-                customer_field = rel_model.customer
-            except AttributeError:
-                customer_field = None
-
-            if (customer_field is not None
-                    and isinstance(customer_field, ForeignKeyField)
-                    and customer_field.rel_model is Customer):
-                break
-
+        while rel_model is not None:
             yield rel_model
             rel_model = rel_model.get_related_model()
 
