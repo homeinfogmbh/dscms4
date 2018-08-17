@@ -3,8 +3,6 @@
 from datetime import datetime
 from peewee import DateTimeField, SmallIntegerField
 
-from peeeweeplus import JSONField
-
 from dscms4.orm.common import CustomerModel
 
 __all__ = ['Schedule']
@@ -26,9 +24,9 @@ class Schedule(CustomerModel):
         2^6   2^5   2^4   2^3   2^2   2^1   2^0
     """
 
-    begin = JSONField(DateTimeField, null=True)
-    end = JSONField(DateTimeField, null=True)
-    weekdays = JSONField(SmallIntegerField, default=ALL_WEEK)
+    begin = DateTimeField(null=True)
+    end = DateTimeField(null=True)
+    weekdays = SmallIntegerField(default=ALL_WEEK)
 
     def __str__(self):
         """Returns a human-readable representation of the schedule."""
@@ -139,7 +137,7 @@ class Schedule(CustomerModel):
 
         return False
 
-    def to_dict(self):
+    def to_json(self):
         """Returns a JSON compatible dictionary."""
         dictionary = {
             'weekdays': [bool(self.match_day(day)) for day in range(0, 7)]}
