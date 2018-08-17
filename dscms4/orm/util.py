@@ -31,7 +31,7 @@ def chart_of(base_chart):
         raise OrphanedBaseChart(base_chart)
 
     if superfluous:
-        raise AmbiguousBaseChart(base_chart, [match] + superfluous)
+        raise AmbiguousBaseChart(base_chart, frozenset([match] + superfluous))
 
     return match
 
