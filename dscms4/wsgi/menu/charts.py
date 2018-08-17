@@ -1,8 +1,10 @@
 """DSCMS4 WSGI handlers for menu item charts."""
 
+from itertools import chain
+
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
+from his import authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
@@ -28,6 +30,15 @@ def get_chart(type_, ident):
         return type_.get(type_.id == ident)
     except type_.DoesNotExist:
         raise NoSuchChart()
+
+
+def get_menu_item_chart(ident):
+    """Returns the respective MenuItemChart."""
+
+    try:
+        return MenuItemChart.get(MenuItemChart.id == ident)
+    except MenuItemChart.DoesNotExist:
+        raise NoSuchMenuItemChart()
 
 
 @authenticated
@@ -76,12 +87,7 @@ def add():
 def delete(ident):
     """Deletes a menu or menu item."""
 
-    try:
-        menu_item_chart = MenuItemChart.get(MenuItemChart.id == ident)
-    except MenuItemChart.DoesNotExist:
-        return NoSuchMenuItemChart()
-
-    menu_item_chart.delete_instance()
+    get_menu_item_chart(ident).delete_instance()
     return MenuItemChartDeleted()
 
 
@@ -98,7 +104,7 @@ def order():
         return MenuItemChartsSorted()   # Empty set of MenuItemsCharts.
 
     if all(menu_item_chart.menu_item == first.menu_item
-            for menu_item_chart in other):
+           for menu_item_chart in other):
         for index, menu_item_chart in enumerate(chain((first,), other)):
             menu_item_chart.index = index
             menu_item_chart.save()

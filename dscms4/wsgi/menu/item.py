@@ -1,5 +1,7 @@
 """DSCMS4 WSGI handlers for menu items."""
 
+from itertools import chain
+
 from flask import request
 
 from his import authenticated, authorized
