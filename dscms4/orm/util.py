@@ -39,19 +39,19 @@ def chart_of(base_chart):
 def check_base_charts(verbose=False):
     """Checks base charts."""
 
-    orphans = []
-    ambiguous = []
+    orphans = set()
+    ambiguous = set()
 
     for base_chart in BaseChart:
         try:
             chart = chart_of(base_chart)
         except OrphanedBaseChart as orphaned_base_chart:
-            orphans.append(base_chart)
+            orphans.add(base_chart)
 
             if verbose:
                 print(orphaned_base_chart, file=stderr)
         except AmbiguousBaseChart as ambiguous_base_chart:
-            ambiguous.append(base_chart)
+            ambiguous.add(base_chart)
 
             if verbose:
                 print(ambiguous_base_chart, file=stderr)
@@ -59,4 +59,4 @@ def check_base_charts(verbose=False):
             if verbose:
                 print(base_chart, '↔', chart)
 
-    return CheckResult(orphans, ambiguous)
+    return CheckResult(frozenset(orphans), frozenset(ambiguous))
