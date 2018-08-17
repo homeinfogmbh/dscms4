@@ -1,17 +1,14 @@
 """ORM model to represent groups."""
 
-from itertools import chain
-
 from peewee import ForeignKeyField, CharField, TextField
 
+from his import CUSTOMER
+from his.messages.data import MissingKeyError, InvalidKeys, NotAnInteger
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
-from his.messages.data import MissingKeyError, InvalidKeys, NotAnInteger
-
-from dscms4.orm.common import DSCMS4Model, CustomerModel
-from dscms4.orm.exceptions import UnsupportedMember, CircularReferenceError, \
-    InvalidReferenceError, NoSuchMemberTypeError
+from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
+from dscms4.orm.exceptions import CircularReferenceError, NoSuchMemberTypeError
 
 __all__ = [
     'group_fk',
@@ -27,45 +24,8 @@ def group_fk(backref):
     for group members with the respective backref.
     """
 
-    return ForeignKeyField(
+    return RelatedKeyField(
         Group, column_name='group', on_delete='CASCADE', backref=backref)
-
-
-class MemberProxy:
-    """Proxy to tranparently handle a group's members."""
-
-    def __init__(self, group):
-        """Sets the respective group."""
-        self.group = group
-
-    def __iter__(self):
-        """Yields all members of the respective group."""
-        return chain(self.group.terminals, self.group.apartment_buildings)
-
-    def add(self, member):
-        """Adds a member to the respective group."""
-        if isinstance(member, Terminal):
-            member = GroupMemberTerminal.add(self.group, member)
-        elif isinstance(member, ApartmentBuilding):
-            member = GroupMemberApartmentBuilding.add(self.group, member)
-        else:
-            raise UnsupportedMember(member)
-
-        member.save()
-        return member
-
-    def remove(self, member):
-        """Removes the respective member from the group."""
-        if isinstance(member, Terminal):
-            for mapping in GroupMemberTerminal.select().where(
-                    (GroupMemberTerminal.group == self.group) &
-                    (GroupMemberTerminal.terminal == member)):
-                mapping.delete_instance()
-        elif isinstance(member, ApartmentBuilding):
-            for mapping in GroupMemberApartmentBuilding.select().where(
-                    (GroupMemberApartmentBuilding.group == self.group) &
-                    (GroupMemberApartmentBuilding.tenement == member)):
-                mapping.delete_instance()
 
 
 class Group(CustomerModel):
@@ -77,26 +37,23 @@ class Group(CustomerModel):
         'self', column_name='parent', null=True, backref='children')
 
     @classmethod
-    def toplevel(cls, customer=None):
-        """Yields root-level groups."""
-        if customer is None:
-            return cls.select().where(cls._parent >> None)
-
-        return cls.select().where(
-            (cls.customer == customer) & (cls._parent >> None))
-
-    @classmethod
-    def from_json(cls, json, customer, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a group from a JSON-ish dictionary."""
         parent = json.pop('parent', None)
-        record = super().from_json(json, customer, **kwargs)
+        record = super().from_json(json, **kwargs)
         record.parent = parent
         return record
 
     @classmethod
-    def tree_for(cls, customer):
+    def get_tree(cls, customer=None):
         """Returns JSON-ish groups tree for the respective customer."""
-        return [group.dict_tree for group in cls.toplevel(customer=customer)]
+        if customer is None:
+            selection = cls.cselect().where(cls._parent >> None)
+        else:
+            selection = cls.select().where(
+                (cls.customer == customer) & (cls._parent >> None))
+
+        return [group.dict_tree for group in selection]
 
     @property
     def parent(self):
@@ -130,8 +87,10 @@ class Group(CustomerModel):
 
     @property
     def members(self):
-        """Returns a group members proxy."""
-        return MemberProxy(self)
+        """Yield member name / models tuples."""
+        for member_name, member_model in GROUP_MEMBERS.items():
+            records = member_model.select().where(member_model.group == self)
+            yield (member_name, records)
 
     def json_tree(self):
         """Returns the tree for this group."""
@@ -175,27 +134,8 @@ class Group(CustomerModel):
         return super().delete_instance(*args, **kwargs)
 
 
-class GroupMember(DSCMS4Model):
+class GroupMember(RelatedModel):
     """An abstract group member model."""
-
-    @classmethod
-    def by_group(cls, group):
-        """Yields members for the respective group."""
-        return cls.select().where(cls.group == group)
-
-    @classmethod
-    def add(cls, group, member_id):
-        """Creates a group member from the respective JSON-ish dictionary."""
-        member_class = cls.member.rel_model
-
-        try:
-            member = member_class.get(
-                (member_class.id == member_id)
-                & (member_class.customer == group.customer))
-        except member_class.DoesNotExist:
-            raise InvalidReferenceError()
-
-        return cls(group=group, member=member)
 
     @staticmethod
     def from_json(json, group, **_):
@@ -221,11 +161,16 @@ class GroupMember(DSCMS4Model):
             raise InvalidKeys(keys=tuple(json.keys()))
 
         try:
-            member_class = GROUP_MEMBERS[member_type]
+            member_mapping_class = GROUP_MEMBERS[member_type]
         except KeyError:
             raise NoSuchMemberTypeError()
 
-        return member_class.add(group, member_id)
+        member_class = member_mapping_class.member.rel_model
+        member = member_class.get(
+            (member_class.id == member_id)
+            & (member_class.customer == CUSTOMER.id))
+
+        return member_mapping_class(group=group, member=member)
 
 
 class GroupMemberTerminal(GroupMember):
@@ -255,6 +200,6 @@ class GroupMemberApartmentBuilding(GroupMember):
 
 GROUP_MEMBERS = {
     'terminal': GroupMemberTerminal,
-    'building': GroupMemberApartmentBuilding}
+    'apartment_building': GroupMemberApartmentBuilding}
 
 MODELS = (Group, GroupMemberTerminal, GroupMemberApartmentBuilding)
