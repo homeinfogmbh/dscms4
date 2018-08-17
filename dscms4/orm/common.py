@@ -52,15 +52,6 @@ class CustomerModel(DSCMS4Model):
     customer = ForeignKeyField(Customer, column_name='customer')
 
     @classmethod
-    def from_json(cls, json, customer, **kwargs):
-        """Creates a new record from the provided
-        JSON-ish dictionary and customer.
-        """
-        record = super().from_dict(json, **kwargs)
-        record.customer = customer
-        return record
-
-    @classmethod
     def select(cls, *fields):
         """Returns a selection with additional filtering for
         the current HIS customer iff within HIS context.
@@ -71,8 +62,27 @@ class CustomerModel(DSCMS4Model):
             return model_select.where(cls.customer == CUSTOMER.id)
 
         LOGGER.warning('Querying outside of request context.')
-        LOGGER.warning('Will not filter for current customer.')
+        LOGGER.warning('Will not filter for current HIS customer.')
         return model_select
+
+    @classmethod
+    def from_json(cls, json, *, customer=None, **kwargs):
+        """Creates a new record from the provided
+        JSON-ish dictionary for a customer.
+
+        If a customer is not specified and a flask request
+        context exists, the current HIS customer will be used.
+        """
+        if customer is not None:
+            LOGGER.warning('Explicitely set customer to: %s.', customer)
+        elif has_request_context():
+            customer = CUSTOMER.id
+        else:
+            raise ValueError('No customer specified.')
+
+        record = super().from_dict(json, **kwargs)
+        record.customer = customer
+        return record
 
     def get_peer(self, record_or_id):
         """Ensures that the provided record or ID is of the same
