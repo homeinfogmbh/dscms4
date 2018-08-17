@@ -109,7 +109,7 @@ class Group(CustomerModel):
         if parent is not None:
             parent = self.get_peer(parent)
 
-            if parent is self or parent in self.childrens_children:
+            if parent == self or parent in self.childrens_children:
                 raise CircularReferenceError()
 
         self._parent = parent
