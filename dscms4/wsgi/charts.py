@@ -82,12 +82,7 @@ def get_chart(ident):
 def get_brief():
     """Returns whether a brief data set is requested."""
 
-    try:
-        request.args['brief']
-    except KeyError:
-        return False
-
-    return True
+    return 'brief' in request.args
 
 
 @authenticated
@@ -95,7 +90,7 @@ def get_brief():
 def list_():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_dict(brief=get_brief()) for chart in get_charts()])
+    return JSON([chart.to_json(brief=get_brief()) for chart in get_charts()])
 
 
 @authenticated
@@ -103,7 +98,7 @@ def list_():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_chart(ident).to_dict(brief=get_brief()))
+    return JSON(get_chart(ident).to_json(brief=get_brief()))
 
 
 @authenticated
@@ -112,12 +107,12 @@ def add():
     """Adds new charts."""
 
     try:
-        records = ChartGroup(CHART_TYPE.from_dict(CUSTOMER, request.json))
+        transaction = CHART_TYPE.from_json(CUSTOMER, request.json)
     except InvalidKeys as invalid_keys:
         raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
-    records.save()
-    return ChartAdded(id=records.chart.id)
+    transaction.commit()
+    return ChartAdded(id=transaction.chart.id)
 
 
 @authenticated
@@ -128,15 +123,11 @@ def patch(ident):
     chart = get_chart(ident)
 
     try:
-        records = ChartGroup(chart.patch(request.json))
+        transaction = chart.patch_json(request.json)
     except InvalidKeys as invalid_keys:
         raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
-    if records.chart.trashed:
-        chart.delete_instance()
-    else:
-        records.save()
-
+    transaction.commit()
     return ChartPatched()
 
 

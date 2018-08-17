@@ -4,7 +4,7 @@ This package provides ORM models
 of the "chart" types of the CMS.
 """
 from dscms4.orm.charts.cleaning import Cleaning
-from dscms4.orm.charts.common import ChartGroup, BaseChart, Chart
+from dscms4.orm.charts.common import BaseChart, Chart
 from dscms4.orm.charts.facebook import Facebook, Account
 from dscms4.orm.charts.form import Form
 from dscms4.orm.charts.garbage_collection import GarbageCollection
