@@ -6,11 +6,12 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
-from peeweeplus import EnumField, CascadingFKField
+from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
-from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import RelatedKeyField, DSCMS4Model, CustomerModel, \
+    RelatedModel
 
 __all__ = [
     'TIME_FORMAT',
@@ -124,11 +125,11 @@ class Configuration(CustomerModel):
         'emailForm': email_form}
 
     @classmethod
-    def from_json(cls, json, customer, colors, **kwargs):
+    def from_json(cls, json, colors, **kwargs):
         """Creates a new configuration from the provided
         dictionary for the respective customer.
         """
-        configuration = super().from_json(json, customer, **kwargs)
+        configuration = super().from_json(json, **kwargs)
         configuration.colors = colors
         return configuration
 
@@ -206,11 +207,12 @@ class Configuration(CustomerModel):
         return result
 
 
-class Ticker(DSCMS4Model):
+class Ticker(RelatedModel):
     """Ticker."""
 
-    configuration = CascadingFKField(
-        Configuration, column_name='configuration', backref='tickers')
+    configuration = RelatedKeyField(
+        Configuration, column_name='configuration', backref='tickers',
+        on_delete='CASCADE')
     type_ = EnumField(TickerTypes, column_name='type')
     content = TextField()
 
@@ -229,11 +231,12 @@ class Ticker(DSCMS4Model):
         return xml
 
 
-class Backlight(DSCMS4Model):
+class Backlight(RelatedModel):
     """Backlight beightness settings of the respective configuration."""
 
-    configuration = CascadingFKField(
-        Configuration, column_name='configuration', backref='backlights')
+    configuration = RelatedKeyField(
+        Configuration, column_name='configuration', backref='backlights',
+        on_delete='CASCADE')
     time = TimeField()
     brightness = SmallIntegerField()   # Brightness in percent.
 
