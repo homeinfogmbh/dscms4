@@ -7,7 +7,11 @@ from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
 
+
 __all__ = ['Facebook', 'Account']
+
+
+UNCHANGED = object()    # Sentinel object to identify an unchanged value.
 
 
 class Facebook(Chart):
@@ -24,44 +28,40 @@ class Facebook(Chart):
         'kenBurns': ken_burns}
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
-        accounts = dictionary.pop('accounts', ())
-        base, chart = super().from_dict(customer, dictionary, **kwargs)
-        yield base
-        yield chart
+        accounts = json.pop('accounts', ())
+        records = super().from_json(json, **kwargs)
 
         for account in accounts:
-            yield Account.from_dict(chart, account)
+            account = Account.from_json(records.chart, account)
+            records.append(account)
 
-    def patch(self, dictionary, **kwargs):
+    def patch_json(self, json, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
         try:
-            accounts = dictionary.pop('accounts')
+            accounts = json.pop('accounts')
         except KeyError:
-            accounts = None
+            accounts = UNCHANGED
 
-        base, chart = super().patch(dictionary, **kwargs)
-        yield base
-        yield chart
+        records = super().patch_json(json, **kwargs)
 
-        if accounts is not None:
+        if accounts is not UNCHANGED:
             for account in self.accounts:
                 account.delete_instance()
 
             for account in accounts:
-                yield Account.from_dict(chart, account)
+                account = Account.from_json(chart, account)
 
-    def to_dict(self, *args, **kwargs):
+    def to_json(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict(*args, **kwargs)
-        dictionary['accounts'] = [
-            account.to_dict() for account in self.accounts]
-        return dictionary
+        json = super().to_json(*args, **kwargs)
+        json['accounts'] = [account.to_json() for account in self.accounts]
+        return json
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
@@ -93,11 +93,11 @@ class Account(DSCMS4Model):
         'maxPosts': max_posts}
 
     @classmethod
-    def from_dict(cls, chart, dictionary, **kwargs):
+    def from_json(cls, json, chart, **kwargs):
         """Creates a new facebook account for the provided
         facebook chart from the respective distionary.
         """
-        account = super().from_dict(dictionary, **kwargs)
+        account = super().from_json(json, **kwargs)
         account.chart = chart
         return account
 

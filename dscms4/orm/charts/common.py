@@ -3,6 +3,7 @@
 This module provides the base class "Chart"
 for chart model implementation.
 """
+from collections import namedtuple
 from datetime import datetime
 from enum import Enum
 from itertools import chain
@@ -19,6 +20,42 @@ from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
 
 
 __all__ = ['BaseChart', 'Chart']
+
+
+class Transaction(namedtuple('Transaction', ('base', 'chart', 'related'))):
+    """Stores base chart, chart and related records."""
+
+    __slots__ = ()
+
+    def __new__(cls, base, chart):
+        """Creates a new transaction."""
+        return super().__new__(cls, base, chart, [])
+
+    def add(self, record):
+        """Adds the record as to be added."""
+        self.related.append((True, record))
+
+    def delete(self, record):
+        """Adds the record as to be deleted."""
+        self.related.append((False, record))
+
+    def commit(self):
+        """Saves the base chart, chart and
+        related record in preserved order.
+        """
+        self.base.save()
+        self.chart.save()
+
+        for save, record in self.related:
+            if save:
+                record.save()
+            else:
+                record.delete_instance()
+
+    @property
+    def id(self):
+        """Returns the chart's ID."""
+        return self.chart.id
 
 
 class Transitions(Enum):
@@ -50,7 +87,7 @@ class BaseChart(CustomerModel):
 
     @classmethod
     def from_json(cls, json, skip=None, **kwargs):
-        """Creates the base chart from the provided dictionary."""
+        """Creates a base chart from a JSON-ish dictionary."""
         skip_default = ('uuid',)
         skip = tuple(chain(skip_default, skip)) if skip else skip_default
         record = super().from_json(json, skip=skip, **kwargs)
@@ -72,12 +109,12 @@ class BaseChart(CustomerModel):
 
     def to_json(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
-        dictionary = super().to_json(*args, **kwargs)
+        json = super().to_json(*args, **kwargs)
 
         if self.uuid:
-            dictionary['uuid'] = self.uuid.hex
+            json['uuid'] = self.uuid.hex
 
-        return dictionary
+        return json
 
     def to_dom(self):
         """Returns an XML DOM of the base chart."""
@@ -104,17 +141,16 @@ class Chart(RelatedModel):
 
     @classmethod
     def from_json(cls, json, **kwargs):
-        """Creates a new chart from the respective dictionary."""
+        """Creates a chart from a JSON-ish dictionary."""
         try:
             base_dict = json.pop('base')
         except KeyError:
             raise MissingData(key='base')
 
         base = BaseChart.from_json(base_dict)
-        yield base
         chart = super().from_json(json, **kwargs)
         chart.base = base
-        yield chart
+        return Transaction(base, chart)
 
     @classmethod
     def by_customer(cls, customer):
@@ -154,22 +190,21 @@ class Chart(RelatedModel):
     def patch_json(self, json, **kwargs):
         """Pathes the chart with the provided dictionary."""
         self.base.patch(json.pop('base', {}))  # Generate new UUID.
-        yield self.base
         super().patch(json, **kwargs)
-        yield self
+        return Transaction(self.base, self)
 
     def to_json(self, brief=False, **kwargs):
-        """Converts the chart into a JSON compliant dictionary."""
+        """Returns a JSON-ish dictionary."""
         if brief:
-            dictionary = {'id': self.id}
+            json = {'id': self.id}
         else:
-            dictionary = super().to_json(**kwargs)
+            json = super().to_json(**kwargs)
 
         if not brief:
-            dictionary['base'] = self.base.to_json(autofields=False)
+            json['base'] = self.base.to_json(autofields=False)
 
-        dictionary['type'] = type(self).__name__
-        return dictionary
+        json['type'] = type(self).__name__
+        return json
 
     def to_dom(self, model):
         """Returns an XML DOM of this chart."""
