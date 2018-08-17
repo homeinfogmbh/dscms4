@@ -11,16 +11,7 @@ from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
 from dscms4.orm.exceptions import CircularReferenceError
 from dscms4.orm.group import Group
 
-__all__ = ['get_group', 'ROUTES']
-
-
-def get_group(gid):
-    """Returns the respective group of the current customer."""
-
-    try:
-        return Group.get((Group.id == gid) & (Group.customer == CUSTOMER.id))
-    except Group.DoesNotExist:
-        raise NoSuchGroup()
+__all__ = ['ROUTES']
 
 
 @authenticated
@@ -37,7 +28,12 @@ def list_():
 def get(ident):
     """Returns the respective group."""
 
-    return JSON(get_group(ident).to_json())
+    try:
+        group = Group.get(Group.id == ident)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
+    return JSON(group.to_json())
 
 
 @authenticated
@@ -45,7 +41,7 @@ def get(ident):
 def add():
     """Adds a new group."""
 
-    group = Group.from_json(request.json, CUSTOMER.id)
+    group = Group.from_json(request.json)
     group.save()
     return GroupAdded(id=group.id)
 
@@ -56,10 +52,16 @@ def patch(ident):
     """Patches the respective group."""
 
     try:
-        get_group(ident).patch_json(request.json).save()
+        group = Group.get(Group.id == ident)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
+    try:
+        group.patch_json(request.json)
     except CircularReferenceError:
         return CircularReference()
 
+    group.save()
     return GroupPatched()
 
 
@@ -68,7 +70,12 @@ def patch(ident):
 def delete(ident):
     """Deletes the respective group."""
 
-    get_group(ident).delete_instance()
+    try:
+        group = Group.get(Group.id == ident)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
+    group.delete_instance()
     return GroupDeleted()
 
 

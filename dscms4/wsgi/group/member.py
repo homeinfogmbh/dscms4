@@ -29,10 +29,8 @@ def get(group_id):
 
     group = get_group(group_id)
     members = {
-        member_type: [
-            member.to_json() for member in member_class.select().where(
-                member_class.group == group)]
-        for member_type, member_class in GROUP_MEMBERS.items()}
+        typ: [member.to_json() for member in records]
+        for typ, records in group.members}
     return JSON(members)
 
 
