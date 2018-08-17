@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from peeweeplus import JSONField, EnumField
+from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
@@ -23,7 +23,7 @@ class Form(Chart):
     class Meta:
         table_name = 'chart_form'
 
-    mode = JSONField(EnumField, Mode, column_name='mode')
+    mode = EnumField(Mode, column_name='mode')
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
