@@ -20,15 +20,16 @@ def get_chart_types():
     """Yields selected chart types."""
 
     try:
-        chart_types = request.args['types']
+        type_names = request.args['types']
     except KeyError:
         yield from CHARTS.values()
-    else:
-        for chart_type in chart_types.split(','):
-            try:
-                yield CHARTS[chart_type]
-            except KeyError:
-                raise InvalidChartType()
+        return
+
+    for type_name in type_names.split(','):
+        try:
+            yield CHARTS[type_name]
+        except KeyError:
+            raise InvalidChartType()
 
 
 CHART_TYPES = LocalProxy(get_chart_types)
