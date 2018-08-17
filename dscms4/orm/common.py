@@ -126,9 +126,19 @@ class RelatedModel(DSCMS4Model):
     @classmethod
     def _relation_path(cls):
         """Yields the respective models leading to the customer model."""
-        rel_model = cls.get_related_model().rel_model
+        rel_model = cls.get_related_model()
 
-        while not hasattr(rel_model, 'customer'):
+        while True:
+            try:
+                customer_field = rel_model.customer
+            except AttributeError:
+                customer_field = None
+
+            if (customer_field is not None
+                    and isinstance(customer_field, ForeignKeyField)
+                    and customer_field.rel_model is Customer):
+                break
+
             yield rel_model
             rel_model = rel_model.get_related_model()
 
