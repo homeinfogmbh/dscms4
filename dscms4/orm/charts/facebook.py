@@ -33,11 +33,13 @@ class Facebook(Chart):
         dictionary for the respective customer.
         """
         accounts = json.pop('accounts', ())
-        records = super().from_json(json, **kwargs)
+        transaction = super().from_json(json, **kwargs)
 
         for account in accounts:
-            account = Account.from_json(records.chart, account)
-            records.append(account)
+            account = Account.from_json(transaction.chart, account)
+            transaction.add(account)
+
+        return transaction
 
     def patch_json(self, json, **kwargs):
         """Creates a new quotes chart from the
@@ -48,14 +50,17 @@ class Facebook(Chart):
         except KeyError:
             accounts = UNCHANGED
 
-        records = super().patch_json(json, **kwargs)
+        transaction = super().patch_json(json, **kwargs)
 
         if accounts is not UNCHANGED:
             for account in self.accounts:
-                account.delete_instance()
+                transaction.delete(account)
 
             for account in accounts:
-                account = Account.from_json(chart, account)
+                account = Account.from_json(transaction.chart, account)
+                transaction.add(account)
+
+        return transaction
 
     def to_json(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
