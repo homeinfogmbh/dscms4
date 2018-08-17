@@ -14,8 +14,10 @@ from dscms4.messages.common import InvalidReference
 __all__ = [
     'DATABASE',
     'create_tables',
+    'RelatedKeyField',
     'DSCMS4Model',
-    'CustomerModel']
+    'CustomerModel',
+    'RelatedModel']
 
 
 DATABASE = MySQLDatabase.from_config(CONFIG['db'])
@@ -26,6 +28,14 @@ def create_tables(models, fail_silently=True):
 
     for model in models:
         model.create_table(fail_silently=fail_silently)
+
+
+class RelatedKeyField(ForeignKeyField):
+    """A specialized foreign key field to identify
+    paths to a related customer model.
+    """
+
+    pass
 
 
 class DSCMS4Model(JSONModel):
@@ -99,3 +109,55 @@ class CustomerModel(DSCMS4Model):
                 (cls.id == record_or_id) & (cls.customer == self.customer))
         except cls.DoesNotExist:
             raise InvalidReference()
+
+
+class RelatedModel(DSCMS4Model):
+    """Base class for models that are related to customer models."""
+
+    @classmethod
+    def get_related_model(cls):
+        """Returns the related key."""
+        for field in cls._meta.fields.values():
+            if isinstance(field, RelatedKeyField):
+                return field.rel_model
+
+        return None
+
+    @classmethod
+    def _relation_path(cls):
+        """Yields the respective models leading to the customer model."""
+        rel_model = cls.get_related_model().rel_model
+
+        while not hasattr(rel_model, 'customer'):
+            yield rel_model
+            rel_model = rel_model.get_related_model()
+
+        yield rel_model
+
+    @classmethod
+    def cselect(cls, *fields):
+        """Returns a selection with additional filtering
+        for the current HIS customer context.
+        """
+        select_query = cls.select(*fields)
+
+        for rel_model in cls._relation_path():
+            select_query = select_query.join(rel_model)
+
+        # Select customer on last related model.
+        return select_query.where(rel_model.customer == CUSTOMER.id)
+
+    @classmethod
+    def cget(cls, *query, **filters):
+        """Returns a single record with additional filtering
+        for the current HIS customer context.
+        """
+        select_query = cls.cselect()
+
+        if query:
+            select_query = select_query.where(*query)
+
+        if filters:
+            select_query = select_query.filter(**filters)
+
+        return select_query.get()
