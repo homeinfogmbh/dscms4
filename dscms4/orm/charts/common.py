@@ -22,14 +22,14 @@ from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
 __all__ = ['BaseChart', 'Chart']
 
 
-class Transaction(namedtuple('Transaction', ('base', 'chart', 'related'))):
-    """Stores base chart, chart and related records."""
+class Transaction(namedtuple('Transaction', ('chart', 'related'))):
+    """Stores chart and related records."""
 
     __slots__ = ()
 
-    def __new__(cls, base, chart):
+    def __new__(cls, chart):
         """Creates a new transaction."""
-        return super().__new__(cls, base, chart, [])
+        return super().__new__(cls, chart, [])
 
     def add(self, record):
         """Adds the record as to be added."""
@@ -43,7 +43,7 @@ class Transaction(namedtuple('Transaction', ('base', 'chart', 'related'))):
         """Saves the base chart, chart and
         related record in preserved order.
         """
-        self.base.save()
+        self.chart.base.save()
         self.chart.save()
 
         for save, record in self.related:
@@ -51,11 +51,6 @@ class Transaction(namedtuple('Transaction', ('base', 'chart', 'related'))):
                 record.save()
             else:
                 record.delete_instance()
-
-    @property
-    def id(self):
-        """Returns the chart's ID."""
-        return self.chart.id
 
 
 class Transitions(Enum):
@@ -147,10 +142,9 @@ class Chart(RelatedModel):
         except KeyError:
             raise MissingData(key='base')
 
-        base = BaseChart.from_json(base_dict)
         chart = super().from_json(json, **kwargs)
-        chart.base = base
-        return Transaction(base, chart)
+        chart.base = BaseChart.from_json(base_dict)
+        return Transaction(chart)
 
     @classmethod
     def by_customer(cls, customer):
@@ -191,7 +185,7 @@ class Chart(RelatedModel):
         """Pathes the chart with the provided dictionary."""
         self.base.patch(json.pop('base', {}))  # Generate new UUID.
         super().patch(json, **kwargs)
-        return Transaction(self.base, self)
+        return Transaction(self)
 
     def to_json(self, brief=False, **kwargs):
         """Returns a JSON-ish dictionary."""
