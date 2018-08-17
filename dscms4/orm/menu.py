@@ -4,17 +4,19 @@ from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
+from peeweeplus import MissingKeyError
+
 from dscms4 import dom
-from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.exceptions import CircularReferenceError, OrphanedBaseChart, \
     AmbiguousBaseChart, InvalidReferenceError
 from dscms4.orm.util import chart_of
 
+
 __all__ = ['Menu', 'MenuItem', 'MODELS']
 
 
-NOT_SET = Ellipsis
 LOGGER = getLogger('Menu')
 
 
@@ -76,13 +78,13 @@ class Menu(CustomerModel):
         return xml
 
 
-class MenuItem(DSCMS4Model):
+class MenuItem(RelatedModel):
     """A menu item."""
 
     class Meta:
         table_name = 'menu_item'
 
-    menu_ = ForeignKeyField(
+    menu_ = RelatedKeyField(
         Menu, column_name='menu', null=True, on_delete='CASCADE',
         backref='items')
     parent_ = ForeignKeyField(
@@ -201,19 +203,37 @@ class MenuItem(DSCMS4Model):
         return xml
 
 
-class MenuItemChart(DSCMS4Model):
+class MenuItemChart(RelatedModel):
     """Mapping in-between menu items and base charts."""
 
     class Meta:
         table_name = 'menu_item_chart'
 
-    menu_item = ForeignKeyField(
-        MenuItem, null=True, column_name='menu_item', backref='charts',
+    menu_item = RelatedKeyField(
+        MenuItem, column_name='menu_item', backref='charts',
         on_delete='CASCADE')
     base_chart = ForeignKeyField(
-        BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
+        BaseChart, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
     JSON_KEYS = {'menuItem': menu_item, 'baseChart': base_chart}
+
+    @classmethod
+    def from_json(cls, json, *kwargs):
+        """Creates a record from a JSON-ish dictionary."""
+        try:
+            menu_item = MenuItem.get(MenuItem.id == json.pop('menuItem'))
+        except KeyError:
+            raise MissingKeyError('menuItem')
+
+        try:
+            base_chart = BaseChart.get(BaseChart.id == json.pop('baseChart'))
+        except KeyError:
+            raise MissingKeyError('baseChart')
+
+        menu_item_chart = super().from_json(json, **kwargs)
+        menu_item_chart.menu_item = menu_item
+        menu_item_chart.base_chart = base_chart
+        return menu_item_chart
 
     def to_json(self):
         """Returns a JSON-ish dictionary."""
