@@ -4,7 +4,6 @@ from collections import defaultdict
 
 from peewee import ForeignKeyField, CharField
 
-from peeweeplus import JSONField
 from tenements import ApartmentBuilding
 from terminallib import Terminal
 
@@ -79,11 +78,7 @@ def find_top(tags):
 class Tag(CustomerModel):
     """A basic, abstract tag."""
 
-    tag = JSONField(CharField, 255)
-
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        return {'id': self.id, 'customer': self.customer.id}
+    tag = CharField(255)
 
 
 class TerminalTag(Tag):
@@ -92,8 +87,8 @@ class TerminalTag(Tag):
     class Meta:
         table_name = 'tags_terminal'
 
-    terminal = JSONField(
-        ForeignKeyField, Terminal, column_name='terminal', on_delete='CASCADE')
+    terminal = ForeignKeyField(
+        Terminal, column_name='terminal', on_delete='CASCADE')
 
     @classmethod
     def from_list(cls, customer, terminal, lst):
@@ -107,12 +102,6 @@ class TerminalTag(Tag):
             record.tag = tag
             yield record
 
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
-        dictionary['terminal'] = self.terminal.id
-        return dictionary
-
 
 class ComCatAccountTag(Tag):
     """Tags for ComCat accounts."""
@@ -120,9 +109,9 @@ class ComCatAccountTag(Tag):
     class Meta:
         table_name = 'tags_comcat_account'
 
-    comcat_account = JSONField(
-        ForeignKeyField, ComCatAccount, column_name='comcat_account',
-        on_delete='CASCADE', key='comcatAccount')
+    comcat_account = ForeignKeyField(
+        ComCatAccount, column_name='comcat_account', on_delete='CASCADE')
+    JSON_KEYS = {'comcatAccount': comcat_account}
 
     @classmethod
     def from_list(cls, customer, comcat_account, lst):
@@ -136,12 +125,6 @@ class ComCatAccountTag(Tag):
             record.tag = tag
             yield record
 
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
-        dictionary['comcat_account'] = self.comcat_account.id
-        return dictionary
-
 
 class ApartmentBuildingTag(Tag):
     """Tags for apartment buildings."""
@@ -149,9 +132,10 @@ class ApartmentBuildingTag(Tag):
     class Meta:
         table_name = 'tags_apartment_building'
 
-    apartment_building = JSONField(
-        ForeignKeyField, ApartmentBuilding, column_name='apartment_building',
-        on_delete='CASCADE', key='apartmentBuilding')
+    apartment_building = ForeignKeyField(
+        ApartmentBuilding, column_name='apartment_building',
+        on_delete='CASCADE')
+    JSON_KEYS = {'apartmentBuilding': apartment_building}
 
     @classmethod
     def from_list(cls, customer, apartment_building, lst):
@@ -164,9 +148,3 @@ class ApartmentBuildingTag(Tag):
             record.apartment_building = apartment_building
             record.tag = tag
             yield record
-
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict()
-        dictionary['apartment_building'] = self.apartment_building.id
-        return dictionary
