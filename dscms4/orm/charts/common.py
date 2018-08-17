@@ -3,19 +3,20 @@
 This module provides the base class "Chart"
 for chart model implementation.
 """
-
 from datetime import datetime
 from enum import Enum
+from itertools import chain
 from uuid import uuid4
 
-from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
-    SmallIntegerField, BooleanField, UUIDField
+from peewee import CharField, TextField, DateTimeField, SmallIntegerField, \
+    BooleanField, UUIDField
 
 from his.messages import MissingData
-from peeweeplus import JSONField, EnumField
+from peeweeplus import EnumField
 
 from dscms4 import dom
-from dscms4.orm.common import DSCMS4Model, CustomerModel
+from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
+
 
 __all__ = ['BaseChart', 'Chart']
 
@@ -36,22 +37,23 @@ class BaseChart(CustomerModel):
     class Meta:
         table_name = 'base_chart'
 
-    title = JSONField(CharField, 255)
-    description = JSONField(TextField, null=True)
-    duration = JSONField(SmallIntegerField, default=10)
-    display_from = JSONField(DateTimeField, null=True)
-    display_until = JSONField(DateTimeField, null=True)
-    transition = JSONField(EnumField, Transitions)
-    created = JSONField(DateTimeField, default=datetime.now)
-    trashed = JSONField(BooleanField, default=False)
-    log = JSONField(BooleanField, default=False)
-    uuid = JSONField(
-        UUIDField, column_name='uuid', null=True, deserialize=False)
+    title = CharField(255)
+    description = TextField(null=True)
+    duration = SmallIntegerField(default=10)
+    display_from = DateTimeField(null=True)
+    display_until = DateTimeField(null=True)
+    transition = EnumField(Transitions)
+    created = DateTimeField(default=datetime.now)
+    trashed = BooleanField(default=False)
+    log = BooleanField(default=False)
+    uuid = UUIDField(column_name='uuid', null=True)
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, skip=None, **kwargs):
         """Creates the base chart from the provided dictionary."""
-        record = super().from_dict(customer, dictionary, **kwargs)
+        skip_default = ('uuid',)
+        skip = tuple(chain(skip_default, skip)) if skip else skip_default
+        record = super().from_json(json, skip=skip, **kwargs)
         record.uuid = uuid4() if record.log else None
         return record
 
@@ -63,15 +65,14 @@ class BaseChart(CustomerModel):
             self.display_from is None or self.display_from > now,
             self.display_until is None or self.display_until < now))
 
-    def patch(self, dictionary, **kwargs):
+    def patch_json(self, json, **kwargs):
         """Patches the base chart."""
-        record = super().patch(dictionary, **kwargs)
+        record = super().patch_json(json, **kwargs)
         record.uuid = uuid4() if record.log else None
-        return record
 
-    def to_dict(self, *args, **kwargs):
+    def to_json(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
-        dictionary = super().to_dict(*args, **kwargs)
+        dictionary = super().to_json(*args, **kwargs)
 
         if self.uuid:
             dictionary['uuid'] = self.uuid.hex
@@ -96,23 +97,22 @@ class BaseChart(CustomerModel):
         return xml
 
 
-class Chart(DSCMS4Model):
+class Chart(RelatedModel):
     """Abstract basic chart."""
 
-    base = JSONField(
-        ForeignKeyField, BaseChart, column_name='base', on_delete='CASCADE')
+    base = RelatedKeyField(BaseChart, column_name='base', on_delete='CASCADE')
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a new chart from the respective dictionary."""
         try:
-            base_dict = dictionary.pop('base')
+            base_dict = json.pop('base')
         except KeyError:
             raise MissingData(key='base')
 
-        base = BaseChart.from_dict(customer, base_dict)
+        base = BaseChart.from_json(base_dict)
         yield base
-        chart = super().from_dict(dictionary, **kwargs)
+        chart = super().from_json(json, **kwargs)
         chart.base = base
         yield chart
 
@@ -151,20 +151,22 @@ class Chart(DSCMS4Model):
         """Determines whether the chart is considered active."""
         return self.base.active
 
-    def patch(self, dictionary, **kwargs):
+    def patch_json(self, json, **kwargs):
         """Pathes the chart with the provided dictionary."""
-        yield self.base.patch(dictionary.pop('base', {}))  # Generate new UUID.
-        yield super().patch(dictionary, **kwargs)
+        self.base.patch(json.pop('base', {}))  # Generate new UUID.
+        yield self.base
+        super().patch(json, **kwargs)
+        yield self
 
-    def to_dict(self, *args, brief=False, **kwargs):
+    def to_json(self, brief=False, **kwargs):
         """Converts the chart into a JSON compliant dictionary."""
         if brief:
             dictionary = {'id': self.id}
         else:
-            dictionary = super().to_dict(*args, **kwargs)
+            dictionary = super().to_json(**kwargs)
 
         if not brief:
-            dictionary['base'] = self.base.to_dict(autofields=False)
+            dictionary['base'] = self.base.to_json(autofields=False)
 
         dictionary['type'] = type(self).__name__
         return dictionary
