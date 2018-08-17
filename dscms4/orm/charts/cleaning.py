@@ -3,7 +3,7 @@
 from enum import Enum
 
 from peewee import CharField, TextField, SmallIntegerField, IntegerField
-from peeweeplus import JSONField, EnumField
+from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
@@ -24,11 +24,11 @@ class Cleaning(Chart):
     class Meta:
         table_name = 'chart_cleaning'
 
-    title = JSONField(CharField, 255, null=True)
-    mode = JSONField(EnumField, Mode)
-    text = JSONField(TextField, null=True)
-    font_size = JSONField(SmallIntegerField, default=8)
-    text_color = JSONField(IntegerField, default=0x000000)
+    title = CharField(255, null=True)
+    mode = EnumField(Mode)
+    text = TextField(null=True)
+    font_size = SmallIntegerField(default=8)
+    text_color = IntegerField(default=0x000000)
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
