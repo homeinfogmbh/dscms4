@@ -1,11 +1,9 @@
 """Chart type settings for the respective customers."""
 
-from flask import has_request_context
 from peewee import CharField
 
 from his import CUSTOMER
 
-from dscms4.config import LOGGER
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.common import CustomerModel
 
@@ -18,21 +16,13 @@ class ChartType(CustomerModel):
     chart_type = CharField(255)
 
     @classmethod
-    def add(cls, chart_type, customer=None):
-        """Adds a chart type."""
-        if customer is not None:
-            LOGGER.warning('Explicitely set customer to: %s.', customer)
-        elif has_request_context():
-            customer = CUSTOMER.id
-        else:
-            raise ValueError('No customer specified.')
-
+    def add(cls, chart_type):
+        """Adds the chart type for the current customer."""
         try:
-            return cls.get(
-                (cls.customer == customer) & (cls.chart_type == chart_type))
+            return cls.cget(cls.chart_type == chart_type)
         except cls.DoesNotExist:
             record = cls()
-            record.customer = customer
+            record.customer = CUSTOMER.id
             record.chart_type = chart_type
             return record
 
