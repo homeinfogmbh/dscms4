@@ -192,6 +192,9 @@ msgstr "Vorschau nicht gestattet."
 msgid "InvalidTokenType"
 msgstr "Ungültiger Token-Typ."
 
+msgid "NoSuchObject"
+msgstr "Kein solches Objekt."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"

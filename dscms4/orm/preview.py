@@ -4,10 +4,10 @@ from uuid import uuid4
 
 from peewee import ForeignKeyField, UUIDField
 
-from peeweeplus import JSONField
+from his import CUSTOMER
 from terminallib import Terminal
 
-from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.messages.preview import NoSuchObject
 from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['TYPES', 'TerminalPreviewToken']
@@ -16,17 +16,27 @@ __all__ = ['TYPES', 'TerminalPreviewToken']
 class _PreviewToken(DSCMS4Model):
     """Common abstract preview token."""
 
-    token = JSONField(UUIDField, default=uuid4)
+    token = UUIDField(default=uuid4)
+    obj = None
 
     @classmethod
-    def generate(cls, ident, customer):
+    def generate(cls, ident):
         """Returns a token for the respective resource."""
-        raise NotImplementedError()
+        model = cls.obj.rel_model
 
-    @property
-    def obj(self):
-        """Returns the referenced object."""
-        raise NotImplementedError()
+        try:
+            record = model.get(
+                (model.id == ident) & (model.customer == CUSTOMER.id))
+        except model.DoesNotExist:
+            raise NoSuchObject(type=model.__name__)
+
+        try:
+            return cls.get(cls.obj == record)
+        except cls.DoesNotExist:
+            token = cls()
+            token.obj = record
+            token.save()
+            return token
 
 
 class TerminalPreviewToken(_PreviewToken):
@@ -35,32 +45,8 @@ class TerminalPreviewToken(_PreviewToken):
     class Meta:
         table_name = 'terminal_preview_token'
 
-    terminal = JSONField(
-        ForeignKeyField, Terminal, column_name='terminal', on_delete='CASCADE')
-
-    @classmethod
-    def generate(cls, ident, customer):
-        """Returns a token for the respective terminal."""
-        try:
-            terminal = Terminal.get(
-                (Terminal.id == ident) & (Terminal.customer == customer))
-        except Terminal.DoesNotExist:
-            raise NoSuchTerminal()
-
-        try:
-            return cls.get(cls.terminal == terminal)
-        except cls.DoesNotExist:
-            token = cls()
-            token.terminal = terminal
-            token.save()
-            return token
-
-    @property
-    def obj(self):
-        """Returns the terminal."""
-        return self.terminal
+    obj = ForeignKeyField(
+        Terminal, column_name='terminal', on_delete='CASCADE')
 
 
-TYPES = {
-    'terminal': TerminalPreviewToken
-}
+TYPES = {'terminal': TerminalPreviewToken}

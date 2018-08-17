@@ -192,6 +192,9 @@ msgstr "Preview not permitted."
 msgid "InvalidTokenType"
 msgstr "Invalid token type."
 
+msgid "NoSuchObject"
+msgstr "No such object."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"
