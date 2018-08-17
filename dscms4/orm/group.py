@@ -2,13 +2,13 @@
 
 from peewee import ForeignKeyField, CharField, TextField
 
-from his import CUSTOMER
 from his.messages.data import MissingKeyError, InvalidKeys, NotAnInteger
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
+from dscms4.messages.common import CircularReference
+from dscms4.messages.group import NoSuchMemberType, NoSuchMember
 from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
-from dscms4.orm.exceptions import CircularReferenceError, NoSuchMemberTypeError
 
 __all__ = [
     'group_fk',
@@ -67,7 +67,7 @@ class Group(CustomerModel):
             parent = self.get_peer(parent)
 
             if parent == self or parent in self.childrens_children:
-                raise CircularReferenceError()
+                raise CircularReference()
 
         self._parent = parent
 
@@ -163,12 +163,16 @@ class GroupMember(RelatedModel):
         try:
             member_mapping_class = GROUP_MEMBERS[member_type]
         except KeyError:
-            raise NoSuchMemberTypeError()
+            raise NoSuchMemberType()
 
         member_class = member_mapping_class.member.rel_model
-        member = member_class.get(
-            (member_class.id == member_id)
-            & (member_class.customer == CUSTOMER.id))
+
+        try:
+            member = member_class.get(
+                (member_class.id == member_id)
+                & (member_class.customer == group.customer))
+        except member_class.DoesNotExist:
+            raise NoSuchMember()
 
         return member_mapping_class(group=group, member=member)
 
