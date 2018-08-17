@@ -8,7 +8,6 @@ from wsgilib import JSON
 from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
     GroupDeleted
-from dscms4.orm.exceptions import CircularReferenceError
 from dscms4.orm.group import Group
 
 __all__ = ['ROUTES']
@@ -56,11 +55,7 @@ def patch(ident):
     except Group.DoesNotExist:
         return NoSuchGroup()
 
-    try:
-        group.patch_json(request.json)
-    except CircularReferenceError:
-        return CircularReference()
-
+    group.patch_json(request.json)
     group.save()
     return GroupPatched()
 

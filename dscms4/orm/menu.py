@@ -7,10 +7,10 @@ from peewee import ForeignKeyField, CharField, IntegerField
 from peeweeplus import MissingKeyError
 
 from dscms4 import dom
+from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
+from dscms4.messages.common import CircularReference, InvalidReference
 from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
 from dscms4.orm.charts import BaseChart
-from dscms4.orm.exceptions import CircularReferenceError, OrphanedBaseChart, \
-    AmbiguousBaseChart, InvalidReferenceError
 from dscms4.orm.util import chart_of
 
 
@@ -29,15 +29,15 @@ def get_menu_and_parent(json):
         try:
             menu = Menu.get(Menu.id == menu)
         except Menu.DoesNotExist:
-            raise InvalidReferenceError(type=Menu, id=menu)
+            raise InvalidReference(type=Menu, id=menu)
 
     parent = json.pop('parent', None)
 
-    if menu is not None:
+    if parent is not None:
         try:
             parent = MenuItem.get(MenuItem.id == parent)
         except MenuItem.DoesNotExist:
-            raise InvalidReferenceError(type=MenuItem, id=menu)
+            raise InvalidReference(type=MenuItem, id=parent)
 
     if menu is None and parent is None:
         raise ValueError('Must either specify menu or parent.')
@@ -130,7 +130,7 @@ class MenuItem(RelatedModel):
             parent = self.get_peer(parent)
 
             if parent == self or parent in self.childrens_children:
-                raise CircularReferenceError()
+                raise CircularReference()
 
             self.parent_ = parent
             self.menu_ = None

@@ -3,8 +3,6 @@
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField
 
-from peeweeplus import JSONField
-
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 from dscms4.orm.common import DSCMS4Model
@@ -18,9 +16,12 @@ class Facebook(Chart):
     class Meta:
         table_name = 'chart_facebook'
 
-    font_size = JSONField(SmallIntegerField, default=26, key='fontSize')
-    title_color = JSONField(IntegerField, default=0x000000, key='titleColor')
-    ken_burns = JSONField(BooleanField, default=False, key='kenBurns')
+    font_size = SmallIntegerField(default=26)
+    title_color = IntegerField(default=0x000000)
+    ken_burns = BooleanField(default=False)
+    JSON_KEYS = {
+        'fontSize': font_size, 'titleColor': title_color,
+        'kenBurns': ken_burns}
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
@@ -81,13 +82,15 @@ class Account(DSCMS4Model):
     class Meta:
         table_name = 'facebook_account'
 
-    chart = JSONField(
-        ForeignKeyField, Facebook, column_name='chart', backref='accounts',
-        on_delete='CASCADE')
-    facebook_id = JSONField(CharField, 255, key='facebookId')
-    recent_days = JSONField(SmallIntegerField, default=14, key='recentDays')
-    max_posts = JSONField(SmallIntegerField, default=10, key='maxPosts')
-    name = JSONField(CharField, 255, null=True)
+    chart = ForeignKeyField(
+        Facebook, column_name='chart', backref='accounts', on_delete='CASCADE')
+    facebook_id = CharField(255)
+    recent_days = SmallIntegerField(default=14)
+    max_posts = SmallIntegerField(default=10)
+    name = CharField(255, null=True)
+    JSON_KEYS = {
+        'facebookId': facebook_id, 'recentDays': recent_days,
+        'maxPosts': max_posts}
 
     @classmethod
     def from_dict(cls, chart, dictionary, **kwargs):

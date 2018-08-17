@@ -3,7 +3,7 @@
 from collections import namedtuple
 from logging import getLogger
 
-from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
+from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.group import GroupMemberTerminal
 from dscms4.orm.util import chart_of
 

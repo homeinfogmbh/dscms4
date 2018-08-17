@@ -3,9 +3,9 @@
 from collections import namedtuple
 from sys import stderr
 
+from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.charts.common import BaseChart
-from dscms4.orm.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 
 
 __all__ = ['charts_of', 'chart_of', 'check_base_charts']
