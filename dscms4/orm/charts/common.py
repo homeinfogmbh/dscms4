@@ -146,41 +146,6 @@ class Chart(RelatedModel):
         chart.base = BaseChart.from_json(base_dict)
         return Transaction(chart)
 
-    @classmethod
-    def by_customer(cls, customer):
-        """Yields charts by customer."""
-        return cls.select().join(BaseChart).where(
-            BaseChart.customer == customer)
-
-    @classmethod
-    def by_id(cls, ident, customer=None):
-        """Returns a single chart by its ID."""
-        if customer is None:
-            return cls.get(cls.id == ident)
-
-        return cls.select().join(BaseChart).where(
-            (cls.id == ident) & (BaseChart.customer == customer)).get()
-
-    @property
-    def customer(self):
-        """Returns the base chart's customer."""
-        return self.base.customer
-
-    @customer.setter
-    def customer(self, customer):
-        """Sets the base chart's customer."""
-        self.base.customer = customer
-
-    @property
-    def trashed(self):
-        """Determines whether this chart is considered trashed."""
-        return self.base.trashed
-
-    @property
-    def active(self):
-        """Determines whether the chart is considered active."""
-        return self.base.active
-
     def patch_json(self, json, **kwargs):
         """Pathes the chart with the provided dictionary."""
         self.base.patch(json.pop('base', {}))  # Generate new UUID.
