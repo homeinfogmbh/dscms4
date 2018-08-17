@@ -166,6 +166,9 @@ msgstr "Menu items sorted."
 msgid "DifferentMenusError"
 msgstr "Menu items are contained within different menus."
 
+msgid "DifferentParentsError"
+msgstr "Menu items are contained within different submenus."
+
 msgid "NoSuchMenuItemChart"
 msgstr "No such menu item chart."
 

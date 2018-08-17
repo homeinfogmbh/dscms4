@@ -2,29 +2,15 @@
 
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
     MenuPatched, MenuDeleted
 from dscms4.orm.menu import Menu
 
-__all__ = ['get_menu', 'ROUTES']
 
-
-def get_menu(ident):
-    """Returns the respective menu by its ID."""
-
-    try:
-        return Menu.get((Menu.customer == CUSTOMER.id) & (Menu.id == ident))
-    except Menu.DoesNotExist:
-        raise NoSuchMenu()
-
-
-def get_menus():
-    """Yields the menus of the current customer."""
-
-    return Menu.select().where(Menu.customer == CUSTOMER.id)
+__all__ = ['ROUTES']
 
 
 @authenticated
@@ -32,7 +18,7 @@ def get_menus():
 def list_():
     """List menus."""
 
-    return JSON([menu.to_dict() for menu in get_menus()])
+    return JSON([menu.to_json() for menu in Menu.select().where(True)])
 
 
 @authenticated
@@ -40,7 +26,12 @@ def list_():
 def get(ident):
     """Returns the respective menu."""
 
-    return JSON(get_menu(ident).to_dict())
+    try:
+        menu = Menu.get(Menu.id == ident)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
+
+    return JSON(menu.to_json())
 
 
 @authenticated
@@ -49,9 +40,9 @@ def add():
     """Adds a new menu."""
 
     try:
-        menu = Menu.from_dict(CUSTOMER.id, request.json)
+        menu = Menu.from_json(request.json)
     except ValueError:
-        raise InvalidMenuData()
+        return InvalidMenuData()
 
     menu.save()
     return MenuAdded(id=menu.id)
@@ -62,12 +53,15 @@ def add():
 def patch(ident):
     """Patches the respective menu."""
 
-    menu = get_menu(ident)
+    try:
+        menu = Menu.get(Menu.id == ident)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
 
     try:
         menu.patch(request.json)
     except ValueError:
-        raise InvalidMenuData()
+        return InvalidMenuData()
 
     menu.save()
     return MenuPatched()
@@ -78,7 +72,12 @@ def patch(ident):
 def delete(ident):
     """Deletes a menu."""
 
-    get_menu(ident).delete_instance()
+    try:
+        menu = Menu.get(Menu.id == ident)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
+
+    menu.delete_instance()
     return MenuDeleted()
 
 

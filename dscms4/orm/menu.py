@@ -8,14 +8,41 @@ from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.exceptions import CircularReferenceError, OrphanedBaseChart, \
-    AmbiguousBaseChart
+    AmbiguousBaseChart, InvalidReferenceError
 from dscms4.orm.util import chart_of
 
-__all__ = ['UNCHANGED', 'Menu', 'MenuItem', 'MODELS']
+__all__ = ['Menu', 'MenuItem', 'MODELS']
 
 
-UNCHANGED = object()
+NOT_SET = Ellipsis
 LOGGER = getLogger('Menu')
+
+
+def get_menu_and_parent(json):
+    """Returns the parent and menu entry."""
+
+    menu = json.pop('menu', None)
+
+    if menu is not None:
+        try:
+            menu = Menu.get(Menu.id == menu)
+        except Menu.DoesNotExist:
+            raise InvalidReferenceError(type=Menu, id=menu)
+
+    parent = json.pop('parent', None)
+
+    if menu is not None:
+        try:
+            parent = MenuItem.get(MenuItem.id == parent)
+        except MenuItem.DoesNotExist:
+            raise InvalidReferenceError(type=MenuItem, id=menu)
+
+    if menu is None and parent is None:
+        raise ValueError('Must either specify menu or parent.')
+    elif menu is not None and parent is not None:
+        raise ValueError('Must specify menu exclusively or parent.')
+
+    return (menu, parent)
 
 
 class Menu(CustomerModel):
@@ -25,16 +52,20 @@ class Menu(CustomerModel):
     description = CharField(255, null=True)
 
     @property
-    def items(self):
+    def root_items(self):
         """Yields this menu's root items."""
-        return MenuItem.select().where(
-            (MenuItem.menu == self) & (MenuItem.parent >> None))
+        return self.items.where(MenuItem.parent_ >> None)
 
-    def to_json(self):
+    def to_json(self, *args, items=False, **kwargs):
         """Returns the menu as a dictionary."""
-        dictionary = super().to_json()
-        dictionary['items'] = [item.to_json() for item in self.items]
-        return dictionary
+        json = super().to_json(*args, **kwargs)
+
+        if items:
+            json['items'] = [
+                item.to_json(charts=True, children=True, fk_fields=False)
+                for item in self.root_items]
+
+        return json
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
@@ -51,8 +82,10 @@ class MenuItem(DSCMS4Model):
     class Meta:
         table_name = 'menu_item'
 
-    menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
-    parent = ForeignKeyField(
+    menu_ = ForeignKeyField(
+        Menu, column_name='menu', null=True, on_delete='CASCADE',
+        backref='items')
+    parent_ = ForeignKeyField(
         'self', column_name='parent', null=True, backref='children')
     name = CharField(255)
     icon = CharField(255, null=True)
@@ -62,39 +95,60 @@ class MenuItem(DSCMS4Model):
     JSON_KEYS = {'textColor': text_color, 'backgroundColor': background_color}
 
     @classmethod
-    def from_json(cls, json, menu, parent=None, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a new menu item from the provided dictionary."""
+        menu, parent = get_menu_and_parent(json)
         menu_item = super().from_json(json, **kwargs)
         menu_item.menu = menu
         menu_item.parent = parent
         return menu_item
 
     @property
+    def menu(self):
+        """Returns the menu."""
+        return self.menu_
+
+    @menu.setter
+    def menu(self, menu):
+        """Sets the menu."""
+        self.menu_ = menu
+
+        if menu is not None:
+            self.parent_ = None
+
+    @property
+    def parent(self):
+        """Returns the parent."""
+        return self.parent_
+
+    @parent.setter
+    def parent(self, parent):
+        """Sets the parent."""
+        if parent is not None:
+            parent = self.get_peer(parent)
+
+            if parent == self or parent in self.childrens_children:
+                raise CircularReferenceError()
+
+            self.parent_ = parent
+            self.menu_ = None
+
+    @property
     def root(self):
         """Determines whether this is a root node entry."""
-        return self.parent is None
+        return self.menu_ is not None
 
     @property
-    def path(self):
-        """Yields the path to this menu."""
-        if not self.root:
-            for parent in self.parent.path:
-                yield parent
-
-        yield self
-
-    @property
-    def tree(self):
+    def childrens_children(self):
         """Recursively yields all submenus."""
-        yield self
-
         for child in self.children:
-            yield from child.tree
+            for childrens_child in child.childrens_children:
+                yield childrens_child
 
     @property
     def charts(self):
         """Yields the respective charts."""
-        for menu_item_chart in self.menu_item_charts:
+        for menu_item_chart in self.charts:
             base_chart = menu_item_chart.base_chart
 
             try:
@@ -104,48 +158,35 @@ class MenuItem(DSCMS4Model):
             except AmbiguousBaseChart:
                 LOGGER.error('Base chart #%i is ambiguous.', base_chart.id)
 
-    def move(self, parent):
-        """Moves this menu entry to a new parent."""
-        if parent in self.tree:
-            raise CircularReferenceError()
-
-        self.parent = parent
-        self.menu = self.parent.menu
-        self.save()
-
-    def append(self, child):
-        """Appends a new submenu."""
-        return child.move(self)
-
-    def remove(self, update_children=False):
+    def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
         if update_children:
             for child in self.children:
-                child.move(self.parent)
+                child.parent = self.parent
+                child.menu = self.menu
 
-        return self.delete_instance()
+        return super().delete_instance(**kwargs)
 
-    def patch_json(self, json, *args, menu=UNCHANGED, parent=UNCHANGED,
-                   **kwargs):
+    def patch_json(self, json, **kwargs):
         """Patches the menu item."""
-        super().patch_json(dictionary, *args, **kwargs)
+        menu, parent = get_menu_and_parent(json)
+        super().patch_json(json, **kwargs)
+        self.menu = menu
+        self.parent = parent
 
-        if menu is not UNCHANGED:
-            self.menu = menu
+    def to_json(self, charts=False, children=False, **kwargs):
+        """Returns a JSON-ish dictionary."""
+        json = super().to_json(**kwargs)
 
-        if parent is not UNCHANGED:
-            self.parent = parent
+        if charts:
+            json['charts'] = [chart.to_json() for chart in self.charts]
 
-        return self
+        if children:
+            json['items'] = [
+                item.to_json(charts=charts, children=children, **kwargs)
+                for item in self.children]
 
-    def to_json(self, *args, **kwargs):
-        """Returns a dictionary representation for the respective menu."""
-        dictionary = super().to_json(*args, **kwargs)
-        dictionary['charts'] = [
-            chart.to_json() for chart in self.menu_item_charts]
-        dictionary['items'] = [
-            item.to_json(*args, **kwargs) for item in self.children]
-        return dictionary
+        return json
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
@@ -156,7 +197,7 @@ class MenuItem(DSCMS4Model):
         xml.background_color = self.background_color
         xml.index = self.index
         xml.item = [item.to_dom() for item in self.children]
-        xml.chart = [chart.to_dom() for chart in self.menu_item_charts]
+        xml.chart = [chart.to_dom() for chart in self.charts]
         return xml
 
 
@@ -167,8 +208,8 @@ class MenuItemChart(DSCMS4Model):
         table_name = 'menu_item_chart'
 
     menu_item = ForeignKeyField(
-        MenuItem, null=True, column_name='menu_item',
-        backref='menu_item_charts', on_delete='CASCADE')
+        MenuItem, null=True, column_name='menu_item', backref='charts',
+        on_delete='CASCADE')
     base_chart = ForeignKeyField(
         BaseChart, null=True, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
@@ -177,9 +218,9 @@ class MenuItemChart(DSCMS4Model):
     def to_json(self):
         """Returns a JSON-ish dictionary."""
         chart = chart_of(self.base_chart)
-        dictionary = chart.to_json(brief=True)
-        dictionary['index'] = self.index
-        return dictionary
+        json = chart.to_json(brief=True)
+        json['index'] = self.index
+        return json
 
     def to_dom(self):
         """Returns an XML DOM of the model."""

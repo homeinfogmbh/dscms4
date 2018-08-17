@@ -14,6 +14,7 @@ __all__ = [
     'MenuItemDeleted',
     'MenuItemsSorted',
     'DifferentMenusError',
+    'DifferentParentsError',
     'NoSuchMenuItemChart',
     'MenuItemChartAdded',
     'MenuItemChartDeleted',
@@ -98,10 +99,18 @@ class DifferentMenusError(DSCMS4Message):
 
     STATUS = 400
 
+
+class DifferentParentsError(DSCMS4Message):
+    """Indicates that the respective menu items have different parents."""
+
+    STATUS = 400
+
+
 class NoSuchMenuItemChart(DSCMS4Message):
     """Indicates that the respective menu item chart does not exist."""
 
     STATUS = 404
+
 
 class MenuItemChartAdded(DSCMS4Message):
     """Indicates that the respective menu
@@ -109,6 +118,7 @@ class MenuItemChartAdded(DSCMS4Message):
     """
 
     STATUS = 200
+
 
 class MenuItemChartDeleted(DSCMS4Message):
     """Indicates that the respective menu

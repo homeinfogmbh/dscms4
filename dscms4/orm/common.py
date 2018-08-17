@@ -40,11 +40,6 @@ class DSCMS4Model(JSONModel):
         """Returns the models's ID and class."""
         return '{}@{}'.format(self.id, type(self).__name__)
 
-    @classmethod
-    def by_id(cls, ident):
-        """Yields records for the respective ID."""
-        return cls.get(cls.id == ident)
-
 
 class CustomerModel(DSCMS4Model):
     """Entity that relates to a customer."""
@@ -52,18 +47,18 @@ class CustomerModel(DSCMS4Model):
     customer = ForeignKeyField(Customer, column_name='customer')
 
     @classmethod
-    def select(cls, *fields):
-        """Returns a selection with additional filtering for
-        the current HIS customer iff within HIS context.
+    def cselect(cls, *fields):
+        """Returns a selection with additional filtering
+        for the current HIS customer context.
         """
-        model_select = super().select(*fields)
+        return cls.select(*fields).where(cls.customer == CUSTOMER.id)
 
-        if has_request_context():
-            return model_select.where(cls.customer == CUSTOMER.id)
-
-        LOGGER.warning('Querying outside of request context.')
-        LOGGER.warning('Will not filter for current HIS customer.')
-        return model_select
+    @classmethod
+    def cget(cls, *query, **filters):
+        """Returns a single record with additional filtering
+        for the current HIS customer context.
+        """
+        return cls.get(*query + ((cls.customer == CUSTOMER.id),), **filters)
 
     @classmethod
     def from_json(cls, json, *, customer=None, **kwargs):

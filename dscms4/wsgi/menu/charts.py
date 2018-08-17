@@ -25,20 +25,9 @@ def get_chart(type_, ident):
         raise InvalidChartType()
 
     try:
-        return type_.by_id(ident, customer=CUSTOMER.id)
+        return type_.get(type_.id == ident)
     except type_.DoesNotExist:
         raise NoSuchChart()
-
-
-def get_menu_item_chart(ident):
-    """Returns the respective menu item chart."""
-
-    try:
-        return MenuItemChart.get(
-            (MenuItemChart.customer == CUSTOMER.id)
-            & (MenuItemChart.id == ident))
-    except MenuItemChart.DoesNotExist:
-        raise NoSuchMenuItemChart()
 
 
 @authenticated
@@ -87,7 +76,12 @@ def add():
 def delete(ident):
     """Deletes a menu or menu item."""
 
-    get_menu_item_chart(ident).delete_instance()
+    try:
+        menu_item_chart = MenuItemChart.get(MenuItemChart.id == ident)
+    except MenuItemChart.DoesNotExist:
+        return NoSuchMenuItemChart()
+
+    menu_item_chart.delete_instance()
     return MenuItemChartDeleted()
 
 
@@ -96,17 +90,18 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    mi_charts = tuple(get_menu_item_chart(ident) for ident in request.json)
+    menu_item_charts = (get_menu_item_chart(ident) for ident in request.json)
 
     try:
-        sentinel = mi_charts[0].menu_item
-    except IndexError:
-        return MenuItemChartsSorted()    # Empty list.
+        first, *other = menu_item_charts
+    except ValueError:
+        return MenuItemChartsSorted()   # Empty set of MenuItemsCharts.
 
-    if all(mi_chart.menu_item == sentinel for mi_chart in mi_charts[1:]):
-        for index, mi_chart in enumerate(mi_charts):
-            mi_chart.index = index
-            mi_chart.save()
+    if all(menu_item_chart.menu_item == first.menu_item
+            for menu_item_chart in other):
+        for index, menu_item_chart in enumerate(chain((first,), other)):
+            menu_item_chart.index = index
+            menu_item_chart.save()
 
         return MenuItemChartsSorted()
 

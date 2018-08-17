@@ -166,6 +166,9 @@ msgstr "Menüelemente sortiert."
 msgid "DifferentMenusError"
 msgstr "Menüelemente befinden sich in unterschiedlichen Menüs."
 
+msgid "DifferentParentsError"
+msgstr "Menüelemente befinden sich in Untermenüs."
+
 msgid "NoSuchMenuItemChart"
 msgstr "Kein solcher Menüelementchart."
 

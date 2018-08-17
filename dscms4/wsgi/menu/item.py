@@ -2,31 +2,25 @@
 
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
-from his.messages import MissingData
+from his import authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.menu import InvalidMenuData, NoSuchMenuItem, \
+from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, NoSuchMenuItem, \
     MenuItemAdded, MenuItemPatched, MenuItemDeleted, MenuItemsSorted, \
-    DifferentMenusError
-from dscms4.orm.menu import UNCHANGED, Menu, MenuItem
-from dscms4.wsgi.menu.menu import get_menu
+    DifferentMenusError, DifferentParentsError
+from dscms4.orm.menu import Menu, MenuItem
+
 
 __all__ = ['ROUTES']
-
-
-def get_menu_items(menu):
-    """Yields menus of the current customer."""
-
-    return MenuItem.select().where(MenuItem.menu == menu)
 
 
 def get_menu_item(ident):
     """Returns the respective menu item."""
 
+    menus = Menu.select().where(True)
+
     try:
-        return MenuItem.select().join(Menu).where(
-            (Menu.customer == CUSTOMER.id) & (MenuItem.id == ident)).get()
+        return MenuItem.get((MenuItem.id == ident) & (MenuItem.menu << menus))
     except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
@@ -36,9 +30,14 @@ def get_menu_item(ident):
 def list_(menu):
     """Lists the respective menu's items."""
 
+    try:
+        menu = Menu.get(Menu.id == menu)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
+
     return JSON([
-        menu_item.to_dict() for menu_item in
-        get_menu_items(get_menu(menu))])
+        menu_item.to_dict() for menu_item in MenuItem.select().where(
+            MenuItem.menu == menu)])
 
 
 @authenticated
@@ -55,20 +54,9 @@ def add():
     """Adds a new menu item."""
 
     try:
-        menu = request.json.pop('menu')
-    except KeyError:
-        raise MissingData(key='menu')
-
-    menu = get_menu(menu)
-    parent = request.json.pop('parent', None)
-
-    if parent is not None:
-        parent = get_menu_item(parent)
-
-    try:
-        menu_item = MenuItem.from_dict(menu, request.json, parent=parent)
+        menu_item = MenuItem.from_dict(request.json)
     except ValueError:
-        raise InvalidMenuData()
+        return InvalidMenuData()
 
     menu_item.save()
     return MenuItemAdded(id=menu_item.id)
@@ -82,27 +70,9 @@ def patch(ident):
     menu_item = get_menu_item(ident)
 
     try:
-        menu = request.json.pop('menu')
-    except KeyError:
-        menu = UNCHANGED
-    else:
-        menu = get_menu(menu)
-
-    try:
-        parent = request.json.pop('parent')
-    except KeyError:
-        parent = UNCHANGED
-    else:
-        parent = get_menu_item(parent)
-        common_menu = menu_item.menu if menu is UNCHANGED else menu
-
-        if parent.menu != common_menu:
-            raise DifferentMenusError()
-
-    try:
-        menu_item.patch(request.json, menu=menu, parent=parent)
+        menu_item.patch(request.json)
     except ValueError:
-        raise InvalidMenuData()
+        return InvalidMenuData()
 
     menu_item.save()
     return MenuItemPatched()
@@ -113,7 +83,8 @@ def patch(ident):
 def delete(ident):
     """Deletes a menu or menu item."""
 
-    get_menu_item(ident).delete_instance()
+    update_children = 'updateChildren' in request.args
+    get_menu_item(ident).delete_instance(update_children=update_children)
     return MenuItemDeleted()
 
 
@@ -122,21 +93,24 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    menu_items = tuple(get_menu_item(ident) for ident in request.json)
+    menu_items = (get_menu_item(ident) for ident in request.json)
 
     try:
-        sentinel = menu_items[0].menu
-    except IndexError:
-        return MenuItemsSorted()    # Empty list.
+        first, *other = menu_items
+    except ValueError:
+        return MenuItemsSorted()    # Empty set of MenuItems.
 
-    if all(menu_item.group == sentinel for menu_item in menu_items[1:]):
-        for index, menu_item in enumerate(menu_items):
-            menu_item.index = index
-            menu_item.save()
+    if not all(menu_item.menu == first.menu for menu_item in other):
+        return DifferentMenusError()
 
-        return MenuItemsSorted()
+    if not all(menu_item.parent == first.parent for menu_item in other):
+        return DifferentParentsError()
 
-    return DifferentMenusError()
+    for index, menu_item in enumerate(chain((first,), other)):
+        menu_item.index = index
+        menu_item.save()
+
+    return MenuItemsSorted()
 
 
 ROUTES = (
