@@ -74,7 +74,7 @@ def get_chart(ident):
     """Returns the selected chart."""
 
     try:
-        return CHART_TYPE.by_id(ident, customer=CUSTOMER.id)
+        return CHART_TYPE.cget(CHART_TYPE.id == ident)
     except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 
@@ -109,7 +109,7 @@ def add():
     try:
         transaction = CHART_TYPE.from_json(CUSTOMER, request.json)
     except InvalidKeys as invalid_keys:
-        raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
+        return InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
     transaction.commit()
     return ChartAdded(id=transaction.chart.id)
@@ -125,7 +125,7 @@ def patch(ident):
     try:
         transaction = chart.patch_json(request.json)
     except InvalidKeys as invalid_keys:
-        raise InvalidData(invalid_keys=invalid_keys.invalid_keys)
+        return InvalidData(invalid_keys=invalid_keys.invalid_keys)
 
     transaction.commit()
     return ChartPatched()
