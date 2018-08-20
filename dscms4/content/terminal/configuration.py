@@ -6,6 +6,7 @@ from dscms4.content.group.configuration import \
     first_configuration as _first_configuration
 from dscms4.orm.content.terminal import TerminalConfiguration
 
+
 __all__ = ['configurations', 'first_configuration']
 
 

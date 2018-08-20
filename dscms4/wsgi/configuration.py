@@ -20,9 +20,7 @@ def get_configuration(ident):
     """Returns the respective configuration."""
 
     try:
-        return Configuration.get(
-            (Configuration.customer == CUSTOMER.id)
-            & (Configuration.id == ident))
+        return Configuration.cget(Configuration.id == ident)
     except Configuration.DoesNotExist:
         raise NoSuchConfiguration()
 
@@ -34,8 +32,7 @@ def list_():
 
     return JSON([
         configuration.to_dict() for configuration
-        in Configuration.select().where(
-            Configuration.customer == CUSTOMER.id)])
+        in Configuration.cselect().where(True)])
 
 
 @authenticated
@@ -58,7 +55,7 @@ def add():
     # Create related colors first.
     colors = Colors.from_json(colors)
     colors.save()
-    configuration = Configuration.from_dict(json, CUSTOMER.id, colors)
+    configuration = Configuration.from_dict(json, colors)
     configuration.save()
 
     # Create related tickers.

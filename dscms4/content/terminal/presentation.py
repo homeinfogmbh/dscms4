@@ -11,6 +11,7 @@ from dscms4.content.terminal.configuration import first_configuration
 from dscms4.content.terminal.menu import accumulated_menus, \
     accumulated_charts as accumulated_menu_charts
 
+
 __all__ = ['Presentation']
 
 

@@ -7,6 +7,7 @@ from dscms4.content.group.charts import \
     accumulated_charts as _accumulated_charts
 from dscms4.orm.content.terminal import TerminalBaseChart
 
+
 __all__ = ['base_charts', 'accumulated_base_charts']
 
 

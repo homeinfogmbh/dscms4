@@ -3,6 +3,7 @@
 from dscms4.content.common import ContentInformation
 from dscms4.orm.content.group import GroupMenu
 
+
 __all__ = ['menus', 'accumulated_menus']
 
 

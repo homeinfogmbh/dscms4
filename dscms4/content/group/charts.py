@@ -3,6 +3,7 @@
 from dscms4.content.common import ContentInformation, get_charts
 from dscms4.orm.content.group import GroupBaseChart
 
+
 __all__ = [
     'base_charts',
     'accumulated_base_charts',

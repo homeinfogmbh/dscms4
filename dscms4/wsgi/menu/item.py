@@ -19,7 +19,7 @@ __all__ = ['ROUTES']
 def get_menu_item(ident):
     """Returns the respective menu item."""
 
-    menus = Menu.select().where(True)
+    menus = Menu.cselect().where(True)
 
     try:
         return MenuItem.cget((MenuItem.id == ident) & (MenuItem.menu << menus))

@@ -4,6 +4,7 @@ from dscms4.content.common import ContentInformation, terminal_groups
 from dscms4.content.group.menu import accumulated_menus as _accumulated_menus
 from dscms4.orm.content.terminal import TerminalMenu
 
+
 __all__ = ['menus', 'accumulated_menus', 'accumulated_charts']
 
 
