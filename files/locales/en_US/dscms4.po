@@ -48,6 +48,9 @@ msgstr "Chart gelöscht."
 msgid "ChartPatched"
 msgstr "Chart patched."
 
+msgid "ChartTypeAdded"
+msgstr "Chart- type added."
+
 ### Miscellaneous messages. ###
 
 msgid "InvalidId"

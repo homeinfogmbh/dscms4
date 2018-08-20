@@ -4,7 +4,7 @@ from datetime import datetime
 
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \

@@ -6,7 +6,8 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.messages.group import NoSuchGroup
-from dscms4.orm.content.group import Group, GroupConfiguration
+from dscms4.orm.content.group import GroupConfiguration
+from dscms4.orm.group import Group
 from dscms4.wsgi.configuration import get_configuration
 
 

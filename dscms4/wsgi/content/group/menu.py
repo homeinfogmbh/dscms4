@@ -6,8 +6,10 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
 from dscms4.messages.group import NoSuchGroup
-from dscms4.orm.content.group import Group, GroupMenu
-from dscms4.wsgi.menu import get_menu
+from dscms4.messages.menu import NoSuchMenu
+from dscms4.orm.content.group import GroupMenu
+from dscms4.orm.group import Group
+from dscms4.orm.menu import Menu
 
 
 __all__ = ['ROUTES']
@@ -38,7 +40,10 @@ def add(gid, ident):
     except Group.DoesNotExist:
         return NoSuchGroup()
 
-    menu = get_menu(ident)
+    try:
+        menu = Menu.cget(Menu.id == ident)
+    except Group.DoesNotExist:
+        return NoSuchMenu()
 
     try:
         GroupMenu.get(
@@ -63,7 +68,10 @@ def delete(gid, ident):
     except Group.DoesNotExist:
         return NoSuchGroup()
 
-    menu = get_menu(ident)
+    try:
+        menu = Menu.cget(Menu.id == ident)
+    except Group.DoesNotExist:
+        return NoSuchMenu()
 
     try:
         group_menu = GroupMenu.get(

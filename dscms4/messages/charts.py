@@ -73,3 +73,9 @@ class ChartPatched(DSCMS4Message):
     """Indicates that a chart was successfully patched."""
 
     STATUS = 200
+
+
+class ChartTypeAdded(DSCMS4Message):
+    """Indicates that the respective chart type was successfully added."""
+
+    STATUS = 201

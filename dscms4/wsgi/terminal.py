@@ -21,7 +21,8 @@ def get_terminal(tid):
     """Returns the respective terminal."""
 
     try:
-        return Terminal.cget(Terminal.tid == tid)
+        return Terminal.get(
+            (Terminal.tid == tid) & (Terminal.customer == CUSTOMER.id))
     except Terminal.DoesNotExist:
         raise NoSuchTerminal()
 

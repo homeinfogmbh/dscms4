@@ -1,13 +1,13 @@
 """Controllers for chart types."""
 
-from his import CUSTOMER, authenticated, authorized, root
+from his import authenticated, authorized, root
 from his.messages import NoSuchCustomer
 from mdb import Customer
 from wsgilib import JSON
 
 from dscms4.orm.chart_types import ChartType
 from dscms4.orm.charts import CHARTS
-from dscms4.messages.chart_types import InvalidChartType, ChartTypeAdded
+from dscms4.messages.charts import InvalidChartType, ChartTypeAdded
 
 
 __all__ = ['ROUTES']
@@ -37,7 +37,7 @@ def add(cid, chart_type):
     except KeyError:
         return InvalidChartType()
 
-    chart_type = ChartType.add(customer, chart_type)
+    chart_type = ChartType.add(chart_type)
     chart_type.save()
     return ChartTypeAdded()
 

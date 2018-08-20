@@ -6,7 +6,8 @@ from wsgilib import JSON
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentDeleted
 from dscms4.messages.group import NoSuchGroup
-from dscms4.orm.content.group import Group, GroupBaseChart
+from dscms4.orm.content.group import GroupBaseChart
+from dscms4.orm.group import Group
 from dscms4.wsgi.charts import get_chart
 
 
@@ -17,7 +18,7 @@ def _get_gbc(gid, ident):
     """Returns the respective group base chart."""
 
     try:
-        group = Group.cget(Group.id == ident)
+        group = Group.cget(Group.id == gid)
     except Group.DoesNotExist:
         raise NoSuchGroup()
 
