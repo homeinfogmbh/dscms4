@@ -5,9 +5,10 @@ from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
+from dscms4.messages.menu import NoSuchMenu
 from dscms4.orm.content.terminal import TerminalMenu
+from dscms4.orm.menu import Menu
 from dscms4.wsgi.terminal import get_terminal
-from dscms4.wsgi.menu import get_menu
 
 __all__ = ['ROUTES']
 
@@ -28,7 +29,11 @@ def add(gid, ident):
     """Adds the menu to the respective terminal."""
 
     terminal = get_terminal(gid)
-    menu = get_menu(ident)
+
+    try:
+        menu = Menu.cget(Menu.id == ident)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
 
     try:
         TerminalMenu.get(
@@ -49,7 +54,11 @@ def delete(gid, ident):
     """Deletes the menu from the respective terminal."""
 
     terminal = get_terminal(gid)
-    menu = get_menu(ident)
+
+    try:
+        menu = Menu.cget(Menu.id == ident)
+    except Menu.DoesNotExist:
+        return NoSuchMenu()
 
     try:
         terminal_menu = TerminalMenu.get(

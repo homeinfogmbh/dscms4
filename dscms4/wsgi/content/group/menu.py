@@ -42,7 +42,7 @@ def add(gid, ident):
 
     try:
         menu = Menu.cget(Menu.id == ident)
-    except Group.DoesNotExist:
+    except Menu.DoesNotExist:
         return NoSuchMenu()
 
     try:
@@ -70,7 +70,7 @@ def delete(gid, ident):
 
     try:
         menu = Menu.cget(Menu.id == ident)
-    except Group.DoesNotExist:
+    except Menu.DoesNotExist:
         return NoSuchMenu()
 
     try:
