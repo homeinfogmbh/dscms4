@@ -134,9 +134,7 @@ class RelatedModel(DSCMS4Model):
             try:
                 rel_model = rel_model.get_related_model()
             except AttributeError:
-                rel_model = None
-
-        yield rel_model
+                break
 
     @classmethod
     def cselect(cls, *fields):
