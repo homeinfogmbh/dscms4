@@ -2,8 +2,6 @@
 
 from peewee import ForeignKeyField, IntegerField, CharField
 
-from peeweeplus import JSONField
-
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import Chart
@@ -21,13 +19,17 @@ class Weather(Chart):
     class Meta:
         table_name = 'chart_weather'
 
-    location = JSONField(CharField, 255)
-    font_color = JSONField(IntegerField, key='fontColor')
-    icon_color = JSONField(IntegerField, key='iconColor')
-    box_color_top = JSONField(IntegerField, key='boxColorTop')
-    box_color_middle = JSONField(IntegerField, key='boxColorMiddle')
-    box_color_bottom = JSONField(IntegerField, key='boxColorBottom')
-    transparency = JSONField(IntegerField)
+    location = CharField(255)
+    font_color = IntegerField()
+    icon_color = IntegerField()
+    box_color_top = IntegerField()
+    box_color_middle = IntegerField()
+    box_color_bottom = IntegerField()
+    transparency = IntegerField()
+    JSON_KEYS = {
+        'fontColor': font_color, 'iconColor': icon_color,
+        'boxColorTop': box_color_top, 'boxColorMiddle': box_color_middle,
+        'boxColorBottom': box_color_bottom}
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
@@ -100,10 +102,9 @@ class Image(DSCMS4Model):
     class Meta:
         table_name = 'chart_weather_image'
 
-    chart = JSONField(
-        ForeignKeyField, Weather, column_name='chart', backref='images',
-        on_delete='CASCADE')
-    image = JSONField(IntegerField)
+    chart = ForeignKeyField(
+        Weather, column_name='chart', backref='images', on_delete='CASCADE')
+    image = IntegerField()
 
     @classmethod
     def add(cls, chart, image):

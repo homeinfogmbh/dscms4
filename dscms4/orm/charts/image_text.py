@@ -5,7 +5,7 @@ from enum import Enum
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 
-from peeweeplus import JSONField, EnumField
+from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
@@ -31,11 +31,14 @@ class ImageText(Chart):
     class Meta:
         table_name = 'chart_image_text'
 
-    style = JSONField(EnumField, Style)
-    title = JSONField(CharField, 255)
-    font_size = JSONField(SmallIntegerField, default=26, key='fontSize')
-    title_color = JSONField(IntegerField, default=0x000000, key='titleColor')
-    ken_burns = JSONField(BooleanField, default=False, key='kenBurns')
+    style = EnumField(Style)
+    title = CharField(255)
+    font_size = SmallIntegerField(default=26)
+    title_color = IntegerField(default=0x000000)
+    ken_burns = BooleanField(default=False)
+    JSON_KEYS = {
+        'fontSize': font_size, 'titleColor': title_color,
+        'kenBurns': ken_burns}
 
     @classmethod
     def from_dict(cls, customer, dictionary, **kwargs):
@@ -120,10 +123,9 @@ class Image(DSCMS4Model):
     class Meta:
         table_name = 'chart_image_text_image'
 
-    chart = JSONField(
-        ForeignKeyField, ImageText, column_name='chart', backref='images',
-        on_delete='CASCADE')
-    image = JSONField(IntegerField)
+    chart = ForeignKeyField(
+        ImageText, column_name='chart', backref='images', on_delete='CASCADE')
+    image = IntegerField()
 
     @classmethod
     def add(cls, chart, image):
@@ -144,10 +146,9 @@ class Text(DSCMS4Model):
     class Meta:
         table_name = 'chart_image_text_text'
 
-    chart = JSONField(
-        ForeignKeyField, ImageText, column_name='chart', backref='texts',
-        on_delete='CASCADE')
-    text = JSONField(TextField)
+    chart = ForeignKeyField(
+        ImageText, column_name='chart', backref='texts', on_delete='CASCADE')
+    text = TextField()
 
     @classmethod
     def add(cls, chart, text):

@@ -2,8 +2,6 @@
 
 from peewee import IntegerField, SmallIntegerField, BooleanField, CharField
 
-from peeweeplus import JSONField
-
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 
@@ -16,13 +14,16 @@ class News(Chart):
     class Meta:
         table_name = 'chart_news'
 
-    font_size_title = JSONField(
-        SmallIntegerField, default=8, key='fontSizeTitle')
-    title_color = JSONField(IntegerField, default=0x000000, key='titleColor')
-    font_size_text = JSONField(SmallIntegerField, default=8, key='fontSizeText')
-    text_color = JSONField(IntegerField, default=0x000000, key='textColor')
-    ken_burns = JSONField(BooleanField, null=True, key='kenBurns')
-    news_token = JSONField(CharField, 36, null=True, key='newsToken')
+    font_size_title = SmallIntegerField(default=8)
+    title_color = IntegerField(default=0x000000)
+    font_size_text = SmallIntegerField(default=8)
+    text_color = IntegerField(default=0x000000)
+    ken_burns = BooleanField(null=True)
+    news_token = CharField(36, null=True)
+    JSON_KEYS = {
+        'fontSizeTitle': font_size_title, 'titleColor': title_color,
+        'fontSizeText': font_size_text, 'textColor': text_color,
+        'kenBurns': ken_burns, 'newsToken': news_token}
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
