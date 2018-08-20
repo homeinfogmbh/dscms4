@@ -126,14 +126,15 @@ class RelatedModel(DSCMS4Model):
     @classmethod
     def _relation_path(cls):
         """Yields the respective models leading to the customer model."""
-        try:
-            rel_model = cls.get_related_model()
-        except AttributeError:
-            rel_model = None
+        rel_model = cls.get_related_model()
 
         while rel_model is not None:
             yield rel_model
-            rel_model = rel_model.get_related_model()
+
+            try:
+                rel_model = rel_model.get_related_model()
+            except AttributeError:
+                rel_model = None
 
         yield rel_model
 
