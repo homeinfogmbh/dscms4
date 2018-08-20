@@ -17,7 +17,7 @@ basicConfig(level=INFO, format=LOG_FORMAT)
 
 
 def _remove_itc_images(ident):
-    """Removes the respective Images of ImageTest charts."""
+    """Removes the respective Images of ImageText charts."""
 
     for image in ITCImage.select().where(ITCImage.image == ident):
         LOGGER.info(
