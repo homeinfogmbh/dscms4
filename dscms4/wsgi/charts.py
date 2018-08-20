@@ -67,7 +67,7 @@ def get_charts():
     """Lists the available charts."""
 
     for typ in CHART_TYPES:
-        for chart in typ.by_customer(CUSTOMER.id):
+        for chart in typ.cselect():
             yield chart
 
 
