@@ -33,7 +33,7 @@ def add(cid, chart_type):
         return NoSuchCustomer()
 
     try:
-        chart_type CHARTS[chart_type]
+        chart_type = CHARTS[chart_type]
     except KeyError:
         return InvalidChartType()
 
