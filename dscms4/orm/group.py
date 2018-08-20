@@ -114,12 +114,10 @@ class Group(CustomerModel):
         json = super().to_json(**kwargs)
 
         if parent:
-            parent = self.parent
-
-            if parent is None:
+            if self.parent is None:
                 json['parent'] = None
             else:
-                json['parent'] = parent.id
+                json['parent'] = self.parent   # Integer, since self-reference.
 
         return json
 
