@@ -28,7 +28,7 @@ def get_chart(type_, ident):
         raise InvalidChartType()
 
     try:
-        return type_.get(type_.id == ident)
+        return type_.cget(type_.id == ident)
     except type_.DoesNotExist:
         raise NoSuchChart()
 

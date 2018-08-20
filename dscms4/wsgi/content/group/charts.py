@@ -1,6 +1,6 @@
 """Management of charts in groups."""
 
-from his import CUSTOMER, authenticated, authorized
+from his import authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -17,10 +17,13 @@ def _get_gbc(gid, ident):
     """Returns the respective group base chart."""
 
     try:
-        return GroupBaseChart.select().join(Group).where(
-            (GroupBaseChart.id == ident)
-            & (Group.customer == CUSTOMER.id)
-            & (Group.id == gid)).get()
+        group = Group.cget(Group.id == ident)
+    except Group.DoesNotExist:
+        raise NoSuchGroup()
+
+    try:
+        return GroupBaseChart.get().where(
+            (GroupBaseChart.id == ident) & (GroupBaseChart.group == group))
     except GroupBaseChart.DoesNotExist:
         raise NoSuchContent()
 

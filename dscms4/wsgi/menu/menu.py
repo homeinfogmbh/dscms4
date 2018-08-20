@@ -27,7 +27,7 @@ def get(ident):
     """Returns the respective menu."""
 
     try:
-        menu = Menu.get(Menu.id == ident)
+        menu = Menu.cget(Menu.id == ident)
     except Menu.DoesNotExist:
         return NoSuchMenu()
 
@@ -54,7 +54,7 @@ def patch(ident):
     """Patches the respective menu."""
 
     try:
-        menu = Menu.get(Menu.id == ident)
+        menu = Menu.cget(Menu.id == ident)
     except Menu.DoesNotExist:
         return NoSuchMenu()
 
@@ -73,7 +73,7 @@ def delete(ident):
     """Deletes a menu."""
 
     try:
-        menu = Menu.get(Menu.id == ident)
+        menu = Menu.cget(Menu.id == ident)
     except Menu.DoesNotExist:
         return NoSuchMenu()
 
