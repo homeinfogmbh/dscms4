@@ -85,7 +85,7 @@ class CustomerModel(DSCMS4Model):
         else:
             raise ValueError('No customer specified.')
 
-        record = super().from_dict(json, **kwargs)
+        record = super().from_json(json, **kwargs)
         record.customer = customer
         return record
 

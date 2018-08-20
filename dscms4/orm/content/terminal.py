@@ -33,11 +33,11 @@ class TerminalBaseChart(_TerminalContent):
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
-    def to_dict(self):
-        """Returns a JSON-ish dictionary."""
+    def to_json(self):
+        """to_json a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'chart': chart_of(self.base_chart).to_dict(brief=True)}
+            'chart': chart_of(self.base_chart).to_json(brief=True)}
 
 
 class TerminalConfiguration(_TerminalContent):

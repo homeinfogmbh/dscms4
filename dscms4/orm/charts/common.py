@@ -148,8 +148,8 @@ class Chart(RelatedModel):
 
     def patch_json(self, json, **kwargs):
         """Pathes the chart with the provided dictionary."""
-        self.base.patch(json.pop('base', {}))  # Generate new UUID.
-        super().patch(json, **kwargs)
+        self.base.patch_json(json.pop('base', {}))  # Generate new UUID.
+        super().patch_json(json, **kwargs)
         return Transaction(self)
 
     def to_json(self, brief=False, **kwargs):

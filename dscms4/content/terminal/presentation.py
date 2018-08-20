@@ -86,12 +86,12 @@ class Presentation:
         xml.chart = [chart.to_dom() for chart in self.chart_set]
         return xml
 
-    def to_dict(self):
+    def to_json(self):
         """Returns a JSON presentation."""
         return {
             'customer': self.terminal.customer.id,
             'tid': self.terminal.tid,
-            'configuration': self.configuration.to_dict(),
-            'playlist': [chart.to_dict(brief=True) for chart in self.charts],
-            'menus': [menu.to_dict() for menu in self.menu_set],
-            'charts': [chart.to_dict() for chart in self.chart_set]}
+            'configuration': self.configuration.to_json(),
+            'playlist': [chart.to_json(brief=True) for chart in self.charts],
+            'menus': [menu.to_json() for menu in self.menu_set],
+            'charts': [chart.to_json() for chart in self.chart_set]}

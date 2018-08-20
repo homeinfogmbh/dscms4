@@ -31,11 +31,11 @@ class GroupBaseChart(_GroupContent):
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
-    def to_dict(self):
+    def to_json(self):
         """Returns a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'chart': chart_of(self.base_chart).to_dict(brief=True)}
+            'chart': chart_of(self.base_chart).to_json(brief=True)}
 
 
 class GroupConfiguration(_GroupContent):

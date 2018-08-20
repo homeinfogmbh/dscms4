@@ -41,23 +41,25 @@ class ImageText(Chart):
         'kenBurns': ken_burns}
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, customer, dictionary, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
         # Pop images and texts first to exclude them from the
-        # dictionary before invoking super().from_dict().
+        # dictionary before invoking super().from_json().
         images = dictionary.pop('images', ())
         texts = dictionary.pop('texts', ())
-        base, chart = super().from_dict(customer, dictionary, **kwargs)
-        yield base
-        yield chart
+        transaction = super().from_json(customer, dictionary, **kwargs)
 
         for image in images:
-            yield Image.add(chart, image)
+            image = Image.add(transaction.chart, image)
+            transaction.add(image)
 
         for text in texts:
-            yield Text.add(chart, text)
+            text = Text.add(transaction.chart, text)
+            transaction.add(text)
+
+        return transaction
 
     @property
     def files(self):
@@ -69,37 +71,39 @@ class ImageText(Chart):
 
         return files
 
-    def patch(self, dictionary, **kwargs):
+    def patch_json(self, json, **kwargs):
         """Patches the respective chart."""
-        images = dictionary.pop('images', _UNCHANGED) or ()
-        texts = dictionary.pop('texts', _UNCHANGED) or ()
-        base, chart = super().patch(dictionary, **kwargs)
-        yield base
-        yield chart
+        images = json.pop('images', _UNCHANGED) or ()
+        texts = json.pop('texts', _UNCHANGED) or ()
+        transaction = super().patch_json(json, **kwargs)
 
         if images is not _UNCHANGED:
             for image in self.images:
-                image.delete_instance()
+                transaction.delete(image)
 
             for image in images:
-                yield Image.add(chart, image)
+                image = Image.add(transaction.chart, image)
+                transaction.add(image)
 
         if texts is not _UNCHANGED:
             for text in self.texts:
-                text.delete_instance()
+                transaction.delete(text)
 
             for text in texts:
-                yield Text.add(chart, text)
+                text = Text.add(transaction.chart, text)
+                transaction.add(text)
 
-    def to_dict(self, *args, brief=False, **kwargs):
+        return transaction
+
+    def to_json(self, brief=False, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        dictionary = super().to_dict(*args, brief=brief, **kwargs)
+        json = super().to_json(brief=brief, **kwargs)
 
         if not brief:
-            dictionary['texts'] = [text.text for text in self.texts]
-            dictionary['images'] = [image.image for image in self.images]
+            json['texts'] = [text.text for text in self.texts]
+            json['images'] = [image.image for image in self.images]
 
-        return dictionary
+        return json
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

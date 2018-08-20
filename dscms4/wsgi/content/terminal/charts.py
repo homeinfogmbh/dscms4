@@ -31,7 +31,7 @@ def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
     return JSON([
-        tbc.to_dict() for tbc in TerminalBaseChart.select().where(
+        tbc.to_json() for tbc in TerminalBaseChart.select().where(
             TerminalBaseChart.terminal == get_terminal(tid))])
 
 

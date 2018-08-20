@@ -31,7 +31,7 @@ def list_():
     """Returns a list of IDs of the customer's configurations."""
 
     return JSON([
-        configuration.to_dict() for configuration
+        configuration.to_json() for configuration
         in Configuration.cselect().where(True)])
 
 
@@ -40,7 +40,7 @@ def list_():
 def get(ident):
     """Returns the respective configuration."""
 
-    return JSON(get_configuration(ident).to_dict())
+    return JSON(get_configuration(ident).to_json())
 
 
 @authenticated
@@ -55,7 +55,7 @@ def add():
     # Create related colors first.
     colors = Colors.from_json(colors)
     colors.save()
-    configuration = Configuration.from_dict(json, colors)
+    configuration = Configuration.from_json(json, colors)
     configuration.save()
 
     # Create related tickers.
@@ -83,7 +83,7 @@ def patch(ident):
     tickers = json.pop('tickers', None)
     backlight = json.pop('backlight', None)
     configuration = get_configuration(ident)
-    configuration.patch(json)
+    configuration.patch_json(json)
     configuration.save()
 
     # Patch related colors.

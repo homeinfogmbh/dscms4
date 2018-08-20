@@ -47,7 +47,7 @@ def get_menu_item_chart(ident):
 def list_(ident):
     """Lists the respective menu's items."""
 
-    return JSON([chart.to_dict() for chart in get_menu_item(ident).charts])
+    return JSON([chart.to_json() for chart in get_menu_item(ident).charts])
 
 
 @authenticated

@@ -38,7 +38,7 @@ def list_(menu):
         return NoSuchMenu()
 
     return JSON([
-        menu_item.to_dict() for menu_item in MenuItem.cselect().where(
+        menu_item.to_json() for menu_item in MenuItem.cselect().where(
             MenuItem.menu == menu)])
 
 
@@ -47,7 +47,7 @@ def list_(menu):
 def get(ident):
     """Returns the respective menu item."""
 
-    return JSON(get_menu_item(ident).to_dict())
+    return JSON(get_menu_item(ident).to_json())
 
 
 @authenticated
@@ -56,7 +56,7 @@ def add():
     """Adds a new menu item."""
 
     try:
-        menu_item = MenuItem.from_dict(request.json)
+        menu_item = MenuItem.from_json(request.json)
     except ValueError:
         return InvalidMenuData()
 
@@ -72,7 +72,7 @@ def patch(ident):
     menu_item = get_menu_item(ident)
 
     try:
-        menu_item.patch(request.json)
+        menu_item.patch_json(request.json)
     except ValueError:
         return InvalidMenuData()
 

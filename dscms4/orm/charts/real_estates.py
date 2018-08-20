@@ -152,18 +152,21 @@ class RealEstates(Chart):
         'incomeProperty': income_property}
 
     @classmethod
-    def from_dict(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a new chart from the respective dictionary."""
-        filters = dictionary.pop('filters', {})
-        base, chart = super().from_dict(customer, dictionary, **kwargs)
-        yield base
-        yield chart
+        filters = json.pop('filters', {})
+        transaction = super().from_json(json, **kwargs)
 
         for id_filter in filters.get('id', ()):
-            yield IdFilter.from_dict(chart, id_filter)
+            id_filter = IdFilter.from_json(transaction.chart, id_filter)
+            transaction.add(id_filter)
 
         for zip_code_filter in filters.get('zip_code', ()):
-            yield ZipCodeFilter.from_dict(chart, zip_code_filter)
+            zip_code_filter = ZipCodeFilter.from_json(
+                transaction.chart, zip_code_filter)
+            transaction.add(zip_code_filter)
+
+        return transaction
 
     @property
     def zip_code_whitelist(self):
@@ -189,10 +192,10 @@ class RealEstates(Chart):
         filters = defaultdict(list)
 
         for fltr in IdFilter.select().where(IdFilter.chart == self):
-            filters['id'].append(fltr.to_dict())
+            filters['id'].append(fltr.to_json())
 
         for fltr in ZipCodeFilter.select().where(ZipCodeFilter.chart == self):
-            filters['zip_code'].append(fltr.to_dict())
+            filters['zip_code'].append(fltr.to_json())
 
         return filters
 
@@ -226,10 +229,10 @@ class RealEstates(Chart):
         """Yields filtered real estates."""
         return filter(self.match_real_estate, real_estates)
 
-    def to_dict(self):
+    def to_json(self, **kwargs):
         """Returns a JSON-ish dictionary of the record's properties."""
-        dictionary = super().to_dict()
-        dictionary['filters'] = self.filters_dictionary
+        json = super().to_json(**kwargs)
+        json['filters'] = self.filters_dictionary
         return dictionary
 
     def to_dom(self, brief=False):
@@ -356,11 +359,11 @@ class IdFilter(DSCMS4Model):
         raise ValueError('Unexpected ID type.')
 
     @classmethod
-    def from_dict(cls, chart, dictionary):
+    def from_json(cls, json, chart):
         """Creates a new entry from the
         dictionary for the respective chart.
         """
-        record = super().from_dict(dictionary)
+        record = super().from_json(json)
         record.chart = chart
         return record
 
@@ -394,9 +397,9 @@ class ZipCodeFilter(DSCMS4Model):
         return real_estate.plz == self.zip_code
 
     @classmethod
-    def from_dict(cls, chart, dictionary):
+    def from_json(cls, json, chart):
         """Creates a new record from the respective dictionary."""
-        record = super().from_dict(dictionary)
+        record = super().from_json(json)
         record.chart = chart
         return record
 

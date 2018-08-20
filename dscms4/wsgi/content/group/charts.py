@@ -40,7 +40,7 @@ def get(gid):
         return NoSuchGroup()
 
     return JSON([
-        gbc.to_dict() for gbc in GroupBaseChart.select().where(
+        gbc.to_json() for gbc in GroupBaseChart.select().where(
             GroupBaseChart.group == group)])
 
 

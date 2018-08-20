@@ -65,12 +65,12 @@ def list_():
 
     if size is not None:
         if pageno is not None:
-            return JSON([terminal.to_dict(short=True) for terminal in page(
+            return JSON([terminal.to_json(short=True) for terminal in page(
                 terminals, size, pageno)])
 
         return JSON({'pages': pages(terminals, size)})
 
-    return JSON([terminal.to_dict(short=True) for terminal in terminals])
+    return JSON([terminal.to_json(short=True) for terminal in terminals])
 
 
 @authenticated
@@ -79,7 +79,7 @@ def list_():
 def get(terminal):
     """Returns the respective terminal."""
 
-    return JSON(terminal.to_dict())
+    return JSON(terminal.to_json())
 
 
 @authenticated
@@ -93,7 +93,7 @@ def get_presentation(terminal):
     try:
         request.args['xml']
     except KeyError:
-        return JSON(presentation.to_dict())
+        return JSON(presentation.to_json())
 
     try:
         presentation_dom = presentation.to_dom()

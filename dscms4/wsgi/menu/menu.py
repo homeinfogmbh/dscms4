@@ -59,7 +59,7 @@ def patch(ident):
         return NoSuchMenu()
 
     try:
-        menu.patch(request.json)
+        menu.patch_json(request.json)
     except ValueError:
         return InvalidMenuData()
 

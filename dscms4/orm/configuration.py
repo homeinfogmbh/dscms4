@@ -257,7 +257,7 @@ class Backlight(RelatedModel):
         """Sets the percentage."""
         self.brightness = percentage(brightness)
 
-    def to_dict(self):
+    def to_json(self):
         """Returns the backlight as dictionary."""
         return {self.time.strftime(TIME_FORMAT): self.percent}
 

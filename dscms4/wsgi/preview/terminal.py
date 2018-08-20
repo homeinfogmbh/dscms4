@@ -23,7 +23,7 @@ def get_presentation(terminal):
     try:
         request.args['xml']
     except KeyError:
-        return JSON(presentation.to_dict())
+        return JSON(presentation.to_json())
 
     try:
         return XML(presentation.to_dom())
