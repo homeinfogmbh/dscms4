@@ -8,6 +8,7 @@ from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Image as WCImage
 from dscms4.orm.configuration import Configuration
 
+
 __all__ = ['on_delete']
 
 

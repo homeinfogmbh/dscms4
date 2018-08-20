@@ -12,6 +12,7 @@ from dscms4.messages.configuration import NoSuchConfiguration, \
 from dscms4.orm.configuration import TIME_FORMAT, Colors, Configuration, \
     Ticker, Backlight
 
+
 __all__ = ['get_configuration', 'ROUTES']
 
 

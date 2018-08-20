@@ -4,6 +4,7 @@ from hisfs import File
 
 from dscms4.dom import Attachment
 
+
 __all__ = ['attachment_dom']
 
 

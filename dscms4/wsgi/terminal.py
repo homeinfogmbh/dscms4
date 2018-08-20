@@ -13,6 +13,7 @@ from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.paging import page, pages
 
+
 __all__ = ['get_terminal', 'ROUTES']
 
 
@@ -20,8 +21,7 @@ def get_terminal(tid):
     """Returns the respective terminal."""
 
     try:
-        return Terminal.get(
-            (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid))
+        return Terminal.cget(Terminal.tid == tid)
     except Terminal.DoesNotExist:
         raise NoSuchTerminal()
 
@@ -41,12 +41,12 @@ def with_terminal(function):
 def list_():
     """Lists all terminals of the respective customer."""
 
-    expression = Terminal.customer == CUSTOMER.id
+    if 'testing' in request.args:
+        expression = True
+    else:
+        expression = Terminal.testing == 0
 
-    if 'testing' not in request.args:
-        expression &= Terminal.testing == 0
-
-    terminals = Terminal.select().where(expression)
+    terminals = Terminal.cselect().where(expression)
 
     try:
         size = int(request.args['size'])

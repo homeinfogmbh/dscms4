@@ -7,6 +7,7 @@ from his import Application
 from dscms4.wsgi import charts, configuration, content, group, menu, preview, \
     previewgen, terminal
 
+
 __all__ = ['APPLICATION', 'ROUTES']
 
 

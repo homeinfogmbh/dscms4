@@ -15,6 +15,7 @@ from dscms4.orm.charts import CHARTS
 from dscms4.orm.menu import MenuItemChart
 from dscms4.wsgi.menu.item import get_menu_item
 
+
 __all__ = ['ROUTES']
 
 
@@ -36,7 +37,7 @@ def get_menu_item_chart(ident):
     """Returns the respective MenuItemChart."""
 
     try:
-        return MenuItemChart.get(MenuItemChart.id == ident)
+        return MenuItemChart.cget(MenuItemChart.id == ident)
     except MenuItemChart.DoesNotExist:
         raise NoSuchMenuItemChart()
 

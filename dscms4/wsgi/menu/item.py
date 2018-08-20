@@ -22,7 +22,7 @@ def get_menu_item(ident):
     menus = Menu.select().where(True)
 
     try:
-        return MenuItem.get((MenuItem.id == ident) & (MenuItem.menu << menus))
+        return MenuItem.cget((MenuItem.id == ident) & (MenuItem.menu << menus))
     except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
@@ -33,12 +33,12 @@ def list_(menu):
     """Lists the respective menu's items."""
 
     try:
-        menu = Menu.get(Menu.id == menu)
+        menu = Menu.cget(Menu.id == menu)
     except Menu.DoesNotExist:
         return NoSuchMenu()
 
     return JSON([
-        menu_item.to_dict() for menu_item in MenuItem.select().where(
+        menu_item.to_dict() for menu_item in MenuItem.cselect().where(
             MenuItem.menu == menu)])
 
 

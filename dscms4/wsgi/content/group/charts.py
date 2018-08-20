@@ -5,9 +5,10 @@ from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentDeleted
+from dscms4.messages.group import NoSuchGroup
 from dscms4.orm.content.group import Group, GroupBaseChart
 from dscms4.wsgi.charts import get_chart
-from dscms4.wsgi.group import get_group
+
 
 __all__ = ['ROUTES']
 
@@ -29,9 +30,14 @@ def _get_gbc(gid, ident):
 def get(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
+    try:
+        group = Group.cget(Group.id == gid)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     return JSON([
         gbc.to_dict() for gbc in GroupBaseChart.select().where(
-            GroupBaseChart.group == get_group(gid))])
+            GroupBaseChart.group == group)])
 
 
 @authenticated
@@ -39,7 +45,11 @@ def get(gid):
 def add(gid, ident):
     """Adds the chart to the respective group."""
 
-    group = get_group(gid)
+    try:
+        group = Group.cget(Group.id == gid)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     base_chart = get_chart(ident).base
     gbc = GroupBaseChart()
     gbc.group = group

@@ -5,9 +5,10 @@ from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
-from dscms4.orm.content.group import GroupConfiguration
+from dscms4.messages.group import NoSuchGroup
+from dscms4.orm.content.group import Group, GroupConfiguration
 from dscms4.wsgi.configuration import get_configuration
-from dscms4.wsgi.group import get_group
+
 
 __all__ = ['ROUTES']
 
@@ -17,10 +18,15 @@ __all__ = ['ROUTES']
 def get(gid):
     """Returns a list of IDs of the configurations in the respective group."""
 
+    try:
+        group = Group.cget(Group.id == gid)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     return JSON([
         group_configuration.configuration.id for group_configuration
         in GroupConfiguration.select().where(
-            GroupConfiguration.group == get_group(gid))])
+            GroupConfiguration.group == group)])
 
 
 @authenticated
@@ -28,7 +34,11 @@ def get(gid):
 def add(gid, ident):
     """Adds the configuration to the respective group."""
 
-    group = get_group(gid)
+    try:
+        group = Group.cget(Group.id == gid)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     configuration = get_configuration(ident)
 
     try:
@@ -50,7 +60,11 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the configuration from the respective group."""
 
-    group = get_group(gid)
+    try:
+        group = Group.cget(Group.id == gid)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     configuration = get_configuration(ident)
 
     try:

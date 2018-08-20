@@ -13,6 +13,7 @@ from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
 from dscms4.messages.common import InvalidId
 from dscms4.orm.charts import CHARTS
 
+
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
 
 

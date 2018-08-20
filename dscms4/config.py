@@ -4,6 +4,7 @@ from logging import INFO, basicConfig, getLogger
 
 from configlib import INIParser
 
+
 __all__ = ['CONFIG', 'LOG_FORMAT', 'LOGGER']
 
 

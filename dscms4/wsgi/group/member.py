@@ -5,10 +5,10 @@ from flask import request
 from his import authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.group import NoSuchMemberType, NoSuchMember, MemberAdded,\
-    MemberDeleted
-from dscms4.orm.group import GROUP_MEMBERS, GroupMember
-from dscms4.wsgi.group.group import get_group
+from dscms4.messages.group import NoSuchGroup, NoSuchMemberType, NoSuchMember,\
+    MemberAdded, MemberDeleted
+from dscms4.orm.group import GROUP_MEMBERS, Group, GroupMember
+
 
 __all__ = ['ROUTES']
 
@@ -27,7 +27,11 @@ def get_member_class(member_type):
 def get(group_id):
     """Returns the group's members."""
 
-    group = get_group(group_id)
+    try:
+        group = Group.cget(Group.id == group_id)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     members = {
         typ: [member.to_json() for member in records]
         for typ, records in group.members}
@@ -39,7 +43,11 @@ def get(group_id):
 def add(group_id):
     """Adds the member to the respective group."""
 
-    group = get_group(group_id)
+    try:
+        group = Group.cget(Group.id == group_id)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     member = GroupMember.from_json(request.json, group)
     member.save()
     return MemberAdded(id=member.id)
@@ -50,7 +58,11 @@ def add(group_id):
 def delete(group_id, member_type, member_id):
     """Deletes the respective group member."""
 
-    group = get_group(group_id)
+    try:
+        group = Group.cget(Group.id == group_id)
+    except Group.DoesNotExist:
+        return NoSuchGroup()
+
     member_class = get_member_class(member_type)
 
     try:

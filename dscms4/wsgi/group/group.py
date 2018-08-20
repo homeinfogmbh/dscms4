@@ -5,10 +5,10 @@ from flask import request
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
     GroupDeleted
 from dscms4.orm.group import Group
+
 
 __all__ = ['ROUTES']
 
@@ -18,7 +18,7 @@ __all__ = ['ROUTES']
 def list_():
     """Lists IDs of groups of the respective customer."""
 
-    return JSON([group.to_json() for group in Group.select().where(
+    return JSON([group.to_json() for group in Group.cselect().where(
         Group.customer == CUSTOMER.id)])
 
 
@@ -28,7 +28,7 @@ def get(ident):
     """Returns the respective group."""
 
     try:
-        group = Group.get(Group.id == ident)
+        group = Group.cget(Group.id == ident)
     except Group.DoesNotExist:
         return NoSuchGroup()
 
@@ -51,7 +51,7 @@ def patch(ident):
     """Patches the respective group."""
 
     try:
-        group = Group.get(Group.id == ident)
+        group = Group.cget(Group.id == ident)
     except Group.DoesNotExist:
         return NoSuchGroup()
 
@@ -66,7 +66,7 @@ def delete(ident):
     """Deletes the respective group."""
 
     try:
-        group = Group.get(Group.id == ident)
+        group = Group.cget(Group.id == ident)
     except Group.DoesNotExist:
         return NoSuchGroup()
 

@@ -18,7 +18,7 @@ __all__ = ['ROUTES']
 def list_():
     """List menus."""
 
-    return JSON([menu.to_json() for menu in Menu.select().where(True)])
+    return JSON([menu.to_json() for menu in Menu.cselect().where(True)])
 
 
 @authenticated

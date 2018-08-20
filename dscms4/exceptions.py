@@ -1,5 +1,6 @@
 """Common ORM model exceptions."""
 
+
 __all__ = ['OrphanedBaseChart', 'AmbiguousBaseChart']
 
 
