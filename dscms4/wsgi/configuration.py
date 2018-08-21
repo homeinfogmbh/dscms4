@@ -40,7 +40,7 @@ def list_():
 def get(ident):
     """Returns the respective configuration."""
 
-    return JSON(get_configuration(ident).to_json())
+    return JSON(get_configuration(ident).to_json(cascade=True))
 
 
 @authenticated
