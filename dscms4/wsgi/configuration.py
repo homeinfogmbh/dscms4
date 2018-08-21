@@ -31,7 +31,7 @@ def list_():
     """Returns a list of IDs of the customer's configurations."""
 
     return JSON([
-        configuration.to_json() for configuration
+        configuration.to_json(fk_fields=False) for configuration
         in Configuration.cselect().where(True)])
 
 
