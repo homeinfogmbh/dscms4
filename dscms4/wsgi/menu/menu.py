@@ -31,7 +31,8 @@ def get(ident):
     except Menu.DoesNotExist:
         return NoSuchMenu()
 
-    return JSON(menu.to_json(charts=True, children=True))
+    items = 'items' in request.args
+    return JSON(menu.to_json(items=items))
 
 
 @authenticated

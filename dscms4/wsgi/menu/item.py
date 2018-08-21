@@ -47,7 +47,9 @@ def list_(menu):
 def get(ident):
     """Returns the respective menu item."""
 
-    return JSON(get_menu_item(ident).to_json())
+    charts = 'charts' in request.args
+    children = 'children' in request.args
+    return JSON(get_menu_item(ident).to_json(cahrts=charts, children=children))
 
 
 @authenticated
