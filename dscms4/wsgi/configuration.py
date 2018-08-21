@@ -16,6 +16,32 @@ from dscms4.orm.configuration import TIME_FORMAT, Colors, Configuration, \
 __all__ = ['get_configuration', 'ROUTES']
 
 
+def _update_tickers(tickers, configuration, *, delete=True):
+    """Updates the respective ticker records."""
+
+    if delete:
+        for ticker in configuration.tickers:
+            ticker.delete_instance()
+
+    for json in tickers:
+        ticker = Ticker.from_json(json, configuration)
+        ticker.save()
+
+
+def _update_backlights(backlights, configuration, *, delete=True):
+    """Updates the respective backlight records."""
+
+    if delete:
+        for backlight in configuration.backlights:
+            backlight.delete_instance()
+
+    for time, brightness in backlights.items():
+        time = datetime.strptime(time, TIME_FORMAT).time()
+        json = {'time': time, 'brightness': brightness}
+        backlight = Backlight.from_json(json, configuration)
+        backlight.save()
+
+
 def get_configuration(ident):
     """Returns the respective configuration."""
 
@@ -57,19 +83,8 @@ def add():
     colors.save()
     configuration = Configuration.from_json(json, colors)
     configuration.save()
-
-    # Create related tickers.
-    for ticker in tickers:
-        ticker = Ticker.from_json(ticker, configuration)
-        ticker.save()
-
-    # Create related backlight records.
-    for time, brightness in backlight.items():
-        time = datetime.strptime(time, TIME_FORMAT).time()
-        backlight = {'time': time, 'brightness': brightness}
-        backlight = Backlight.from_json(backlight, configuration)
-        backlight.save()
-
+    _update_tickers(tickers, configuration, delete=False)
+    _update_backlights(backlight, configuration, delete=False)
     return ConfigurationAdded(id=configuration.id)
 
 
@@ -93,20 +108,11 @@ def patch(ident):
 
     # Update related tickers.
     if tickers is not None:
-        for ticker in configuration.tickers:
-            ticker.delete_instance()
-
-        for ticker in tickers:
-            ticker = Ticker.from_json(ticker, configuration)
-            ticker.save()
+        _update_tickers(tickers, configuration)
 
     # Update backlight settings.
     if backlight is not None:
-        for backlight_ in configuration.backlights:
-            backlight_.delete_instance()
-
-        for backlight in Backlight.from_json(backlight, configuration):
-            backlight.save()
+        _update_backlights(backlight, configuration)
 
     return ConfigurationPatched()
 
