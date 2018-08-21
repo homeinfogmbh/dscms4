@@ -42,7 +42,7 @@ def with_terminal(function):
 def list_():
     """Lists all terminals of the respective customer."""
 
-    expression = Terminal.id == CUSTOMER.id
+    expression = Terminal.customer == CUSTOMER.id
 
     if 'testing' not in request.args:
         expression &= Terminal.testing == 0
