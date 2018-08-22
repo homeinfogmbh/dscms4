@@ -187,7 +187,9 @@ class MenuItem(RelatedModel):
         xml.background_color = self.background_color
         xml.index = self.index
         xml.item = [item.to_dom() for item in self.children]
-        xml.chart = [chart.to_dom() for chart in self.charts]
+        xml.chart = [
+            menu_item_chart.to_dom() for menu_item_chart
+            in self.menu_item_charts]
         return xml
 
 

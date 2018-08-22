@@ -86,7 +86,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
             <xs:element name="item" type="MenuItem" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Menüelemente.
+                        Untermenüelemente.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
