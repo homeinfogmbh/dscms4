@@ -55,16 +55,6 @@ class Group(CustomerModel):
 
         return [group.dict_tree for group in selection]
 
-    def set_parent(self, parent):
-        """Changes the parent reference of the group."""
-        if parent is not None:
-            parent = self.get_peer(parent)
-
-            if parent == self or parent in self.childrens_children:
-                raise CircularReference()
-
-        self.parent = parent
-
     @property
     def root(self):
         """Determines whether this group is on the root level."""
@@ -78,6 +68,16 @@ class Group(CustomerModel):
         for child in self.children:
             for childs_child in child.childrens_children:
                 yield childs_child
+
+    def set_parent(self, parent):
+        """Changes the parent reference of the group."""
+        if parent is not None:
+            parent = self.get_peer(parent)
+
+            if parent == self or parent in self.childrens_children:
+                raise CircularReference()
+
+        self.parent = parent
 
     def json_tree(self):
         """Returns the tree for this group."""
