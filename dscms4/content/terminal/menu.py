@@ -30,8 +30,8 @@ def accumulated_charts(menu):
 
     for item in menu.items:
         for chart in item.charts:
-            yield ContentInformation(item, chart)
+            yield ContentInformation(item, chart.chart)
 
         for child in item.children:
             for chart in child.charts:
-                yield ContentInformation(child, chart)
+                yield ContentInformation(child, chart.chart)
