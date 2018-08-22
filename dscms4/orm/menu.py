@@ -105,24 +105,6 @@ class MenuItem(RelatedModel):
         menu_item.set_parent(parent)
         return menu_item
 
-    def set_menu(self, menu):
-        """Sets the menu."""
-        self.menu = menu
-
-        if menu is not None:
-            self.parent = None
-
-    def set_parent(self, parent):
-        """Sets the parent."""
-        if parent is not None:
-            parent = self.get_peer(parent)
-
-            if parent == self or parent in self.childrens_children:
-                raise CircularReference()
-
-            self.parent = parent
-            self.menu = None
-
     @property
     def root(self):
         """Determines whether this is a root node entry."""
@@ -147,6 +129,24 @@ class MenuItem(RelatedModel):
                 LOGGER.error('Base chart #%i is orphaned.', base_chart.id)
             except AmbiguousBaseChart:
                 LOGGER.error('Base chart #%i is ambiguous.', base_chart.id)
+
+    def set_menu(self, menu):
+        """Sets the menu."""
+        self.menu = menu
+
+        if menu is not None:
+            self.parent = None
+
+    def set_parent(self, parent):
+        """Sets the parent."""
+        if parent is not None:
+            parent = self.get_peer(parent)
+
+            if parent == self or parent in self.childrens_children:
+                raise CircularReference()
+
+            self.parent = parent
+            self.menu = None
 
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
