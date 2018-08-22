@@ -79,13 +79,6 @@ class Group(CustomerModel):
             for childs_child in child.childrens_children:
                 yield childs_child
 
-    @property
-    def members(self):
-        """Yield member name / models tuples."""
-        for member_name, member_model in GROUP_MEMBERS.items():
-            records = member_model.select().where(member_model.group == self)
-            yield (member_name, records)
-
     def json_tree(self):
         """Returns the tree for this group."""
         json = self.to_json(parent=False)
@@ -153,15 +146,22 @@ class GroupMember(RelatedModel):
             raise InvalidKeys(keys=tuple(json.keys()))
 
         try:
-            member_mapping_class = GROUP_MEMBERS[member_type]
+            member_mapping = GROUP_MEMBERS[member_type]
         except KeyError:
             raise NoSuchMemberType()
 
+        try:
+            member_mapping_class, member_id_field = member_mapping
+        except ValueError:
+            member_id_field = 'id'
+            member_mapping_class = member_mapping
+
         member_class = member_mapping_class.member.rel_model
+        member_class_id = getattr(member_class, member_id_field)
 
         try:
             member = member_class.get(
-                (member_class.id == member_id)
+                (member_class_id == member_id)
                 & (member_class.customer == group.customer))
         except member_class.DoesNotExist:
             raise NoSuchMember()
@@ -195,7 +195,7 @@ class GroupMemberApartmentBuilding(GroupMember):
 
 
 GROUP_MEMBERS = {
-    'terminal': GroupMemberTerminal,
+    'terminal': (GroupMemberTerminal, 'tid'),
     'apartment_building': GroupMemberApartmentBuilding}
 
 MODELS = (Group, GroupMemberTerminal, GroupMemberApartmentBuilding)
