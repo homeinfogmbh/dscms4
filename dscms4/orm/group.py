@@ -2,7 +2,7 @@
 
 from peewee import ForeignKeyField, CharField, TextField
 
-from his.messages.data import MissingKeyError, InvalidKeys, NotAnInteger
+from his.messages.data import MissingKeyError, InvalidKeys
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
@@ -132,37 +132,34 @@ class GroupMember(RelatedModel):
         except KeyError:
             raise MissingKeyError('type')
 
-        try:
-            member_id = json.pop('id')
-        except KeyError:
-            raise MissingKeyError('id')
+        # The remaining key/value pairs are record identifiers.
+        if not json:
+            raise MissingKeyError('<identifiers>')
 
         try:
-            member_id = int(member_id)
-        except (TypeError, ValueError):
-            raise NotAnInteger(member_id)
-
-        if json:
-            raise InvalidKeys(keys=tuple(json.keys()))
-
-        try:
-            member_mapping = GROUP_MEMBERS[member_type]
+            member_mapping_class = GROUP_MEMBERS[member_type]
         except KeyError:
             raise NoSuchMemberType()
 
-        try:
-            member_mapping_class, member_id_field = member_mapping
-        except ValueError:
-            member_id_field = 'id'
-            member_mapping_class = member_mapping
-
         member_class = member_mapping_class.member.rel_model
-        member_class_id = getattr(member_class, member_id_field)
+        # Make sure to filter for the respective customer.
+        select = member_class.customer == group.customer
+        invalid_keys = set()
+
+        # Add filters for all key/value pairs.
+        for key, value in json.items():
+            try:
+                field = getattr(member_class, key)
+            except KeyError:
+                invalid_keys.add(key)
+            else:
+                select &= field == value
+
+        if invalid_keys:
+            raise InvalidKeys(keys=invalid_keys)
 
         try:
-            member = member_class.get(
-                (member_class_id == member_id)
-                & (member_class.customer == group.customer))
+            member = member_class.get(select)
         except member_class.DoesNotExist:
             raise NoSuchMember()
 
@@ -195,7 +192,7 @@ class GroupMemberApartmentBuilding(GroupMember):
 
 
 GROUP_MEMBERS = {
-    'terminal': (GroupMemberTerminal, 'tid'),
+    'terminal': GroupMemberTerminal,
     'apartment_building': GroupMemberApartmentBuilding}
 
 MODELS = (Group, GroupMemberTerminal, GroupMemberApartmentBuilding)
