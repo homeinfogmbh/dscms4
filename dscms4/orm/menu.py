@@ -138,7 +138,7 @@ class MenuItem(RelatedModel):
     @property
     def charts(self):
         """Yields the respective charts."""
-        for menu_item_chart in self.charts:
+        for menu_item_chart in self.menu_item_charts:
             base_chart = menu_item_chart.base_chart
 
             try:
@@ -198,7 +198,7 @@ class MenuItemChart(RelatedModel):
         table_name = 'menu_item_chart'
 
     menu_item = RelatedKeyField(
-        MenuItem, column_name='menu_item', backref='charts',
+        MenuItem, column_name='menu_item', backref='menu_item_charts',
         on_delete='CASCADE')
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
