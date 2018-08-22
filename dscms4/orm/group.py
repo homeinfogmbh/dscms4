@@ -33,7 +33,7 @@ class Group(CustomerModel):
 
     name = CharField(255)
     description = TextField(null=True)
-    _parent = ForeignKeyField(
+    parent = ForeignKeyField(
         'self', column_name='parent', null=True, backref='children')
 
     @classmethod
@@ -41,7 +41,7 @@ class Group(CustomerModel):
         """Creates a group from a JSON-ish dictionary."""
         parent = json.pop('parent', None)
         record = super().from_json(json, **kwargs)
-        record.parent = parent
+        record.set_parent(parent)
         return record
 
     @classmethod
@@ -55,13 +55,7 @@ class Group(CustomerModel):
 
         return [group.dict_tree for group in selection]
 
-    @property
-    def parent(self):
-        """Returns the parent group."""
-        return self._parent
-
-    @parent.setter
-    def parent(self, parent):
+    def set_parent(self, parent):
         """Changes the parent reference of the group."""
         if parent is not None:
             parent = self.get_peer(parent)
@@ -69,7 +63,7 @@ class Group(CustomerModel):
             if parent == self or parent in self.childrens_children:
                 raise CircularReference()
 
-        self._parent = parent
+        self.parent = parent
 
     @property
     def root(self):
@@ -105,7 +99,7 @@ class Group(CustomerModel):
         except KeyError:
             pass
         else:
-            self.parent = parent
+            self.set_parent(parent)
 
         super().patch_json(json, **kwargs)
 
@@ -126,7 +120,7 @@ class Group(CustomerModel):
         setting all child's parent reference to this groups parent.
         """
         for child in self.children:
-            child.parent = self.parent
+            child.set_parent(self.parent)
             child.save()
 
         return super().delete_instance(*args, **kwargs)

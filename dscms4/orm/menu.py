@@ -84,10 +84,10 @@ class MenuItem(RelatedModel):
     class Meta:
         table_name = 'menu_item'
 
-    menu_ = RelatedKeyField(
+    menu = RelatedKeyField(
         Menu, column_name='menu', null=True, on_delete='CASCADE',
         backref='items')
-    parent_ = ForeignKeyField(
+    parent = ForeignKeyField(
         'self', column_name='parent', null=True, backref='children')
     name = CharField(255)
     icon = CharField(255, null=True)
@@ -101,30 +101,18 @@ class MenuItem(RelatedModel):
         """Creates a new menu item from the provided dictionary."""
         menu, parent = get_menu_and_parent(json)
         menu_item = super().from_json(json, **kwargs)
-        menu_item.menu = menu
-        menu_item.parent = parent
+        menu_item.set_menu(menu)
+        menu_item.set_parent(parent)
         return menu_item
 
-    @property
-    def menu(self):
-        """Returns the menu."""
-        return self.menu_
-
-    @menu.setter
-    def menu(self, menu):
+    def set_menu(self, menu):
         """Sets the menu."""
-        self.menu_ = menu
+        self.menu = menu
 
         if menu is not None:
-            self.parent_ = None
+            self.parent = None
 
-    @property
-    def parent(self):
-        """Returns the parent."""
-        return self.parent_
-
-    @parent.setter
-    def parent(self, parent):
+    def set_parent(self, parent):
         """Sets the parent."""
         if parent is not None:
             parent = self.get_peer(parent)
@@ -132,8 +120,8 @@ class MenuItem(RelatedModel):
             if parent == self or parent in self.childrens_children:
                 raise CircularReference()
 
-            self.parent_ = parent
-            self.menu_ = None
+            self.parent = parent
+            self.menu = None
 
     @property
     def root(self):
@@ -164,8 +152,8 @@ class MenuItem(RelatedModel):
         """Removes this menu item."""
         if update_children:
             for child in self.children:
-                child.parent = self.parent
-                child.menu = self.menu
+                child.set_parent(self.parent)
+                child.set_menu(self.menu)
 
         return super().delete_instance(**kwargs)
 
@@ -173,8 +161,8 @@ class MenuItem(RelatedModel):
         """Patches the menu item."""
         menu, parent = get_menu_and_parent(json)
         super().patch_json(json, **kwargs)
-        self.menu = menu
-        self.parent = parent
+        self.set_menu(menu)
+        self.set_parent(parent)
 
     def to_json(self, charts=False, children=False, **kwargs):
         """Returns a JSON-ish dictionary."""
