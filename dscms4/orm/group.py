@@ -104,7 +104,7 @@ class Group(CustomerModel):
             if self.parent is None:
                 json['parent'] = None
             else:
-                json['parent'] = self.parent   # Integer, since self-reference.
+                json['parent'] = self.parent.id
 
         return json
 
