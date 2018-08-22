@@ -69,6 +69,13 @@ class Group(CustomerModel):
             for childs_child in child.childrens_children:
                 yield childs_child
 
+    @property
+    def members(self):
+        """Yields the group's members."""
+        for typ, model in GROUP_MEMBERS.items():
+            records = model.select().where(model.group == self)
+            yield (typ, records)
+
     def set_parent(self, parent):
         """Changes the parent reference of the group."""
         if parent is not None:
