@@ -44,17 +44,6 @@ class Group(CustomerModel):
         record.set_parent(parent)
         return record
 
-    @classmethod
-    def get_tree(cls, customer=None):
-        """Returns JSON-ish groups tree for the respective customer."""
-        if customer is None:
-            selection = cls.cselect().where(cls._parent >> None)
-        else:
-            selection = cls.select().where(
-                (cls.customer == customer) & (cls._parent >> None))
-
-        return [group.dict_tree for group in selection]
-
     @property
     def root(self):
         """Determines whether this group is on the root level."""

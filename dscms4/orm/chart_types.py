@@ -15,17 +15,6 @@ class ChartType(CustomerModel):
 
     chart_type = CharField(255)
 
-    @classmethod
-    def add(cls, chart_type):
-        """Adds the chart type for the current customer."""
-        try:
-            return cls.cget(cls.chart_type == chart_type)
-        except cls.DoesNotExist:
-            record = cls()
-            record.customer = CUSTOMER.id
-            record.chart_type = chart_type
-            return record
-
     @property
     def chart_class(self):
         """Returns the respective chart type's class."""
