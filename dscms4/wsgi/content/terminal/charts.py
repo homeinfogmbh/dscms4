@@ -38,7 +38,7 @@ def get(tid):
             TerminalBaseChart.terminal == get_terminal(tid)):
         thread = Thread(target=lambda: lst.append(tbc.to_json()))
         threads.append(thread)
-        thread.start
+        thread.start()
 
     for thread in threads:
         thread.join()
