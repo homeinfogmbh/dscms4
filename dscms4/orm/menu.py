@@ -56,7 +56,7 @@ class Menu(CustomerModel):
     @property
     def root_items(self):
         """Yields this menu's root items."""
-        return self.items.where(MenuItem.parent_ >> None)
+        return self.items.where(MenuItem.parent >> None)
 
     def to_json(self, *args, items=False, **kwargs):
         """Returns the menu as a dictionary."""
