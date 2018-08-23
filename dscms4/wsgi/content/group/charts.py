@@ -23,7 +23,7 @@ def _get_gbc(gid, ident):
         raise NoSuchGroup()
 
     try:
-        return GroupBaseChart.get().where(
+        return GroupBaseChart.get(
             (GroupBaseChart.id == ident) & (GroupBaseChart.group == group))
     except GroupBaseChart.DoesNotExist:
         raise NoSuchContent()
