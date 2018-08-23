@@ -2,6 +2,7 @@
 
 from his import CUSTOMER, authenticated, authorized
 from terminallib import Terminal
+from timelib import timed
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -32,6 +33,7 @@ def _get_tbc(tid, ident):
         raise NoSuchContent()
 
 
+@timed
 @authenticated
 @authorized('dscms4')
 def get(tid):
