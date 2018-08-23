@@ -9,8 +9,7 @@ from peeweeplus import InvalidKeys
 from wsgilib import JSON
 
 from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
-    NoChartIdSpecified, NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
-from dscms4.messages.common import InvalidId
+    NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
 from dscms4.orm.charts import CHARTS
 
 
@@ -50,17 +49,6 @@ def get_chart_type():
 
 
 CHART_TYPE = LocalProxy(get_chart_type)
-
-
-def get_chart_id(ident):
-    """Returns the specified chart ID."""
-
-    try:
-        return int(ident)
-    except TypeError:
-        raise NoChartIdSpecified()
-    except ValueError:
-        raise InvalidId()
 
 
 def get_charts():
