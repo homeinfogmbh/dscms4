@@ -31,25 +31,24 @@ def _get_tbc(tid, ident):
 def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
-    lst = []
-    threads = []
+    if 'threaded' in request.args:
+        lst = []
+        threads = []
 
-    for tbc in TerminalBaseChart.select().where(
-            TerminalBaseChart.terminal == get_terminal(tid)):
-        thread = Thread(target=lambda: lst.append(tbc.to_json()))
-        threads.append(thread)
-        thread.start()
+        for tbc in TerminalBaseChart.select().where(
+                TerminalBaseChart.terminal == get_terminal(tid)):
+            thread = Thread(target=lambda: lst.append(tbc.to_json()))
+            threads.append(thread)
+            thread.start()
 
-    for thread in threads:
-        thread.join()
+        for thread in threads:
+            thread.join()
 
-    return JSON(lst)
+        return JSON(lst)
 
-    '''
     return JSON([
         tbc.to_json() for tbc in TerminalBaseChart.select().where(
             TerminalBaseChart.terminal == get_terminal(tid))])
-    '''
 
 
 @authenticated
