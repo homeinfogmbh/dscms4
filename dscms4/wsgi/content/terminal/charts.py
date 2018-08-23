@@ -2,6 +2,7 @@
 
 from his import CUSTOMER, authenticated, authorized
 from terminallib import Terminal
+from threading import Thread
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -30,9 +31,25 @@ def _get_tbc(tid, ident):
 def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
+    lst = []
+    threads = []
+
+    for tbc in TerminalBaseChart.select().where(
+            TerminalBaseChart.terminal == get_terminal(tid)):
+        thread = Thread(target=lambda: lst.append(tbc.to_json()))
+        threads.append(thread)
+        thread.start
+
+    for thread in threads:
+        thread.join()
+
+    return JSON(lst)
+
+    '''
     return JSON([
         tbc.to_json() for tbc in TerminalBaseChart.select().where(
             TerminalBaseChart.terminal == get_terminal(tid))])
+    '''
 
 
 @authenticated
