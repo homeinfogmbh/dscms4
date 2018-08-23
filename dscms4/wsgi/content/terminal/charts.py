@@ -2,7 +2,6 @@
 
 from his import CUSTOMER, authenticated, authorized
 from terminallib import Terminal
-from threading import Thread
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -12,6 +11,13 @@ from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.terminal import get_terminal
 
 __all__ = ['ROUTES']
+
+
+def _select_tbc(tid):
+    """Returns the respective terminal base chart."""
+
+    return TerminalBaseChart.select().join(Terminal).where(
+        (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid))
 
 
 def _get_tbc(tid, ident):
@@ -31,24 +37,7 @@ def _get_tbc(tid, ident):
 def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
-    if 'threaded' in request.args:
-        lst = []
-        threads = []
-
-        for tbc in TerminalBaseChart.select().where(
-                TerminalBaseChart.terminal == get_terminal(tid)):
-            thread = Thread(target=lambda: lst.append(tbc.to_json()))
-            threads.append(thread)
-            thread.start()
-
-        for thread in threads:
-            thread.join()
-
-        return JSON(lst)
-
-    return JSON([
-        tbc.to_json() for tbc in TerminalBaseChart.select().where(
-            TerminalBaseChart.terminal == get_terminal(tid))])
+    return JSON([tbc.to_json() for tbc in _select_tbc(tid)])
 
 
 @authenticated
