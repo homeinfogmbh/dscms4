@@ -135,7 +135,7 @@ class Configuration(CustomerModel):
 
     @property
     def files(self):
-        """Yields the configuration's files."""
+        """Returns a set od IDs of files used by the configuration."""
         files = set()
 
         if self.logo is not None:

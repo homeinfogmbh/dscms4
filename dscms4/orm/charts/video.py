@@ -19,7 +19,7 @@ class Video(Chart):
 
     @property
     def files(self):
-        """Yields the file IDs used by the chart."""
+        """Returns a set of IDs of files used by the chart."""
         return {self.video}
 
     def to_dom(self, brief=False):

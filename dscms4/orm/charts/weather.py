@@ -49,7 +49,7 @@ class Weather(Chart):
 
     @property
     def files(self):
-        """Yields IDs used by the chart"""
+        """Returns a set of IDs of files used by the chart."""
         files = set()
 
         for image in self.images:
