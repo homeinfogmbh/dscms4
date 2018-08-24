@@ -32,14 +32,14 @@ class Weather(Chart):
         'boxColorBottom': box_color_bottom}
 
     @classmethod
-    def from_json(cls, customer, dictionary, **kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a new quotes chart from the
         dictionary for the respective customer.
         """
         # Pop images and texts first to exclude them from the
         # dictionary before invoking super().from_json().
-        images = dictionary.pop('images', ())
-        transaction = super().from_json(customer, dictionary, **kwargs)
+        images = json.pop('images', ())
+        transaction = super().from_json(json, **kwargs)
 
         for image in images:
             image = Image(chart=transaction.chart, image=image)
