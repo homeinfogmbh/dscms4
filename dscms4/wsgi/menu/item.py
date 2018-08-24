@@ -4,7 +4,7 @@ from itertools import chain
 
 from flask import request
 
-from his import authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, NoSuchMenuItem, \
@@ -58,7 +58,7 @@ def add():
     """Adds a new menu item."""
 
     try:
-        menu_item = MenuItem.from_json(request.json)
+        menu_item = MenuItem.from_json(JSON_DATA)
     except ValueError:
         return InvalidMenuData()
 
@@ -74,7 +74,7 @@ def patch(ident):
     menu_item = get_menu_item(ident)
 
     try:
-        menu_item.patch_json(request.json)
+        menu_item.patch_json(JSON_DATA)
     except ValueError:
         return InvalidMenuData()
 
@@ -97,7 +97,7 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    menu_items = (get_menu_item(ident) for ident in request.json)
+    menu_items = (get_menu_item(ident) for ident in JSON_DATA)
 
     try:
         first, *other = menu_items

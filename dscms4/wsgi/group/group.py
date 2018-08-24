@@ -1,8 +1,6 @@
 """Group Controllers."""
 
-from flask import request
-
-from his import CUSTOMER, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
@@ -40,7 +38,7 @@ def get(ident):
 def add():
     """Adds a new group."""
 
-    group = Group.from_json(request.json)
+    group = Group.from_json(JSON_DATA)
     group.save()
     return GroupAdded(id=group.id)
 
@@ -55,7 +53,7 @@ def patch(ident):
     except Group.DoesNotExist:
         return NoSuchGroup()
 
-    group.patch_json(request.json)
+    group.patch_json(JSON_DATA)
     group.save()
     return GroupPatched()
 

@@ -2,9 +2,7 @@
 
 from datetime import datetime
 
-from flask import request
-
-from his import authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \
@@ -74,7 +72,7 @@ def get(ident):
 def add():
     """Adds a new configuration."""
 
-    json = request.json
+    json = JSON_DATA
     colors = json.pop('colors', {})
     tickers = json.pop('tickers', ())
     backlight = json.pop('backlight', {})
@@ -93,7 +91,7 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    json = request.json
+    json = JSON_DATA
     colors = json.pop('colors', None)
     tickers = json.pop('tickers', None)
     backlight = json.pop('backlight', None)

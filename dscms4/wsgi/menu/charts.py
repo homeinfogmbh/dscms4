@@ -2,9 +2,7 @@
 
 from itertools import chain
 
-from flask import request
-
-from his import authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
@@ -56,14 +54,14 @@ def add():
     """Adds a new menu item."""
 
     try:
-        menu_item = request.json['menu_item']
+        menu_item = JSON_DATA['menu_item']
     except KeyError:
         raise MissingData(key='menu_item')
 
     menu_item = get_menu_item(menu_item)
 
     try:
-        chart = request.json['chart']
+        chart = JSON_DATA['chart']
     except KeyError:
         raise MissingData(key='chart')
 
@@ -97,7 +95,7 @@ def delete(ident):
 def order():
     """Orders the respective menu items."""
 
-    menu_item_charts = (get_menu_item_chart(ident) for ident in request.json)
+    menu_item_charts = (get_menu_item_chart(ident) for ident in JSON_DATA)
 
     try:
         first, *other = menu_item_charts

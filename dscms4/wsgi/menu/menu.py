@@ -2,7 +2,7 @@
 
 from flask import request
 
-from his import authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
@@ -41,7 +41,7 @@ def add():
     """Adds a new menu."""
 
     try:
-        menu = Menu.from_json(request.json)
+        menu = Menu.from_json(JSON_DATA)
     except ValueError:
         return InvalidMenuData()
 
@@ -60,7 +60,7 @@ def patch(ident):
         return NoSuchMenu()
 
     try:
-        menu.patch_json(request.json)
+        menu.patch_json(JSON_DATA)
     except ValueError:
         return InvalidMenuData()
 
