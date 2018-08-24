@@ -20,7 +20,10 @@ class Video(Chart):
     @property
     def files(self):
         """Returns a set of IDs of files used by the chart."""
-        return {self.video}
+        if self.video is not None:
+            return {self.video}
+
+        return set()
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
