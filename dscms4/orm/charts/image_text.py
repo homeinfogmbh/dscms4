@@ -52,11 +52,11 @@ class ImageText(Chart):
         transaction = super().from_json(customer, dictionary, **kwargs)
 
         for image in images:
-            image = Image.add(transaction.chart, image)
+            image = Image(chart=transaction.chart, image=image)
             transaction.add(image)
 
         for text in texts:
-            text = Text.add(transaction.chart, text)
+            text = Text(chart=transaction.chart, text=text)
             transaction.add(text)
 
         return transaction
@@ -82,7 +82,7 @@ class ImageText(Chart):
                 transaction.delete(image)
 
             for image in images:
-                image = Image.add(transaction.chart, image)
+                image = Image(chart=transaction.chart, image=image)
                 transaction.add(image)
 
         if texts is not _UNCHANGED:
@@ -90,7 +90,7 @@ class ImageText(Chart):
                 transaction.delete(text)
 
             for text in texts:
-                text = Text.add(transaction.chart, text)
+                text = Text(chart=transaction.chart, text=text)
                 transaction.add(text)
 
         return transaction
@@ -131,14 +131,6 @@ class Image(DSCMS4Model):
         ImageText, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
 
-    @classmethod
-    def add(cls, chart, image):
-        """Adds a new image for the respective ImageText chart."""
-        record = cls()
-        record.chart = chart
-        record.image = image
-        return record
-
     def to_dom(self):
         """Returns an XML DOM of this model."""
         return attachment_dom(self.image)
@@ -153,11 +145,3 @@ class Text(DSCMS4Model):
     chart = ForeignKeyField(
         ImageText, column_name='chart', backref='texts', on_delete='CASCADE')
     text = TextField()
-
-    @classmethod
-    def add(cls, chart, text):
-        """Adds a new text for the respective ImageText chart."""
-        record = cls()
-        record.chart = chart
-        record.text = text
-        return record
