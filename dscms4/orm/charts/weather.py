@@ -42,7 +42,7 @@ class Weather(Chart):
         transaction = super().from_json(customer, dictionary, **kwargs)
 
         for image in images:
-            image = Image.add(transaction.chart, image)
+            image = Image(chart=transaction.chart, image=image)
             transaction.add(image)
 
         return transaction
@@ -67,7 +67,7 @@ class Weather(Chart):
                 transaction.delete(image)
 
             for image in images:
-                image = Image.add(transaction.chart, image)
+                image = Image(chart=transaction.chart, image=image)
                 transaction.add(image)
 
         return transaction
@@ -107,14 +107,6 @@ class Image(DSCMS4Model):
     chart = ForeignKeyField(
         Weather, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
-
-    @classmethod
-    def add(cls, chart, image):
-        """Adds a new image for the respective Weather chart."""
-        record = cls()
-        record.chart = chart
-        record.image = image
-        return record
 
     def to_dom(self):
         """Returns an XML DOM of this model."""
