@@ -99,8 +99,8 @@ class BaseChart(CustomerModel):
 
     def patch_json(self, json, **kwargs):
         """Patches the base chart."""
-        record = super().patch_json(json, **kwargs)
-        record.uuid = uuid4() if record.log else None
+        super().patch_json(json, **kwargs)
+        self.uuid = uuid4() if self.log else None
 
     def to_json(self, *args, **kwargs):
         """Returns a JSON-ish dictionary."""
