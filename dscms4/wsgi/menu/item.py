@@ -59,8 +59,8 @@ def add():
 
     try:
         menu_item = MenuItem.from_json(JSON_DATA)
-    except ValueError:
-        return InvalidMenuData()
+    except ValueError as value_error:
+        return InvalidMenuData(error=str(value_error))
 
     menu_item.save()
     return MenuItemAdded(id=menu_item.id)
@@ -75,8 +75,8 @@ def patch(ident):
 
     try:
         menu_item.patch_json(JSON_DATA)
-    except ValueError:
-        return InvalidMenuData()
+    except ValueError as value_error:
+        return InvalidMenuData(error=str(value_error))
 
     menu_item.save()
     return MenuItemPatched()
