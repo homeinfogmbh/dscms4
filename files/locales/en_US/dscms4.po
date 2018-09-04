@@ -181,11 +181,14 @@ msgstr "Menu item chart added."
 msgid "MenuItemChartDeleted"
 msgstr "Menu item chart deleted."
 
+msgid "MenuItemChartsSorted"
+msgstr "Menu item charts sorted."
+
 msgid "DifferentMenuItemsError"
 msgstr "Menu item charts are contained within different menu items."
 
-msgid "MenuItemChartsSorted"
-msgstr "Menu item charts sorted."
+msgid "MenuXorParent"
+msgstr "Must specify either menu exclusively or parent item."
 
 ### Preview messages. ###
 

@@ -18,8 +18,9 @@ __all__ = [
     'NoSuchMenuItemChart',
     'MenuItemChartAdded',
     'MenuItemChartDeleted',
+    'MenuItemChartsSorted',
     'DifferentMenuItemsError',
-    'MenuItemChartsSorted']
+    'MenuXorParent']
 
 
 class NoMenuSpecified(DSCMS4Message):
@@ -128,6 +129,12 @@ class MenuItemChartDeleted(DSCMS4Message):
     STATUS = 200
 
 
+class MenuItemChartsSorted(DSCMS4Message):
+    """Indicates that the respective menu item charts have been sorted."""
+
+    STATUS = 200
+
+
 class DifferentMenuItemsError(DSCMS4Message):
     """Indicates that the respective menu
     item charts are in separate menu items.
@@ -136,7 +143,9 @@ class DifferentMenuItemsError(DSCMS4Message):
     STATUS = 400
 
 
-class MenuItemChartsSorted(DSCMS4Message):
-    """Indicates that the respective menu item charts have been sorted."""
+class MenuXorParent(DSCMS4Message):
+    """Indicates that the user tried to set
+    both menu and parent item or neither.
+    """
 
-    STATUS = 200
+    STATUS = 400

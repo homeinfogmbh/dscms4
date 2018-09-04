@@ -181,11 +181,14 @@ msgstr "Menüelementchart hinzugefügt."
 msgid "MenuItemChartDeleted"
 msgstr "Menüelementchart gelöscht."
 
+msgid "MenuItemChartsSorted"
+msgstr "Menüelementcharts sortiert."
+
 msgid "DifferentMenuItemsError"
 msgstr "Menüelementcharts befinden sich in unterschiedlichen Menüelementen."
 
-msgid "MenuItemChartsSorted"
-msgstr "Menüelementcharts sortiert."
+msgid "MenuXorParent"
+msgstr "Es müssen entweder das Menü oder das Elternelement angegeben werden."
 
 ### Preview messages. ###
 

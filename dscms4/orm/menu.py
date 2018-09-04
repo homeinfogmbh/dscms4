@@ -9,6 +9,7 @@ from peeweeplus import MissingKeyError
 from dscms4 import dom
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.messages.common import CircularReference, InvalidReference
+from dscms4.messages.menu import MenuXorParent
 from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.util import chart_of
@@ -40,9 +41,9 @@ def get_menu_and_parent(json):
             raise InvalidReference(type=MenuItem, id=parent)
 
     if menu is None and parent is None:
-        raise ValueError('Must either specify menu or parent.')
+        raise MenuXorParent()
     elif menu is not None and parent is not None:
-        raise ValueError('Must specify menu exclusively or parent.')
+        raise MenuXorParent()
 
     return (menu, parent)
 
@@ -208,7 +209,7 @@ class MenuItemChart(RelatedModel):
     JSON_KEYS = {'menuItem': menu_item, 'baseChart': base_chart}
 
     @classmethod
-    def from_json(cls, json, *kwargs):
+    def from_json(cls, json, **kwargs):
         """Creates a record from a JSON-ish dictionary."""
         try:
             menu_item = MenuItem.get(MenuItem.id == json.pop('menuItem'))

@@ -7,9 +7,9 @@ from flask import request
 from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, NoSuchMenuItem, \
-    MenuItemAdded, MenuItemPatched, MenuItemDeleted, MenuItemsSorted, \
-    DifferentMenusError, DifferentParentsError
+from dscms4.messages.menu import NoSuchMenu, NoSuchMenuItem, MenuItemAdded, \
+    MenuItemPatched, MenuItemDeleted, MenuItemsSorted, DifferentMenusError, \
+    DifferentParentsError
 from dscms4.orm.menu import Menu, MenuItem
 
 
@@ -57,11 +57,7 @@ def get(ident):
 def add():
     """Adds a new menu item."""
 
-    try:
-        menu_item = MenuItem.from_json(JSON_DATA)
-    except ValueError as value_error:
-        return InvalidMenuData(error=str(value_error))
-
+    menu_item = MenuItem.from_json(JSON_DATA)
     menu_item.save()
     return MenuItemAdded(id=menu_item.id)
 
@@ -72,12 +68,7 @@ def patch(ident):
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-
-    try:
-        menu_item.patch_json(JSON_DATA)
-    except ValueError as value_error:
-        return InvalidMenuData(error=str(value_error))
-
+    menu_item.patch_json(JSON_DATA)
     menu_item.save()
     return MenuItemPatched()
 
