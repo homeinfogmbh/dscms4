@@ -86,9 +86,11 @@ class MenuItem(RelatedModel):
         table_name = 'menu_item'
 
     menu = RelatedKeyField(
-        Menu, column_name='menu', null=True, backref='items')
+        Menu, column_name='menu', null=True, on_delete='CASCADE',
+        backref='items')
     parent = ForeignKeyField(
-        'self', column_name='parent', null=True, backref='children')
+        'self', column_name='parent', null=True, on_delete='CASCADE',
+        backref='children')
     name = CharField(255)
     icon = CharField(255, null=True)
     text_color = IntegerField(default=0x000000)
