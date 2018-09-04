@@ -141,7 +141,8 @@ class MenuItem(RelatedModel):
     def set_parent(self, parent):
         """Sets the parent."""
         if parent is not None:
-            parent = self.get_peer(parent)
+            cls = type(self)
+            parent = cls.get(cls.id == parent)
 
             if parent == self or parent in self.childrens_children:
                 raise CircularReference()
