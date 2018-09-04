@@ -86,8 +86,7 @@ class MenuItem(RelatedModel):
         table_name = 'menu_item'
 
     menu = RelatedKeyField(
-        Menu, column_name='menu', null=True, on_delete='CASCADE',
-        backref='items')
+        Menu, column_name='menu', null=True, backref='items')
     parent = ForeignKeyField(
         'self', column_name='parent', null=True, backref='children')
     name = CharField(255)
