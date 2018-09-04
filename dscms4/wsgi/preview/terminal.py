@@ -47,11 +47,7 @@ def get_tenant2tenant(terminal):
     if 'xml' in request.args:
         return XML(TenantMessage.dom_for_terminal(terminal))
 
-    return JSON([
-        tenant_message.to_json() for tenant_message
-        in TenantMessage.select().where(
-            (TenantMessage.customer == terminal.customer)
-            & (TenantMessage.address == terminal.address))])
+    return JSON(TenantMessage.json_for_terminal(terminal))
 
 
 ROUTES = (
