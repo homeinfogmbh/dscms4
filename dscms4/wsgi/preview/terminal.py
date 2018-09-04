@@ -2,6 +2,7 @@
 
 from flask import request
 
+from digsigdb import TenantMessage
 from wsgilib import JSON, XML, Binary
 
 from dscms4.content.exceptions import NoConfigurationFound
@@ -20,15 +21,14 @@ def get_presentation(terminal):
 
     presentation = Presentation(terminal)
 
-    try:
-        request.args['xml']
-    except KeyError:
-        return JSON(presentation.to_json())
+    if 'xml' in request.args:
+        try:
+            return XML(presentation.to_dom())
+        except NoConfigurationFound:
+            return NoConfigurationAssigned()
 
-    try:
-        return XML(presentation.to_dom())
-    except NoConfigurationFound:
-        return NoConfigurationAssigned()
+    return JSON(presentation.to_json())
+
 
 
 @preview(TerminalPreviewToken)
@@ -39,7 +39,24 @@ def get_file(file):
     return Binary(file.bytes)
 
 
+
+@preview(TerminalPreviewToken)
+def get_tenant2tenant(terminal):
+    """Returns the tenant-to-tenant messages for the requested terminal."""
+
+    if 'xml' in request.args:
+        return XML(TenantMessage.dom_for_terminal(terminal))
+
+    return JSON([
+        tenant_message.to_json() for tenant_message
+        in TenantMessage.select().where(
+            (TenantMessage.customer == terminal.customer)
+            & (TenantMessage.address == terminal.address))])
+
+
 ROUTES = (
     ('GET', '/preview/terminal', get_presentation,
      'preview_terminal_presentation'),
-    ('GET', '/preview/file/<int:ident>', get_file, 'preview_terminal_file'))
+    ('GET', '/preview/file/<int:ident>', get_file, 'preview_terminal_file'),
+    ('GET', '/preview/tenant2tenant', get_tenant2tenant,
+     'preview_tenant2tenant'))
