@@ -19,7 +19,7 @@ class News(Chart):
     font_size_text = SmallIntegerField(default=8)
     text_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(null=True)
-    news_token = CharField(36, null=True)
+    token = CharField(36, null=True)
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
@@ -32,5 +32,5 @@ class News(Chart):
         xml.font_size_text = self.font_size_text
         xml.text_color = self.text_color
         xml.ken_burns = self.ken_burns
-        xml.news_token = self.news_token
+        xml.token = self.token
         return xml
