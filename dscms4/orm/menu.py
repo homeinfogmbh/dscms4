@@ -96,7 +96,6 @@ class MenuItem(RelatedModel):
     text_color = IntegerField(default=0x000000)
     background_color = IntegerField(default=0xffffff)
     index = IntegerField(default=0)
-    JSON_KEYS = {'textColor': text_color, 'backgroundColor': background_color}
 
     @classmethod
     def from_json(cls, json, **kwargs):
@@ -208,7 +207,6 @@ class MenuItemChart(RelatedModel):
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
-    JSON_KEYS = {'menuItem': menu_item, 'baseChart': base_chart}
 
     @classmethod
     def from_json(cls, json, **kwargs):

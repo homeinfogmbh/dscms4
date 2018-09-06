@@ -37,9 +37,6 @@ class ImageText(Chart):
     font_size = SmallIntegerField(default=26)
     title_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(default=False)
-    JSON_KEYS = {
-        'fontSize': font_size, 'titleColor': title_color,
-        'kenBurns': ken_burns}
 
     @classmethod
     def from_json(cls, json, **kwargs):

@@ -28,10 +28,6 @@ class Weather(Chart):
     box_color_middle = IntegerField()
     box_color_bottom = IntegerField()
     transparency = IntegerField()
-    JSON_KEYS = {
-        'fontColor': font_color, 'iconColor': icon_color,
-        'boxColorTop': box_color_top, 'boxColorMiddle': box_color_middle,
-        'boxColorBottom': box_color_bottom}
 
     @classmethod
     def from_json(cls, json, **kwargs):

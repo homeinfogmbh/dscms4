@@ -76,12 +76,6 @@ class Colors(DSCMS4Model):
     title = IntegerField()
     text = IntegerField()
     text_background = IntegerField()
-    JSON_KEYS = {
-        'headerBackground': header_background,
-        'backgroundLeft': background_left,
-        'backgroundRight': background_right,
-        'tickerBackground': ticker_background,
-        'textBackground': text_background}
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
@@ -120,10 +114,6 @@ class Configuration(CustomerModel):
     rotation = SmallIntegerField(default=0)
     email_form = BooleanField()
     volume = SmallIntegerField()
-    JSON_KEYS = {
-        'tickerSpeed': ticker_speed, 'titleSize': title_size,
-        'textSize': text_size, 'hideCursor': hide_cursor,
-        'emailForm': email_form}
 
     @classmethod
     def from_json(cls, json, colors, **kwargs):

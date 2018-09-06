@@ -23,9 +23,6 @@ class Facebook(Chart):
     font_size = SmallIntegerField(default=26)
     title_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(default=False)
-    JSON_KEYS = {
-        'fontSize': font_size, 'titleColor': title_color,
-        'kenBurns': ken_burns}
 
     @classmethod
     def from_json(cls, json, **kwargs):
@@ -93,9 +90,6 @@ class Account(DSCMS4Model):
     recent_days = SmallIntegerField(default=14)
     max_posts = SmallIntegerField(default=10)
     name = CharField(255, null=True)
-    JSON_KEYS = {
-        'facebookId': facebook_id, 'recentDays': recent_days,
-        'maxPosts': max_posts}
 
     @classmethod
     def from_json(cls, json, chart, **kwargs):

@@ -16,7 +16,6 @@ class Quotes(Chart):
 
     font_color = IntegerField(0x000000)
     background_color = IntegerField(0x000000)
-    JSON_KEYS = {'fontColor': font_color, 'backgroundColor': background_color}
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

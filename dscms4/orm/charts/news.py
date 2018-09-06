@@ -20,10 +20,6 @@ class News(Chart):
     text_color = IntegerField(default=0x000000)
     ken_burns = BooleanField(null=True)
     news_token = CharField(36, null=True)
-    JSON_KEYS = {
-        'fontSizeTitle': font_size_title, 'titleColor': title_color,
-        'fontSizeText': font_size_text, 'textColor': text_color,
-        'kenBurns': ken_burns, 'newsToken': news_token}
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

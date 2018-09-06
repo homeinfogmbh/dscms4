@@ -111,7 +111,6 @@ class ComCatAccountTag(Tag):
 
     comcat_account = ForeignKeyField(
         ComCatAccount, column_name='comcat_account', on_delete='CASCADE')
-    JSON_KEYS = {'comcatAccount': comcat_account}
 
     @classmethod
     def from_list(cls, customer, comcat_account, lst):
@@ -135,7 +134,6 @@ class ApartmentBuildingTag(Tag):
     apartment_building = ForeignKeyField(
         ApartmentBuilding, column_name='apartment_building',
         on_delete='CASCADE')
-    JSON_KEYS = {'apartmentBuilding': apartment_building}
 
     @classmethod
     def from_list(cls, customer, apartment_building, lst):

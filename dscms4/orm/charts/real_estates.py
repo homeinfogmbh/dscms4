@@ -126,30 +126,6 @@ class RealEstates(Chart):
     leasing = BooleanField(default=True)
     rent = BooleanField(default=True)
     sale = BooleanField(default=True)
-    JSON_KEYS = {
-        'displayFormat': display_format, 'kenBurns': ken_burns,
-        'qrCodes': qr_codes, 'showContact': show_contact,
-        'contactPicture': contact_picture, 'fontSize': font_size,
-        'fontColor': font_color, 'freeFrom': free_from,
-        'coopShare': coop_share, 'totalArea': total_area,
-        'plotArea': plot_area, 'coldRent': cold_rent,
-        'purchasePrice': purchase_price, 'securityDeposit': security_deposit,
-        'serviceCharge': service_charge, 'objectId': object_id,
-        'warmRent': warm_rent, 'assistedLiving': assited_living,
-        'builtinKitchen': builtin_kitchen, 'outdoorParking': outdoor_parking,
-        'cableSatTv': cable_sat_tv, 'carPark': car_park,
-        'wheelchairAccessible': wheelchair_accessible,
-        'swimmingPool': swimming_pool,
-        'undergroundCarpark': underground_carpark, 'rooms1': rooms_1,
-        'rooms2': rooms_2, 'rooms3': rooms_3, 'rooms4': rooms_4,
-        'rooms5': rooms_5, 'rooms5orMore': rooms_5_or_more,
-        'financeProject': finance_project, 'businessRealty': business_realty,
-        'shortTermAccomodation': short_term_accommodation,
-        'livingRealty': living_realty,
-        'hospitalityIndustry': hospitality_industry,
-        'hallWarehouseProduction': hall_warehouse_production,
-        'agricultureForestry': agriculture_forestry,
-        'incomeProperty': income_property}
 
     @classmethod
     def from_json(cls, json, **kwargs):
@@ -387,7 +363,6 @@ class ZipCodeFilter(DSCMS4Model):
     zip_code = CharField(255)
     # True: blacklist, False: whitelist.
     blacklist = BooleanField(default=False)
-    JSON_KEYS = {'zipCode': zip_code}
 
     def __call__(self, real_estate):
         """Checks the filter against the respective real estate."""
