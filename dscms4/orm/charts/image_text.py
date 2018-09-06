@@ -5,6 +5,7 @@ from enum import Enum
 from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
     BooleanField, CharField, TextField
 
+from functoolsplus import coerce
 from peeweeplus import EnumField
 
 from dscms4 import dom
@@ -62,14 +63,11 @@ class ImageText(Chart):
         return transaction
 
     @property
+    @coerce(set)
     def files(self):
         """Returns a set of IDs of files used by the chart."""
-        files = set()
-
         for image in self.images:
-            files.add(image.image)
-
-        return files
+            yield image.image
 
     def patch_json(self, json, **kwargs):
         """Patches the respective chart."""

@@ -3,7 +3,7 @@
 from contextlib import suppress
 from itertools import chain
 
-from functoolsplus import returning
+from functoolsplus import coerce
 
 from dscms4 import dom
 from dscms4.content.terminal.charts import accumulated_charts
@@ -33,14 +33,14 @@ class Presentation:
         return first_configuration(self.terminal)
 
     @property
-    @returning(tuple)
+    @coerce(tuple)
     def charts(self):
         """Yields the terminal's charts."""
         for _, chart in accumulated_charts(self.terminal):
             yield chart
 
     @property
-    @returning(tuple)
+    @coerce(tuple)
     def menus(self):
         """Yields the terminal's menus."""
         for _, menu in accumulated_menus(self.terminal):
@@ -63,7 +63,7 @@ class Presentation:
         return files
 
     @property
-    @returning(tuple)
+    @coerce(tuple)
     def menu_charts(self):
         """Yields accumulated charts from menus."""
         for menu in self.menus:

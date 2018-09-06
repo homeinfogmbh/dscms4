@@ -6,6 +6,7 @@ from enum import Enum
 from peewee import ForeignKeyField, TimeField, IntegerField, \
     SmallIntegerField, CharField, BooleanField, TextField
 
+from functoolsplus import coerce
 from peeweeplus import EnumField
 
 from dscms4 import dom
@@ -134,20 +135,17 @@ class Configuration(CustomerModel):
         return configuration
 
     @property
+    @coerce(set)
     def files(self):
         """Returns a set od IDs of files used by the configuration."""
-        files = set()
-
         if self.logo is not None:
-            files.add(self.logo)
+            yield self.logo
 
         if self.background is not None:
-            files.add(self.background)
+            yield self.background
 
         if self.dummy_picture is not None:
-            files.add(self.dummy_picture)
-
-        return files
+            yield self.dummy_picture
 
     @property
     def backlight_dict(self):
