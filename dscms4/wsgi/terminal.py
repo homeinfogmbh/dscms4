@@ -89,7 +89,7 @@ def get(terminal):
 def get_groups(terminal):
     """Returns the groups this terminal is a member of."""
 
-    return JSON(terminal_groups(terminal))
+    return JSON([group.to_json() for group in terminal_groups(terminal)])
 
 
 @authenticated
