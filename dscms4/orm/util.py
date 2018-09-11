@@ -1,14 +1,20 @@
 """ORM utility functions."""
 
 from collections import namedtuple
-from sys import stderr
+from logging import getLogger
+
+from functoolsplus import coerce
 
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.charts.common import BaseChart
+from dscms4.orm.group import GroupMemberTerminal
 
 
-__all__ = ['charts_of', 'chart_of', 'check_base_charts']
+__all__ = ['charts_of', 'chart_of', 'check_base_charts', 'terminal_groups']
+
+
+LOGGER = getLogger('DSCMS4 ORM Utility')
 
 
 CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
@@ -49,14 +55,23 @@ def check_base_charts(verbose=False):
             orphans.add(base_chart)
 
             if verbose:
-                print(orphaned_base_chart, file=stderr)
+                LOGGER.error(orphaned_base_chart)
         except AmbiguousBaseChart as ambiguous_base_chart:
             ambiguous.add(base_chart)
 
             if verbose:
-                print(ambiguous_base_chart, file=stderr)
+                LOGGER.error(ambiguous_base_chart)
         else:
             if verbose:
-                print(base_chart, '↔', chart)
+                LOGGER.info('%s ↔ %s', base_chart, chart)
 
     return CheckResult(frozenset(orphans), frozenset(ambiguous))
+
+
+@coerce(set)
+def terminal_groups(terminal):
+    """Yields the groups of which the respective terminal is a member."""
+
+    for gmt in GroupMemberTerminal.select().where(
+            GroupMemberTerminal.terminal == terminal):
+        yield gmt.group
