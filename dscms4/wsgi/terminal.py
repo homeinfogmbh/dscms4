@@ -85,10 +85,11 @@ def get(terminal):
 
 @authenticated
 @authorized('dscms4')
-def get_groups(tid):
+@with_terminal
+def get_groups(terminal):
     """Returns the groups this terminal is a member of."""
 
-    return JSON(terminal_groups(tid))
+    return JSON(terminal_groups(terminal))
 
 
 @authenticated
