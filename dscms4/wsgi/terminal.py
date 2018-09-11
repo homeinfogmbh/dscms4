@@ -11,6 +11,7 @@ from dscms4.content.terminal.presentation import Presentation
 from dscms4.content.exceptions import NoConfigurationFound
 from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.orm.util import terminal_groups
 from dscms4.paging import page, pages
 
 
@@ -84,6 +85,14 @@ def get(terminal):
 
 @authenticated
 @authorized('dscms4')
+def get_groups(tid):
+    """Returns the groups this terminal is a member of."""
+
+    return JSON(terminal_groups(tid))
+
+
+@authenticated
+@authorized('dscms4')
 @with_terminal
 def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
@@ -106,5 +115,6 @@ def get_presentation(terminal):
 ROUTES = (
     ('GET', '/terminal', list_, 'list_terminals'),
     ('GET', '/terminal/<int:tid>', get, 'get_terminal'),
+    ('GET', '/terminal/<int:tid>/groups', get_groups, 'get_terminal_groups'),
     ('GET', '/terminal/<int:tid>/presentation', get_presentation,
      'get_terminal_presentation'))
