@@ -5,11 +5,9 @@ from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentExists, ContentDeleted
-from dscms4.messages.group import NoSuchGroup
-from dscms4.messages.menu import NoSuchMenu
 from dscms4.orm.content.group import GroupMenu
-from dscms4.orm.group import Group
-from dscms4.orm.menu import Menu
+from dscms4.wsgi.group.group import get_group
+from dscms4.wsgi.menu.menu import get_menu
 
 
 __all__ = ['ROUTES']
@@ -20,11 +18,7 @@ __all__ = ['ROUTES']
 def get(gid):
     """Returns a list of IDs of the menus in the respective group."""
 
-    try:
-        group = Group.cget(Group.id == gid)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(gid)
     return JSON([
         group_menu.menu.id for group_menu in GroupMenu.select().where(
             GroupMenu.group == group)])
@@ -35,15 +29,8 @@ def get(gid):
 def add(gid, ident):
     """Adds the menu to the respective group."""
 
-    try:
-        group = Group.cget(Group.id == gid)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
-    try:
-        menu = Menu.cget(Menu.id == ident)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
+    group = get_group(gid)
+    menu = get_menu(ident)
 
     try:
         GroupMenu.get(
@@ -63,15 +50,8 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the menu from the respective group."""
 
-    try:
-        group = Group.cget(Group.id == gid)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
-    try:
-        menu = Menu.cget(Menu.id == ident)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
+    group = get_group(gid)
+    menu = get_menu(ident)
 
     try:
         group_menu = GroupMenu.get(
