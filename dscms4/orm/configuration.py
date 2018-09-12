@@ -11,8 +11,7 @@ from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
-from dscms4.orm.common import RelatedKeyField, DSCMS4Model, CustomerModel, \
-    RelatedModel
+from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = [
     'TIME_FORMAT',
@@ -195,10 +194,10 @@ class Configuration(CustomerModel):
         return result
 
 
-class Ticker(RelatedModel):
+class Ticker(DSCMS4Model):
     """Ticker."""
 
-    configuration = RelatedKeyField(
+    configuration = ForeignKeyField(
         Configuration, column_name='configuration', backref='tickers',
         on_delete='CASCADE')
     type_ = EnumField(TickerTypes, column_name='type')
@@ -219,10 +218,10 @@ class Ticker(RelatedModel):
         return xml
 
 
-class Backlight(RelatedModel):
+class Backlight(DSCMS4Model):
     """Backlight beightness settings of the respective configuration."""
 
-    configuration = RelatedKeyField(
+    configuration = ForeignKeyField(
         Configuration, column_name='configuration', backref='backlights',
         on_delete='CASCADE')
     time = TimeField()
