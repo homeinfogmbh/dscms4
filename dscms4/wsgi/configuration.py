@@ -40,11 +40,19 @@ def _update_backlights(backlights, configuration, *, delete=True):
         backlight.save()
 
 
+def list_configurations():
+    """Returns the respective configuration."""
+
+    return Configuration.select().where(Configuration.customer == CUSTOMER.id)
+
+
 def get_configuration(ident):
     """Returns the respective configuration."""
 
     try:
-        return Configuration.cget(Configuration.id == ident)
+        return Configuration.get(
+            (Configuration.customer == CUSTOMER.id)
+            & (Configuration.id == ident))
     except Configuration.DoesNotExist:
         raise NoSuchConfiguration()
 
@@ -56,7 +64,7 @@ def list_():
 
     return JSON([
         configuration.to_json(fk_fields=False) for configuration
-        in Configuration.cselect().where(True)])
+        in list_configurations()])
 
 
 @authenticated
