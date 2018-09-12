@@ -32,9 +32,10 @@ def list_gbc(gid):
     customer with the respective group ID.
     """
 
-    return GroupBaseChart.select().join(Group, BaseChart).where(
-        (Group.customer == CUSTOMER.id) & (Group.id == gid)
-        & (BaseChart.trashed == 0)).get()
+    return GroupBaseChart.select().join(Group).join(
+        BaseChart on=GroupBaseChart.base_chart == BaseChart.id).where(
+            (Group.customer == CUSTOMER.id) & (Group.id == gid)
+            & (BaseChart.trashed == 0)).get()
 
 
 @authenticated
