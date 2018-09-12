@@ -33,7 +33,7 @@ def list_gbc(gid):
     """
 
     return GroupBaseChart.select().join(Group).join(
-        BaseChart on=GroupBaseChart.base_chart == BaseChart.id).where(
+        BaseChart, on=GroupBaseChart.base_chart == BaseChart.id).where(
             (Group.customer == CUSTOMER.id) & (Group.id == gid)
             & (BaseChart.trashed == 0)).get()
 

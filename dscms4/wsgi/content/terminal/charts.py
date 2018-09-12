@@ -18,7 +18,7 @@ def _select_tbc(tid):
     """Returns the respective terminal base chart."""
 
     return TerminalBaseChart.select().join(Terminal).join(
-        BaseChart on=TerminalBaseChart.base_chart == BaseChart.id).where(
+        BaseChart, on=TerminalBaseChart.base_chart == BaseChart.id).where(
             (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid)
             & (BaseChart.trashed == 0))
 
