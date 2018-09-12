@@ -8,9 +8,9 @@ from peeweeplus import MissingKeyError
 
 from dscms4 import dom
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
-from dscms4.messages.common import CircularReference, InvalidReference
-from dscms4.messages.menu import MenuXorParent
-from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
+from dscms4.messages.common import CircularReference
+from dscms4.messages.menu import NoMenuSpecified, DifferentMenusError
+from dscms4.orm.common import CustomerModel, DSCMS4Model
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.util import chart_of
 
@@ -19,33 +19,7 @@ __all__ = ['Menu', 'MenuItem', 'MODELS']
 
 
 LOGGER = getLogger('Menu')
-
-
-def get_menu_and_parent(json):
-    """Returns the parent and menu entry."""
-
-    menu = json.pop('menu', None)
-
-    if menu is not None:
-        try:
-            menu = Menu.get(Menu.id == menu)
-        except Menu.DoesNotExist:
-            raise InvalidReference(type=Menu, id=menu)
-
-    parent = json.pop('parent', None)
-
-    if parent is not None:
-        try:
-            parent = MenuItem.get(MenuItem.id == parent)
-        except MenuItem.DoesNotExist:
-            raise InvalidReference(type=MenuItem, id=parent)
-
-    if menu is None and parent is None:
-        raise MenuXorParent()
-    elif menu is not None and parent is not None:
-        raise MenuXorParent()
-
-    return (menu, parent)
+UNCHANGED = object()
 
 
 class Menu(CustomerModel):
@@ -79,15 +53,14 @@ class Menu(CustomerModel):
         return xml
 
 
-class MenuItem(RelatedModel):
+class MenuItem(DSCMS4Model):
     """A menu item."""
 
     class Meta:
         table_name = 'menu_item'
 
-    menu = RelatedKeyField(
-        Menu, column_name='menu', null=True, on_delete='CASCADE',
-        backref='items')
+    menu = ForeignKeyField(
+        Menu, column_name='menu', on_delete='CASCADE', backref='items')
     parent = ForeignKeyField(
         'self', column_name='parent', null=True, on_delete='CASCADE',
         backref='children')
@@ -100,16 +73,16 @@ class MenuItem(RelatedModel):
     @classmethod
     def from_json(cls, json, **kwargs):
         """Creates a new menu item from the provided dictionary."""
-        menu, parent = get_menu_and_parent(json)
+        menu = json.pop('menu', None)
+        parent = json.pop('parent', None)
         menu_item = super().from_json(json, **kwargs)
-        menu_item.set_menu(menu)
-        menu_item.set_parent(parent)
+        menu_item.move(menu=menu, parent=parent)
         return menu_item
 
     @property
     def root(self):
         """Determines whether this is a root node entry."""
-        return self.menu_ is not None
+        return self.menu is not None
 
     @property
     def childrens_children(self):
@@ -131,40 +104,64 @@ class MenuItem(RelatedModel):
             except AmbiguousBaseChart:
                 LOGGER.error('Base chart #%i is ambiguous.', base_chart.id)
 
-    def set_menu(self, menu):
-        """Sets the menu."""
-        self.menu = menu
+    def _get_menu(self, menu):
+        """Returns the respective menu."""
+        if menu is None:
+            raise NoMenuSpecified()
 
-        if menu is not None:
-            self.parent = None
+        if menu is UNCHANGED:
+            return self.menu
 
-    def set_parent(self, parent):
-        """Sets the parent."""
+        return Menu.get(
+            (Menu.customer == self.menu.customer) & (Menu.id == menu))
+
+    def _get_parent(self, parent):
+        """Returns the respective parent."""
+        if parent is None:
+            return None
+
+        if parent is UNCHANGED:
+            return self.parent
+
+        cls = type(self)
+        return cls.select().join(Menu).where(
+            (Menu.customer == self.menu.customer) & (cls.id == parent)).get()
+
+    def move(self, *, menu=UNCHANGED, parent=UNCHANGED):
+        """Moves the menu item to another menu and / or parent."""
+        menu = self._get_menu(menu)
+        parent = self._get_parent(parent)
+
         if parent is not None:
-            cls = type(self)
-            parent = cls.get(cls.id == parent)
+            if parent.menu != menu:
+                raise DifferentMenusError()
 
-            if parent == self or parent in self.childrens_children:
+            if parent in self.childrens_children:
                 raise CircularReference()
 
-            self.parent = parent
-            self.menu = None
+        self.menu = menu
+        self.parent = parent
+
+        for child in self.childrens_children:
+            child.menu = menu
+            child.save()
+
+        self.save()
 
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
         if update_children:
             for child in self.children:
-                child.set_parent(self.parent)
-                child.set_menu(self.menu)
+                child.move(parent=self.parent)
 
         return super().delete_instance(**kwargs)
 
     def patch_json(self, json, **kwargs):
         """Patches the menu item."""
-        menu, parent = get_menu_and_parent(json)
+        menu = json.pop('menu', UNCHANGED)
+        parent = json.pop('parent', UNCHANGED)
         super().patch_json(json, **kwargs)
-        self.set_menu(menu)
-        self.set_parent(parent)
+        self.move(menu=menu, parent=parent)
 
     def to_json(self, charts=False, children=False, **kwargs):
         """Returns a JSON-ish dictionary."""
@@ -195,13 +192,13 @@ class MenuItem(RelatedModel):
         return xml
 
 
-class MenuItemChart(RelatedModel):
+class MenuItemChart(DSCMS4Model):
     """Mapping in-between menu items and base charts."""
 
     class Meta:
         table_name = 'menu_item_chart'
 
-    menu_item = RelatedKeyField(
+    menu_item = ForeignKeyField(
         MenuItem, column_name='menu_item', backref='menu_item_charts',
         on_delete='CASCADE')
     base_chart = ForeignKeyField(
