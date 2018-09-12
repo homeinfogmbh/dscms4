@@ -14,7 +14,7 @@ from dscms4.orm.menu import Menu, MenuItem
 from dscms4.wsgi.menu.menu import get_menu
 
 
-__all__ = ['ROUTES']
+__all__ = ['ROUTES', 'get_menu_item']
 
 
 def get_menu_item(ident):
