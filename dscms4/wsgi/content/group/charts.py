@@ -15,18 +15,6 @@ from dscms4.wsgi.group.group import get_group
 __all__ = ['ROUTES']
 
 
-def get_gbc(gid, ident):
-    """Returns the respective group base chart."""
-
-    group = get_group(gid)
-
-    try:
-        return GroupBaseChart.get(
-            (GroupBaseChart.id == ident) & (GroupBaseChart.group == group))
-    except GroupBaseChart.DoesNotExist:
-        raise NoSuchContent()
-
-
 def list_gbc(gid):
     """Lists group base charts of the current
     customer with the respective group ID.
@@ -39,6 +27,17 @@ def list_gbc(gid):
             BaseChart, join_type='LEFT', on=bc_join).where(
                 (Group.customer == CUSTOMER.id) & (Group.id == gid)
                 & (BaseChart.trashed == 0))
+
+
+def get_gbc(gid, ident):
+    """Returns the respective group base chart."""
+
+    try:
+        return GroupBaseChart.select().join(Group).where(
+            (Group.customer == CUSTOMER.id) & (Group.id == gid)
+            & (GroupBaseChart.id == ident)).get()
+    except GroupBaseChart.DoesNotExist:
+        raise NoSuchContent()
 
 
 @authenticated
