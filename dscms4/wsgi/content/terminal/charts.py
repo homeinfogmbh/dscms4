@@ -14,8 +14,10 @@ from dscms4.wsgi.terminal import get_terminal
 __all__ = ['ROUTES']
 
 
-def _select_tbc(tid):
-    """Returns the respective terminal base chart."""
+def list_tbc(tid):
+    """Yields the terminal base charts of the
+    current customer for the respective termianl.
+    """
 
     term_join = TerminalBaseChart.terminal == Terminal.id
     bc_join = TerminalBaseChart.base_chart == BaseChart.id
@@ -26,7 +28,7 @@ def _select_tbc(tid):
                 & (BaseChart.trashed == 0))
 
 
-def _get_tbc(tid, ident):
+def get_tbc(tid, ident):
     """Returns the respective terminal base chart."""
 
     try:
@@ -43,7 +45,7 @@ def _get_tbc(tid, ident):
 def get(tid):
     """Returns a list of IDs of the charts in the respective terminal."""
 
-    return JSON([tbc.to_json() for tbc in _select_tbc(tid)])
+    return JSON([tbc.to_json() for tbc in list_tbc(tid)])
 
 
 @authenticated
@@ -65,7 +67,8 @@ def add(tid, ident):
 def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
-    _get_tbc(tid, ident).delete_instance()
+    terminal_base_chart = get_tbc(tid, ident)
+    terminal_base_chart.delete_instance()
     return ContentDeleted()
 
 

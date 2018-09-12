@@ -38,7 +38,7 @@ def list_gbc(gid):
         Group, join_type='LEFT', on=group_join).join(
             BaseChart, join_type='LEFT', on=bc_join).where(
                 (Group.customer == CUSTOMER.id) & (Group.id == gid)
-                & (BaseChart.trashed == 0)).get()
+                & (BaseChart.trashed == 0))
 
 
 @authenticated
