@@ -32,7 +32,7 @@ def list_gbc(gid):
     customer with the respective group ID.
     """
 
-    group_join = GroupBaseChart.terminal == Group.id
+    group_join = GroupBaseChart.group == Group.id
     bc_join = GroupBaseChart.base_chart == BaseChart.id
     return GroupBaseChart.select().join(
         Group, join_type='LEFT', on=group_join).join(
