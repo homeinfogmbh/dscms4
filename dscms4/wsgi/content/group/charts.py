@@ -1,11 +1,13 @@
 """Management of charts in groups."""
 
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentDeleted
+from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.group import GroupBaseChart
+from dscms4.orm.group import Group
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.group.group import get_group
 
@@ -13,7 +15,7 @@ from dscms4.wsgi.group.group import get_group
 __all__ = ['ROUTES']
 
 
-def _get_gbc(gid, ident):
+def get_gbc(gid, ident):
     """Returns the respective group base chart."""
 
     group = get_group(gid)
@@ -25,15 +27,22 @@ def _get_gbc(gid, ident):
         raise NoSuchContent()
 
 
+def list_gbc(gid):
+    """Lists group base charts of the current
+    customer with the respective group ID.
+    """
+
+    return GroupBaseChart.select().join(Group).join(BaseChart).where(
+        (Group.customer == CUSTOMER.id) & (Group.id == gid)
+        & (BaseChart.trashed == 0)).get()
+
+
 @authenticated
 @authorized('dscms4')
 def get(gid):
     """Returns a list of IDs of the charts in the respective group."""
 
-    group = get_group(gid)
-    return JSON([
-        gbc.to_json() for gbc in GroupBaseChart.select().where(
-            GroupBaseChart.group == group)])
+    return JSON([gbc.to_json() for gbc in list_gbc(gid)])
 
 
 @authenticated
@@ -55,7 +64,8 @@ def add(gid, ident):
 def delete(gid, ident):
     """Deletes the chart from the respective group."""
 
-    _get_gbc(gid, ident).delete_instance()
+    group_base_chart = get_gbc(gid, ident)
+    group_base_chart.delete_instance()
     return ContentDeleted()
 
 
