@@ -54,4 +54,4 @@ def list_(ident):
 
 
 ROUTES = (
-    ('GET', '/membership/chart/<int:ident>', list_, 'list_chart_containers'),)
+    ('GET', '/membership/charts/<int:ident>', list_, 'list_chart_containers'),)
