@@ -168,7 +168,9 @@ class MenuItem(DSCMS4Model):
         json = super().to_json(**kwargs)
 
         if charts:
-            json['charts'] = [chart.to_json() for chart in self.charts]
+            json['charts'] = [
+                chart.to_json() for chart in self.charts
+                if not chart.base.trashed]    # Exclude trashed charts.
 
         if children:
             json['items'] = [
