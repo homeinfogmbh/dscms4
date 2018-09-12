@@ -2,15 +2,15 @@
 
 from itertools import chain
 
-from his import JSON_DATA, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
 from dscms4.messages.charts import InvalidChartType, NoSuchChart
 from dscms4.messages.menu import NoSuchMenuItemChart, MenuItemChartAdded, \
     MenuItemChartDeleted, DifferentMenuItemsError, MenuItemChartsSorted
-from dscms4.orm.charts import CHARTS
-from dscms4.orm.menu import MenuItemChart
+from dscms4.orm.charts import CHARTS, BaseChart
+from dscms4.orm.menu import Menu, MenuItem, MenuItemChart
 from dscms4.wsgi.menu.item import get_menu_item
 
 
@@ -26,7 +26,8 @@ def get_chart(type_, ident):
         raise InvalidChartType()
 
     try:
-        return type_.cget(type_.id == ident)
+        return type_.select().join(BaseChart).where(
+            (BaseChart.customer == CUSTOMER) & (type_.id == ident))
     except type_.DoesNotExist:
         raise NoSuchChart()
 
@@ -35,7 +36,8 @@ def get_menu_item_chart(ident):
     """Returns the respective MenuItemChart."""
 
     try:
-        return MenuItemChart.cget(MenuItemChart.id == ident)
+        return MenuItemChart.select().join(MenuItem).join(Menu).where(
+            (Menu.customer == CUSTOMER.id) & (MenuItemChart.id == ident)).get()
     except MenuItemChart.DoesNotExist:
         raise NoSuchMenuItemChart()
 
