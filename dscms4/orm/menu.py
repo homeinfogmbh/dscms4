@@ -169,7 +169,7 @@ class MenuItem(DSCMS4Model):
 
         if charts:
             json['charts'] = [
-                chart.to_json() for chart in self.charts
+                chart.to_json(brief=True) for chart in self.charts
                 if not chart.base.trashed]    # Exclude trashed charts.
 
         if children:
