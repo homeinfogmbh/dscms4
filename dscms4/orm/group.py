@@ -65,6 +65,13 @@ class Group(CustomerModel):
             records = model.select().where(model.group == self)
             yield (typ, records)
 
+    @property
+    def json_tree(self):
+        """Returns the tree for this group."""
+        json = self.to_json(parent=False)
+        json['children'] = [child.json_tree for child in self.children]
+        return json
+
     def set_parent(self, parent):
         """Changes the parent reference of the group."""
         if parent is not None:
@@ -74,12 +81,6 @@ class Group(CustomerModel):
                 raise CircularReference()
 
         self.parent = parent
-
-    def json_tree(self):
-        """Returns the tree for this group."""
-        json = self.to_json(parent=False)
-        json['children'] = [child.json_tree() for child in self.children]
-        return json
 
     def patch_json(self, json, **kwargs):
         """Creates a group from a JSON-ish dictionary."""
