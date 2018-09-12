@@ -6,6 +6,7 @@ from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
     ContentDeleted
+from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.terminal import get_terminal
@@ -16,8 +17,9 @@ __all__ = ['ROUTES']
 def _select_tbc(tid):
     """Returns the respective terminal base chart."""
 
-    return TerminalBaseChart.select().join(Terminal).where(
-        (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid))
+    return TerminalBaseChart.select().join(Terminal).join(BaseChart).where(
+        (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid)
+        & (BaseChart.trashed == 0))
 
 
 def _get_tbc(tid, ident):
