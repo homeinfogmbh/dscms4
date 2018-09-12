@@ -3,14 +3,14 @@
 from flask import request
 from werkzeug.local import LocalProxy
 
-from his import JSON_DATA, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from his.messages import InvalidData
 from peeweeplus import InvalidKeys
 from wsgilib import JSON
 
 from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
-from dscms4.orm.charts import CHARTS
+from dscms4.orm.charts import CHARTS, BaseChart
 
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
@@ -54,16 +54,22 @@ CHART_TYPE = LocalProxy(get_chart_type)
 def get_charts():
     """Lists the available charts."""
 
+    trashed = 'trashed' in request.args
+
     for typ in CHART_TYPES:
-        for chart in typ.cselect():
-            yield chart
+        for record in typ.select().join(BaseChart).where(
+                (BaseChart.customer == CUSTOMER.id)
+                & (BaseChart.trashed == trashed)):
+            yield record
 
 
 def get_chart(ident):
     """Returns the selected chart."""
 
     try:
-        return CHART_TYPE.cget(CHART_TYPE.id == ident)
+        return CHART_TYPE.join(BaseChart).where(
+            (BaseChart.customer == CUSTOMER.id)
+            & (CHART_TYPE.id == ident)).get()
     except CHART_TYPE.DoesNotExist:
         raise NoSuchChart()
 

@@ -19,7 +19,7 @@ from dscms4.orm.charts.video import Video
 from dscms4.orm.charts.weather import Weather, Image as Image_
 
 
-__all__ = ['MODELS', 'CHARTS']
+__all__ = ['MODELS', 'CHARTS', 'BaseChart']
 
 
 MODELS = (
