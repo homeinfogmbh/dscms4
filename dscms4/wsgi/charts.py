@@ -77,8 +77,7 @@ def get_charts():
 
     for typ in CHART_TYPES:
         for record in typ.select().join(BaseChart).where(
-                (BaseChart.customer == CUSTOMER.id)
-                & (BaseChart.trashed == get_trashed())):
+                (BaseChart.customer == CUSTOMER.id) & get_trashed()):
             yield record
 
 
