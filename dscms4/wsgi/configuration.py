@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from his import JSON_DATA, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.configuration import NoSuchConfiguration, \
@@ -11,7 +11,7 @@ from dscms4.orm.configuration import TIME_FORMAT, Colors, Configuration, \
     Ticker, Backlight
 
 
-__all__ = ['get_configuration', 'ROUTES']
+__all__ = ['ROUTES', 'list_configurations', 'get_configuration']
 
 
 def _update_tickers(tickers, configuration, *, delete=True):
