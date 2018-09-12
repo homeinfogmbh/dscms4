@@ -17,10 +17,13 @@ __all__ = ['ROUTES']
 def _select_tbc(tid):
     """Returns the respective terminal base chart."""
 
-    return TerminalBaseChart.select().join(Terminal).join(
-        BaseChart, on=TerminalBaseChart.base_chart == BaseChart.id).where(
-            (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid)
-            & (BaseChart.trashed == 0))
+    term_join = TerminalBaseChart.terminal == Terminal.id
+    bc_join = TerminalBaseChart.base_chart == BaseChart.id
+    return TerminalBaseChart.select().join(
+        Terminal, join_type='LEFT', on=term_join).join(
+            BaseChart, join_type='LEFT', on=bc_join).where(
+                (Terminal.customer == CUSTOMER.id) & (Terminal.tid == tid)
+                & (BaseChart.trashed == 0))
 
 
 def _get_tbc(tid, ident):
