@@ -8,7 +8,7 @@ from terminallib import Terminal
 
 from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchMemberType, NoSuchMember
-from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
+from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 __all__ = [
     'group_fk',
@@ -24,7 +24,7 @@ def group_fk(backref):
     for group members with the respective backref.
     """
 
-    return RelatedKeyField(
+    return ForeignKeyField(
         Group, column_name='group', on_delete='CASCADE', backref=backref)
 
 
@@ -116,7 +116,7 @@ class Group(CustomerModel):
         return super().delete_instance(*args, **kwargs)
 
 
-class GroupMember(RelatedModel):
+class GroupMember(DSCMS4Model):
     """An abstract group member model."""
 
     @staticmethod
