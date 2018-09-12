@@ -3,15 +3,12 @@
 from collections import namedtuple
 from logging import getLogger
 
-from functoolsplus import coerce
-
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.charts.common import BaseChart
-from dscms4.orm.group import GroupMemberTerminal
 
 
-__all__ = ['charts_of', 'chart_of', 'check_base_charts', 'terminal_groups']
+__all__ = ['charts_of', 'chart_of', 'check_base_charts']
 
 
 LOGGER = getLogger('DSCMS4 ORM Utility')
@@ -66,12 +63,3 @@ def check_base_charts(verbose=False):
                 LOGGER.info('%s ↔ %s', base_chart, chart)
 
     return CheckResult(frozenset(orphans), frozenset(ambiguous))
-
-
-@coerce(set)
-def terminal_groups(terminal):
-    """Yields the groups of which the respective terminal is a member."""
-
-    for gmt in GroupMemberTerminal.select().where(
-            GroupMemberTerminal.terminal == terminal):
-        yield gmt.group
