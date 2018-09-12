@@ -10,7 +10,7 @@ from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
 from dscms4.orm.group import Group
 
 
-__all__ = ['ROUTES']
+__all__ = ['ROUTES', 'get_group']
 
 
 def get_group(ident):
