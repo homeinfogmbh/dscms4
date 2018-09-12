@@ -1,6 +1,6 @@
 """Controllers for chart types."""
 
-from his import authenticated, authorized, root
+from his import CUSTOMER, authenticated, authorized, root
 from his.messages import NoSuchCustomer
 from mdb import Customer
 from wsgilib import JSON
@@ -18,7 +18,7 @@ __all__ = ['ROUTES']
 def list_():
     """Lists available chart types."""
 
-    chart_types = ChartType.cselect().where()
+    chart_types = ChartType.select().where(ChartType.customer == CUSTOMER.id)
     return JSON([chart_type.to_json() for chart_type in chart_types])
 
 
