@@ -10,7 +10,7 @@ from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
 from dscms4.orm.menu import Menu
 
 
-__all__ = ['ROUTES']
+__all__ = ['ROUTES', 'get_menu']
 
 
 def get_menu(ident):
