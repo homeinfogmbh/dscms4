@@ -2,7 +2,7 @@
 
 from flask import request
 
-from his import JSON_DATA, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.menu import NoSuchMenu, InvalidMenuData, MenuAdded, \
@@ -13,12 +13,22 @@ from dscms4.orm.menu import Menu
 __all__ = ['ROUTES']
 
 
+def get_menu(ident):
+    """Returns the respective menu of the current customer."""
+
+    try:
+        return Menu.get((Menu.customer == CUSTOMER.id) & (Menu.id == ident))
+    except Menu.DoesNotExist:
+        raise NoSuchMenu()
+
+
 @authenticated
 @authorized('dscms4')
 def list_():
     """List menus."""
 
-    return JSON([menu.to_json() for menu in Menu.cselect().where(True)])
+    return JSON([menu.to_json() for menu in Menu.select().where(
+        Menu.customer == CUSTOMER.id)])
 
 
 @authenticated
@@ -26,11 +36,7 @@ def list_():
 def get(ident):
     """Returns the respective menu."""
 
-    try:
-        menu = Menu.cget(Menu.id == ident)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
-
+    menu = get_menu(ident)
     items = 'items' in request.args
     return JSON(menu.to_json(items=items))
 
@@ -54,10 +60,7 @@ def add():
 def patch(ident):
     """Patches the respective menu."""
 
-    try:
-        menu = Menu.cget(Menu.id == ident)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
+    menu = get_menu(ident)
 
     try:
         menu.patch_json(JSON_DATA)
@@ -73,11 +76,7 @@ def patch(ident):
 def delete(ident):
     """Deletes a menu."""
 
-    try:
-        menu = Menu.cget(Menu.id == ident)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
-
+    menu = get_menu(ident)
     menu.delete_instance()
     return MenuDeleted()
 
