@@ -10,6 +10,7 @@ from dscms4.content.terminal.charts import accumulated_charts
 from dscms4.content.terminal.configuration import first_configuration
 from dscms4.content.terminal.menu import accumulated_menus, \
     accumulated_charts as accumulated_menu_charts
+from dscms4.orm.charts import ChartMode
 
 
 __all__ = ['Presentation']
@@ -92,6 +93,7 @@ class Presentation:
             'customer': self.terminal.customer.id,
             'tid': self.terminal.tid,
             'configuration': self.configuration.to_json(),
-            'playlist': [chart.to_json(brief=True) for chart in self.charts],
+            'playlist': [
+                chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts],
             'menus': [menu.to_json() for menu in self.menu_set],
             'charts': [chart.to_json() for chart in self.chart_set]}

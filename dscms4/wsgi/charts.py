@@ -4,13 +4,13 @@ from flask import request
 from werkzeug.local import LocalProxy
 
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from his.messages import InvalidData
+from his.messages import InvalidData, NotAnInteger
 from peeweeplus import InvalidKeys
 from wsgilib import JSON
 
 from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
-from dscms4.orm.charts import CHARTS, BaseChart
+from dscms4.orm.charts import CHARTS, ChartMode, BaseChart
 
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
@@ -51,6 +51,25 @@ def get_chart_type():
 CHART_TYPE = LocalProxy(get_chart_type)
 
 
+def get_trashed():
+    """Returns a selection for the trashed status."""
+
+    trashed = request.args.get('trashed')
+
+    if trashed is None:
+        return True     # Don't care.
+
+    try:
+        trashed = int(trashed)
+    except ValueError:
+        raise NotAnInteger(key='trashed', value=trashed)
+
+    if trashed:
+        return BaseChart.trashed == 1
+
+    return BaseChart.trashed == 0
+
+
 def get_charts():
     """Lists the available charts."""
 
@@ -59,7 +78,7 @@ def get_charts():
     for typ in CHART_TYPES:
         for record in typ.select().join(BaseChart).where(
                 (BaseChart.customer == CUSTOMER.id)
-                & (BaseChart.trashed == trashed)):
+                & (BaseChart.trashed == get_trashed())):
             yield record
 
 
@@ -74,10 +93,18 @@ def get_chart(ident):
         raise NoSuchChart()
 
 
-def get_brief():
-    """Returns whether a brief data set is requested."""
+def get_mode():
+    """Determines the extend of the dataset."""
 
-    return 'brief' in request.args
+    try:
+        mode = request.args['mode']
+    except KeyError:
+        return ChartMode.FULL
+
+    try:
+        return ChartMode(mode)
+    except ValueError:
+        raise InvalidData(key='mode', value=mode)
 
 
 @authenticated
@@ -85,7 +112,7 @@ def get_brief():
 def list_():
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([chart.to_json(brief=get_brief()) for chart in get_charts()])
+    return JSON([chart.to_json(mode=get_mode()) for chart in get_charts()])
 
 
 @authenticated
@@ -93,7 +120,7 @@ def list_():
 def get(ident):
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_chart(ident).to_json(brief=get_brief()))
+    return JSON(get_chart(ident).to_json(mode=get_mode()))
 
 
 @authenticated

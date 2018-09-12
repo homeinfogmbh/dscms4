@@ -11,7 +11,7 @@ from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.messages.common import CircularReference
 from dscms4.messages.menu import NoMenuSpecified, DifferentMenusError
 from dscms4.orm.common import CustomerModel, DSCMS4Model
-from dscms4.orm.charts import BaseChart
+from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.util import chart_of
 
 
@@ -169,7 +169,7 @@ class MenuItem(DSCMS4Model):
 
         if charts:
             json['charts'] = [
-                chart.to_json(brief=True) for chart in self.charts
+                chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts
                 if not chart.base.trashed]    # Exclude trashed charts.
 
         if children:
@@ -228,7 +228,7 @@ class MenuItemChart(DSCMS4Model):
     def to_json(self):
         """Returns a JSON-ish dictionary."""
         chart = chart_of(self.base_chart)
-        json = chart.to_json(brief=True)
+        json = chart.to_json(mode=ChartMode.BRIEF)
         json['index'] = self.index
         return json
 

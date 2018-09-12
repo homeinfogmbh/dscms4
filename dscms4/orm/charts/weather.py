@@ -6,7 +6,7 @@ from functoolsplus import coerce
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import ChartMode, Chart
 from dscms4.orm.common import DSCMS4Model
 
 __all__ = ['Weather', 'Image']
@@ -67,11 +67,11 @@ class Weather(Chart):
 
         return transaction
 
-    def to_json(self, brief=False, **kwargs):
+    def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        json = super().to_json(brief=brief, **kwargs)
+        json = super().to_json(**kwargs)
 
-        if not brief:
+        if mode == ChartMode.FULL:
             json['images'] = [image.image for image in self.images]
 
         return json

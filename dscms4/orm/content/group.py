@@ -2,7 +2,7 @@
 
 from peewee import ForeignKeyField
 
-from dscms4.orm.charts import BaseChart
+from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.group import Group
@@ -31,11 +31,16 @@ class GroupBaseChart(_GroupContent):
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
+    @property
+    def chart(self):
+        """Returns the respective chart."""
+        return chart_of(self.base_chart)
+
     def to_json(self):
         """Returns a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'chart': chart_of(self.base_chart).to_json(brief=True)}
+            'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
 
 
 class GroupConfiguration(_GroupContent):

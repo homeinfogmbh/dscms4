@@ -4,7 +4,7 @@ from peewee import ForeignKeyField
 
 from terminallib import Terminal
 
-from dscms4.orm.charts import BaseChart
+from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.menu import Menu
@@ -33,11 +33,16 @@ class TerminalBaseChart(_TerminalContent):
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
 
+    @property
+    def chart(self):
+        """Returns the respective chart."""
+        return chart_of(self.base_chart)
+
     def to_json(self):
         """to_json a JSON-ish dictionary."""
         return {
             'id': self.id,
-            'chart': chart_of(self.base_chart).to_json(brief=True)}
+            'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
 
 
 class TerminalConfiguration(_TerminalContent):

@@ -59,9 +59,9 @@ class Facebook(Chart):
 
         return transaction
 
-    def to_json(self, *args, **kwargs):
+    def to_json(self, **kwargs):
         """Returns a JSON-ish dictionary."""
-        json = super().to_json(*args, **kwargs)
+        json = super().to_json(**kwargs)
         json['accounts'] = [account.to_json() for account in self.accounts]
         return json
 
