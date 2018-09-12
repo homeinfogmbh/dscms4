@@ -63,6 +63,14 @@ class Transitions(Enum):
     NONE = None
 
 
+class ChartMode(Enum):
+    """JSON serialization modes."""
+
+    FULL = 'full'
+    BRIEF = 'brief'
+    BRIEF_WITH_BASE = 'brief-with-base'
+
+
 class BaseChart(CustomerModel):
     """Common basic chart data model."""
 
@@ -78,7 +86,7 @@ class BaseChart(CustomerModel):
     created = DateTimeField(default=datetime.now)
     trashed = BooleanField(default=False)
     log = BooleanField(default=False)
-    uuid = UUIDField(column_name='uuid', null=True)
+    uuid = UUIDField(null=True)
 
     @classmethod
     def from_json(cls, json, skip=None, **kwargs):
@@ -102,14 +110,12 @@ class BaseChart(CustomerModel):
         super().patch_json(json, **kwargs)
         self.uuid = uuid4() if self.log else None
 
-    def to_json(self, *args, **kwargs):
+    def to_json(self, brief=False, **kwargs):
         """Returns a JSON-ish dictionary."""
-        json = super().to_json(*args, **kwargs)
+        if brief:
+            return {'title': self.title}
 
-        if self.uuid:
-            json['uuid'] = self.uuid.hex
-
-        return json
+        return super().to_json(**kwargs)
 
     def to_dom(self):
         """Returns an XML DOM of the base chart."""
@@ -152,15 +158,14 @@ class Chart(DSCMS4Model):
         super().patch_json(json, **kwargs)
         return Transaction(self)
 
-    def to_json(self, brief=False, **kwargs):
+    def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns a JSON-ish dictionary."""
-        if brief:
-            json = {'id': self.id}
-        else:
-            json = super().to_json(**kwargs)
+        json = super().to_json(**kwargs)
 
-        if not brief:
+        if mode == ChartMode.FULL:
             json['base'] = self.base.to_json(autofields=False)
+        elif mode == ChartMode.BRIEF_WITH_BASE:
+            json['base'] = self.base.to_json(brief=True, autofields=False)
 
         json['type'] = type(self).__name__
         return json
