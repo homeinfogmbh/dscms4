@@ -9,14 +9,14 @@ from enum import Enum
 from itertools import chain
 from uuid import uuid4
 
-from peewee import CharField, TextField, DateTimeField, SmallIntegerField, \
-    BooleanField, UUIDField
+from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
+    SmallIntegerField, BooleanField, UUIDField
 
 from his.messages import MissingData
 from peeweeplus import EnumField
 
 from dscms4 import dom
-from dscms4.orm.common import RelatedKeyField, CustomerModel, RelatedModel
+from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 
 __all__ = ['BaseChart', 'Chart']
@@ -129,10 +129,10 @@ class BaseChart(CustomerModel):
         return xml
 
 
-class Chart(RelatedModel):
+class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
-    base = RelatedKeyField(BaseChart, column_name='base', on_delete='CASCADE')
+    base = ForeignKeyField(BaseChart, column_name='base', on_delete='CASCADE')
 
     @classmethod
     def from_json(cls, json, **kwargs):
