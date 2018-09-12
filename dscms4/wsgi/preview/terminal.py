@@ -3,6 +3,7 @@
 from flask import request
 
 from digsigdb import TenantMessage
+from digsigdb.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
 
 from dscms4.content.exceptions import NoConfigurationFound
@@ -44,10 +45,17 @@ def get_file(file):
 def get_tenant2tenant(terminal):
     """Returns the tenant-to-tenant messages for the requested terminal."""
 
-    if 'xml' in request.args:
-        return XML(TenantMessage.dom_for_terminal(terminal))
+    messages = TenantMessage.for_terminal(terminal)
 
-    return JSON(TenantMessage.json_for_terminal(terminal))
+    if 'xml' in request.args:
+        xml = tenant2tenant()
+
+        for message in messages:
+            xml.message.append(message.to_dom())
+
+        return XML(xml)
+
+    return JSON([message.to_json() for message in messages])
 
 
 ROUTES = (
