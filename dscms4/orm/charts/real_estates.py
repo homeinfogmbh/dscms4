@@ -209,7 +209,7 @@ class RealEstates(Chart):
         """Returns a JSON-ish dictionary of the record's properties."""
         json = super().to_json(**kwargs)
         json['filters'] = self.filters_dictionary
-        return dictionary
+        return json
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

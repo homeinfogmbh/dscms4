@@ -33,11 +33,11 @@ def add(cid, chart_type):
         return NoSuchCustomer()
 
     try:
-        chart_type = CHARTS[chart_type]
+        CHARTS[chart_type]  # Test whether type is valid.
     except KeyError:
         return InvalidChartType()
 
-    chart_type = ChartType.add(chart_type)
+    chart_type = ChartType(customer=customer, chart_type=chart_type)
     chart_type.save()
     return ChartTypeAdded()
 

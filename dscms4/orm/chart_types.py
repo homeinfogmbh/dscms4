@@ -2,8 +2,6 @@
 
 from peewee import CharField
 
-from his import CUSTOMER
-
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.common import CustomerModel
 
