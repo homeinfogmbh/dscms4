@@ -47,20 +47,6 @@ class CustomerModel(DSCMS4Model):
     customer = ForeignKeyField(Customer, column_name='customer')
 
     @classmethod
-    def cselect(cls, *fields):
-        """Returns a selection with additional filtering
-        for the current HIS customer context.
-        """
-        return cls.select(*fields).where(cls.customer == CUSTOMER.id)
-
-    @classmethod
-    def cget(cls, *query, **filters):
-        """Returns a single record with additional filtering
-        for the current HIS customer context.
-        """
-        return cls.get(*query + ((cls.customer == CUSTOMER.id),), **filters)
-
-    @classmethod
     def from_json(cls, json, *, customer=None, **kwargs):
         """Creates a new record from the provided
         JSON-ish dictionary for a customer.
