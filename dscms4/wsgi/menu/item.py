@@ -4,13 +4,14 @@ from itertools import chain
 
 from flask import request
 
-from his import JSON_DATA, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.menu import NoSuchMenu, NoSuchMenuItem, MenuItemAdded, \
+from dscms4.messages.menu import NoSuchMenuItem, MenuItemAdded, \
     MenuItemPatched, MenuItemDeleted, MenuItemsSorted, DifferentMenusError, \
     DifferentParentsError
 from dscms4.orm.menu import Menu, MenuItem
+from dscms4.wsgi.menu.menu import get_menu
 
 
 __all__ = ['ROUTES']
@@ -19,10 +20,9 @@ __all__ = ['ROUTES']
 def get_menu_item(ident):
     """Returns the respective menu item."""
 
-    menus = Menu.cselect().where(True)
-
     try:
-        return MenuItem.cget((MenuItem.id == ident) & (MenuItem.menu << menus))
+        return MenuItem.select().join(Menu).where(
+            (Menu.customer == CUSTOMER.id) & (MenuItem.id == ident)).get()
     except MenuItem.DoesNotExist:
         raise NoSuchMenuItem()
 
@@ -32,13 +32,9 @@ def get_menu_item(ident):
 def list_(menu):
     """Lists the respective menu's items."""
 
-    try:
-        menu = Menu.cget(Menu.id == menu)
-    except Menu.DoesNotExist:
-        return NoSuchMenu()
-
+    menu = get_menu(menu)
     return JSON([
-        menu_item.to_json() for menu_item in MenuItem.cselect().where(
+        menu_item.to_json() for menu_item in MenuItem.select().where(
             MenuItem.menu == menu)])
 
 
@@ -49,7 +45,8 @@ def get(ident):
 
     charts = 'charts' in request.args
     children = 'children' in request.args
-    return JSON(get_menu_item(ident).to_json(cahrts=charts, children=children))
+    menu_item = get_menu_item(ident)
+    return JSON(menu_item.to_json(charts=charts, children=children))
 
 
 @authenticated
@@ -79,7 +76,8 @@ def delete(ident):
     """Deletes a menu or menu item."""
 
     update_children = 'updateChildren' in request.args
-    get_menu_item(ident).delete_instance(update_children=update_children)
+    menu_item = get_menu_item(ident)
+    menu_item.delete_instance(update_children=update_children)
     return MenuItemDeleted()
 
 
