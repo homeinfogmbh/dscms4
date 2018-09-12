@@ -16,8 +16,10 @@ __all__ = ['ROUTES']
 def get_group(ident):
     """Returns the respective group of the current customer."""
 
-    return Group.get(
-        (Group.customer == CUSTOMER.id) & (Group.id == ident))
+    try:
+        return Group.get((Group.customer == CUSTOMER.id) & (Group.id == ident))
+    except Group.DoesNotExist:
+        raise NoSuchGroup()
 
 
 @authenticated
@@ -38,11 +40,7 @@ def list_():
 def get(ident):
     """Returns the respective group."""
 
-    try:
-        group = get_group(ident)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(ident)
     return JSON(group.to_json())
 
 
@@ -61,11 +59,7 @@ def add():
 def patch(ident):
     """Patches the respective group."""
 
-    try:
-        group = get_group(ident)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(ident)
     group.patch_json(JSON_DATA)
     group.save()
     return GroupPatched()
@@ -76,11 +70,7 @@ def patch(ident):
 def delete(ident):
     """Deletes the respective group."""
 
-    try:
-        group = get_group(ident)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(ident)
     group.delete_instance()
     return GroupDeleted()
 
