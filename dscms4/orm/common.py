@@ -59,7 +59,7 @@ class CustomerModel(DSCMS4Model):
         elif has_request_context():
             customer = CUSTOMER.id
         else:
-            raise ValueError('No customer specified.')
+            raise TypeError('No customer specified.')
 
         record = super().from_json(json, **kwargs)
         record.customer = customer
