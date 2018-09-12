@@ -3,9 +3,10 @@
 from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.group import NoSuchGroup, NoSuchMemberType, NoSuchMember,\
-    MemberAdded, MemberDeleted
-from dscms4.orm.group import GROUP_MEMBERS, Group, GroupMember
+from dscms4.messages.group import NoSuchMemberType, NoSuchMember, MemberAdded,\
+    MemberDeleted
+from dscms4.orm.group import GROUP_MEMBERS, GroupMember
+from dscms4.wsgi.group.group import get_group
 
 
 __all__ = ['ROUTES']
@@ -22,14 +23,10 @@ def get_member_class(member_type):
 
 @authenticated
 @authorized('dscms4')
-def get(group_id):
+def get(gid):
     """Returns the group's members."""
 
-    try:
-        group = Group.cget(Group.id == group_id)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(gid)
     members = {
         typ: [member.to_json() for member in records]
         for typ, records in group.members}
@@ -38,14 +35,10 @@ def get(group_id):
 
 @authenticated
 @authorized('dscms4')
-def add(group_id):
+def add(gid):
     """Adds the member to the respective group."""
 
-    try:
-        group = Group.cget(Group.id == group_id)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(gid)
     member = GroupMember.from_json(JSON_DATA, group)
     member.save()
     return MemberAdded(id=member.id)
@@ -53,14 +46,10 @@ def add(group_id):
 
 @authenticated
 @authorized('dscms4')
-def delete(group_id, member_type, member_id):
+def delete(gid, member_type, member_id):
     """Deletes the respective group member."""
 
-    try:
-        group = Group.cget(Group.id == group_id)
-    except Group.DoesNotExist:
-        return NoSuchGroup()
-
+    group = get_group(gid)
     member_class = get_member_class(member_type)
 
     try:
@@ -74,7 +63,7 @@ def delete(group_id, member_type, member_id):
 
 
 ROUTES = (
-    ('GET', '/group/<int:group_id>/member', get, 'get_group_members'),
-    ('POST', '/group/<int:group_id>/member', add, 'add_group_member'),
-    ('DELETE', '/group/<int:group_id>/member/<member_type>/<int:member_id>',
+    ('GET', '/group/<int:gid>/member', get, 'get_group_members'),
+    ('POST', '/group/<int:gid>/member', add, 'add_group_member'),
+    ('DELETE', '/group/<int:gid>/member/<member_type>/<int:member_id>',
      delete, 'delete_group_member'))
