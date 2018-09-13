@@ -117,7 +117,7 @@ class MenuItem(DSCMS4Model):
 
         return Menu.get((Menu.customer == customer) & (Menu.id == menu))
 
-    def _get_parent(self, parent):
+    def _get_parent(self, parent, customer=None):
         """Returns the respective parent."""
         if parent is None:
             return None
@@ -125,14 +125,17 @@ class MenuItem(DSCMS4Model):
         if parent is UNCHANGED:
             return self.parent
 
+        if customer is None:
+            customer = self.menu.customer
+
         cls = type(self)
         return cls.select().join(Menu).where(
-            (Menu.customer == self.menu.customer) & (cls.id == parent)).get()
+            (Menu.customer == customer) & (cls.id == parent)).get()
 
     def move(self, *, menu=UNCHANGED, parent=UNCHANGED, customer=None):
         """Moves the menu item to another menu and / or parent."""
         menu = self._get_menu(menu, customer=customer)
-        parent = self._get_parent(parent)
+        parent = self._get_parent(parent, customer=customer)
 
         if parent is not None:
             if parent.menu != menu:
