@@ -54,9 +54,9 @@ def get(ident):
 def add():
     """Adds a new menu item."""
 
-    menu_item = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
-    menu_item.save()
-    return MenuItemAdded(id=menu_item.id)
+    menu_item_group = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
+    menu_item_group.save()
+    return MenuItemAdded(id=menu_item_group.id)
 
 
 @authenticated
@@ -65,8 +65,8 @@ def patch(ident):
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-    menu_item.patch_json(JSON_DATA)
-    menu_item.save()
+    menu_item_group = menu_item.patch_json(JSON_DATA)
+    menu_item_group.save()
     return MenuItemPatched()
 
 

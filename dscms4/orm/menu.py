@@ -1,5 +1,6 @@
 """Menus, menu items and chart members."""
 
+from collections import namedtuple
 from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
@@ -20,6 +21,23 @@ __all__ = ['Menu', 'MenuItem', 'MODELS']
 
 LOGGER = getLogger('Menu')
 UNCHANGED = object()
+
+
+class MenuItemGroup(namedtuple(
+        'MenuItemGroup', ('menu_item', 'childrens_children'))):
+    """A group of menu items."""
+
+    @property
+    def id(self):   # pylint: disable=C0103
+        """Returns the menu items's ID."""
+        return self.menu_item.id
+
+    def save(self):
+        """Saves all menu items."""
+        for menu_item in self.childrens_children:
+            menu_item.save()
+
+        self.menu_item.save()
 
 
 class Menu(CustomerModel):
@@ -76,8 +94,7 @@ class MenuItem(DSCMS4Model):
         menu = json.pop('menu')
         parent = json.pop('parent', None)
         menu_item = super().from_json(json, **kwargs)
-        menu_item.move(menu=menu, parent=parent, customer=customer)
-        return menu_item
+        return menu_item.move(menu=menu, parent=parent, customer=customer)
 
     @property
     def root(self):
@@ -146,12 +163,14 @@ class MenuItem(DSCMS4Model):
 
         self.menu = menu
         self.parent = parent
+        menu_item_group = MenuItemGroup()
 
         for child in self.childrens_children:
             child.menu = menu
-            child.save()
+            menu_item_group.append(child)
 
-        self.save()
+        menu_item_group.append(self)
+        return menu_item_group
 
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
@@ -166,7 +185,7 @@ class MenuItem(DSCMS4Model):
         menu = json.pop('menu', UNCHANGED)
         parent = json.pop('parent', UNCHANGED)
         super().patch_json(json, **kwargs)
-        self.move(menu=menu, parent=parent)
+        return self.move(menu=menu, parent=parent)
 
     def to_json(self, charts=False, children=False, **kwargs):
         """Returns a JSON-ish dictionary."""
