@@ -163,14 +163,13 @@ class MenuItem(DSCMS4Model):
 
         self.menu = menu
         self.parent = parent
-        menu_item_group = MenuItemGroup()
+        childrens_children = []
 
         for child in self.childrens_children:
             child.menu = menu
-            menu_item_group.append(child)
+            childrens_children.append(child)
 
-        menu_item_group.append(self)
-        return menu_item_group
+        return MenuItemGroup(self, childrens_children)
 
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
