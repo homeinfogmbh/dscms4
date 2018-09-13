@@ -27,7 +27,7 @@ def get_chart(type_, ident):
 
     try:
         return type_.select().join(BaseChart).where(
-            (BaseChart.customer == CUSTOMER) & (type_.id == ident))
+            (BaseChart.customer == CUSTOMER) & (type_.id == ident)).get()
     except type_.DoesNotExist:
         raise NoSuchChart()
 
