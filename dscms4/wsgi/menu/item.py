@@ -54,7 +54,7 @@ def get(ident):
 def add():
     """Adds a new menu item."""
 
-    menu_item = MenuItem.from_json(JSON_DATA)
+    menu_item = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
     menu_item.save()
     return MenuItemAdded(id=menu_item.id)
 

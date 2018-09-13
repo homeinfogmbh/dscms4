@@ -71,12 +71,12 @@ class MenuItem(DSCMS4Model):
     index = IntegerField(default=0)
 
     @classmethod
-    def from_json(cls, json, **kwargs):
+    def from_json(cls, json, customer, **kwargs):
         """Creates a new menu item from the provided dictionary."""
-        menu = json.pop('menu', None)
+        menu = json.pop('menu')
         parent = json.pop('parent', None)
         menu_item = super().from_json(json, **kwargs)
-        menu_item.move(menu=menu, parent=parent)
+        menu_item.move(menu=menu, parent=parent, customer=customer)
         return menu_item
 
     @property
@@ -104,7 +104,7 @@ class MenuItem(DSCMS4Model):
             except AmbiguousBaseChart:
                 LOGGER.error('Base chart #%i is ambiguous.', base_chart.id)
 
-    def _get_menu(self, menu):
+    def _get_menu(self, menu, customer=None):
         """Returns the respective menu."""
         if menu is None:
             raise NoMenuSpecified()
@@ -112,8 +112,10 @@ class MenuItem(DSCMS4Model):
         if menu is UNCHANGED:
             return self.menu
 
-        return Menu.get(
-            (Menu.customer == self.menu.customer) & (Menu.id == menu))
+        if customer is None:
+            customer = self.menu.customer
+
+        return Menu.get((Menu.customer == customer) & (Menu.id == menu))
 
     def _get_parent(self, parent):
         """Returns the respective parent."""
@@ -127,9 +129,9 @@ class MenuItem(DSCMS4Model):
         return cls.select().join(Menu).where(
             (Menu.customer == self.menu.customer) & (cls.id == parent)).get()
 
-    def move(self, *, menu=UNCHANGED, parent=UNCHANGED):
+    def move(self, *, menu=UNCHANGED, parent=UNCHANGED, customer=None):
         """Moves the menu item to another menu and / or parent."""
-        menu = self._get_menu(menu)
+        menu = self._get_menu(menu, customer=customer)
         parent = self._get_parent(parent)
 
         if parent is not None:
