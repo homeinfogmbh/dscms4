@@ -43,13 +43,30 @@ def list_(ident):
 
     chart = get_chart(ident)
     base_chart = chart.base
-    menu_items = tuple(get_menu_items(base_chart))
-    menus = frozenset(menu_item.menu for menu_item in menu_items)
     json = {
-        'groups': [group.id for group in tuple(get_groups(base_chart))],
-        'terminals': [terminal.tid for terminal in get_terminals(base_chart)],
-        'menu_items': [menu_item.id for menu_item in menu_items],
-        'menus': [menu.id for menu in menus]}
+        'groups': [
+            {
+                'group': group_base_chart.group.id,
+                'member': group_base_chart.id
+            }
+            for group_base_chart in GroupBaseChart.select().where(
+                GroupBaseChart.base_chart == base_chart)],
+        'terminals': [
+            {
+                'terminal': terminal_base_chart.terminal.tid,
+                'member': terminal_base_chart.id
+            }
+            for terminal_base_chart in TerminalBaseChart.select().where(
+                TerminalBaseChart.base_chart == base_chart)],
+        'menus': [
+            {
+                'menu': menu_item_chart.menu_item.menu.id,
+                'menuItem': menu_item_chart.menu_item.id,
+                'member': menu_item_chart.id
+            }
+            for menu_item_chart in MenuItemChart.select().where(
+                MenuItemChart.base_chart == base_chart)]
+    }
     return JSON(json)
 
 
