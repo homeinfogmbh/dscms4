@@ -6,7 +6,7 @@ from peewee import CharField, TextField, SmallIntegerField, IntegerField
 from peeweeplus import EnumField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import Chart, RegisteredChart
 
 
 __all__ = ['Mode', 'Cleaning']
@@ -19,7 +19,7 @@ class Mode(Enum):
     INPUT = 'input'
 
 
-class Cleaning(Chart):
+class Cleaning(Chart, metaclass=RegisteredChart):
     """Cleaning chart."""
 
     class Meta:
