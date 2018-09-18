@@ -7,19 +7,31 @@ from collections import namedtuple
 from datetime import datetime
 from enum import Enum
 from itertools import chain
+from logging import getLogger
 from uuid import uuid4
 
-from peewee import ForeignKeyField, CharField, TextField, DateTimeField, \
-    SmallIntegerField, BooleanField, UUIDField
+from peewee import BooleanField
+from peewee import CharField
+from peewee import DateTimeField
+from peewee import ForeignKeyField
+from peewee import ModelBase
+from peewee import SmallIntegerField
+from peewee import TextField
+from peewee import UUIDField
 
 from his.messages import MissingData
-from peeweeplus import EnumField
+from peeweeplus import EnumField    # pylint: disable=E0401
 
-from dscms4 import dom
+from dscms4 import dom  # pylint: disable=E0611
+from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 
 __all__ = ['BaseChart', 'Chart']
+
+
+LOGGER = getLogger(__file__)
+CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
 
 
 class Transaction(namedtuple('Transaction', ('chart', 'related'))):
@@ -74,7 +86,7 @@ class ChartMode(Enum):
 class BaseChart(CustomerModel):
     """Common basic chart data model."""
 
-    class Meta:
+    class Meta:     # pylint: disable=C0111,R0903
         table_name = 'base_chart'
 
     title = CharField(255)
@@ -97,6 +109,31 @@ class BaseChart(CustomerModel):
         record.uuid = uuid4() if record.log else None
         return record
 
+    @classmethod
+    def check(cls, verbose=False):
+        """Checks base charts."""
+        orphans = set()
+        ambiguous = set()
+
+        for base_chart in cls:
+            try:
+                chart = base_chart.chart
+            except OrphanedBaseChart as orphaned_base_chart:
+                orphans.add(base_chart)
+
+                if verbose:
+                    LOGGER.error(orphaned_base_chart)
+            except AmbiguousBaseChart as ambiguous_base_chart:
+                ambiguous.add(base_chart)
+
+                if verbose:
+                    LOGGER.error(ambiguous_base_chart)
+            else:
+                if verbose:
+                    LOGGER.info('%s ↔ %s', base_chart, chart)
+
+        return CheckResult(frozenset(orphans), frozenset(ambiguous))
+
     @property
     def active(self):
         """Determines whether the chart is considered active."""
@@ -104,6 +141,27 @@ class BaseChart(CustomerModel):
         return all((
             self.display_from is None or self.display_from > now,
             self.display_until is None or self.display_until < now))
+
+    @property
+    def charts(self):
+        """Yields all charts that associate this base chart."""
+        for model in Chart.types.values():
+            for record in model.select().where(model.base == self):
+                yield record
+
+    @property
+    def chart(self):
+        """Returns the mapped implementation of this base chart."""
+        try:
+            match, *superfluous = self.charts
+        except ValueError:
+            raise OrphanedBaseChart(self)
+
+        if superfluous:
+            charts = frozenset([match] + superfluous)
+            raise AmbiguousBaseChart(self, charts)
+
+        return match
 
     def patch_json(self, json, **kwargs):
         """Patches the base chart."""
@@ -135,10 +193,22 @@ class BaseChart(CustomerModel):
         return xml
 
 
-class Chart(DSCMS4Model):
+class _MetaChart(ModelBase):
+    """Metaclass for charts."""
+
+    def __init__(cls, *args, **kwargs):
+        """Registers the different chart types."""
+        super().__init__(*args, **kwargs)
+
+        if cls is not Chart:
+            Chart.types[cls.__name__] = cls
+
+
+class Chart(DSCMS4Model, metaclass=_MetaChart):
     """Abstract basic chart."""
 
     base = ForeignKeyField(BaseChart, column_name='base', on_delete='CASCADE')
+    types = {}
 
     @classmethod
     def from_json(cls, json, **kwargs):
