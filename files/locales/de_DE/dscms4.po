@@ -99,9 +99,6 @@ msgstr "Inhalt existiert bereits."
 msgid "ContentDeleted"
 msgstr "Inhalt gelöscht."
 
-msgid "NoConfigurationAssigned"
-msgstr "Keine Konfiguration zugewiesen."
-
 ### Group messages. ###
 
 msgid "NoSuchGroup"
@@ -189,6 +186,14 @@ msgstr "Menüelementcharts befinden sich in unterschiedlichen Menüelementen."
 
 msgid "MenuXorParent"
 msgstr "Es müssen entweder das Menü oder das Elternelement angegeben werden."
+
+### Presentation messages. ###
+
+msgid "AmbiguousConfigurations"
+msgstr "Mehrdeutige Zuweisung von Konfigurationen."
+
+msgid "NoConfigurationAssigned"
+msgstr "Keine Konfiguration zugewiesen."
 
 ### Preview messages. ###
 

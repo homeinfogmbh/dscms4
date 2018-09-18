@@ -6,8 +6,10 @@ from digsigdb import TenantMessage
 from digsigdb.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
 
+from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
-from dscms4.messages.content import NoConfigurationAssigned
+from dscms4.messages.presentation import NoConfigurationAssigned
+from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.orm.preview import TerminalPreviewToken
 from dscms4.presentation import Presentation
 from dscms4.preview import preview, file_preview
@@ -25,6 +27,8 @@ def get_presentation(terminal):
     if 'xml' in request.args:
         try:
             return XML(presentation.to_dom())
+        except AmbiguousConfigurationsError:
+            return AmbiguousConfigurations()
         except NoConfigurationFound:
             return NoConfigurationAssigned()
 

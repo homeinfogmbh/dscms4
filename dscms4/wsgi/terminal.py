@@ -7,8 +7,10 @@ from his.messages import InvalidData
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
+from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
-from dscms4.messages.content import NoConfigurationAssigned
+from dscms4.messages.presentation import NoConfigurationAssigned
+from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.paging import page, pages
 from dscms4.presentation import Presentation
@@ -97,6 +99,8 @@ def get_presentation(terminal):
 
     try:
         presentation_dom = presentation.to_dom()
+    except AmbiguousConfigurationsError:
+        return AmbiguousConfigurations()
     except NoConfigurationFound:
         return NoConfigurationAssigned()
 

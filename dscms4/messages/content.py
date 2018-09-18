@@ -8,8 +8,7 @@ __all__ = [
     'InvalidContentType',
     'ContentAdded',
     'ContentExists',
-    'ContentDeleted',
-    'NoConfigurationAssigned']
+    'ContentDeleted']
 
 
 class NoSuchContent(DSCMS4Message):
@@ -46,11 +45,3 @@ class ContentDeleted(DSCMS4Message):
     """Indicates that the respective content was deleted."""
 
     STATUS = 200
-
-
-class NoConfigurationAssigned(DSCMS4Message):
-    """Indicates that no configuration has been
-    assigned to the respective presentation.
-    """
-
-    STATUS = 404

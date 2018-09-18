@@ -99,9 +99,6 @@ msgstr "Content exists."
 msgid "ContentDeleted"
 msgstr "Content deleted."
 
-msgid "NoConfigurationAssigned"
-msgstr "No configuration assigned."
-
 ### Group messages. ###
 
 msgid "NoSuchGroup"
@@ -189,6 +186,14 @@ msgstr "Menu item charts are contained within different menu items."
 
 msgid "MenuXorParent"
 msgstr "Must specify either menu exclusively or parent item."
+
+### Presentation messages. ###
+
+msgid "AmbiguousConfigurations"
+msgstr "Ambiguous configurations assigned."
+
+msgid "NoConfigurationAssigned"
+msgstr "No configurations assigned."
 
 ### Preview messages. ###
 
