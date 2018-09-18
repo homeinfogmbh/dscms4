@@ -33,7 +33,7 @@ class Facebook(Chart, metaclass=RegisteredChart):
         transaction = super().from_json(json, **kwargs)
 
         for account in accounts:
-            account = Account.from_json(transaction.chart, account)
+            account = Account.from_json(account, transaction.chart)
             transaction.add(account)
 
         return transaction
@@ -54,7 +54,7 @@ class Facebook(Chart, metaclass=RegisteredChart):
                 transaction.delete(account)
 
             for account in accounts:
-                account = Account.from_json(transaction.chart, account)
+                account = Account.from_json(account, transaction.chart)
                 transaction.add(account)
 
         return transaction
