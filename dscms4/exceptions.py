@@ -1,7 +1,7 @@
 """Common ORM model exceptions."""
 
 
-__all__ = ['OrphanedBaseChart', 'AmbiguousBaseChart']
+__all__ = ['OrphanedBaseChart', 'AmbiguousBaseChart', 'NoConfigurationFound']
 
 
 class DSCMS4Error(Exception):
@@ -39,3 +39,9 @@ class AmbiguousBaseChart(DSCMS4Error):
         return 'Base chart #{} is ambiguous: {}.'.format(
             self.base_chart.id, ', '.join(
                 str(chart) for chart in self.references))
+
+
+class NoConfigurationFound(Exception):
+    """Indicates that no configuration has been found."""
+
+    pass

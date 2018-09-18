@@ -7,11 +7,11 @@ from his.messages import InvalidData
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
-from dscms4.content.terminal.presentation import Presentation
-from dscms4.content.exceptions import NoConfigurationFound
+from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.paging import page, pages
+from dscms4.presentation import Presentation
 
 
 __all__ = ['get_terminal', 'ROUTES']

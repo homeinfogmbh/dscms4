@@ -6,10 +6,10 @@ from digsigdb import TenantMessage
 from digsigdb.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
 
-from dscms4.content.exceptions import NoConfigurationFound
-from dscms4.content.terminal.presentation import Presentation
+from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.content import NoConfigurationAssigned
 from dscms4.orm.preview import TerminalPreviewToken
+from dscms4.presentation import Presentation
 from dscms4.preview import preview, file_preview
 
 
