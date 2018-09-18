@@ -61,7 +61,7 @@ class Presentation:
             yield level
             level = tuple(group.parent for group in level if group.parent)
 
-    @property()
+    @property
     @cached_method()
     @coerce(frozenset)
     def groups(self):
