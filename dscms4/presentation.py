@@ -44,8 +44,6 @@ class Presentation:
         self.cache = {}
 
     @property
-    @cached_method()
-    @coerce(frozenset)
     def _direct_groups(self):
         """Yields groups this terminal is a member of."""
         for gmt in GroupMemberTerminal.select().where(
@@ -55,11 +53,11 @@ class Presentation:
     @property
     def grouplevels(self):
         """Yields group levels in a breadth-first search."""
-        level = tuple(self._direct_groups)
+        level = frozenset(self._direct_groups)
 
         while level:
             yield level
-            level = tuple(group.parent for group in level if group.parent)
+            level = frozenset(group.parent for group in level if group.parent)
 
     @property
     @cached_method()
@@ -67,7 +65,8 @@ class Presentation:
     def groups(self):
         """Yields all groups in a breadth-first search."""
         for level in self.grouplevels:
-            yield from level
+            for group in level:
+                yield group
 
     @property
     def groupconfigs(self):
