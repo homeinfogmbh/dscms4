@@ -5,8 +5,10 @@ from logging import getLogger
 from functoolsplus import cached_method, coerce    # pylint: disable=E0401
 
 from dscms4 import dom  # pylint: disable=E0611
-from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
+from dscms4.exceptions import AmbiguousBaseChart
+from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
+from dscms4.exceptions import OrphanedBaseChart
 from dscms4.orm.charts import BaseChart, ChartMode
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.content.terminal import TerminalBaseChart
@@ -25,6 +27,14 @@ __all__ = ['Presentation']
 LOGGER = getLogger(__file__)
 
 
+@coerce(frozenset)
+def level_configs(level):
+    """Yields all configurations of a certain group level."""
+
+    return Configuration.select().join(GroupConfiguration).where(
+        GroupConfiguration.group << level)
+
+
 class Presentation:
     """Accumulates content for a terminal."""
 
@@ -35,19 +45,31 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(set)
-    def groups(self):
+    @coerce(frozenset)
+    def _direct_groups(self):
         """Yields groups this terminal is a member of."""
         for gmt in GroupMemberTerminal.select().where(
                 GroupMemberTerminal.terminal == self.terminal):
-            group = gmt.group
-
-            while group is not None:
-                yield group
-                group = group.parent
+            yield gmt.group
 
     @property
+    def grouplevels(self):
+        """Yields group levels in a breadth-first search."""
+        level = tuple(self._direct_groups)
+
+        while level:
+            yield level
+            level = tuple(group.parent for group in level if group.parent)
+
+    @property()
     @cached_method()
+    @coerce(frozenset)
+    def groups(self):
+        """Yields all groups in a breadth-first search."""
+        for level in self.grouplevels:
+            yield from level
+
+    @property
     def configuration(self):
         """Returns the terminal's configuration."""
         for configuration in Configuration.select().join(
@@ -55,16 +77,22 @@ class Presentation:
                     TerminalConfiguration.terminal == self.terminal):
             return configuration
 
-        for configuration in Configuration.select().join(
-                GroupConfiguration).where(
-                    GroupConfiguration.group << self.groups):
-            return configuration
+        for index, level in enumerate(self.grouplevels):
+            configurations = level_configs(level)
+
+            if not configurations:
+                continue
+
+            if len(configurations) > 1:
+                raise AmbiguousConfigurationsError(level, index)
+
+            return configurations[0]
 
         raise NoConfigurationFound()
 
     @property
     @cached_method()
-    @coerce(tuple)
+    @coerce(frozenset)
     def menus(self):
         """Yields menus of this terminal."""
         # Menus directly attached to the terminal.
@@ -77,7 +105,7 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(tuple)
+    @coerce(frozenset)
     def base_charts(self):
         """Yields the terminal's base charts."""
         # Charts directy attached to the terminal.
@@ -95,7 +123,7 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(tuple)
+    @coerce(frozenset)
     def charts(self):
         """Yields the terminal's charts."""
         for base_chart in self.base_charts:
@@ -108,7 +136,7 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(set)
+    @coerce(frozenset)
     def files(self):
         """Yields the presentation's used file IDs."""
         yield from self.configuration.files

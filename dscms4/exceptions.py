@@ -1,7 +1,11 @@
 """Common ORM model exceptions."""
 
 
-__all__ = ['OrphanedBaseChart', 'AmbiguousBaseChart', 'NoConfigurationFound']
+__all__ = [
+    'OrphanedBaseChart',
+    'AmbiguousBaseChart',
+    'AmbiguousConfigurationsError',
+    'NoConfigurationFound']
 
 
 class DSCMS4Error(Exception):
@@ -23,7 +27,13 @@ class OrphanedBaseChart(DSCMS4Error):
         return 'Base chart {} is orphaned.'.format(self.base_chart.id)
 
 
-class AmbiguousBaseChart(DSCMS4Error):
+class AmbiguityError(DSCMS4Error):
+    """Indicates an error due to ambiguous information."""
+
+    pass
+
+
+class AmbiguousBaseChart(AmbiguityError):
     """Indicates that the respective base chart
     is referenced by more than one chart.
     """
@@ -41,7 +51,17 @@ class AmbiguousBaseChart(DSCMS4Error):
                 str(chart) for chart in self.references))
 
 
-class NoConfigurationFound(Exception):
+class AmbiguousConfigurationsError(AmbiguityError):
+    """Indicates that ambiguous configurations are defined for a terminal."""
+
+    def __init__(self, level, index):
+        """Sets the level and its index."""
+        super().__init__(level, index)
+        self.level = level
+        self.index = index
+
+
+class NoConfigurationFound(DSCMS4Error):
     """Indicates that no configuration has been found."""
 
     pass
