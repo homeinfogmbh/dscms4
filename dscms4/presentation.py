@@ -1,9 +1,8 @@
 """Content accumulation for terminals."""
 
-from functools import lru_cache
 from logging import getLogger
 
-from functoolsplus import coerce    # pylint: disable=E0401
+from functoolsplus import cached_method, coerce    # pylint: disable=E0401
 
 from dscms4 import dom  # pylint: disable=E0611
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
@@ -32,9 +31,10 @@ class Presentation:
     def __init__(self, terminal):
         """Sets the respective terminal."""
         self.terminal = terminal
+        self.cache = {}
 
     @property
-    @lru_cache()
+    @cached_method()
     @coerce(set)
     def groups(self):
         """Yields groups this terminal is a member of."""
@@ -47,7 +47,7 @@ class Presentation:
                 group = group.parent
 
     @property
-    @lru_cache()
+    @cached_method()
     def configuration(self):
         """Returns the terminal's configuration."""
         for configuration in Configuration.select().join(
@@ -63,7 +63,7 @@ class Presentation:
         raise NoConfigurationFound()
 
     @property
-    @lru_cache()
+    @cached_method()
     @coerce(tuple)
     def menus(self):
         """Yields menus of this terminal."""
@@ -76,7 +76,7 @@ class Presentation:
             GroupMenu.group << self.groups)
 
     @property
-    @lru_cache()
+    @cached_method()
     @coerce(tuple)
     def base_charts(self):
         """Yields the terminal's base charts."""
@@ -91,7 +91,7 @@ class Presentation:
             (GroupBaseChart.group << self.groups))
 
     @property
-    @lru_cache()
+    @cached_method()
     @coerce(tuple)
     def charts(self):
         """Yields the terminal's charts."""
@@ -104,7 +104,7 @@ class Presentation:
                 LOGGER.error('Base chart is ambiguous: %s.', base_chart)
 
     @property
-    @lru_cache()
+    @cached_method()
     @coerce(set)
     def files(self):
         """Yields the presentation's used file IDs."""
