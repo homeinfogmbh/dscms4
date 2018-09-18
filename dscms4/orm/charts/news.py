@@ -3,13 +3,13 @@
 from peewee import BooleanField, CharField, IntegerField, SmallIntegerField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import Chart, RegisteredChart
 
 
 __all__ = ['News']
 
 
-class News(Chart):
+class News(Chart, metaclass=RegisteredChart):
     """Chart to display news."""
 
     class Meta:

@@ -27,7 +27,7 @@ from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
 
-__all__ = ['BaseChart', 'Chart']
+__all__ = ['BaseChart', 'Chart', 'RegisteredChart']
 
 
 LOGGER = getLogger(__file__)
@@ -193,18 +193,7 @@ class BaseChart(CustomerModel):
         return xml
 
 
-class _MetaChart(ModelBase):
-    """Metaclass for charts."""
-
-    def __init__(cls, *args, **kwargs):
-        """Registers the different chart types."""
-        super().__init__(*args, **kwargs)
-
-        if cls is not Chart:
-            Chart.types[cls.__name__] = cls
-
-
-class Chart(DSCMS4Model, metaclass=_MetaChart):
+class Chart(DSCMS4Model):
     """Abstract basic chart."""
 
     base = ForeignKeyField(BaseChart, column_name='base', on_delete='CASCADE')
@@ -255,3 +244,12 @@ class Chart(DSCMS4Model, metaclass=_MetaChart):
     def delete_instance(self):
         """Deletes the base chart and thus (CASCADE) this chart."""
         return self.base.delete_instance()
+
+
+class RegisteredChart(ModelBase):
+    """Metaclass for charts."""
+
+    def __init__(cls, *args, **kwargs):
+        """Registers the different chart types."""
+        super().__init__(*args, **kwargs)
+        Chart.types[cls.__name__] = cls

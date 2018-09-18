@@ -6,13 +6,13 @@ from functoolsplus import coerce
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import Chart, RegisteredChart
 
 
 __all__ = ['Video']
 
 
-class Video(Chart):
+class Video(Chart, metaclass=RegisteredChart):
     """A chart that may contain images and texts."""
 
     class Meta:

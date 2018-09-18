@@ -1,13 +1,13 @@
 """Garbage collection chart."""
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import Chart, RegisteredChart
 
 
 __all__ = ['GarbageCollection']
 
 
-class GarbageCollection(Chart):
+class GarbageCollection(Chart, metaclass=RegisteredChart):
     """Chart for garbage collection."""
 
     class Meta:
