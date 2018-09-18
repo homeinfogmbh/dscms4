@@ -78,7 +78,7 @@ class Presentation:
             except ValueError:
                 continue
 
-            if superfluous > 1:
+            if superfluous:
                 raise AmbiguousConfigurationsError(level, index)
 
             yield configuration
