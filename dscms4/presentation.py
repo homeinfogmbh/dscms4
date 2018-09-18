@@ -16,7 +16,7 @@ from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
 from dscms4.orm.group import GroupMemberTerminal
-from dscms4.orm.menu import Menu
+from dscms4.orm.menu import Menu, MenuItem, MenuItemChart
 
 
 __all__ = ['Presentation']
@@ -87,8 +87,11 @@ class Presentation:
 
         # Charts attached to groups, the terminal is a member of.
         yield from BaseChart.select().join(GroupBaseChart).where(
-            (BaseChart.trashed == 0) &
-            (GroupBaseChart.group << self.groups))
+            (BaseChart.trashed == 0) & (GroupBaseChart.group << self.groups))
+
+        # Charts attached to menus of this terminal.
+        yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
+            (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
 
     @property
     @cached_method()
