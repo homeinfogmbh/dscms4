@@ -13,7 +13,6 @@ from dscms4.messages.common import CircularReference
 from dscms4.messages.menu import NoMenuSpecified, DifferentMenusError
 from dscms4.orm.common import UNCHANGED, CustomerModel, DSCMS4Model
 from dscms4.orm.charts import ChartMode, BaseChart
-from dscms4.orm.util import chart_of
 
 
 __all__ = ['Menu', 'MenuItem', 'MODELS']
@@ -114,7 +113,7 @@ class MenuItem(DSCMS4Model):
             base_chart = menu_item_chart.base_chart
 
             try:
-                yield chart_of(base_chart)
+                yield base_chart.chart
             except OrphanedBaseChart:
                 LOGGER.error('Base chart #%i is orphaned.', base_chart.id)
             except AmbiguousBaseChart:
@@ -249,7 +248,7 @@ class MenuItemChart(DSCMS4Model):
 
     def to_json(self):
         """Returns a JSON-ish dictionary."""
-        chart = chart_of(self.base_chart)
+        chart = self.base_chart.chart
         json = chart.to_json(mode=ChartMode.BRIEF)
         json['index'] = self.index
         return json
@@ -257,7 +256,7 @@ class MenuItemChart(DSCMS4Model):
     def to_dom(self):
         """Returns an XML DOM of the model."""
         xml = dom.MenuItemChart()
-        chart = chart_of(self.base_chart)
+        chart = self.base_chart.chart
         xml.id = chart.id
         xml.type = type(chart).__name__
         xml.index = self.index

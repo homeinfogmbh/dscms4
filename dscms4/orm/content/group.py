@@ -7,7 +7,7 @@ from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.group import Group
 from dscms4.orm.menu import Menu
-from dscms4.orm.util import chart_of
+
 
 __all__ = [
     'GroupBaseChart',
@@ -34,7 +34,7 @@ class GroupBaseChart(_GroupContent):
     @property
     def chart(self):
         """Returns the respective chart."""
-        return chart_of(self.base_chart)
+        return self.base_chart.chart
 
     def to_json(self):
         """Returns a JSON-ish dictionary."""

@@ -2,7 +2,7 @@
 
 from peewee import CharField
 
-from dscms4.orm.charts import CHARTS
+from dscms4.orm.charts import Chart
 from dscms4.orm.common import CustomerModel
 
 
@@ -17,12 +17,12 @@ class ChartType(CustomerModel):
     @property
     def chart_class(self):
         """Returns the respective chart type's class."""
-        return CHARTS[self.chart_type]
+        return Chart.types[self.chart_type]
 
     @chart_class.setter
     def chart_class(self, chart_class):
         """Sets the respective chart type by its class."""
-        for name, cls in CHARTS.items():
+        for name, cls in Chart.types.items():
             if cls == chart_class:
                 self.chart_type = name
                 break

@@ -18,7 +18,6 @@ from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
 from dscms4.orm.group import GroupMemberTerminal
 from dscms4.orm.menu import Menu
-from dscms4.orm.util import chart_of
 
 
 __all__ = ['Presentation']
@@ -98,7 +97,7 @@ class Presentation:
         """Yields the terminal's charts."""
         for base_chart in self.base_charts:
             try:
-                yield chart_of(base_chart)
+                yield base_chart.chart
             except OrphanedBaseChart:
                 LOGGER.error('Base chart is orphaned: %s.', base_chart)
             except AmbiguousBaseChart:

@@ -6,7 +6,7 @@ from mdb import Customer
 from wsgilib import JSON
 
 from dscms4.orm.chart_types import ChartType
-from dscms4.orm.charts import CHARTS
+from dscms4.orm.charts import Chart
 from dscms4.messages.charts import InvalidChartType, ChartTypeAdded
 
 
@@ -33,7 +33,7 @@ def add(cid, chart_type):
         return NoSuchCustomer()
 
     try:
-        CHARTS[chart_type]  # Test whether type is valid.
+        Chart.types[chart_type]  # Test whether type is valid.
     except KeyError:
         return InvalidChartType()
 

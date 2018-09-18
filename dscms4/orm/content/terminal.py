@@ -8,7 +8,7 @@ from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.menu import Menu
-from dscms4.orm.util import chart_of
+
 
 __all__ = [
     'TerminalBaseChart',
@@ -36,7 +36,7 @@ class TerminalBaseChart(_TerminalContent):
     @property
     def chart(self):
         """Returns the respective chart."""
-        return chart_of(self.base_chart)
+        return self.base_chart.chart
 
     def to_json(self):
         """to_json a JSON-ish dictionary."""

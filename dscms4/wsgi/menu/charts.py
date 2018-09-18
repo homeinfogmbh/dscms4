@@ -9,7 +9,7 @@ from wsgilib import JSON
 from dscms4.messages.charts import InvalidChartType, NoSuchChart
 from dscms4.messages.menu import NoSuchMenuItemChart, MenuItemChartAdded, \
     MenuItemChartDeleted, DifferentMenuItemsError, MenuItemChartsSorted
-from dscms4.orm.charts import CHARTS, BaseChart
+from dscms4.orm.charts import BaseChart, Chart
 from dscms4.orm.menu import Menu, MenuItem, MenuItemChart
 from dscms4.wsgi.menu.item import get_menu_item
 
@@ -21,7 +21,7 @@ def get_chart(type_, ident):
     """Gets a chart by type and ID."""
 
     try:
-        type_ = CHARTS[type_]
+        type_ = Chart.types[type_]
     except KeyError:
         raise InvalidChartType()
 

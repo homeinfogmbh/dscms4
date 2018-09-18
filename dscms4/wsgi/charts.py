@@ -10,10 +10,10 @@ from wsgilib import JSON
 
 from dscms4.messages.charts import NoChartTypeSpecified, InvalidChartType, \
     NoSuchChart, ChartAdded, ChartDeleted, ChartPatched
-from dscms4.orm.charts import CHARTS, ChartMode, BaseChart
+from dscms4.orm.charts import ChartMode, BaseChart, Chart
 
 
-__all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'CHARTS', 'ROUTES']
+__all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'ROUTES']
 
 
 def get_chart_types():
@@ -22,11 +22,11 @@ def get_chart_types():
     try:
         type_names = request.args['types']
     except KeyError:
-        yield from CHARTS.values()
+        yield from Chart.types.values()
     else:
         for type_name in type_names.split(','):
             try:
-                yield CHARTS[type_name]
+                yield Chart.types[type_name]
             except KeyError:
                 raise InvalidChartType()
 
@@ -43,7 +43,7 @@ def get_chart_type():
         raise NoChartTypeSpecified()
 
     try:
-        return CHARTS[chart_type]
+        return Chart.types[chart_type]
     except KeyError:
         raise InvalidChartType()
 
