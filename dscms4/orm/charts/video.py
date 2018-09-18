@@ -8,6 +8,7 @@ from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import Chart
 
+
 __all__ = ['Video']
 
 

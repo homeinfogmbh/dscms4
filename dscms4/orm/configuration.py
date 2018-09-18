@@ -3,8 +3,13 @@
 from contextlib import suppress
 from enum import Enum
 
-from peewee import ForeignKeyField, TimeField, IntegerField, \
-    SmallIntegerField, CharField, BooleanField, TextField
+from peewee import BooleanField
+from peewee import CharField
+from peewee import ForeignKeyField
+from peewee import IntegerField
+from peewee import SmallIntegerField
+from peewee import TextField
+from peewee import TimeField
 
 from functoolsplus import coerce
 from peeweeplus import EnumField
@@ -12,6 +17,7 @@ from peeweeplus import EnumField
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.common import DSCMS4Model, CustomerModel
+
 
 __all__ = [
     'TIME_FORMAT',

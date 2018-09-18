@@ -11,7 +11,7 @@ from dscms4 import dom
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.messages.common import CircularReference
 from dscms4.messages.menu import NoMenuSpecified, DifferentMenusError
-from dscms4.orm.common import CustomerModel, DSCMS4Model
+from dscms4.orm.common import UNCHANGED, CustomerModel, DSCMS4Model
 from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.util import chart_of
 
@@ -20,7 +20,6 @@ __all__ = ['Menu', 'MenuItem', 'MODELS']
 
 
 LOGGER = getLogger('Menu')
-UNCHANGED = object()
 
 
 class MenuItemGroup(namedtuple(

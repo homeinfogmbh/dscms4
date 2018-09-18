@@ -5,6 +5,7 @@ from peewee import IntegerField
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
 
+
 __all__ = ['Quotes']
 
 

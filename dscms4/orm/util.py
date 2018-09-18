@@ -11,10 +11,8 @@ from dscms4.orm.charts.common import BaseChart
 __all__ = ['charts_of', 'chart_of', 'check_base_charts']
 
 
-LOGGER = getLogger('DSCMS4 ORM Utility')
 
 
-CheckResult = namedtuple('CheckResult', ('orphans', 'ambiguous'))
 
 
 def charts_of(base_chart):

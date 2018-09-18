@@ -1,9 +1,10 @@
 """New charts."""
 
-from peewee import IntegerField, SmallIntegerField, BooleanField, CharField
+from peewee import BooleanField, CharField, IntegerField, SmallIntegerField
 
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
+
 
 __all__ = ['News']
 

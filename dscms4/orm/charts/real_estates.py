@@ -4,8 +4,11 @@ from collections import defaultdict
 from enum import Enum
 from itertools import chain
 
-from peewee import BooleanField, SmallIntegerField, IntegerField, \
-    ForeignKeyField, CharField
+from peewee import BooleanField
+from peewee import CharField
+from peewee import ForeignKeyField
+from peewee import IntegerField
+from peewee import SmallIntegerField
 
 from openimmodb import Immobilie
 from peeweeplus import EnumField
@@ -13,6 +16,7 @@ from peeweeplus import EnumField
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model
 from dscms4.orm.charts.common import Chart
+
 
 __all__ = ['RealEstates', 'IdFilter', 'ZipCodeFilter']
 

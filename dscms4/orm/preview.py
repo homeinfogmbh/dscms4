@@ -10,6 +10,7 @@ from terminallib import Terminal
 from dscms4.messages.preview import NoSuchObject
 from dscms4.orm.common import DSCMS4Model
 
+
 __all__ = ['TYPES', 'TerminalPreviewToken']
 
 

@@ -7,12 +7,10 @@ from functoolsplus import coerce
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import ChartMode, Chart
-from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.common import UNCHANGED, DSCMS4Model
+
 
 __all__ = ['Weather', 'Image']
-
-
-_UNCHANGED = object()
 
 
 class Weather(Chart):
@@ -54,10 +52,10 @@ class Weather(Chart):
 
     def patch_json(self, json, **kwargs):
         """Patches the respective chart."""
-        images = json.pop('images', _UNCHANGED) or ()
+        images = json.pop('images', UNCHANGED) or ()
         transaction = super().patch_json(json, **kwargs)
 
-        if images is not _UNCHANGED:
+        if images is not UNCHANGED:
             for image in self.images:
                 transaction.delete(image)
 

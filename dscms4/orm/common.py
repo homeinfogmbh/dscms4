@@ -12,12 +12,14 @@ from dscms4.messages.common import InvalidReference
 
 
 __all__ = [
+    'UNCHANGED',
     'DATABASE',
     'create_tables',
     'DSCMS4Model',
     'CustomerModel']
 
 
+UNCHANGED = object()
 DATABASE = MySQLDatabase.from_config(CONFIG['db'])
 
 

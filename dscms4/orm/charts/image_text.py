@@ -11,12 +11,10 @@ from peeweeplus import EnumField
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import ChartMode, Chart
-from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.common import UNCHANGED, DSCMS4Model
+
 
 __all__ = ['ImageText', 'Image', 'Text']
-
-
-_UNCHANGED = object()
 
 
 class Style(Enum):
@@ -68,11 +66,11 @@ class ImageText(Chart):
 
     def patch_json(self, json, **kwargs):
         """Patches the respective chart."""
-        images = json.pop('images', _UNCHANGED) or ()
-        texts = json.pop('texts', _UNCHANGED) or ()
+        images = json.pop('images', UNCHANGED) or ()
+        texts = json.pop('texts', UNCHANGED) or ()
         transaction = super().patch_json(json, **kwargs)
 
-        if images is not _UNCHANGED:
+        if images is not UNCHANGED:
             for image in self.images:
                 transaction.delete(image)
 
@@ -80,7 +78,7 @@ class ImageText(Chart):
                 image = Image(chart=transaction.chart, image=image)
                 transaction.add(image)
 
-        if texts is not _UNCHANGED:
+        if texts is not UNCHANGED:
             for text in self.texts:
                 transaction.delete(text)
 

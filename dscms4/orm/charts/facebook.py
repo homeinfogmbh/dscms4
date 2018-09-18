@@ -1,17 +1,17 @@
 """Facebook charts and associated data."""
 
-from peewee import ForeignKeyField, IntegerField, SmallIntegerField, \
-    BooleanField, CharField
+from peewee import BooleanField
+from peewee import CharField
+from peewee import ForeignKeyField
+from peewee import IntegerField
+from peewee import SmallIntegerField
 
 from dscms4 import dom
 from dscms4.orm.charts.common import Chart
-from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.common import UNCHANGED, DSCMS4Model
 
 
 __all__ = ['Facebook', 'Account']
-
-
-UNCHANGED = object()    # Sentinel object to identify an unchanged value.
 
 
 class Facebook(Chart):

@@ -6,6 +6,7 @@ from sys import stderr
 
 from dscms4.orm import charts, content, chart_types, configuration, group, menu
 
+
 __all__ = ['create_tables']
 
 

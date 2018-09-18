@@ -5,6 +5,7 @@ from peewee import CharField
 from dscms4.orm.charts import CHARTS
 from dscms4.orm.common import CustomerModel
 
+
 __all__ = ['ChartType', 'MODELS']
 
 

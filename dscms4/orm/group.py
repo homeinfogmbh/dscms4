@@ -10,6 +10,7 @@ from dscms4.messages.common import CircularReference
 from dscms4.messages.group import NoSuchMemberType, NoSuchMember
 from dscms4.orm.common import DSCMS4Model, CustomerModel
 
+
 __all__ = [
     'group_fk',
     'Group',
