@@ -70,6 +70,22 @@ class Presentation:
             yield from level
 
     @property
+    def groupconfigs(self):
+        """Returns a configuration for the terminal's groups."""
+        for index, level in enumerate(self.grouplevels):
+            try:
+                configuration, *superfluous = level_configs(level)
+            except ValueError:
+                continue
+
+            if superfluous > 1:
+                raise AmbiguousConfigurationsError(level, index)
+
+            yield configuration
+
+        raise NoConfigurationFound()
+
+    @property
     def configuration(self):
         """Returns the terminal's configuration."""
         for configuration in Configuration.select().join(
@@ -77,16 +93,8 @@ class Presentation:
                     TerminalConfiguration.terminal == self.terminal):
             return configuration
 
-        for index, level in enumerate(self.grouplevels):
-            configurations = level_configs(level)
-
-            if not configurations:
-                continue
-
-            if len(configurations) > 1:
-                raise AmbiguousConfigurationsError(level, index)
-
-            return configurations[0]
+        for configuration in self.groupconfigs:
+            return configuration
 
         raise NoConfigurationFound()
 
