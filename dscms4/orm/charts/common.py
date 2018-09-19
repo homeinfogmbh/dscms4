@@ -219,12 +219,14 @@ class Chart(DSCMS4Model):
 
     def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns a JSON-ish dictionary."""
-        json = super().to_json(**kwargs)
-
         if mode == ChartMode.FULL:
+            json = super().to_json(**kwargs)
             json['base'] = self.base.to_json(autofields=False)
         elif mode == ChartMode.BRIEF_WITH_BASE:
+            json = super().to_json(**kwargs)
             json['base'] = self.base.to_json(brief=True, autofields=False)
+        elif mode == ChartMode.BRIEF:
+            json = {'id': self.id}
 
         json['type'] = type(self).__name__
         return json
