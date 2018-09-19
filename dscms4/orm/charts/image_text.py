@@ -90,7 +90,7 @@ class ImageText(Chart, metaclass=RegisteredChart):
 
     def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns the dictionary representation of this chart's fields."""
-        json = super().to_json(**kwargs)
+        json = super().to_json(mode=mode, **kwargs)
 
         if mode == ChartMode.FULL:
             json['texts'] = [text.text for text in self.texts]

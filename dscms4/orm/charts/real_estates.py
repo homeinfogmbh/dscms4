@@ -15,7 +15,7 @@ from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import ChartMode, Chart, RegisteredChart
 
 
 __all__ = ['RealEstates', 'IdFilter', 'ZipCodeFilter']
@@ -209,10 +209,13 @@ class RealEstates(Chart, metaclass=RegisteredChart):
         """Yields filtered real estates."""
         return filter(self.match_real_estate, real_estates)
 
-    def to_json(self, **kwargs):
+    def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns a JSON-ish dictionary of the record's properties."""
-        json = super().to_json(**kwargs)
-        json['filters'] = self.filters_dictionary
+        json = super().to_json(mode=mode, **kwargs)
+
+        if mode == ChartMode.FULL:
+            json['filters'] = self.filters_dictionary
+
         return json
 
     def to_dom(self, brief=False):

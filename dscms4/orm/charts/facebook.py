@@ -7,7 +7,7 @@ from peewee import IntegerField
 from peewee import SmallIntegerField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import ChartMode, Chart, RegisteredChart
 from dscms4.orm.common import UNCHANGED, DSCMS4Model
 
 
@@ -59,10 +59,13 @@ class Facebook(Chart, metaclass=RegisteredChart):
 
         return transaction
 
-    def to_json(self, **kwargs):
+    def to_json(self, mode=ChartMode.FULL, **kwargs):
         """Returns a JSON-ish dictionary."""
-        json = super().to_json(**kwargs)
-        json['accounts'] = [account.to_json() for account in self.accounts]
+        json = super().to_json(mode=mode, **kwargs)
+
+        if mode == ChartMode.FULL:
+            json['accounts'] = [account.to_json() for account in self.accounts]
+
         return json
 
     def to_dom(self, brief=False):
