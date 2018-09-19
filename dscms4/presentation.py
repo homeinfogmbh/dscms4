@@ -27,6 +27,7 @@ __all__ = ['Presentation']
 LOGGER = getLogger(__file__)
 
 
+@coerce(frozenset)
 def charts(base_charts):
     """Yields the charts of the respective base charts."""
 
@@ -124,7 +125,6 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(frozenset)
     @coerce(charts)
     def playlist(self):
         """Yields the terminal's base charts."""
@@ -139,7 +139,6 @@ class Presentation:
 
     @property
     @cached_method()
-    @coerce(frozenset)
     @coerce(charts)
     def menu_charts(self):
         """Yields charts of the terminal's menu."""
