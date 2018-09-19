@@ -141,11 +141,17 @@ class Presentation:
     @cached_method()
     @coerce(frozenset)
     @coerce(charts)
+    def menu_charts(self):
+        """Yields charts of the terminal's menu."""
+        yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
+            (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
+
+
+    @property
     def charts(self):
         """Yields all charts for this terminal."""
         yield from self.playlist
-        yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
-            (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
+        yield from self.menu_charts
 
     @property
     @cached_method()
