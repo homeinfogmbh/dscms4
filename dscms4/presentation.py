@@ -64,6 +64,11 @@ class Presentation:
             yield gmt.group
 
     @property
+    def customer(self):
+        """Returns the respective customer."""
+        return self.terminal.customer
+
+    @property
     def grouplevels(self):
         """Yields group levels in a breadth-first search."""
         level = frozenset(self._direct_groups)
