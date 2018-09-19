@@ -27,6 +27,18 @@ __all__ = ['Presentation']
 LOGGER = getLogger(__file__)
 
 
+def charts(base_charts):
+    """Yields the charts of the respective base charts."""
+
+    for base_chart in base_charts:
+        try:
+            yield base_chart.chart
+        except OrphanedBaseChart:
+            LOGGER.error('Base chart is orphaned: %s.', base_chart)
+        except AmbiguousBaseChart:
+            LOGGER.error('Base chart is ambiguous: %s.', base_chart)
+
+
 @coerce(frozenset)
 def level_configs(level):
     """Yields all configurations of a certain group level."""
@@ -113,7 +125,8 @@ class Presentation:
     @property
     @cached_method()
     @coerce(frozenset)
-    def base_charts(self):
+    @coerce(charts)
+    def playlist(self):
         """Yields the terminal's base charts."""
         # Charts directy attached to the terminal.
         yield from BaseChart.select().join(TerminalBaseChart).where(
@@ -124,22 +137,15 @@ class Presentation:
         yield from BaseChart.select().join(GroupBaseChart).where(
             (BaseChart.trashed == 0) & (GroupBaseChart.group << self.groups))
 
-        # Charts attached to menus of this terminal.
-        yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
-            (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
-
     @property
     @cached_method()
     @coerce(frozenset)
+    @coerce(charts)
     def charts(self):
-        """Yields the terminal's charts."""
-        for base_chart in self.base_charts:
-            try:
-                yield base_chart.chart
-            except OrphanedBaseChart:
-                LOGGER.error('Base chart is orphaned: %s.', base_chart)
-            except AmbiguousBaseChart:
-                LOGGER.error('Base chart is ambiguous: %s.', base_chart)
+        """Yields all charts for this terminal."""
+        yield from self.playlist
+        yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
+            (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
 
     @property
     @cached_method()
@@ -162,7 +168,7 @@ class Presentation:
         xml.customer = self.terminal.customer.id
         xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
-        xml.playlist = [chart.to_dom(brief=True) for chart in self.charts]
+        xml.playlist = [chart.to_dom(brief=True) for chart in self.playlist]
         xml.menu = [menu.to_dom() for menu in self.menus]
         xml.chart = [chart.to_dom() for chart in self.charts]
         return xml
@@ -174,6 +180,7 @@ class Presentation:
             'tid': self.terminal.tid,
             'configuration': self.configuration.to_json(),
             'playlist': [
-                chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts],
+                chart.to_json(mode=ChartMode.BRIEF)
+                for chart in self.playlist],
             'menus': [menu.to_json() for menu in self.menus],
             'charts': [chart.to_json() for chart in self.charts]}
