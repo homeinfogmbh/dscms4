@@ -8,9 +8,6 @@ from dscms4.orm.charts import ChartMode
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
-from dscms4.orm.content.terminal import TerminalBaseChart
-from dscms4.orm.content.terminal import TerminalConfiguration
-from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.orm.group import Group, GroupMemberTerminal
 from dscms4.wsgi.group.group import get_group
 
@@ -18,51 +15,31 @@ from dscms4.wsgi.group.group import get_group
 __all__ = ['ROUTES']
 
 
-class TerminalContent:
-    """Represents content of a terminal."""
+def get_groups_tree():
+    """Returns the management tree."""
 
-    def __init__(self, terminal):
-        """Sets the terminal."""
-        self.terminal = terminal
+    root_groups = Group.select().where(
+        (Group.customer == CUSTOMER.id) & (Group.parent >> None))
 
-    @property
-    def tid(self):
-        """Returns the terminal TID."""
-        return self.terminal.tid
+    for root_group in root_groups:
+        yield GroupContent(root_group)
 
-    @property
-    def charts(self):
-        """Yields the terminal's charts."""
-        for tbc in TerminalBaseChart.select().where(
-                TerminalBaseChart.terminal == self.terminal):
-            yield tbc.base_chart.chart
 
-    @property
-    def configurations(self):
-        """Yields the terminal's configurations."""
-        for terminal_config in TerminalConfiguration.select().where(
-                TerminalConfiguration.terminal == self.terminal):
-            yield terminal_config.configuration
+@authenticated
+@authorized('dscms4')
+def groups_tree():
+    """Lists the groups."""
 
-    @property
-    def menus(self):
-        """Yields the terminal's menus."""
-        for terminal_menu in TerminalMenu.select().where(
-                TerminalMenu.terminal == self.terminal):
-            yield terminal_menu.menu
+    return JSON([group.to_json() for group in get_groups_tree()])
 
-    def to_json(self):
-        """Returns the terminal and its content as a JSON-ish dict."""
-        json = self.terminal.to_json()
-        charts = [chart.to_json() for chart in self.charts]
-        configurations = [config.to_json() for config in self.configurations]
-        menus = [menu.to_json() for menu in self.menus]
-        content = {
-            'charts': charts,
-            'configurations': configurations,
-            'menus':menus}
-        json['content'] = content
-        return json
+
+@authenticated
+@authorized('dscms4')
+def groups_subtree(gid):
+    """Lists the groups."""
+
+    group_content = GroupContent(get_group(gid))
+    return JSON(group_content.to_json(recursive=False))
 
 
 class GroupContent:
@@ -129,33 +106,6 @@ class GroupContent:
         menbers = {'terminals': terminals}
         json['members'] = menbers
         return json
-
-
-def get_groups_tree():
-    """Returns the management tree."""
-
-    root_groups = Group.select().where(
-        (Group.customer == CUSTOMER.id) & (Group.parent >> None))
-
-    for root_group in root_groups:
-        yield GroupContent(root_group)
-
-
-@authenticated
-@authorized('dscms4')
-def groups_tree():
-    """Lists the groups."""
-
-    return JSON([group.to_json() for group in get_groups_tree()])
-
-
-@authenticated
-@authorized('dscms4')
-def groups_subtree(gid):
-    """Lists the groups."""
-
-    group_content = GroupContent(get_group(gid))
-    return JSON(group_content.to_json(recursive=False))
 
 
 ROUTES = (

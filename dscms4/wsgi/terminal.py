@@ -12,9 +12,11 @@ from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.presentation import NoConfigurationAssigned
 from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.orm.content.terminal import TerminalBaseChart
+from dscms4.orm.content.terminal import TerminalConfiguration
+from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.paging import page, pages
 from dscms4.presentation import Presentation
-
 
 __all__ = ['get_terminal', 'ROUTES']
 
@@ -74,7 +76,7 @@ def list_():
 
     if 'assoc' in request.args:
         return JSON({
-            terminal.tid: terminal.to_json(short=True)
+            terminal.tid: TerminalContent(terminal).to_json()
             for terminal in terminals})
 
     return JSON([terminal.to_json(short=True) for terminal in terminals])
@@ -110,6 +112,48 @@ def get_presentation(terminal):
         return NoConfigurationAssigned()
 
     return XML(presentation_dom)
+
+
+class TerminalContent:
+    """Represents content of a terminal."""
+
+    def __init__(self, terminal):
+        """Sets the terminal."""
+        self.terminal = terminal
+
+    @property
+    def charts(self):
+        """Yields the terminal's charts."""
+        for tbc in TerminalBaseChart.select().where(
+                TerminalBaseChart.terminal == self.terminal):
+            yield tbc.base_chart.chart
+
+    @property
+    def configurations(self):
+        """Yields the terminal's configurations."""
+        for terminal_config in TerminalConfiguration.select().where(
+                TerminalConfiguration.terminal == self.terminal):
+            yield terminal_config.configuration
+
+    @property
+    def menus(self):
+        """Yields the terminal's menus."""
+        for terminal_menu in TerminalMenu.select().where(
+                TerminalMenu.terminal == self.terminal):
+            yield terminal_menu.menu
+
+    def to_json(self):
+        """Returns the terminal and its content as a JSON-ish dict."""
+        json = self.terminal.to_json(short=True)
+        charts = [chart.to_json() for chart in self.charts]
+        configurations = [config.to_json() for config in self.configurations]
+        menus = [menu.to_json() for menu in self.menus]
+        content = {
+            'charts': charts,
+            'configurations': configurations,
+            'menus':menus}
+        json['content'] = content
+        return json
 
 
 ROUTES = (
