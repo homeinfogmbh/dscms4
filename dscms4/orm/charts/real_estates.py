@@ -170,12 +170,13 @@ class RealEstates(Chart, metaclass=RegisteredChart):
     def filters_dictionary(self):
         """Dictionary of filters."""
         filters = defaultdict(list)
+        skip = ('id', 'chart')
 
         for fltr in IdFilter.select().where(IdFilter.chart == self):
-            filters['id'].append(fltr.to_json())
+            filters['id'].append(fltr.to_json(skip=skip))
 
         for fltr in ZipCodeFilter.select().where(ZipCodeFilter.chart == self):
-            filters['zip_code'].append(fltr.to_json())
+            filters['zip_code'].append(fltr.to_json(skip=skip))
 
         return filters
 

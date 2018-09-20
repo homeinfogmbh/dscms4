@@ -64,7 +64,9 @@ class Facebook(Chart, metaclass=RegisteredChart):
         json = super().to_json(mode=mode, **kwargs)
 
         if mode == ChartMode.FULL:
-            json['accounts'] = [account.to_json() for account in self.accounts]
+            json['accounts'] = [
+                account.to_json(skip=('chart', 'id'))
+                for account in self.accounts]
 
         return json
 
