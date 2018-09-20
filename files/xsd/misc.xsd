@@ -37,14 +37,14 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="name" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation xml:lang="de">
-                        Name des Kontos.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
         </xs:sequence>
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Optionaler Name des Kontos.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
 
