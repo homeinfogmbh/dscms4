@@ -86,7 +86,7 @@ class GroupContent:
                 group.to_json(recursive=True) for group in self.children]
         else:
             children = [
-                group.group.to_json(parent=False)
+                group.group.to_json(parent=False, skip=('customer',))
                 for group in self.children]
 
         json['children'] = children
