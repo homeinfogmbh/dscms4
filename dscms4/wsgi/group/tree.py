@@ -27,7 +27,7 @@ def get_groups_tree():
 
 
 @coroutine
-def async_list(generator):
+def async_list(name, generator):
     """Async list generator."""
 
     result = []
@@ -36,7 +36,7 @@ def async_list(generator):
         result.append(item.to_json())
         yield from sleep(0)
 
-    return result
+    return (name, result)
 
 
 @authenticated
@@ -95,10 +95,10 @@ class GroupContent:
     @coroutine
     def async_content(self):
         """Generates async content."""
-        charts = async_list(self.charts)
-        configurations = async_list(self.configurations)
-        menus = async_list(self.menus)
-        terminals = async_list(self.terminals)
+        charts = async_list('charts', self.charts)
+        configurations = async_list('configurations', self.configurations)
+        menus = async_list('menus', self.menus)
+        terminals = async_list('terminals', self.terminals)
         return wait((charts, configurations, menus, terminals))
 
     def to_json(self, recursive=True):
@@ -117,14 +117,10 @@ class GroupContent:
         # Async content.
         loop = get_event_loop()
         tasks, _ = loop.run_until_complete(self.async_content())
-        charts, configurations, menus, terminals = tasks
-        content = {
-            'charts': charts.result(),
-            'configurations': configurations.result(),
-            'menus':menus.result()}
-        json['content'] = content
-        menbers = {'terminals': terminals.result()}
+        json = {key: value for key, value in task.result() for task in tasks}
+        menbers = {'terminals': json.pop('terminals')}
         json['members'] = menbers
+        json['content'] = json
         return json
 
 
