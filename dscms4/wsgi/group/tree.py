@@ -117,11 +117,10 @@ class GroupContent:
         # Async content.
         loop = get_event_loop()
         tasks, _ = loop.run_until_complete(self.async_content())
-        json = {key: value for key, value in (task.result() for task in tasks)}
-        print('JSON:', json, flush=True)
-        menbers = {'terminals': json.pop('terminals')}
-        json['members'] = menbers
-        json['content'] = json
+        results = (task.result() for task in tasks)
+        content = {key: value for key, value in results}
+        json['members'] = {'terminals': content.pop('terminals')}
+        json['content'] = content
         return json
 
 
