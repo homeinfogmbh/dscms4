@@ -144,7 +144,7 @@ class TerminalContent:
 
     def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""
-        json = self.terminal.to_json(short=True)
+        json = self.terminal.to_json(short=True, skip=('id', 'tid'))
         charts = [chart.to_json() for chart in self.charts]
         configurations = [config.to_json() for config in self.configurations]
         menus = [menu.to_json() for menu in self.menus]
