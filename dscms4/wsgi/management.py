@@ -103,7 +103,7 @@ class GroupContent:
         """Yields the group's terminals."""
         for gmt in GroupMemberTerminal.select().where(
                 GroupMemberTerminal.group == self.group):
-            yield TerminalContent(gmt.member)
+            yield gmt.member
 
     def to_json(self):
         """Recursively converts the group content into a JSON-ish dict."""
@@ -137,10 +137,11 @@ def get_groups_tree():
 def get_terminals():
     """Yields terminals that are not in any group."""
 
-    return Terminal.select().where(
-        (Terminal.customer == CUSTOMER.id)
-        & (Terminal.testing == 0)
-        & (Terminal.deleted >> None))
+    for terminal in Terminal.select().where(
+            (Terminal.customer == CUSTOMER.id)
+            & (Terminal.testing == 0)
+            & (Terminal.deleted >> None)):
+        yield TerminalContent(terminal)
 
 
 def get_charts():
