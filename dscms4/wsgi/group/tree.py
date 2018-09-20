@@ -79,7 +79,7 @@ class GroupContent:
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
-        json = self.group.to_json(parent=False)
+        json = self.group.to_json(parent=False, skip=('customer',))
 
         if recursive:
             children = [
