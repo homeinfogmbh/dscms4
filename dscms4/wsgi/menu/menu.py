@@ -30,7 +30,7 @@ def list_():
     menus = Menu.select().where(Menu.customer == CUSTOMER.id)
 
     if 'assoc' in request.args:
-        return JSON({menu.id: menu.to_json() for menu in menus})
+        return JSON({menu.id: menu.to_json(skip=('id',)) for menu in menus})
 
     return JSON([menu.to_json() for menu in menus])
 

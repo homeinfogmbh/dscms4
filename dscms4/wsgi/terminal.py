@@ -12,6 +12,7 @@ from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.presentation import NoConfigurationAssigned
 from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.orm.charts import ChartMode
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.orm.content.terminal import TerminalMenu
@@ -144,10 +145,11 @@ class TerminalContent:
 
     def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""
-        json = self.terminal.to_json(short=True, skip=('id', 'tid'))
-        charts = [chart.to_json() for chart in self.charts]
-        configurations = [config.to_json() for config in self.configurations]
-        menus = [menu.to_json() for menu in self.menus]
+        address = self.terminal.address
+        json = {'address': address.to_json()} if address else {}
+        charts = [chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts]
+        configurations = [config.id for config in self.configurations]
+        menus = [menu.id for menu in self.menus]
         content = {
             'charts': charts,
             'configurations': configurations,

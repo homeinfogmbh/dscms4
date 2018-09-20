@@ -103,6 +103,8 @@ class Group(CustomerModel):
                 json['parent'] = None
             else:
                 json['parent'] = self.parent.id
+        else:
+            json.pop('parent', None)
 
         return json
 

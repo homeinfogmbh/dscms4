@@ -91,7 +91,9 @@ class GroupContent:
             children = [
                 group.to_json(recursive=True) for group in self.children]
         else:
-            children = [group.group.to_json() for group in self.children]
+            children = [
+                group.group.to_json(parent=False)
+                for group in self.children]
 
         json['children'] = children
         charts = [chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts]

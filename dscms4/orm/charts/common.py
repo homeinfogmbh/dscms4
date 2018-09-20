@@ -80,7 +80,7 @@ class ChartMode(Enum):
 
     FULL = 'full'
     BRIEF = 'brief'
-    BRIEF_WITH_BASE = 'brief-with-base'
+    ANON = 'anon'
 
 
 class BaseChart(CustomerModel):
@@ -222,11 +222,12 @@ class Chart(DSCMS4Model):
         if mode == ChartMode.FULL:
             json = super().to_json(**kwargs)
             json['base'] = self.base.to_json(autofields=False)
-        elif mode == ChartMode.BRIEF_WITH_BASE:
-            json = super().to_json(**kwargs)
-            json['base'] = self.base.to_json(brief=True, autofields=False)
         elif mode == ChartMode.BRIEF:
             json = {'id': self.id}
+        elif mode == ChartMode.ANON:
+            json = super().to_json(skip=('id',), **kwargs)
+            json['base'] = self.base.to_json(autofields=False)
+            return json
 
         json['type'] = type(self).__name__
         return json

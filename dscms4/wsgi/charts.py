@@ -114,8 +114,9 @@ def list_():
     if 'assoc' in request.args:
         charts = defaultdict(dict)
 
-        for type_name, chart in get_charts():
-            charts[type_name][chart.id] = chart.to_json(mode=get_mode())
+        for chart in get_charts():
+            charts[type(chart).__name__][chart.id] = chart.to_json(
+                mode=ChartMode.ANON)
 
         return JSON(charts)
 
