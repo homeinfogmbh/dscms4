@@ -1,5 +1,7 @@
 """Groups tree endpoint."""
 
+from asyncio import coroutine, get_event_loop, sleep, wait
+
 from his import CUSTOMER, authenticated, authorized
 
 from wsgilib import JSON
@@ -22,6 +24,19 @@ def get_groups_tree():
 
     for root_group in root_groups:
         yield GroupContent(root_group)
+
+
+@coroutine
+def async_list(generator):
+    """Async list generator."""
+
+    result = []
+
+    for item in generator:
+        result.append(item.to_json())
+        yield from sleep(0)
+
+    return result
 
 
 @authenticated
@@ -77,6 +92,15 @@ class GroupContent:
         return GroupMemberTerminal.select().where(
             GroupMemberTerminal.group == self.group)
 
+    @coroutine
+    def async_content(self):
+        """Generates async content."""
+        charts = async_list(self.charts)
+        configurations = async_list(self.configurations)
+        menus = async_list(self.menus)
+        terminals = async_list(self.terminals)
+        return wait((charts, configurations, menus, terminals))
+
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
         json = self.group.to_json(parent=False, skip=('customer',))
@@ -90,16 +114,16 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        charts = [chart.to_json() for chart in self.charts]
-        configurations = [config.to_json() for config in self.configurations]
-        menus = [menu.to_json() for menu in self.menus]
+        # Async content.
+        loop = get_event_loop()
+        tasks, _ = loop.run_until_complete(self.async_content())
+        charts, configurations, menus, terminals = tasks
         content = {
-            'charts': charts,
-            'configurations': configurations,
-            'menus':menus}
+            'charts': charts.result(),
+            'configurations': configurations.result(),
+            'menus':menus.result()}
         json['content'] = content
-        terminals = [terminal.to_json() for terminal in self.terminals]
-        menbers = {'terminals': terminals}
+        menbers = {'terminals': terminals.result()}
         json['members'] = menbers
         return json
 
