@@ -106,4 +106,4 @@ class GroupContent:
 
 ROUTES = (
     ('GET', '/grouptree', groups_tree, 'groups_tree'),
-    ('GET', '/grouptree/<int:group>', groups_subtree, 'groups_subtree'))
+    ('GET', '/grouptree/<int:gid>', groups_subtree, 'groups_subtree'))
