@@ -103,7 +103,7 @@ class GroupContent:
     def to_json(self):
         """Recursively converts the group content into a JSON-ish dict."""
         json = self.group.to_json(parent=False)
-        children = [group.to_json(parent=False) for group in self.children]
+        children = [group.to_json() for group in self.children]
         json['children'] = children
         charts = [chart.to_json() for chart in self.charts]
         configurations = [config.to_json() for config in self.configurations]
