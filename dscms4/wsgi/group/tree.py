@@ -4,7 +4,6 @@ from his import CUSTOMER, authenticated, authorized
 
 from wsgilib import JSON
 
-from dscms4.orm.charts import ChartMode
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
@@ -91,15 +90,15 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        charts = [chart.to_json(mode=ChartMode.BRIEF) for chart in self.charts]
-        configurations = [config.id for config in self.configurations]
-        menus = [menu.id for menu in self.menus]
+        charts = [chart.to_json() for chart in self.charts]
+        configurations = [config.to_json() for config in self.configurations]
+        menus = [menu.to_json() for menu in self.menus]
         content = {
             'charts': charts,
             'configurations': configurations,
             'menus':menus}
         json['content'] = content
-        terminals = [terminal.tid for terminal in self.terminals]
+        terminals = [terminal.to_json() for terminal in self.terminals]
         menbers = {'terminals': terminals}
         json['members'] = menbers
         return json
