@@ -7,14 +7,14 @@ from peewee import IntegerField
 from peewee import SmallIntegerField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import ChartMode, Chart, RegisteredChart
+from dscms4.orm.charts.common import ChartMode, Chart
 from dscms4.orm.common import UNCHANGED, DSCMS4Model
 
 
 __all__ = ['Facebook', 'Account']
 
 
-class Facebook(Chart, metaclass=RegisteredChart):
+class Facebook(Chart):
     """Facebook data chart."""
 
     class Meta:

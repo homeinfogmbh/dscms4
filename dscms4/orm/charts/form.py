@@ -5,7 +5,7 @@ from enum import Enum
 from peeweeplus import EnumField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import Chart
 
 
 __all__ = ['Mode', 'Form']
@@ -18,7 +18,7 @@ class Mode(Enum):
     TENANT_TO_TENANT = 'tenant2tenant'
 
 
-class Form(Chart, metaclass=RegisteredChart):
+class Form(Chart):
     """A form chart."""
 
     class Meta:

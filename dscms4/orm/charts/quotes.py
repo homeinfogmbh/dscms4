@@ -3,13 +3,13 @@
 from peewee import IntegerField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import Chart
 
 
 __all__ = ['Quotes']
 
 
-class Quotes(Chart, metaclass=RegisteredChart):
+class Quotes(Chart):
     """Chart for quotations."""
 
     class Meta:

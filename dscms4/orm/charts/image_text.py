@@ -10,7 +10,7 @@ from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
-from dscms4.orm.charts.common import ChartMode, Chart, RegisteredChart
+from dscms4.orm.charts.common import ChartMode, Chart
 from dscms4.orm.common import UNCHANGED, DSCMS4Model
 
 
@@ -24,7 +24,7 @@ class Style(Enum):
     PIN_CHART = 'pin chart'
 
 
-class ImageText(Chart, metaclass=RegisteredChart):
+class ImageText(Chart):
     """A chart that may contain images and text."""
 
     class Meta:

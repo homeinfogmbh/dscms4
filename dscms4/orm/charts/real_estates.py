@@ -15,7 +15,7 @@ from peeweeplus import EnumField
 
 from dscms4 import dom
 from dscms4.orm.common import DSCMS4Model
-from dscms4.orm.charts.common import ChartMode, Chart, RegisteredChart
+from dscms4.orm.charts.common import ChartMode, Chart
 
 
 __all__ = ['RealEstates', 'IdFilter', 'ZipCodeFilter']
@@ -37,7 +37,7 @@ class IdTypes(Enum):
     OPENIMMO = 'openimmo_obid'
 
 
-class RealEstates(Chart, metaclass=RegisteredChart):
+class RealEstates(Chart):
     """Chart for real estate displaying."""
 
     class Meta:

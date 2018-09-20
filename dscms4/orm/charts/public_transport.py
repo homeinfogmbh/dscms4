@@ -1,13 +1,13 @@
 """Local public transport charts."""
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import Chart
 
 
 __all__ = ['PublicTransport']
 
 
-class PublicTransport(Chart, metaclass=RegisteredChart):
+class PublicTransport(Chart):
     """Public transport chart."""
 
     class Meta:

@@ -1,13 +1,13 @@
 """Oicture guessing chart."""
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart, RegisteredChart
+from dscms4.orm.charts.common import Chart
 
 
 __all__ = ['GuessPicture']
 
 
-class GuessPicture(Chart, metaclass=RegisteredChart):
+class GuessPicture(Chart):
     """Chart for guessing pictures."""
 
     class Meta:
