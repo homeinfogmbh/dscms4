@@ -152,10 +152,10 @@ def get_terminals():
 def get_charts():
     """Yields the customer's charts."""
 
-    for chart_type in Chart.types:
+    for type_name, chart_type in Chart.types.items():
         for chart in chart_type.select().join(BaseChart).where(
                 BaseChart.customer == CUSTOMER.id):
-            yield chart
+            yield (type_name, chart)
 
 
 def get_configurations():
@@ -178,8 +178,8 @@ def get_management():
     terminals = {terminal.tid: terminal.to_json() for terminal in get_terminals()}
     charts = defaultdict(dict)
 
-    for chart in get_charts():
-        charts[type(chart).__name__][chart.id] = chart.to_json()
+    for type_name, chart in get_charts():
+        charts[type_name][chart.id] = chart.to_json()
 
     configurations = {
         configuration.id: configuration.to_json()
