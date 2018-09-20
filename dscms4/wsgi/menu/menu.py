@@ -27,8 +27,12 @@ def get_menu(ident):
 def list_():
     """List menus."""
 
-    return JSON([menu.to_json() for menu in Menu.select().where(
-        Menu.customer == CUSTOMER.id)])
+    menus = Menu.select().where(Menu.customer == CUSTOMER.id)
+
+    if 'assoc' in request.args:
+        return JSON({menu.id: menu.to_json() for menu in menus})
+
+    return JSON([menu.to_json() for menu in menus])
 
 
 @authenticated

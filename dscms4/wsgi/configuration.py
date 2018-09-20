@@ -2,6 +2,8 @@
 
 from datetime import datetime
 
+from flask import request
+
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
@@ -62,9 +64,16 @@ def get_configuration(ident):
 def list_():
     """Returns a list of IDs of the customer's configurations."""
 
+    configurations = list_configurations()
+
+    if 'assoc' in request.args:
+        return JSON({
+            configuration.id: configuration.to_json(fk_fields=False)
+            for configuration in configurations})
+
     return JSON([
-        configuration.to_json(fk_fields=False) for configuration
-        in list_configurations()])
+        configuration.to_json(fk_fields=False)
+        for configuration in configurations])
 
 
 @authenticated

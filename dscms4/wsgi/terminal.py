@@ -58,19 +58,24 @@ def list_():
     except ValueError:
         raise InvalidData(parameter='size')
 
-    try:
-        pageno = int(request.args['page'])
-    except KeyError:
-        pageno = None
-    except ValueError:
-        raise InvalidData(parameter='page')
-
     if size is not None:
+        try:
+            pageno = int(request.args['page'])
+        except KeyError:
+            pageno = None
+        except ValueError:
+            raise InvalidData(parameter='page')
+
         if pageno is not None:
             return JSON([terminal.to_json(short=True) for terminal in page(
                 terminals, size, pageno)])
 
         return JSON({'pages': pages(terminals, size)})
+
+    if 'assoc' in request.args:
+        return JSON({
+            terminal.tid: terminal.to_json(short=True)
+            for terminal in terminals})
 
     return JSON([terminal.to_json(short=True) for terminal in terminals])
 

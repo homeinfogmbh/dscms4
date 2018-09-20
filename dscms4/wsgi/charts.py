@@ -1,5 +1,7 @@
 """DSCMS4 WSGI handlers for charts."""
 
+from collections import defaultdict
+
 from flask import request
 from werkzeug.local import LocalProxy
 
@@ -73,8 +75,6 @@ def get_trashed():
 def get_charts():
     """Lists the available charts."""
 
-    trashed = 'trashed' in request.args
-
     for typ in CHART_TYPES:
         for record in typ.select().join(BaseChart).where(
                 (BaseChart.customer == CUSTOMER.id) & get_trashed()):
@@ -110,6 +110,14 @@ def get_mode():
 @authorized('dscms4')
 def list_():
     """Lists IDs of charts of the respective customer."""
+
+    if 'assoc' in request.args:
+        charts = defaultdict(dict)
+
+        for type_name, chart in get_charts():
+            charts[type_name][chart.id] = chart.to_json(mode=get_mode())
+
+        return JSON(charts)
 
     return JSON([chart.to_json(mode=get_mode()) for chart in get_charts()])
 
