@@ -30,6 +30,11 @@ class TerminalContent:
         self.terminal = terminal
 
     @property
+    def tid(self):
+        """Returns the terminal TID."""
+        return self.terminal.tid
+
+    @property
     def charts(self):
         """Yields the terminal's charts."""
         for tbc in TerminalBaseChart.select().where(
