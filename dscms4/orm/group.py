@@ -177,6 +177,10 @@ class GroupMemberTerminal(GroupMember):
     member = ForeignKeyField(
         Terminal, column_name='terminal', on_delete='CASCADE')
 
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'id': self.id, 'terminal': self.member.tid}
+
 
 class GroupMemberApartmentBuilding(GroupMember):
     """Apartment buildings as members in groups."""
@@ -189,6 +193,10 @@ class GroupMemberApartmentBuilding(GroupMember):
     member = ForeignKeyField(
         ApartmentBuilding, column_name='apartment_building',
         on_delete='CASCADE')
+
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'member': self.id, 'apartment_building': self.member.ve}
 
 
 GROUP_MEMBERS = {

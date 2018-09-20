@@ -125,23 +125,20 @@ class TerminalContent:
     @property
     def charts(self):
         """Yields the terminal's charts."""
-        for tbc in TerminalBaseChart.select().where(
-                TerminalBaseChart.terminal == self.terminal):
-            yield tbc.base_chart.chart
+        return TerminalBaseChart.select().where(
+            TerminalBaseChart.terminal == self.terminal)
 
     @property
     def configurations(self):
         """Yields the terminal's configurations."""
-        for terminal_config in TerminalConfiguration.select().where(
-                TerminalConfiguration.terminal == self.terminal):
-            yield terminal_config.configuration
+        return TerminalConfiguration.select().where(
+            TerminalConfiguration.terminal == self.terminal)
 
     @property
     def menus(self):
         """Yields the terminal's menus."""
-        for terminal_menu in TerminalMenu.select().where(
-                TerminalMenu.terminal == self.terminal):
-            yield terminal_menu.menu
+        return TerminalMenu.select().where(
+            TerminalMenu.terminal == self.terminal)
 
     def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""

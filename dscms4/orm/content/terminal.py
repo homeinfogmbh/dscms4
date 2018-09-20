@@ -39,7 +39,7 @@ class TerminalBaseChart(_TerminalContent):
         return self.base_chart.chart
 
     def to_json(self):
-        """to_json a JSON-ish dictionary."""
+        """Returns a JSON-ish dict."""
         return {
             'id': self.id,
             'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
@@ -54,6 +54,10 @@ class TerminalConfiguration(_TerminalContent):
     configuration = ForeignKeyField(
         Configuration, column_name='configuration', on_delete='CASCADE')
 
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'id': self.id, 'configuration': self.configuration_id}
+
 
 class TerminalMenu(_TerminalContent):
     """Association of a menu with a terminal."""
@@ -62,6 +66,10 @@ class TerminalMenu(_TerminalContent):
         table_name = 'terminal_menu'
 
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
+
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'id': self.id, 'menu': self.menu_id}
 
 
 MODELS = (TerminalBaseChart, TerminalConfiguration, TerminalMenu)

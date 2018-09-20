@@ -58,30 +58,25 @@ class GroupContent:
     @property
     def charts(self):
         """Yields the group's charts."""
-        for gbc in GroupBaseChart.select().where(
-                GroupBaseChart.group == self.group):
-            yield gbc.base_chart.chart
+        return GroupBaseChart.select().where(
+            GroupBaseChart.group == self.group)
 
     @property
     def configurations(self):
         """Yields the group's configurations."""
-        for group_config in GroupConfiguration.select().where(
-                GroupConfiguration.group == self.group):
-            yield group_config.configuration
+        return GroupConfiguration.select().where(
+            GroupConfiguration.group == self.group)
 
     @property
     def menus(self):
         """Yields the group's menus."""
-        for group_menu in GroupMenu.select().where(
-                GroupMenu.group == self.group):
-            yield group_menu.menu
+        return GroupMenu.select().where(GroupMenu.group == self.group)
 
     @property
     def terminals(self):
         """Yields the group's terminals."""
-        for gmt in GroupMemberTerminal.select().where(
-                GroupMemberTerminal.group == self.group):
-            yield gmt.member
+        return GroupMemberTerminal.select().where(
+            GroupMemberTerminal.group == self.group)
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""

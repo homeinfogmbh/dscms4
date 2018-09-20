@@ -37,7 +37,7 @@ class GroupBaseChart(_GroupContent):
         return self.base_chart.chart
 
     def to_json(self):
-        """Returns a JSON-ish dictionary."""
+        """Returns a JSON-ish dict."""
         return {
             'id': self.id,
             'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
@@ -52,6 +52,10 @@ class GroupConfiguration(_GroupContent):
     configuration = ForeignKeyField(
         Configuration, column_name='configuration', on_delete='CASCADE')
 
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'id': self.id, 'configuration': self.configuration_id}
+
 
 class GroupMenu(_GroupContent):
     """Association of a menu with a group."""
@@ -60,6 +64,10 @@ class GroupMenu(_GroupContent):
         table_name = 'group_menu'
 
     menu = ForeignKeyField(Menu, column_name='menu', on_delete='CASCADE')
+
+    def to_json(self):
+        """Returns a JSON-ish dict."""
+        return {'id': self.id, 'menu': self.menu_id}
 
 
 MODELS = (GroupBaseChart, GroupConfiguration, GroupMenu)
