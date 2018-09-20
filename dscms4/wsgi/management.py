@@ -167,8 +167,7 @@ def get_configurations():
 def get_menus():
     """Yields the customer's menus."""
 
-    return Menu.seletc().where(Menu.customer == CUSTOMER.id)
-
+    return Menu.select().where(Menu.customer == CUSTOMER.id)
 
 
 def get_management():
