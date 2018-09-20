@@ -98,7 +98,7 @@ class GroupContent:
         """Yields the group's terminals."""
         for gmt in GroupMemberTerminal.select().where(
                 GroupMemberTerminal.group == self.group):
-            yield TerminalContent(gmt.terminal)
+            yield TerminalContent(gmt.member)
 
     def to_json(self):
         """Recursively converts the group content into a JSON-ish dict."""
