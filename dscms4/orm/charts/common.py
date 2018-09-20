@@ -196,18 +196,18 @@ class BaseChart(CustomerModel):
 class MetaChart(ModelBase):
     """Metaclass for charts."""
 
-    _instances = {}
+    _implementations = {}
 
     def __init__(cls, *args, **kwargs):
         """Registers the different chart types."""
         super().__init__(*args, **kwargs)
-        cls._instances[cls.__name__] = cls
+        cls._implementations[cls.__name__] = cls
 
     @property
     def types(cls):
         """Yields chart types."""
         return {
-            name: class_ for name, class_ in cls._instances.items()
+            name: class_ for name, class_ in cls._implementations.items()
             if class_ is not Chart}
 
 
