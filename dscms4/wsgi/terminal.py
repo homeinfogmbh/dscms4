@@ -1,5 +1,7 @@
 """Terminal-related requests."""
 
+from logging import getLogger
+
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
@@ -19,7 +21,11 @@ from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.paging import page, pages
 from dscms4.presentation import Presentation
 
+
 __all__ = ['get_terminal', 'ROUTES']
+
+
+LOGGER = getLogger(__file__)
 
 
 def get_terminal(tid):
@@ -147,6 +153,7 @@ class TerminalContent:
     def content(self):
         """Returns content."""
         if 'noasync' in request.args:
+            LOGGER.warning('Retrieving content and terminals non-async.')
             return {
                 'charts': list(self.charts),
                 'configurations': list(self.configurations),

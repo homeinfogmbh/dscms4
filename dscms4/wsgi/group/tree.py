@@ -1,9 +1,10 @@
 """Groups tree endpoint."""
 
-from his import CUSTOMER, authenticated, authorized
+from logging import getLogger
 
 from flask import request
 
+from his import CUSTOMER, authenticated, authorized
 from peeweeplus import async_select
 from wsgilib import JSON
 
@@ -15,6 +16,9 @@ from dscms4.wsgi.group.group import get_group
 
 
 __all__ = ['ROUTES']
+
+
+LOGGER = getLogger(__file__)
 
 
 def get_groups_tree():
@@ -89,6 +93,7 @@ class GroupContent:
     def content_and_terminals(self):
         """Returns content and terminals."""
         if 'noasync' in request.args:
+            LOGGER.warning('Retrieving content and terminals non-async.')
             content = {
                 'charts': list(self.charts),
                 'configurations': list(self.configurations),
