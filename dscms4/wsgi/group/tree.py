@@ -2,7 +2,7 @@
 
 from his import CUSTOMER, authenticated, authorized
 
-from peeweeplus import async_query
+from peeweeplus import async_select
 from wsgilib import JSON
 
 from dscms4.orm.content.group import GroupBaseChart
@@ -96,7 +96,7 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        results = async_query(
+        results = async_select(
             charts=self.charts, configurations=self.configurations,
             menus=self.menus, terminals=self.terminals)
         json['members'] = {'terminals': results.pop('terminals')}
