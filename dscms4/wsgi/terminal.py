@@ -1,7 +1,5 @@
 """Terminal-related requests."""
 
-from logging import getLogger
-
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
@@ -24,9 +22,6 @@ from dscms4.presentation import Presentation
 
 
 __all__ = ['get_terminal', 'ROUTES']
-
-
-LOGGER = getLogger(__file__)
 
 
 def get_terminal(tid):
