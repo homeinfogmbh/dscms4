@@ -143,13 +143,24 @@ class TerminalContent:
                 TerminalMenu.terminal == self.terminal):
             yield terminal_menu.to_json()
 
+    @property
+    def content(self):
+        """Returns content."""
+        if 'noasync' in request.args:
+            return {
+                'charts': list(self.charts),
+                'configurations': list(self.configurations),
+                'menus': list(self.menus)}
+
+        return async_select(
+            charts=self.charts, configurations=self.configurations,
+            menus=self.menus)
+
     def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""
         address = self.terminal.address
         json = {'address': address.to_json()} if address else {}
-        json['content'] = async_select(
-            charts=self.charts, configurations=self.configurations,
-            menus=self.menus)
+        json['content'] = self.content
         return json
 
 

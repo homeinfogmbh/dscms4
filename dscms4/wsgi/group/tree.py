@@ -2,6 +2,8 @@
 
 from his import CUSTOMER, authenticated, authorized
 
+from flask import request
+
 from peeweeplus import async_select
 from wsgilib import JSON
 
@@ -83,6 +85,22 @@ class GroupContent:
                 GroupMemberTerminal.group == self.group):
             yield group_member_terminal.to_json()
 
+    @property
+    def content_and_terminals(self):
+        """Returns content and terminals."""
+        if 'noasync' in request.args:
+            content = {
+                'charts': list(self.charts),
+                'configurations': list(self.configurations),
+                'menus': list(self.menus)}
+            return (content, list(self.terminals))
+
+        results = async_select(
+            charts=self.charts, configurations=self.configurations,
+            menus=self.menus, terminals=self.terminals)
+        terminals = results.pop('terminals')
+        return (results, terminals)
+
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
         json = self.group.to_json(parent=False, skip=('customer',))
@@ -96,11 +114,8 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        results = async_select(
-            charts=self.charts, configurations=self.configurations,
-            menus=self.menus, terminals=self.terminals)
-        json['members'] = {'terminals': results.pop('terminals')}
-        json['content'] = results
+        json['content'], terminals = self.content_and_terminals
+        json['members'] = {'terminals': terminals}
         return json
 
 
