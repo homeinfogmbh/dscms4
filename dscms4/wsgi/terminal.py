@@ -95,11 +95,14 @@ def list_():
         return JSON({'pages': pages(terminals, size)})
 
     if 'assoc' in request.args:
-        if 'asyncdict' in request.args:
+        asynchronous = 'noasync' not in request.args
+
+        if asynchronous and 'asyncdict' in request.args:
             return JSON(json_terminals(terminals))
 
         return JSON({
-            terminal.tid: TerminalContent(terminal).to_json()
+            terminal.tid: TerminalContent(terminal).to_json(
+                asynchronous=asynchronous)
             for terminal in terminals})
 
     return JSON([terminal.to_json(short=True) for terminal in terminals])
