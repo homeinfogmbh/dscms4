@@ -4,6 +4,7 @@ from flask import request
 
 from his import CUSTOMER, authenticated, authorized
 from his.messages import InvalidData
+from peeweeplus import async_select
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
@@ -124,33 +125,31 @@ class TerminalContent:
     @property
     def charts(self):
         """Yields the terminal's charts."""
-        return TerminalBaseChart.select().where(
-            TerminalBaseChart.terminal == self.terminal)
+        for terminal_base_chart in TerminalBaseChart.select().where(
+                TerminalBaseChart.terminal == self.terminal):
+            yield terminal_base_chart.to_json()
 
     @property
     def configurations(self):
         """Yields the terminal's configurations."""
-        return TerminalConfiguration.select().where(
-            TerminalConfiguration.terminal == self.terminal)
+        for terminal_configuration in TerminalConfiguration.select().where(
+                TerminalConfiguration.terminal == self.terminal):
+            yield terminal_configuration.to_json()
 
     @property
     def menus(self):
         """Yields the terminal's menus."""
-        return TerminalMenu.select().where(
-            TerminalMenu.terminal == self.terminal)
+        for terminal_menu in TerminalMenu.select().where(
+                TerminalMenu.terminal == self.terminal):
+            yield terminal_menu.to_json()
 
     def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""
         address = self.terminal.address
         json = {'address': address.to_json()} if address else {}
-        charts = [chart.to_json() for chart in self.charts]
-        configurations = [config.to_json() for config in self.configurations]
-        menus = [menu.to_json() for menu in self.menus]
-        content = {
-            'charts': charts,
-            'configurations': configurations,
-            'menus':menus}
-        json['content'] = content
+        json['content'] = async_select(
+            charts=self.charts, configurations=self.configurations,
+            menus=self.menus)
         return json
 
 
