@@ -10,7 +10,7 @@ from peeweeplus import async_select
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
-from dscms4.asynclib import async_json
+from dscms4.asynclib import async_terminals_json
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.presentation import NoConfigurationAssigned
@@ -49,18 +49,6 @@ def with_terminal(function):
     return wrapper
 
 
-def async_terminals_dict(terminals):
-    """Returns a terminals dictionary."""
-
-    def keyfunc(terminal):
-        return terminal.tid
-
-    def valfunc(terminal):
-        return TerminalContent(terminal).to_json()
-
-    return async_json(terminals, keyfunc, valfunc)
-
-
 @authenticated
 @authorized('dscms4')
 def list_():
@@ -95,12 +83,12 @@ def list_():
         return JSON({'pages': pages(terminals, size)})
 
     if 'assoc' in request.args:
-        if 'noasync' in request.args:
-            return JSON({
-                terminal.tid: TerminalContent(terminal).to_json()
-                for terminal in terminals})
+        if 'expasync' in request.args:
+            return async_terminals_json(terminals)
 
-        return JSON(async_terminals_dict(terminals))
+        return JSON({
+            terminal.tid: TerminalContent(terminal).to_json()
+            for terminal in terminals})
 
     return JSON([terminal.to_json(short=True) for terminal in terminals])
 
@@ -168,13 +156,6 @@ class TerminalContent:
     @property
     def content(self):
         """Returns content."""
-        if 'noasync' in request.args:
-            LOGGER.warning('Retrieving content and terminals non-async.')
-            return {
-                'charts': list(self.charts),
-                'configurations': list(self.configurations),
-                'menus': list(self.menus)}
-
         return async_select(
             charts=self.charts, configurations=self.configurations,
             menus=self.menus)
