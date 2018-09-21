@@ -1,9 +1,8 @@
 """Groups tree endpoint."""
 
-from asyncio import coroutine, get_event_loop, sleep, wait
-
 from his import CUSTOMER, authenticated, authorized
 
+from peeweeplus import async_query
 from wsgilib import JSON
 
 from dscms4.orm.content.group import GroupBaseChart
@@ -24,19 +23,6 @@ def get_groups_tree():
 
     for root_group in root_groups:
         yield GroupContent(root_group)
-
-
-@coroutine
-def async_list(name, generator):
-    """Async list generator."""
-
-    result = []
-
-    for item in generator:
-        result.append(item.to_json())
-        yield from sleep(0)
-
-    return (name, result)
 
 
 @authenticated
@@ -72,34 +58,30 @@ class GroupContent:
     @property
     def charts(self):
         """Yields the group's charts."""
-        return GroupBaseChart.select().where(
-            GroupBaseChart.group == self.group)
+        for group_base_chart in GroupBaseChart.select().where(
+                GroupBaseChart.group == self.group):
+            yield group_base_chart.to_json()
 
     @property
     def configurations(self):
         """Yields the group's configurations."""
-        return GroupConfiguration.select().where(
-            GroupConfiguration.group == self.group)
+        for group_configuration in GroupConfiguration.select().where(
+                GroupConfiguration.group == self.group):
+            yield group_configuration.to_json()
 
     @property
     def menus(self):
         """Yields the group's menus."""
-        return GroupMenu.select().where(GroupMenu.group == self.group)
+        for group_menu in GroupMenu.select().where(
+                GroupMenu.group == self.group):
+            yield group_menu.to_json()
 
     @property
     def terminals(self):
         """Yields the group's terminals."""
-        return GroupMemberTerminal.select().where(
-            GroupMemberTerminal.group == self.group)
-
-    @coroutine
-    def async_content(self):
-        """Generates async content."""
-        charts = async_list('charts', self.charts)
-        configurations = async_list('configurations', self.configurations)
-        menus = async_list('menus', self.menus)
-        terminals = async_list('terminals', self.terminals)
-        return wait((charts, configurations, menus, terminals))
+        for group_member_terminal in GroupMemberTerminal.select().where(
+                GroupMemberTerminal.group == self.group):
+            yield group_member_terminal.to_json()
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
@@ -114,10 +96,9 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        # Async content.
-        loop = get_event_loop()
-        tasks, _ = loop.run_until_complete(self.async_content())
-        results = dict(task.result() for task in tasks)
+        results = async_query(
+            charts=self.charts, configurations=self.configurations,
+            menus=self.menus, terminals=self.terminals)
         json['members'] = {'terminals': results.pop('terminals')}
         json['content'] = results
         return json
