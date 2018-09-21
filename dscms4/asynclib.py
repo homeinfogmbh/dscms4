@@ -3,6 +3,9 @@
 from asyncio import coroutine, get_event_loop, sleep, wait
 
 
+__all__ = ['async_dict', 'async_json']
+
+
 @coroutine
 def _async_conv(item, keyfunc, valfunc):
     """Async dict generator."""
@@ -32,3 +35,10 @@ def async_dict(iterable, keyfunc, valfunc=lambda item: item):
     coro = _async_dict(iterable, keyfunc, valfunc)
     tasks, _ = loop.run_until_complete(coro)
     return dict(task.result() for task in tasks)
+
+
+def async_json(iterable, keyfunc=lambda item: item.id,
+               valfunc=lambda item: item.to_json()):
+    """Converts an iterable into a JSON-ish dict."""
+
+    return async_dict(iterable, keyfunc, valfunc)
