@@ -6,7 +6,7 @@ from flask import request
 
 from his import CUSTOMER, authenticated, authorized
 from his.messages import InvalidData
-from peeweeplus import async__select
+from peeweeplus import async_select
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
@@ -169,7 +169,7 @@ class TerminalContent:
     def content(self, async_=True):
         """Returns content."""
         if async_:
-            return async__select(
+            return async_select(
                 charts=self.charts, configurations=self.configurations,
                 menus=self.menus)
 
