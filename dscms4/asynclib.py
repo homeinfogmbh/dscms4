@@ -22,7 +22,7 @@ def _async_conv(item, keyfunc, valfunc):
 
 
 @coroutine
-def _async_conversions(iterable, keyfunc, valfunc):
+def _async_dict(iterable, keyfunc, valfunc):
     """Async dict generator."""
 
     tasks = []
@@ -31,23 +31,7 @@ def _async_conversions(iterable, keyfunc, valfunc):
         task = _async_conv(item, keyfunc, valfunc)
         tasks.append(task)
 
-    yield from tasks
-
-
-@coroutine
-def _async_dict(iterable, keyfunc, valfunc):
-    """Async dict generator."""
-
-    tasks = []
-    result = {}
-
-    for task in _async_conversions(iterable, keyfunc, valfunc):
-        tasks.append(task)
-        key, value = task
-        result[key] = value
-
-    wait(tasks)
-    return result
+    return wait(tasks)
 
 
 def async_dict(iterable, keyfunc, valfunc):
@@ -56,5 +40,4 @@ def async_dict(iterable, keyfunc, valfunc):
     loop = get_event_loop()
     coro = _async_dict(iterable, keyfunc, valfunc)
     tasks, _ = loop.run_until_complete(coro)
-    LOGGER.warning('Tasks: %s.', tasks)
     return dict(task.result() for task in tasks)
