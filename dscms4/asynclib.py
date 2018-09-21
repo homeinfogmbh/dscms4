@@ -1,9 +1,13 @@
 """Async stuff."""
 
 from asyncio import coroutine, get_event_loop, sleep, wait
+from logging import getLogger
 
 
 __all__ = ['async_dict']
+
+
+LOGGER = getLogger(__file__)
 
 
 @coroutine
@@ -13,6 +17,7 @@ def _async_conv(item, keyfunc, valfunc):
     value = valfunc(item)
     yield from sleep(0)
     key = keyfunc(item)
+    LOGGER.warning('Returning: %s.', key)
     return (key, value)
 
 
