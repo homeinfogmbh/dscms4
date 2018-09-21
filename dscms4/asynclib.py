@@ -43,7 +43,7 @@ def _async_dict(iterable, keyfunc, valfunc):
 
     for task in _async_conversions(iterable, keyfunc, valfunc):
         tasks.append(task)
-        key, value = task.result()
+        key, value = task
         result[key] = value
 
     wait(tasks)
