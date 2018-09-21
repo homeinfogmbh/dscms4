@@ -84,7 +84,7 @@ def list_():
 
     if 'assoc' in request.args:
         if 'expasync' in request.args:
-            return async_terminals_json(terminals)
+            return JSON(async_terminals_json(terminals))
 
         return JSON({
             terminal.tid: TerminalContent(terminal).to_json()
