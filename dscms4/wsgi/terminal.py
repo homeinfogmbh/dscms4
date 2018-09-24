@@ -17,6 +17,7 @@ from dscms4.messages.terminal import NoSuchTerminal
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.orm.content.terminal import TerminalMenu
+from dscms4.orm.settings import Settings
 from dscms4.paging import page, pages
 from dscms4.presentation import Presentation
 
