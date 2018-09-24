@@ -12,6 +12,7 @@ from dscms4.wsgi import membership
 from dscms4.wsgi import menu
 from dscms4.wsgi import preview
 from dscms4.wsgi import previewgen
+from dscms4.wsgi import settings
 from dscms4.wsgi import terminal
 
 
@@ -22,5 +23,5 @@ APPLICATION = Application('DSCMS4', cors=True, debug=True)
 ROUTES = (
     charts.ROUTES + configuration.ROUTES + content.ROUTES + group.ROUTES
     + membership.ROUTES + menu.ROUTES + preview.ROUTES + previewgen.ROUTES
-    + terminal.ROUTES)
+    + settings.ROUTES + terminal.ROUTES)
 APPLICATION.add_routes(ROUTES)
