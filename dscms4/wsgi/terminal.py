@@ -62,8 +62,9 @@ def list_():
     """Lists all terminals of the respective customer."""
 
     expression = Terminal.customer == CUSTOMER.id
+    settings = Settings.for_customer(CUSTOMER.id)
 
-    if 'testing' not in request.args:
+    if not settings.show_testing_terminals:
         expression &= Terminal.testing == 0
 
     terminals = Terminal.select().where(expression)
