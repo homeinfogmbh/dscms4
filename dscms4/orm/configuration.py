@@ -1,5 +1,6 @@
-"""Configurations, colors, tickers and brightness settings."""
-
+"""Configurations i.e. colors, tickers and brightness
+settings for the digital signage presentation.
+"""
 from contextlib import suppress
 from enum import Enum
 

@@ -50,4 +50,5 @@ class TerminalPreviewToken(_PreviewToken):
         Terminal, column_name='terminal', on_delete='CASCADE')
 
 
+MODELS = (TerminalPreviewToken,)
 TYPES = {'terminal': TerminalPreviewToken}
