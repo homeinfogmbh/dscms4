@@ -34,5 +34,5 @@ def set_settings():
 
 
 ROUTES = (
-    ('/GET', '/settings', get_settings, 'get_settings'),
-    ('/POST', '/settings', set_settings, 'set_settings'))
+    ('GET', '/settings', get_settings, 'get_settings'),
+    ('POST', '/settings', set_settings, 'set_settings'))
