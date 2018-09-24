@@ -206,6 +206,11 @@ msgstr "Invalid token type."
 msgid "NoSuchObject"
 msgstr "No such object."
 
+### Settings messages. ###
+
+msgid "SettingsSaved"
+msgstr "Settings saved."
+
 ### Terminal messages. ###
 
 msgid "NoSuchTerminal"
