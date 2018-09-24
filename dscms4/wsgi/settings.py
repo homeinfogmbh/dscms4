@@ -1,6 +1,9 @@
 """Per-customer settings interface."""
 
+from flask import request
+
 from his import CUSTOMER, admin, authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.messages.settings import SettingsSaved
 from dscms4.orm.settings import Settings
@@ -9,7 +12,7 @@ from dscms4.orm.settings import Settings
 __all__ = ['ROUTES']
 
 
-@authenlicated
+@authenticated
 @authorized('dscms4')
 def get_settings():
     """Gets the customer's settings."""
@@ -18,7 +21,7 @@ def get_settings():
     return JSON(settings.to_json())
 
 
-@authenlicated
+@authenticated
 @authorized('dscms4')
 @admin
 def set_settings():
