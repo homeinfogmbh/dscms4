@@ -5,12 +5,9 @@ from flask import request
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.group import GroupAdded
-from dscms4.messages.group import GroupDeleted
-from dscms4.messages.group import GroupPatched
-from dscms4.messages.group import NoSuchGroup
+from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
+    GroupDeleted
 from dscms4.orm.group import Group
-from dscms4.wsgi.group.tree import get_groups_tree, GroupContent
 
 
 __all__ = ['ROUTES', 'get_group']
@@ -30,8 +27,9 @@ def get_group(ident):
 def list_():
     """Lists IDs of groups of the respective customer."""
 
-    if 'assoc' in request.args:
-        return JSON([group.to_json() for group in get_groups_tree()])
+    if 'tree' in request.args:
+        return JSON([group.json_tree for group in Group.select().where(
+            (Group.customer == CUSTOMER.id) & (Group.parent >> None))])
 
     return JSON([group.to_json() for group in Group.select().where(
         Group.customer == CUSTOMER.id)])
@@ -43,11 +41,6 @@ def get(ident):
     """Returns the respective group."""
 
     group = get_group(ident)
-
-    if 'assoc' in request.args:
-        group_content = GroupContent(group)
-        return JSON(group_content.to_json(recursive=False))
-
     return JSON(group.to_json())
 
 
