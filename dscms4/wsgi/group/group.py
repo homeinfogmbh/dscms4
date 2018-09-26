@@ -5,21 +5,12 @@ from flask import request
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
-    GroupDeleted
+from dscms4.messages.group import GroupAdded, GroupPatched, GroupDeleted
 from dscms4.orm.group import Group
+from dscms4.wsgi.group.common import get_group
 
 
 __all__ = ['ROUTES', 'get_group']
-
-
-def get_group(ident):
-    """Returns the respective group of the current customer."""
-
-    try:
-        return Group.get((Group.customer == CUSTOMER.id) & (Group.id == ident))
-    except Group.DoesNotExist:
-        raise NoSuchGroup()
 
 
 @authenticated
