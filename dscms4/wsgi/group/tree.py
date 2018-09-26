@@ -4,18 +4,16 @@ from logging import getLogger
 
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
+from his import CUSTOMER
 from peeweeplus import async_select
-from wsgilib import JSON
 
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
 from dscms4.orm.group import Group, GroupMemberTerminal
-from dscms4.wsgi.group.group import get_group
 
 
-__all__ = ['ROUTES']
+__all__ = ['get_groups_tree', 'GroupContent']
 
 
 LOGGER = getLogger(__file__)
@@ -29,23 +27,6 @@ def get_groups_tree():
 
     for root_group in root_groups:
         yield GroupContent(root_group)
-
-
-@authenticated
-@authorized('dscms4')
-def groups_tree():
-    """Lists the groups."""
-
-    return JSON([group.to_json() for group in get_groups_tree()])
-
-
-@authenticated
-@authorized('dscms4')
-def groups_subtree(gid):
-    """Lists the groups."""
-
-    group_content = GroupContent(get_group(gid))
-    return JSON(group_content.to_json(recursive=False))
 
 
 class GroupContent:
@@ -122,8 +103,3 @@ class GroupContent:
         json['content'], terminals = self.content_and_terminals
         json['members'] = {'terminals': terminals}
         return json
-
-
-ROUTES = (
-    ('GET', '/grouptree', groups_tree, 'groups_tree'),
-    ('GET', '/grouptree/<int:gid>', groups_subtree, 'groups_subtree'))
