@@ -2,8 +2,8 @@
 
 from flask import request
 
-from digsigdb.dom import tenant2tenant
 from tenant2tenant import TenantMessage
+from tenant2tenant.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
 
 from dscms4.exceptions import AmbiguousConfigurationsError
