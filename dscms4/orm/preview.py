@@ -20,6 +20,11 @@ class _PreviewToken(DSCMS4Model):
     token = UUIDField(default=uuid4)
     obj = None
 
+    @staticmethod
+    def identify(model, ident):
+        """Returns a selector to identify the respective model."""
+        raise NotImplementedError()
+
     @classmethod
     def generate(cls, ident):
         """Returns a token for the respective resource."""
@@ -27,7 +32,7 @@ class _PreviewToken(DSCMS4Model):
 
         try:
             record = model.get(
-                (model.id == ident) & (model.customer == CUSTOMER.id))
+                cls.identify(model, ident) & (model.customer == CUSTOMER.id))
         except model.DoesNotExist:
             raise NoSuchObject(type=model.__name__)
 
@@ -48,6 +53,11 @@ class TerminalPreviewToken(_PreviewToken):
 
     obj = ForeignKeyField(
         Terminal, column_name='terminal', on_delete='CASCADE')
+
+    @staticmethod
+    def identify(model, ident):
+        """Identifies the terminal by TID."""
+        return model.tid == ident
 
 
 MODELS = (TerminalPreviewToken,)
