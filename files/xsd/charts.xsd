@@ -278,19 +278,12 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
     <xs:complexType name="ImageText">
         <xs:annotation>
             <xs:documentation xml:lang="de">
-                Bilderraten Chart.
+                Bild / Text Chart.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="Chart">
                 <xs:sequence>
-                    <xs:element name="style" type="xs:string">
-                        <xs:annotation>
-                            <xs:documentation xml:lang="de">
-                                Stil des Charts.
-                            </xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
                     <xs:element name="title" type="xs:string">
                         <xs:annotation>
                             <xs:documentation xml:lang="de">
@@ -339,10 +332,32 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
     </xs:complexType>
 
 
+    <xs:complexType name="Blackboard">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Schwarzes Brett / Pin Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="image" type="Attachment" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Bilder.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
     <xs:complexType name="News">
         <xs:annotation>
             <xs:documentation xml:lang="de">
-                Bilderraten Chart.
+                Nachrichten Chart.
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
