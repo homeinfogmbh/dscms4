@@ -188,7 +188,7 @@ class Presentation:
         return {
             'customer': self.terminal.customer.id,
             'tid': self.terminal.tid,
-            'configuration': self.configuration.to_json(),
+            'configuration': self.configuration.to_json(cascade=True),
             'playlist': [
                 chart.to_json(mode=ChartMode.BRIEF)
                 for chart in self.playlist],
