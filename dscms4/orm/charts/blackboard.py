@@ -5,7 +5,6 @@ from enum import Enum
 from peewee import ForeignKeyField
 from peewee import IntegerField
 
-from functoolsplus import coerce
 from peeweeplus import EnumField
 
 from dscms4 import dom
@@ -48,11 +47,9 @@ class Blackboard(Chart):
         return transaction
 
     @property
-    @coerce(set)
     def files(self):
         """Returns a set of IDs of files used by the chart."""
-        for image in self.images:
-            yield image.image
+        return set(image.image for image in self.images)
 
     def patch_json(self, json, **kwargs):
         """Patches the respective chart."""
