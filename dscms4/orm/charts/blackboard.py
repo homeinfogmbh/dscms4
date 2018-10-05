@@ -19,10 +19,11 @@ __all__ = ['Blackboard', 'Image']
 
 class Format(Enum):
     """Image display format."""
-
+    A3 = 'A3'
     A4 = 'A4'
     A5 = 'A5'
     A6 = 'A6'
+    A7 = 'A7'
 
 
 class Blackboard(Chart):
