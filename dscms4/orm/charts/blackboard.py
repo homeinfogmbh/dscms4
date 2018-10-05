@@ -82,7 +82,7 @@ class Blackboard(Chart):
         if brief:
             return super().to_dom(dom.BriefChart)
 
-        xml = super().to_dom(dom.ImageText)
+        xml = super().to_dom(dom.Blackboard)
         xml.image = list(filter(None, (img.to_dom() for img in self.images)))
         return xml
 
