@@ -42,7 +42,7 @@ class Blackboard(Chart):
         transaction = super().from_json(json, **kwargs)
 
         for image in images:
-            image = Image(chart=transaction.chart, image=image)
+            image = Image.from_json(image, chart=transaction.chart)
             transaction.add(image)
 
         return transaction
@@ -64,7 +64,7 @@ class Blackboard(Chart):
                 transaction.delete(image)
 
             for image in images:
-                image = Image(chart=transaction.chart, image=image)
+                image = Image.from_json(image, chart=transaction.chart)
                 transaction.add(image)
 
         return transaction
@@ -98,6 +98,13 @@ class Image(DSCMS4Model):
         Blackboard, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
     format = EnumField(Format, default=Format.A4)
+
+    @classmethod
+    def from_json(cls, json, chart, **kwargs):
+        """Creates the image from a JSON-ish dict."""
+        record = super().from_json(json, **kwargs)
+        record.chart = chart
+        return record
 
     def to_dom(self):
         """Returns an XML DOM of this model."""
