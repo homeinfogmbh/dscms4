@@ -2,8 +2,6 @@
 
 from peewee import IntegerField
 
-from functoolsplus import coerce
-
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import Chart
@@ -21,11 +19,14 @@ class Video(Chart):
     video = IntegerField(null=True)
 
     @property
-    @coerce(set)
     def files(self):
         """Returns a set of IDs of files used by the chart."""
+        files = set()
+
         if self.video is not None:
-            yield self.video
+            files.add(self.video)
+
+        return files
 
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""

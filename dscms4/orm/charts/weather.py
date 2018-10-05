@@ -2,8 +2,6 @@
 
 from peewee import ForeignKeyField, IntegerField, CharField
 
-from functoolsplus import coerce
-
 from dscms4 import dom
 from dscms4.domutil import attachment_dom
 from dscms4.orm.charts.common import ChartMode, Chart
@@ -44,11 +42,9 @@ class Weather(Chart):
         return transaction
 
     @property
-    @coerce(set)
     def files(self):
         """Returns a set of IDs of files used by the chart."""
-        for image in self.images:
-            yield image.image
+        return set(image.image for image in self.images)
 
     def patch_json(self, json, **kwargs):
         """Patches the respective chart."""

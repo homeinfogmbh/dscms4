@@ -12,7 +12,6 @@ from peewee import SmallIntegerField
 from peewee import TextField
 from peewee import TimeField
 
-from functoolsplus import coerce
 from peeweeplus import EnumField
 
 from dscms4 import dom
@@ -131,17 +130,20 @@ class Configuration(CustomerModel):
         return configuration
 
     @property
-    @coerce(set)
     def files(self):
         """Returns a set od IDs of files used by the configuration."""
+        files = set()
+
         if self.logo is not None:
-            yield self.logo
+            files.add(self.logo)
 
         if self.background is not None:
-            yield self.background
+            files.add(self.background)
 
         if self.dummy_picture is not None:
-            yield self.dummy_picture
+            files.add(self.dummy_picture)
+
+        return files
 
     @property
     def backlight_dict(self):
