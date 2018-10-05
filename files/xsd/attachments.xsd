@@ -45,5 +45,12 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="format" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Darstellungsformat.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 </xs:schema>
