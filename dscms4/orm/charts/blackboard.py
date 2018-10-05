@@ -28,17 +28,15 @@ class Format(Enum):
 
 
 class Blackboard(Chart):
-    """A chart that may contain images and text."""
+    """A chart that may contain images."""
 
     class Meta:
         table_name = 'chart_blackboard'
 
     @classmethod
     def from_json(cls, json, **kwargs):
-        """Creates a new quotes chart from the
-        dictionary for the respective customer.
-        """
-        # Pop images and texts first to exclude them from the
+        """Creates a new chart ffrom a JSON-ish dict."""
+        # Pop images first to exclude them from the
         # dictionary before invoking super().from_json().
         images = json.pop('images', ())
         transaction = super().from_json(json, **kwargs)

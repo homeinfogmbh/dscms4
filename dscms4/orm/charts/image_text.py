@@ -31,9 +31,7 @@ class ImageText(Chart):
 
     @classmethod
     def from_json(cls, json, **kwargs):
-        """Creates a new quotes chart from the
-        dictionary for the respective customer.
-        """
+        """Creates a new chart from a JSON-ish dict."""
         # Pop images and texts first to exclude them from the
         # dictionary before invoking super().from_json().
         images = json.pop('images', ())
