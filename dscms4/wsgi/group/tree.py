@@ -5,7 +5,6 @@ from logging import getLogger
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
-from peeweeplus import async_select
 from wsgilib import JSON
 
 from dscms4.orm.content.group import GroupBaseChart
@@ -92,19 +91,11 @@ class GroupContent:
     @property
     def content_and_terminals(self):
         """Returns content and terminals."""
-        if 'noasync' in request.args:
-            LOGGER.warning('Retrieving content and terminals non-async.')
-            content = {
-                'charts': list(self.charts),
-                'configurations': list(self.configurations),
-                'menus': list(self.menus)}
-            return (content, list(self.terminals))
-
-        results = async_select(
-            charts=self.charts, configurations=self.configurations,
-            menus=self.menus, terminals=self.terminals)
-        terminals = results.pop('terminals')
-        return (results, terminals)
+        content = {
+            'charts': list(self.charts),
+            'configurations': list(self.configurations),
+            'menus': list(self.menus)}
+        return (content, list(self.terminals))
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""

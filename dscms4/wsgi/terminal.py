@@ -4,11 +4,9 @@ from flask import request
 
 from his import CUSTOMER, authenticated, authorized
 from his.messages import InvalidData
-from peeweeplus import async_select
 from terminallib import Terminal
 from wsgilib import JSON, XML
 
-from dscms4.asynclib import async_dict
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.presentation import NoConfigurationAssigned
@@ -43,18 +41,6 @@ def with_terminal(function):
         return function(get_terminal(tid), *args, **kwargs)
 
     return wrapper
-
-
-def json_terminals(terminals):
-    """Converts the respective terminals to JSON."""
-
-    def keyfunc(terminal):
-        return terminal.tid
-
-    def valfunc(terminal):
-        return TerminalContent(terminal).to_json(asynchronous=False)
-
-    return async_dict(terminals, keyfunc, valfunc)
 
 
 @authenticated
@@ -92,14 +78,8 @@ def list_():
         return JSON({'pages': pages(terminals, size)})
 
     if 'assoc' in request.args:
-        asynchronous = 'noasync' not in request.args
-
-        if asynchronous and 'asyncdict' in request.args:
-            return JSON(json_terminals(terminals))
-
         return JSON({
-            terminal.tid: TerminalContent(terminal).to_json(
-                asynchronous=asynchronous)
+            terminal.tid: TerminalContent(terminal).to_json()
             for terminal in terminals})
 
     return JSON([terminal.to_json(short=True) for terminal in terminals])
@@ -165,23 +145,18 @@ class TerminalContent:
                 TerminalMenu.terminal == self.terminal):
             yield terminal_menu.to_json()
 
-    def content(self, asynchronous=True):
+    def content(self):
         """Returns content."""
-        if asynchronous:
-            return async_select(
-                charts=self.charts, configurations=self.configurations,
-                menus=self.menus)
-
         return {
             'charts': list(self.charts),
             'configurations': list(self.configurations),
             'menus': list(self.menus)}
 
-    def to_json(self, asynchronous=True):
+    def to_json(self):
         """Returns the terminal and its content as a JSON-ish dict."""
         address = self.terminal.address
         json = {'address': address.to_json()} if address else {}
-        json['content'] = self.content(asynchronous=asynchronous)
+        json['content'] = self.content()
         return json
 
 
