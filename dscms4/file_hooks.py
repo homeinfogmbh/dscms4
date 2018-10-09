@@ -3,9 +3,10 @@
 from logging import INFO, basicConfig, getLogger
 
 from dscms4.config import LOG_FORMAT
-from dscms4.orm.charts.image_text import Image as ITCImage
+from dscms4.orm.charts.blackboard import Image as BlackboardChartImage
+from dscms4.orm.charts.image_text import Image as ImageTextChartImage
 from dscms4.orm.charts.video import Video
-from dscms4.orm.charts.weather import Image as WCImage
+from dscms4.orm.charts.weather import Image as WeatherChartImage
 from dscms4.orm.configuration import Configuration
 
 
@@ -16,10 +17,22 @@ LOGGER = getLogger('dscms4.file_hooks')
 basicConfig(level=INFO, format=LOG_FORMAT)
 
 
-def _remove_itc_images(ident):
-    """Removes the respective Images of ImageText charts."""
+def _remove_bc_images(ident):
+    """Removes the respective images of Blackboard charts."""
 
-    for image in ITCImage.select().where(ITCImage.image == ident):
+    for image in BlackboardChartImage.select().where(
+            BlackboardChartImage.image == ident):
+        LOGGER.info(
+            'Deleting blackboard.Image %i with image %i.',
+            image.id, ident)
+        image.delete_instance()
+
+
+def _remove_itc_images(ident):
+    """Removes the respective images of ImageText charts."""
+
+    for image in ImageTextChartImage.select().where(
+            ImageTextChartImage.image == ident):
         LOGGER.info(
             'Deleting image_text.Image %i with image %i.',
             image.id, ident)
@@ -27,9 +40,10 @@ def _remove_itc_images(ident):
 
 
 def _remove_wc_image(ident):
-    """Removes the respective Images of Weather charts."""
+    """Removes the respective images of Weather charts."""
 
-    for image in WCImage.select().where(WCImage.image == ident):
+    for image in WeatherChartImage.select().where(
+            WeatherChartImage.image == ident):
         LOGGER.info(
             'Deleting weather.Image %i with image %i.',
             image.id, ident)
@@ -78,6 +92,7 @@ def _null_configurations(ident):
 def on_delete(ident):
     """Runs when the file with the respective ID has been deleted."""
 
+    _remove_bc_images(ident)
     _remove_itc_images(ident)
     _remove_wc_image(ident)
     _remove_video_charts(ident)
