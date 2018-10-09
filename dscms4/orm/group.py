@@ -1,6 +1,6 @@
 """ORM model to represent groups."""
 
-from peewee import ForeignKeyField, CharField, TextField
+from peewee import CharField, ForeignKeyField, IntegerField, TextField
 
 from his.messages.data import MissingKeyError, InvalidKeys
 from tenements.orm import ApartmentBuilding
@@ -36,6 +36,7 @@ class Group(CustomerModel):
     description = TextField(null=True)
     parent = ForeignKeyField(
         'self', column_name='parent', null=True, backref='children')
+    index = IntegerField(default=0)
 
     @classmethod
     def from_json(cls, json, **kwargs):
@@ -122,6 +123,8 @@ class Group(CustomerModel):
 class GroupMember(DSCMS4Model):
     """An abstract group member model."""
 
+    index = IntegerField(default=0)
+
     @staticmethod
     def from_json(json, group, **_):
         """Creates a member for the given group
@@ -179,7 +182,10 @@ class GroupMemberTerminal(GroupMember):
 
     def to_json(self):
         """Returns a JSON-ish dict."""
-        return {'id': self.id, 'terminal': self.member.tid}
+        return {
+            'id': self.id,
+            'terminal': self.member.tid,
+            'index': self.index}
 
 
 class GroupMemberApartmentBuilding(GroupMember):
@@ -194,9 +200,16 @@ class GroupMemberApartmentBuilding(GroupMember):
         ApartmentBuilding, column_name='apartment_building',
         on_delete='CASCADE')
 
+    def to_dom(self):
+        """Returns an XML DOM."""
+        raise NotImplementedError()
+
     def to_json(self):
         """Returns a JSON-ish dict."""
-        return {'member': self.id, 'apartment_building': self.member.ve}
+        return {
+            'member': self.id,
+            'apartment_building': self.member.ve,
+            'index': self.index}
 
 
 GROUP_MEMBERS = {
