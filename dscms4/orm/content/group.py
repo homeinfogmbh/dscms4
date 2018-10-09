@@ -1,6 +1,6 @@
 """Content assigned to groups."""
 
-from peewee import ForeignKeyField
+from peewee import ForeignKeyField, IntegerField
 
 from dscms4.orm.charts import ChartMode, BaseChart
 from dscms4.orm.common import DSCMS4Model
@@ -30,6 +30,7 @@ class GroupBaseChart(_GroupContent):
 
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
+    index = IntegerField(default=0)
 
     @property
     def chart(self):
@@ -40,7 +41,8 @@ class GroupBaseChart(_GroupContent):
         """Returns a JSON-ish dict."""
         return {
             'id': self.id,
-            'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
+            'chart': self.chart.to_json(mode=ChartMode.BRIEF),
+            'index': self.index}
 
 
 class GroupConfiguration(_GroupContent):

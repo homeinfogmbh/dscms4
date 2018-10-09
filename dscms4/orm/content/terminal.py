@@ -1,6 +1,6 @@
 """Content assigned to Terminals."""
 
-from peewee import ForeignKeyField
+from peewee import ForeignKeyField, IntegerField
 
 from terminallib import Terminal
 
@@ -32,6 +32,7 @@ class TerminalBaseChart(_TerminalContent):
 
     base_chart = ForeignKeyField(
         BaseChart, column_name='base_chart', on_delete='CASCADE')
+    index = IntegerField(default=0)
 
     @property
     def chart(self):
@@ -42,7 +43,8 @@ class TerminalBaseChart(_TerminalContent):
         """Returns a JSON-ish dict."""
         return {
             'id': self.id,
-            'chart': self.chart.to_json(mode=ChartMode.BRIEF)}
+            'chart': self.chart.to_json(mode=ChartMode.BRIEF),
+            'index': self.index}
 
 
 class TerminalConfiguration(_TerminalContent):
