@@ -52,5 +52,12 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="index" type="xs:integer">
+            <xs:annotation>
+                <xs:documentation xml:lang="de">
+                    Sortierungs Index.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 </xs:schema>

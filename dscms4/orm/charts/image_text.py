@@ -109,10 +109,11 @@ class Image(DSCMS4Model):
     chart = ForeignKeyField(
         ImageText, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
+    index = IntegerField(default=0)
 
     def to_dom(self):
         """Returns an XML DOM of this model."""
-        return attachment_dom(self.image)
+        return attachment_dom(self.image, index=self.index)
 
 
 class Text(DSCMS4Model):

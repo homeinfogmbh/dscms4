@@ -8,7 +8,7 @@ from dscms4.dom import Attachment
 __all__ = ['attachment_dom']
 
 
-def attachment_dom(ident, format=None):
+def attachment_dom(ident, format=None, index=None):
     """Returns an attachment for the respective file ID."""
 
     if ident is None:
@@ -25,4 +25,5 @@ def attachment_dom(ident, format=None):
     xml.filename = file.name
     xml.sha256sum = file.sha256sum
     xml.format = format
+    xml.index = index
     return xml
