@@ -2,8 +2,7 @@
 
 from enum import Enum
 
-from peewee import ForeignKeyField
-from peewee import IntegerField
+from peewee import ForeignKeyField, IntegerField
 
 from peeweeplus import EnumField
 
