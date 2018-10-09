@@ -96,6 +96,7 @@ class Image(DSCMS4Model):
         Blackboard, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
     format = EnumField(Format, default=Format.A4)
+    index = IntegerField(default=0)
 
     @classmethod
     def from_json(cls, json, chart, **kwargs):
