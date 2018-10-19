@@ -1,6 +1,6 @@
 """Management of charts in terminals."""
 
-from his import CUSTOMER, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
 
@@ -55,9 +55,7 @@ def add(tid, ident):
 
     terminal = get_terminal(tid)
     base_chart = get_chart(ident).base
-    tbc = TerminalBaseChart()
-    tbc.terminal = terminal
-    tbc.base_chart = base_chart
+    tbc = TerminalBaseChart.from_json(JSON_DATA, terminal, base_chart)
     tbc.save()
     return ContentAdded(id=tbc.id)
 
