@@ -5,8 +5,6 @@ from logging import getLogger
 
 from peewee import ForeignKeyField, CharField, IntegerField
 
-from peeweeplus import MissingKeyError
-
 from dscms4 import dom
 from dscms4.exceptions import OrphanedBaseChart, AmbiguousBaseChart
 from dscms4.messages.common import CircularReference
@@ -191,7 +189,9 @@ class MenuItem(DSCMS4Model):
         if charts:
             json['charts'] = [
                 menu_item_chart.to_json() for menu_item_chart in
-                self.menu_item_chart if not menu_item_chart.chart.base.trashed]
+                self.menu_item_charts
+                # Exclude trashed charts.
+                if not menu_item_chart.chart.base.trashed]
 
         if children:
             json['items'] = [
