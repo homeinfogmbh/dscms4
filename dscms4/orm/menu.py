@@ -228,24 +228,6 @@ class MenuItemChart(DSCMS4Model):
         BaseChart, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
 
-    @classmethod
-    def from_json(cls, json, **kwargs):
-        """Creates a record from a JSON-ish dictionary."""
-        try:
-            menu_item = MenuItem.get(MenuItem.id == json.pop('menuItem'))
-        except KeyError:
-            raise MissingKeyError('menuItem')
-
-        try:
-            base_chart = BaseChart.get(BaseChart.id == json.pop('baseChart'))
-        except KeyError:
-            raise MissingKeyError('baseChart')
-
-        menu_item_chart = super().from_json(json, **kwargs)
-        menu_item_chart.menu_item = menu_item
-        menu_item_chart.base_chart = base_chart
-        return menu_item_chart
-
     def to_json(self):
         """Returns a JSON-ish dictionary."""
         chart = self.base_chart.chart
