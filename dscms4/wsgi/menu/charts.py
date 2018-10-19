@@ -55,15 +55,17 @@ def list_(ident):
 def add():
     """Adds a new menu item."""
 
+    json = dict(JSON_DATA)
+
     try:
-        menu_item = JSON_DATA['menu_item']
+        menu_item = json.pop('menu_item')
     except KeyError:
         raise MissingData(key='menu_item')
 
     menu_item = get_menu_item(menu_item)
 
     try:
-        chart = JSON_DATA['chart']
+        chart = json.pop('chart')
     except KeyError:
         raise MissingData(key='chart')
 
@@ -78,9 +80,7 @@ def add():
         raise MissingData(key='chart→id')
 
     chart = get_chart(type_, chart_id)
-    index = JSON_DATA.get('index', 0)
-    menu_item_chart = MenuItemChart(
-        menu_item=menu_item, base_chart=chart.base, index=index)
+    menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
     menu_item_chart.save()
     return MenuItemChartAdded(id=menu_item_chart.id)
 
