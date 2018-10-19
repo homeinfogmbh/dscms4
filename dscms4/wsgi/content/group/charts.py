@@ -1,6 +1,6 @@
 """Management of charts in groups."""
 
-from his import CUSTOMER, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 from dscms4.messages.content import NoSuchContent, ContentAdded, \
@@ -55,9 +55,7 @@ def add(gid, ident):
 
     group = get_group(gid)
     base_chart = get_chart(ident).base
-    gbc = GroupBaseChart()
-    gbc.group = group
-    gbc.base_chart = base_chart
+    gbc = GroupBaseChart.from_json(JSON_DATA, group, base_chart)
     gbc.save()
     return ContentAdded(id=gbc.id)
 

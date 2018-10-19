@@ -32,6 +32,14 @@ class GroupBaseChart(_GroupContent):
         BaseChart, column_name='base_chart', on_delete='CASCADE')
     index = IntegerField(default=0)
 
+    @classmethod
+    def from_json(cls, json, group, base_chart, **kwargs):
+        """Creates a new group base chart."""
+        record = super().from_json(json, **kwargs)
+        record.group = group
+        record.base_chart = base_chart
+        return record
+
     @property
     def chart(self):
         """Returns the respective chart."""
