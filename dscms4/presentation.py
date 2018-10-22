@@ -1,5 +1,6 @@
 """Content accumulation for terminals."""
 
+from itertools import chain
 from logging import getLogger
 
 from functoolsplus import cached_method, coerce    # pylint: disable=E0401
@@ -134,13 +135,18 @@ class Presentation:
     def playlist(self):
         """Yields the terminal's base charts."""
         # Charts directy attached to the terminal.
-        yield from BaseChart.select().join(TerminalBaseChart).where(
-            (BaseChart.trashed == 0)
-            & (TerminalBaseChart.terminal == self.terminal))
+        tbcs = TerminalBaseChart.select().join(BaseChart).where(
+            (TerminalBaseChart.terminal == self.terminal)
+            & (BaseChart.trashed == 0)).order_by(TerminalBaseChart.index)
 
         # Charts attached to groups, the terminal is a member of.
-        yield from BaseChart.select().join(GroupBaseChart).where(
-            (BaseChart.trashed == 0) & (GroupBaseChart.group << self.groups))
+        gbcs = GroupBaseChart.select().join(BaseChart).where(
+            (GroupBaseChart.group << self.groups)
+            & (BaseChart.trashed == 0)).order_by(GroupBaseChart.index)
+
+        for base_chart_mapping in sorted(
+                chain(tbcs, gbcs), key=lambda record: record.index):
+            yield base_chart_mapping.base_chart
 
     @property
     @cached_method()
