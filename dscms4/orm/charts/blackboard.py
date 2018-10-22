@@ -72,7 +72,7 @@ class Blackboard(Chart):
         if mode == ChartMode.FULL:
             json['images'] = [
                 image.to_json(fk_fields=False, autofields=False)
-                for image in self.images]
+                for image in self.images.order_by(Image.index)]
 
         return json
 
@@ -82,7 +82,8 @@ class Blackboard(Chart):
             return super().to_dom(dom.BriefChart)
 
         xml = super().to_dom(dom.Blackboard)
-        xml.image = list(filter(None, (img.to_dom() for img in self.images)))
+        xml.image = filter(None, (
+            image.to_dom() for image in self.images.order_by(Image.index)))
         return xml
 
 

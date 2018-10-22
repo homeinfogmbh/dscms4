@@ -81,7 +81,8 @@ class ImageText(Chart):
 
         if mode == ChartMode.FULL:
             json['texts'] = [text.text for text in self.texts]
-            json['images'] = [image.image for image in self.images]
+            json['images'] = [
+                image.image for image in self.images.order_by(Image.index)]
 
         return json
 
@@ -95,7 +96,8 @@ class ImageText(Chart):
         xml.font_size = self.font_size
         xml.title_color = self.title_color
         xml.ken_burns = self.ken_burns
-        xml.image = list(filter(None, (img.to_dom() for img in self.images)))
+        xml.image = filter(None, (
+            image.to_dom() for image in self.images.order_by(Image.index)))
         xml.text = [text.text for text in self.texts]
         return xml
 
