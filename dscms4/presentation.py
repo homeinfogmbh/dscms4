@@ -156,7 +156,6 @@ class Presentation:
         yield from BaseChart.select().join(MenuItemChart).join(MenuItem).where(
             (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
 
-
     @property
     def charts(self):
         """Yields all charts for this terminal."""
