@@ -8,6 +8,7 @@ __all__ = [
     'InvalidContentType',
     'ContentAdded',
     'ContentExists',
+    'ContentPatched',
     'ContentDeleted']
 
 
@@ -39,6 +40,12 @@ class ContentExists(DSCMS4Message):
     """Indicates that the respective content already exists."""
 
     STATUS = 400
+
+
+class ContentPatched(DSCMS4Message):
+    """Indicates that the respective content was patched."""
+
+    STATUS = 200
 
 
 class ContentDeleted(DSCMS4Message):

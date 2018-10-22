@@ -4,8 +4,10 @@ from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
 
-from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentDeleted
+from dscms4.messages.content import ContentAdded
+from dscms4.messages.content import ContentDeleted
+from dscms4.messages.content import ContentPatched
+from dscms4.messages.content import NoSuchContent
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.charts import get_chart
@@ -62,6 +64,17 @@ def add(tid, ident):
 
 @authenticated
 @authorized('dscms4')
+def patch(tid, ident):
+    """Adds the chart to the respective terminal."""
+
+    tbc = get_tbc(tid, ident)
+    tbc.patch_json(JSON_DATA)
+    tbc.save()
+    return ContentPatched()
+
+
+@authenticated
+@authorized('dscms4')
 def delete(tid, ident):
     """Deletes the chart from the respective terminal."""
 
@@ -74,5 +87,7 @@ ROUTES = (
     ('GET', '/content/terminal/<int:tid>/chart', get, 'list_terminal_charts'),
     ('POST', '/content/terminal/<int:tid>/chart/<int:ident>', add,
      'add_terminal_chart'),
+    ('PATCH', '/content/terminal/<int:tid>/chart/<int:ident>', patch,
+     'patch_terminal_chart'),
     ('DELETE', '/content/terminal/<int:tid>/chart/<int:ident>', delete,
      'delete_terminal_chart'))

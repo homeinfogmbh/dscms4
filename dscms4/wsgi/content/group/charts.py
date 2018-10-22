@@ -3,8 +3,10 @@
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentDeleted
+from dscms4.messages.content import ContentAdded
+from dscms4.messages.content import ContentDeleted
+from dscms4.messages.content import ContentPatched
+from dscms4.messages.content import NoSuchContent
 from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.group import Group
@@ -58,6 +60,17 @@ def add(gid, ident):
     gbc = GroupBaseChart.from_json(JSON_DATA, group, base_chart)
     gbc.save()
     return ContentAdded(id=gbc.id)
+
+
+@authenticated
+@authorized('dscms4')
+def patch(gid, ident):
+    """Adds the chart to the respective terminal."""
+
+    group_base_chart = get_gbc(gid, ident)
+    group_base_chart.patch_json(JSON_DATA)
+    group_base_chart.save()
+    return ContentPatched()
 
 
 @authenticated

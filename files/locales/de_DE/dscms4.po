@@ -96,6 +96,9 @@ msgstr "Inhalt hinzugefügt."
 msgid "ContentExists"
 msgstr "Inhalt existiert bereits."
 
+msgid "ContentPatched"
+msgstr "Inhalt aktualisiert."
+
 msgid "ContentDeleted"
 msgstr "Inhalt gelöscht."
 
