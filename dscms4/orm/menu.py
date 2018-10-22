@@ -211,7 +211,7 @@ class MenuItem(DSCMS4Model):
         xml.item = [item.to_dom() for item in self.children]
         xml.chart = [
             menu_item_chart.to_dom() for menu_item_chart
-            in self.menu_item_charts]
+            in self.menu_item_charts if not menu_item_chart.base_chart.trashed]
         return xml
 
 
