@@ -138,7 +138,6 @@ class Presentation:
         tbcs = TerminalBaseChart.select().join(BaseChart).where(
             (TerminalBaseChart.terminal == self.terminal)
             & (BaseChart.trashed == 0)).order_by(TerminalBaseChart.index)
-
         # Charts attached to groups, the terminal is a member of.
         gbcs = GroupBaseChart.select().join(BaseChart).where(
             (GroupBaseChart.group << self.groups)
