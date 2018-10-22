@@ -54,7 +54,7 @@ class Menu(CustomerModel):
         if items:
             json['items'] = [
                 item.to_json(charts=True, children=True, fk_fields=False)
-                for item in self.root_items]
+                for item in self.root_items.order_by(MenuItem.index)]
 
         return json
 
@@ -63,7 +63,8 @@ class Menu(CustomerModel):
         xml = dom.Menu()
         xml.name = self.name
         xml.description = self.description
-        xml.item = [item.to_dom() for item in self.items]
+        xml.item = [
+            item.to_dom() for item in self.root_items.order_by(MenuItem.index)]
         return xml
 
 
@@ -100,7 +101,7 @@ class MenuItem(DSCMS4Model):
     @property
     def childrens_children(self):
         """Recursively yields all submenus."""
-        for child in self.children:
+        for child in self.children.order_by(type(self).index):
             for childrens_child in child.childrens_children:
                 yield childrens_child
 
@@ -188,9 +189,8 @@ class MenuItem(DSCMS4Model):
 
         if charts:
             json['charts'] = [
-                menu_item_chart.to_json() for menu_item_chart in
-                self.menu_item_charts
-                # Exclude trashed charts.
+                menu_item_chart.to_json() for menu_item_chart
+                in self.menu_item_charts.order_by(MenuItemChart.index)
                 if not menu_item_chart.base_chart.trashed]
 
         if children:
@@ -211,7 +211,8 @@ class MenuItem(DSCMS4Model):
         xml.item = [item.to_dom() for item in self.children]
         xml.chart = [
             menu_item_chart.to_dom() for menu_item_chart
-            in self.menu_item_charts if not menu_item_chart.base_chart.trashed]
+            in self.menu_item_charts.order_by(MenuItemChart.index)
+            if not menu_item_chart.base_chart.trashed]
         return xml
 
 
