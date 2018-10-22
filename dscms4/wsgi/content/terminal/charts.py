@@ -13,6 +13,7 @@ from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.wsgi.charts import get_chart
 from dscms4.wsgi.terminal import get_terminal
 
+
 __all__ = ['ROUTES']
 
 

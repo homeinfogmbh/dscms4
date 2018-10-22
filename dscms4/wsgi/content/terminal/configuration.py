@@ -9,6 +9,7 @@ from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.wsgi.configuration import get_configuration
 from dscms4.wsgi.terminal import get_terminal
 
+
 __all__ = ['ROUTES']
 
 
