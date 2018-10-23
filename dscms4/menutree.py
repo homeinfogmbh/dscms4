@@ -1,6 +1,7 @@
 """Menu tree utilities."""
 
 from collections import defaultdict
+from json import dumps
 
 
 __all__ = ['add', 'merge', 'MenuTreeItem']
@@ -54,6 +55,20 @@ class MenuTreeItem:
         self.index = index
         self.children = children
 
+    def __str__(self):
+        """Returns a nested JSON object."""
+        return dumps(self.to_dict(), indent=2)
+
+    def __add__(self, other):
+        """Adds two menu tree items."""
+        if self.name != other.name:
+            raise ValueError('Can only add menu items of same name.')
+
+        children = merge(self.children, other.children)
+        return type(self)(
+            self.name, self.icon, self.text_color, self.background_color,
+            self.index, children)
+
     @classmethod
     def from_menu_item(cls, menu_item):
         """Creates a menu item tree from the given menu item."""
@@ -68,12 +83,12 @@ class MenuTreeItem:
         """Yields menu tree items from the respective menu."""
         return [cls.from_menu_item(menu_item) for menu_item in menu.root_items]
 
-    def __add__(self, other):
-        """Adds two menu tree items."""
-        if self.name != other.name:
-            raise ValueError('Can only add menu items of same name.')
-
-        children = merge(self.children, other.children)
-        return type(self)(
-            self.name, self.icon, self.text_color, self.background_color,
-            self.index, children)
+    def to_dict(self):
+        """Returns a nested JSON-ish dict."""
+        return {
+            'name': self.name,
+            'icon': self.icon,
+            'textColor': self.text_color,
+            'backgroundColor': self.background_color,
+            'index': self.index,
+            'children': [child.to_dict() for child in self.children]}
