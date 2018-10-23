@@ -31,7 +31,7 @@ def merge(*children_lists):
 
     for children in children_lists:
         for child in children:
-            mapping[child.name].append(child)
+            mapping[child.signature].append(child)
 
     return [add(children) for children in mapping.values()]
 
@@ -66,7 +66,7 @@ class MenuTreeItem:
 
     def __add__(self, other):
         """Adds two menu tree items."""
-        if self.name != other.name:
+        if self.signature != other.signature:
             raise ValueError('Can only add menu items of same name.')
 
         children = merge(self.children, other.children)
@@ -91,6 +91,11 @@ class MenuTreeItem:
     def from_menu(cls, menu):
         """Yields menu tree items from the respective menu."""
         return [cls.from_menu_item(menu_item) for menu_item in menu.root_items]
+
+    @property
+    def signature(self):
+        """Returns a tuple, identifying the menu tree item."""
+        return (self.name, self.icon, self.text_color, self.background_color)
 
     def to_json(self):
         """Returns a nested JSON-ish dict."""
