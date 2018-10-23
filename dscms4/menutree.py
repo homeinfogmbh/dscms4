@@ -1,7 +1,10 @@
 """Menu tree utilities."""
 
 from collections import defaultdict
+from itertools import chain
 from json import dumps
+
+from dscms4 import dom
 
 
 __all__ = ['add', 'merge', 'MenuTreeItem']
@@ -43,21 +46,23 @@ class MenuTreeItem:
     """Menu item for tree structure."""
 
     __slots__ = (
-        'name', 'icon', 'text_color', 'background_color', 'index', 'children')
+        'name', 'icon', 'text_color', 'background_color', 'index',
+        'menu_item_charts', 'children')
 
     def __init__(self, name, icon, text_color, background_color, index,
-                 children):
+                 menu_item_charts, children):
         """Sets the referenced menu item."""
         self.name = name
         self.icon = icon
         self.text_color = text_color
         self.background_color = background_color
         self.index = index
+        self.menu_item_charts = menu_item_charts
         self.children = children
 
     def __str__(self):
         """Returns a nested JSON object."""
-        return dumps(self.to_dict(), indent=2)
+        return dumps(self.to_json(), indent=2)
 
     def __add__(self, other):
         """Adds two menu tree items."""
@@ -65,25 +70,29 @@ class MenuTreeItem:
             raise ValueError('Can only add menu items of same name.')
 
         children = merge(self.children, other.children)
+        menu_item_charts = list(set(chain(
+            self.menu_item_charts, other.menu_item_charts)))
         return type(self)(
             self.name, self.icon, self.text_color, self.background_color,
-            self.index, children)
+            self.index, menu_item_charts, children)
 
     @classmethod
     def from_menu_item(cls, menu_item):
         """Creates a menu item tree from the given menu item."""
         children = [
             cls.from_menu_item(child) for child in menu_item.children]
+        menu_item_charts = list(menu_item.menu_item_charts)
         return cls(
             menu_item.name, menu_item.icon, menu_item.text_color,
-            menu_item.background_color, menu_item.index, children=children)
+            menu_item.background_color, menu_item.index, menu_item_charts,
+            children)
 
     @classmethod
     def from_menu(cls, menu):
         """Yields menu tree items from the respective menu."""
         return [cls.from_menu_item(menu_item) for menu_item in menu.root_items]
 
-    def to_dict(self):
+    def to_json(self):
         """Returns a nested JSON-ish dict."""
         return {
             'name': self.name,
@@ -91,4 +100,24 @@ class MenuTreeItem:
             'textColor': self.text_color,
             'backgroundColor': self.background_color,
             'index': self.index,
-            'children': [child.to_dict() for child in self.children]}
+            'charts': [
+                menu_item_chart.to_json() for menu_item_chart
+                in sorted(self.menu_item_charts, key=key)
+                if not menu_item_chart.base_chart.trashed],
+            'items': [
+                child.to_dict() for child in sorted(self.children, key=key)]}
+
+    def to_dom(self):
+        """Returns an XML DOM of the model."""
+        xml = dom.MenuItem()
+        xml.name = self.name
+        xml.icon = self.icon
+        xml.text_color = self.text_color
+        xml.background_color = self.background_color
+        xml.index = self.index
+        xml.item = [item.to_dom() for item in self.children]
+        xml.chart = [
+            menu_item_chart.to_dom() for menu_item_chart
+            in sorted(self.menu_item_charts, key=key)
+            if not menu_item_chart.base_chart.trashed]
+        return xml
