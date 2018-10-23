@@ -130,6 +130,11 @@ class Presentation:
             GroupMenu.group << self.groups)
 
     @property
+    def menu(self):
+        """Returns the merged menu."""
+        raise NotImplementedError('Menu resolver not yet implemented.')
+
+    @property
     @cached_method()
     @coerce(charts)
     def playlist(self):
