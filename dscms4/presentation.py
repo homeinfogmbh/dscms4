@@ -10,7 +10,7 @@ from dscms4.exceptions import AmbiguousBaseChart
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
 from dscms4.exceptions import OrphanedBaseChart
-from dscms4.menutree import get_index, MenuTreeItem
+from dscms4.menutree import merge, get_index, MenuTreeItem
 from dscms4.orm.charts import BaseChart, ChartMode
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.content.terminal import TerminalBaseChart
@@ -134,7 +134,7 @@ class Presentation:
     def menutree(self):
         """Returns the merged menu tree."""
         items = chain(*(MenuTreeItem.from_menu(menu) for menu in self.menus))
-        return sorted(items, key=get_index)
+        return sorted(merge(items), key=get_index)
 
     @property
     @cached_method()
