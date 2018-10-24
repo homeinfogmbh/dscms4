@@ -110,7 +110,7 @@ class MenuTreeItem:
                 in sorted(self.menu_item_charts, key=get_index)
                 if not menu_item_chart.base_chart.trashed],
             'items': [
-                child.to_dict() for child in sorted(
+                child.to_json() for child in sorted(
                     self.children, key=get_index)]}
 
     def to_dom(self):
