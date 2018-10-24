@@ -31,7 +31,7 @@ def merge(*children_lists):
 
     for children in children_lists:
         for child in children:
-            mapping[id(child.signature)].append(child)
+            mapping[child.signature].append(child)
 
     return [add(children) for children in mapping.values()]
 
