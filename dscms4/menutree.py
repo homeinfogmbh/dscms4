@@ -24,12 +24,12 @@ def add(children):
     return child
 
 
-def merge(*children):
+def merge(children):
     """Merges lists of children by name."""
 
     mapping = defaultdict(list)
 
-    for child in chain(*children):
+    for child in children:
         mapping[child.signature].append(child)
 
     return [add(children) for children in mapping.values()]
@@ -68,7 +68,7 @@ class MenuTreeItem:
         if self.signature != other.signature:
             raise ValueError('Can only add menu items of same name.')
 
-        children = merge(self.children, other.children)
+        children = merge(chain(self.children, other.children))
         menu_item_charts = list(set(chain(
             self.menu_item_charts, other.menu_item_charts)))
         return type(self)(
