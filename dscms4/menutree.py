@@ -121,7 +121,7 @@ class MenuTreeItem:
         xml.text_color = self.text_color
         xml.background_color = self.background_color
         xml.index = self.index
-        xml.item = [item.to_dom() for item in self.children]
+        xml.menu_item = [item.to_dom() for item in self.children]
         xml.chart = [
             menu_item_chart.to_dom() for menu_item_chart
             in sorted(self.menu_item_charts, key=get_index)
