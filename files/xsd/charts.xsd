@@ -583,7 +583,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     <xs:element name="business_realty" type="xs:boolean"/>
                     <xs:element name="short_term_accommocation" type="xs:boolean"/>
                     <xs:element name="living_realty" type="xs:boolean"/>
-                    <!-- Subtypes -->
+                    <!-- Subtypes. -->
                     <xs:element name="office" type="xs:boolean"/>
                     <xs:element name="retail" type="xs:boolean"/>
                     <xs:element name="recreational" type="xs:boolean"/>

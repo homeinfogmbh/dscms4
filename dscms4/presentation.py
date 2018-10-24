@@ -10,6 +10,7 @@ from dscms4.exceptions import AmbiguousBaseChart
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
 from dscms4.exceptions import OrphanedBaseChart
+from dscms4.menutree import get_index, MenuTreeItem
 from dscms4.orm.charts import BaseChart, ChartMode
 from dscms4.orm.configuration import Configuration
 from dscms4.orm.content.terminal import TerminalBaseChart
@@ -130,9 +131,14 @@ class Presentation:
             GroupMenu.group << self.groups)
 
     @property
-    def menu(self):
-        """Returns the merged menu."""
-        raise NotImplementedError('Menu resolver not yet implemented.')
+    def menutree(self):
+        """Returns the merged menu tree."""
+        items = []
+
+        for menu in self.menus:
+            items += MenuTreeItem.from_menu(menu)
+
+        return sorted(items, key=get_index)
 
     @property
     @cached_method()
@@ -188,7 +194,7 @@ class Presentation:
         xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
         xml.playlist = [chart.to_dom(brief=True) for chart in self.playlist]
-        xml.menu = [menu.to_dom() for menu in self.menus]
+        xml.menu_item = [item.to_dom() for item in self.menutree]
         xml.chart = [chart.to_dom() for chart in self.charts]
         return xml
 
@@ -201,5 +207,5 @@ class Presentation:
             'playlist': [
                 chart.to_json(mode=ChartMode.BRIEF)
                 for chart in self.playlist],
-            'menus': [menu.to_json() for menu in self.menus],
+            'menuItems': [item.to_json() for item in self.menutree],
             'charts': [chart.to_json() for chart in self.charts]}

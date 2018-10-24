@@ -58,15 +58,6 @@ class Menu(CustomerModel):
 
         return json
 
-    def to_dom(self):
-        """Returns an XML DOM of the model."""
-        xml = dom.Menu()
-        xml.name = self.name
-        xml.description = self.description
-        xml.item = [
-            item.to_dom() for item in self.root_items.order_by(MenuItem.index)]
-        return xml
-
 
 class MenuItem(DSCMS4Model):
     """A menu item."""

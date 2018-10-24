@@ -37,24 +37,24 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="menu" type="Menu" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="menu_item" type="MenuItem" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Menüs.
+                        Menüelemente.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="playlist" type="BriefChart" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Playlist of charts.
+                        Playlist von Chart-Kurzinformationen in Reihenfolge.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="chart" type="Chart" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
-                        Actual charts data.
+                        Vollständige Chart-Informationen.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>

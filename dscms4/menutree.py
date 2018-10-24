@@ -7,7 +7,7 @@ from json import dumps
 from dscms4 import dom
 
 
-__all__ = ['add', 'merge', 'MenuTreeItem']
+__all__ = ['add', 'merge', 'get_index', 'MenuTreeItem']
 
 
 def add(children):
@@ -36,7 +36,7 @@ def merge(*children_lists):
     return [add(children) for children in mapping.values()]
 
 
-def key(menu_item):
+def get_index(menu_item):
     """Key function for sorting."""
 
     return menu_item.index
@@ -107,10 +107,11 @@ class MenuTreeItem:
             'index': self.index,
             'charts': [
                 menu_item_chart.to_json() for menu_item_chart
-                in sorted(self.menu_item_charts, key=key)
+                in sorted(self.menu_item_charts, key=get_index)
                 if not menu_item_chart.base_chart.trashed],
             'items': [
-                child.to_dict() for child in sorted(self.children, key=key)]}
+                child.to_dict() for child in sorted(
+                    self.children, key=get_index)]}
 
     def to_dom(self):
         """Returns an XML DOM of the model."""
@@ -123,6 +124,6 @@ class MenuTreeItem:
         xml.item = [item.to_dom() for item in self.children]
         xml.chart = [
             menu_item_chart.to_dom() for menu_item_chart
-            in sorted(self.menu_item_charts, key=key)
+            in sorted(self.menu_item_charts, key=get_index)
             if not menu_item_chart.base_chart.trashed]
         return xml
