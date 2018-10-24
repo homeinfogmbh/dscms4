@@ -29,7 +29,7 @@ def merge(*children):
 
     mapping = defaultdict(list)
 
-    for child in chain(children):
+    for child in chain(*children):
         mapping[child.signature].append(child)
 
     return [add(children) for children in mapping.values()]
