@@ -24,14 +24,13 @@ def add(children):
     return child
 
 
-def merge(*children_lists):
+def merge(*children):
     """Merges lists of children by name."""
 
     mapping = defaultdict(list)
 
-    for children in children_lists:
-        for child in children:
-            mapping[child.signature].append(child)
+    for child in chain(children):
+        mapping[child.signature].append(child)
 
     return [add(children) for children in mapping.values()]
 
