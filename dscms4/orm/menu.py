@@ -191,21 +191,6 @@ class MenuItem(DSCMS4Model):
 
         return json
 
-    def to_dom(self):
-        """Returns an XML DOM of the model."""
-        xml = dom.MenuItem()
-        xml.name = self.name
-        xml.icon = self.icon
-        xml.text_color = self.text_color
-        xml.background_color = self.background_color
-        xml.index = self.index
-        xml.item = [item.to_dom() for item in self.children]
-        xml.chart = [
-            menu_item_chart.to_dom() for menu_item_chart
-            in self.menu_item_charts.order_by(MenuItemChart.index)
-            if not menu_item_chart.base_chart.trashed]
-        return xml
-
 
 class MenuItemChart(DSCMS4Model):
     """Mapping in-between menu items and base charts."""
