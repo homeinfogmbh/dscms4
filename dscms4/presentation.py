@@ -133,11 +133,7 @@ class Presentation:
     @property
     def menutree(self):
         """Returns the merged menu tree."""
-        items = []
-
-        for menu in self.menus:
-            items += MenuTreeItem.from_menu(menu)
-
+        items = chain(*(MenuTreeItem.from_menu(menu) for menu in self.menus))
         return sorted(items, key=get_index)
 
     @property
