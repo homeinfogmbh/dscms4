@@ -66,8 +66,7 @@ class GroupContent:
 
         for group_base_chart in GroupBaseChart.select().join(
                 BaseChart, join_type='LEFT', on=bc_join).where(
-                    (Group.customer == CUSTOMER.id)
-                    & (GroupBaseChart.group == self.group)
+                    (GroupBaseChart.group == self.group)
                     & (BaseChart.trashed == 0)):
             yield group_base_chart.to_json()
 
