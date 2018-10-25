@@ -19,7 +19,7 @@ from dscms4.wsgi import terminal
 __all__ = ['APPLICATION', 'ROUTES']
 
 
-APPLICATION = Application('DSCMS4', cors=True, debug=True)
+APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
     charts.ROUTES + configuration.ROUTES + content.ROUTES + group.ROUTES
     + membership.ROUTES + menu.ROUTES + preview.ROUTES + previewgen.ROUTES
