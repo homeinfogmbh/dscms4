@@ -163,6 +163,7 @@ class Presentation:
             (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
 
     @property
+    @coerce(partial(sorted, key=lambda chart: chart.id))
     @coerce(frozenset)
     def charts(self):
         """Yields all charts for this terminal."""
