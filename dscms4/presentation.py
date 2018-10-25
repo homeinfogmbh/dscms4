@@ -30,6 +30,12 @@ __all__ = ['Presentation']
 LOGGER = getLogger(__file__)
 
 
+def uniquesort(iterable, *, key=None, reverse=False):
+    """Uniquely sorts an iterable."""
+
+    return sorted(frozenset(iterable), key=key, reverse=reverse)
+
+
 @coerce(tuple)
 def charts(base_charts):
     """Yields the charts of the respective base charts."""
@@ -164,8 +170,7 @@ class Presentation:
             (BaseChart.trashed == 0) & (MenuItem.menu << self.menus))
 
     @property
-    @coerce(partial(sorted, key=lambda chart: chart.id))
-    @coerce(frozenset)
+    @coerce(partial(uniquesort, key=lambda chart: chart.id))
     def charts(self):
         """Yields all charts for this terminal."""
         yield from self.playlist
