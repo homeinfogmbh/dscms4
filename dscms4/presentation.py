@@ -35,11 +35,15 @@ def charts(base_charts):
 
     for base_chart in base_charts:
         try:
-            yield base_chart.chart
+            chart = base_chart.chart
         except OrphanedBaseChart:
             LOGGER.error('Base chart is orphaned: %s.', base_chart)
         except AmbiguousBaseChart:
             LOGGER.error('Base chart is ambiguous: %s.', base_chart)
+        else:
+            yield chart
+            print('Yielded chart:', chart.__class__.__name__, chart.id,
+                  flush=True)
 
 
 @coerce(frozenset)
