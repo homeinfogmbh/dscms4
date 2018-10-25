@@ -29,14 +29,7 @@ __all__ = ['Presentation']
 LOGGER = getLogger(__file__)
 
 
-def _debug_chart(chart):
-    """Prints chart info."""
-
-    print('Yielded chart:', chart.__class__.__name__, chart.id, flush=True)
-    return chart
-
-
-@coerce(frozenset)
+@coerce(tuple)
 def charts(base_charts):
     """Yields the charts of the respective base charts."""
 
@@ -197,8 +190,7 @@ class Presentation:
         xml.customer = self.terminal.customer.id
         xml.tid = self.terminal.tid
         xml.configuration = self.configuration.to_dom()
-        xml.playlist = [
-            _debug_chart(chart).to_dom(brief=True) for chart in self.playlist]
+        xml.playlist = [chart.to_dom(brief=True) for chart in self.playlist]
         xml.menu_item = [item.to_dom() for item in self.menutree]
         xml.chart = [chart.to_dom() for chart in self.charts]
         return xml
