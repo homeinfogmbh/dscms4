@@ -1,5 +1,6 @@
 """Content accumulation for terminals."""
 
+from functools import partial
 from itertools import chain
 from logging import getLogger
 
