@@ -2,11 +2,10 @@
 
 from logging import getLogger
 
-from flask import request
-
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
+from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.group import GroupBaseChart
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.orm.content.group import GroupMenu
@@ -63,8 +62,13 @@ class GroupContent:
     @property
     def charts(self):
         """Yields the group's charts."""
-        for group_base_chart in GroupBaseChart.select().where(
-                GroupBaseChart.group == self.group):
+        bc_join = GroupBaseChart.base_chart == BaseChart.id
+
+        for group_base_chart in GroupBaseChart.select().join(
+                BaseChart, join_type='LEFT', on=bc_join).where(
+                    (Group.customer == CUSTOMER.id)
+                    & (GroupBaseChart.group == self.group)
+                    & (BaseChart.trashed == 0)):
             yield group_base_chart.to_json()
 
     @property
