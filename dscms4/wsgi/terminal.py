@@ -12,6 +12,7 @@ from dscms4.exceptions import NoConfigurationFound
 from dscms4.messages.presentation import NoConfigurationAssigned
 from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.messages.terminal import NoSuchTerminal
+from dscms4.orm.charts import BaseChart
 from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.orm.content.terminal import TerminalMenu
@@ -127,8 +128,10 @@ class TerminalContent:
     @property
     def charts(self):
         """Yields the terminal's charts."""
-        for terminal_base_chart in TerminalBaseChart.select().where(
-                TerminalBaseChart.terminal == self.terminal):
+        for terminal_base_chart in TerminalBaseChart.select().join(
+                BaseChart).where(
+                    (TerminalBaseChart.terminal == self.terminal)
+                    & (BaseChart.trashed == 0)):
             yield terminal_base_chart.to_json()
 
     @property
