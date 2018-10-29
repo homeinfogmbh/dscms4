@@ -3,8 +3,10 @@
 from his import authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentExists, ContentDeleted
+from dscms4.messages.content import ContentAdded
+from dscms4.messages.content import ContentDeleted
+from dscms4.messages.content import ContentExists
+from dscms4.messages.content import NoSuchContent
 from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.wsgi.menu.menu import get_menu
 from dscms4.wsgi.terminal import get_terminal

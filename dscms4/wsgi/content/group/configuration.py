@@ -3,8 +3,10 @@
 from his import authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.messages.content import NoSuchContent, ContentAdded, \
-    ContentExists, ContentDeleted
+from dscms4.messages.content import ContentAdded
+from dscms4.messages.content import ContentDeleted
+from dscms4.messages.content import ContentExists
+from dscms4.messages.content import NoSuchContent
 from dscms4.orm.content.group import GroupConfiguration
 from dscms4.wsgi.configuration import get_configuration
 from dscms4.wsgi.group.group import get_group
