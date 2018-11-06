@@ -24,8 +24,9 @@ def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
 
     presentation = Presentation(terminal)
+    content_type = request.headers.get('Accept', 'application/xml')
 
-    if 'xml' in request.args:
+    if content_type == 'application/xml':
         try:
             return XML(presentation.to_dom())
         except AmbiguousConfigurationsError:
@@ -33,7 +34,10 @@ def get_presentation(terminal):
         except NoConfigurationFound:
             return NoConfigurationAssigned()
 
-    return JSON(presentation.to_json())
+    if content_type == 'application/json':
+        return JSON(presentation.to_json())
+
+    return InvalidContentType()
 
 
 @preview(TerminalPreviewToken)
