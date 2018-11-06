@@ -2,7 +2,7 @@
 
 from flask import request
 
-from his.messages import MissingContentType
+from his.messages import InvalidContentType
 from tenant2tenant import TenantMessage
 from tenant2tenant.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
@@ -62,7 +62,7 @@ def get_tenant2tenant(terminal):
     if content_type == 'application/json':
         return JSON([message.to_json() for message in messages])
 
-    return MissingContentType()
+    return InvalidContentType()
 
 
 ROUTES = (
