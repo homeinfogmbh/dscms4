@@ -5,7 +5,7 @@ from flask import request
 from his.messages import InvalidContentType
 from tenant2tenant import TenantMessage
 from tenant2tenant.dom import tenant2tenant
-from wsgilib import JSON, XML, Binary
+from wsgilib import ACCEPT, JSON, XML, Binary
 
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
@@ -24,9 +24,8 @@ def get_presentation(terminal):
     """Returns the presentation for the respective terminal."""
 
     presentation = Presentation(terminal)
-    content_type = request.headers.get('Accept', 'application/xml')
 
-    if content_type == 'application/xml':
+    if  'application/xml' in ACCEPT:
         try:
             return XML(presentation.to_dom())
         except AmbiguousConfigurationsError:
@@ -34,7 +33,7 @@ def get_presentation(terminal):
         except NoConfigurationFound:
             return NoConfigurationAssigned()
 
-    if content_type == 'application/json':
+    if 'application/json' in ACCEPT:
         return JSON(presentation.to_json())
 
     return InvalidContentType()
