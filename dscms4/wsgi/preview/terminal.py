@@ -2,6 +2,7 @@
 
 from flask import request
 
+from his.messages import MissingContentType
 from tenant2tenant import TenantMessage
 from tenant2tenant.dom import tenant2tenant
 from wsgilib import JSON, XML, Binary
@@ -35,7 +36,6 @@ def get_presentation(terminal):
     return JSON(presentation.to_json())
 
 
-
 @preview(TerminalPreviewToken)
 @file_preview(Presentation)
 def get_file(file):
@@ -44,14 +44,14 @@ def get_file(file):
     return Binary(file.bytes)
 
 
-
 @preview(TerminalPreviewToken)
 def get_tenant2tenant(terminal):
     """Returns the tenant-to-tenant messages for the requested terminal."""
 
     messages = TenantMessage.for_terminal(terminal)
+    content_type = request.headers.get('Accept', 'application/xml')
 
-    if 'xml' in request.args:
+    if content_type == 'application/xml':
         xml = tenant2tenant()
 
         for message in messages:
@@ -59,7 +59,10 @@ def get_tenant2tenant(terminal):
 
         return XML(xml)
 
-    return JSON([message.to_json() for message in messages])
+    if content_type == 'application/json':
+        return JSON([message.to_json() for message in messages])
+
+    return MissingContentType()
 
 
 ROUTES = (
