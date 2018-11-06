@@ -1,7 +1,5 @@
 """Preview for a terminal."""
 
-from flask import request
-
 from his.messages import InvalidContentType
 from tenant2tenant import TenantMessage
 from tenant2tenant.dom import tenant2tenant
@@ -52,9 +50,8 @@ def get_tenant2tenant(terminal):
     """Returns the tenant-to-tenant messages for the requested terminal."""
 
     messages = TenantMessage.for_terminal(terminal)
-    content_type = request.headers.get('Accept', 'application/xml')
 
-    if content_type == 'application/xml':
+    if  'application/xml' in ACCEPT:
         xml = tenant2tenant()
 
         for message in messages:
@@ -62,7 +59,7 @@ def get_tenant2tenant(terminal):
 
         return XML(xml)
 
-    if content_type == 'application/json':
+    if 'application/json' in ACCEPT:
         return JSON([message.to_json() for message in messages])
 
     return InvalidContentType()
