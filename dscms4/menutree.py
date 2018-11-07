@@ -69,8 +69,14 @@ class MenuTreeItem:
             raise ValueError('Can only add menu items of same name.')
 
         children = merge(chain(self.children, other.children))
-        menu_item_charts = list(set(chain(
-            self.menu_item_charts, other.menu_item_charts)))
+        base_charts = set()
+        menu_item_charts = set()
+
+        for mic in chain(self.menu_item_charts, other.menu_item_charts):
+            if mic.base_chart_id not in base_charts:
+                base_charts.add(mic.base_chart_id)
+                menu_item_charts.add(mic)
+
         return type(self)(
             self.name, self.icon, self.text_color, self.background_color,
             self.index, menu_item_charts, children)
