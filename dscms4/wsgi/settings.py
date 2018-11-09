@@ -28,7 +28,7 @@ def set_settings():
     """Sets the customer's settings."""
 
     settings = Settings.for_customer(CUSTOMER.id)
-    settings.patch(request.json4)
+    settings.patch_json(request.json)
     settings.save()
     return SettingsSaved()
 
