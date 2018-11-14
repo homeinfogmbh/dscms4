@@ -11,7 +11,7 @@ __all__ = [
 
 
 class DSCMS4Message(Message):
-    """Basic real estates message."""
+    """Basic message for the DSCMS4."""
 
     DOMAIN = 'dscms4'
 
