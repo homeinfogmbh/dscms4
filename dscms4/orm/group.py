@@ -2,6 +2,7 @@
 
 from peewee import CharField, ForeignKeyField, IntegerField, TextField
 
+from comcat import Account
 from his.messages.data import MissingKeyError, InvalidKeys
 from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
@@ -15,7 +16,7 @@ __all__ = [
     'group_fk',
     'Group',
     'GroupMemberTerminal',
-    'GroupMemberApartmentBuilding',
+    'GroupMemberAccount',
     'GROUP_MEMBERS',
     'MODELS']
 
@@ -173,7 +174,6 @@ class GroupMemberTerminal(GroupMember):
     """Terminals as members in groups."""
 
     class Meta:
-        """Meta information for the database model."""
         table_name = 'group_member_terminal'
 
     group = group_fk('terminals')
@@ -188,17 +188,15 @@ class GroupMemberTerminal(GroupMember):
             'index': self.index}
 
 
-class GroupMemberApartmentBuilding(GroupMember):
-    """Apartment buildings as members in groups."""
+class GroupMemberAccount(GroupMember):
+    """ComCat accounts as group members."""
 
     class Meta:
-        """Meta information for the database model."""
-        table_name = 'group_member_apartment_building'
+        table_name = 'group_member_account'
 
-    group = group_fk('apartment_buildings')
+    group = group_fk('accounts')
     member = ForeignKeyField(
-        ApartmentBuilding, column_name='apartment_building',
-        on_delete='CASCADE')
+        Account, column_name='account', on_delete='CASCADE')
 
     def to_dom(self):
         """Returns an XML DOM."""
@@ -208,7 +206,7 @@ class GroupMemberApartmentBuilding(GroupMember):
         """Returns a JSON-ish dict."""
         return {
             'member': self.id,
-            'apartment_building': self.member.ve,
+            'account': self.member.id,
             'index': self.index}
 
 
