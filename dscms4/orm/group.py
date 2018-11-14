@@ -212,6 +212,6 @@ class GroupMemberAccount(GroupMember):
 
 GROUP_MEMBERS = {
     'terminal': GroupMemberTerminal,
-    'apartment_building': GroupMemberApartmentBuilding}
+    'account': GroupMemberAccount}
 
-MODELS = (Group, GroupMemberTerminal, GroupMemberApartmentBuilding)
+MODELS = (Group, GroupMemberTerminal, GroupMemberAccount)
