@@ -4,7 +4,6 @@ from peewee import CharField, ForeignKeyField, IntegerField, TextField
 
 from comcat import Account
 from his.messages.data import MissingKeyError, InvalidKeys
-from tenements.orm import ApartmentBuilding
 from terminallib import Terminal
 
 from dscms4.messages.common import CircularReference
