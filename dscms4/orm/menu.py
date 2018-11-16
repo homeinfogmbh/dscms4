@@ -56,7 +56,7 @@ class Menu(CustomerModel):
         yield copy
 
         for item in self.items:
-            yield from item.copy(copy, suffix=suffix)
+            yield from item.copy(menu=copy)
 
     def to_json(self, *args, items=False, **kwargs):
         """Returns the menu as a dictionary."""
@@ -179,7 +179,7 @@ class MenuItem(DSCMS4Model):
         yield copy
 
         for menu_item_chart in self.menu_item_charts:
-            yield menu_item_chart.copy(copy)
+            yield menu_item_chart.copy(menu_item=copy)
 
         for child in self.children:
             yield from child.copy(menu=menu, parent=copy)
