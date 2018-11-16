@@ -7,6 +7,9 @@ __all__ = [
     'NoSuchMenu',
     'InvalidMenuData',
     'MenuAdded',
+    'MenuPatched',
+    'MenuCopied',
+    'MenuDeleted',
     'NoSuchMenuItem',
     'NoMenuItemSpecified',
     'NoSuchMenuItem',
@@ -49,6 +52,12 @@ class MenuAdded(DSCMS4Message):
 
 class MenuPatched(DSCMS4Message):
     """Indicates that the menu was successfully patched."""
+
+    STATUS = 200
+
+
+class MenuCopied(DSCMS4Message):
+    """Indicates that the menu was successfully copied."""
 
     STATUS = 200
 

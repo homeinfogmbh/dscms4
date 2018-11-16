@@ -17,6 +17,7 @@ __all__ = ['Menu', 'MenuItem', 'MODELS']
 
 
 LOGGER = getLogger('Menu')
+COPY_SUFFIX = ' (Kopie)'
 
 
 class MenuItemGroup(namedtuple(
@@ -46,6 +47,16 @@ class Menu(CustomerModel):
     def root_items(self):
         """Yields this menu's root items."""
         return self.items.where(MenuItem.parent >> None)
+
+    def copy(self, suffix=COPY_SUFFIX):
+        """Copies thhe respective menu."""
+        copy = type(self)[self.id]
+        copy.id = None
+        copy.name = self.name + suffix
+        yield copy
+
+        for item in self.items:
+            yield from item.copy(copy, suffix=suffix)
 
     def to_json(self, *args, items=False, **kwargs):
         """Returns the menu as a dictionary."""
@@ -159,6 +170,16 @@ class MenuItem(DSCMS4Model):
 
         return MenuItemGroup(self, childrens_children)
 
+    def copy(self, menu=None):
+        """Copies this menu item."""
+        copy = type(self)[self.id]
+        copy.id = None
+        copy.menu = menu or self.menu
+        yield copy
+
+        for menu_item_chart in self.menu_item_charts:
+            yield menu_item_chart.copy(copy)
+
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
         if update_children:
@@ -212,6 +233,13 @@ class MenuItemChart(DSCMS4Model):
         menu_item_chart.menu_item = menu_item
         menu_item_chart.base_chart = base_chart
         return menu_item_chart
+
+    def copy(self, menu_item=None):
+        """Copies this menu item chart."""
+        copy = type(self)[self.id]
+        copy.id = None
+        copy.menu_item = menu_item or self.menu_item
+        return copy
 
     def to_json(self):
         """Returns a JSON-ish dictionary."""

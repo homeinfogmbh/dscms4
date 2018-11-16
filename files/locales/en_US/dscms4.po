@@ -145,6 +145,9 @@ msgstr "Menu added."
 msgid "MenuPatched"
 msgstr "Menu patched."
 
+msgid "MenuCopied"
+msgstr "Menu copied."
+
 msgid "MenuDeleted"
 msgstr "Menu deleted."
 
