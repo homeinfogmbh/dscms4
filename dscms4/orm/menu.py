@@ -170,15 +170,19 @@ class MenuItem(DSCMS4Model):
 
         return MenuItemGroup(self, childrens_children)
 
-    def copy(self, menu=None):
+    def copy(self, menu=None, parent=None):
         """Copies this menu item."""
         copy = type(self)[self.id]
         copy.id = None
         copy.menu = menu or self.menu
+        copy.parent = parent
         yield copy
 
         for menu_item_chart in self.menu_item_charts:
             yield menu_item_chart.copy(copy)
+
+        for child in self.children:
+            yield from child.copy(menu=menu, parent=copy)
 
     def delete_instance(self, update_children=False, **kwargs):
         """Removes this menu item."""
