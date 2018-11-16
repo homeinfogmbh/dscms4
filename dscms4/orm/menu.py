@@ -55,8 +55,8 @@ class Menu(CustomerModel):
         copy.name = self.name + suffix
         yield copy
 
-        for item in self.items:
-            yield from item.copy(menu=copy)
+        for root_item in self.root_items:
+            yield from root_item.copy(menu=copy)
 
     def to_json(self, *args, items=False, **kwargs):
         """Returns the menu as a dictionary."""
