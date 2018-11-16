@@ -108,6 +108,6 @@ ROUTES = (
     ('GET', '/menu', list_, 'list_menu'),
     ('GET', '/menu/<int:ident>', get, 'get_menu'),
     ('POST', '/menu', add, 'add_menu'),
-    (('PATCH', 'PUT'), '/menu/<int:ident>', patch, 'patch_menu'),
-    ('COPY', '/menu/<int:ident>', copy, 'copy_menu'),
+    ('PATCH', '/menu/<int:ident>', patch, 'patch_menu'),
+    (('COPY', 'PUT'), '/menu/<int:ident>', copy, 'copy_menu'),
     ('DELETE', '/menu/<int:ident>', delete, 'delete_menu'))
