@@ -23,7 +23,7 @@ def get_presentation(terminal):
 
     presentation = Presentation(terminal)
 
-    if  'application/xml' in ACCEPT:
+    if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         try:
             return XML(presentation.to_dom())
         except AmbiguousConfigurationsError:
@@ -51,7 +51,7 @@ def get_tenant2tenant(terminal):
 
     messages = TenantMessage.for_terminal(terminal)
 
-    if  'application/xml' in ACCEPT:
+    if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         xml = tenant2tenant()
 
         for message in messages:
