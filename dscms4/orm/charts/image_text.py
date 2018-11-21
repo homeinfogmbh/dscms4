@@ -82,7 +82,8 @@ class ImageText(Chart):
         if mode == ChartMode.FULL:
             json['texts'] = [text.text for text in self.texts]
             json['images'] = [
-                image.image for image in self.images.order_by(Image.index)]
+                image.to_json(fk_fields=False, autofields=False)
+                for image in self.images.order_by(Image.index)]
 
         return json
 
