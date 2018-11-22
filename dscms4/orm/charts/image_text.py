@@ -37,7 +37,7 @@ class ImageText(Chart):
         transaction = super().from_json(json, **kwargs)
 
         for image in images:
-            image = Image(chart=transaction.chart, image=image)
+            image = Image.from_json(image, chart=transaction.chart)
             transaction.add(image)
 
         for text in texts:
@@ -62,7 +62,7 @@ class ImageText(Chart):
                 transaction.delete(image)
 
             for image in images:
-                image = Image(chart=transaction.chart, image=image)
+                image = Image.from_json(image, chart=transaction.chart)
                 transaction.add(image)
 
         if texts is not UNCHANGED:
@@ -113,6 +113,13 @@ class Image(DSCMS4Model):
         ImageText, column_name='chart', backref='images', on_delete='CASCADE')
     image = IntegerField()
     index = IntegerField(default=0)
+
+    @classmethod
+    def from_json(cls, json, chart, **kwargs):
+        """Creates the image from a JSON-ish dict."""
+        record = super().from_json(json, **kwargs)
+        record.chart = chart
+        return record
 
     def to_dom(self):
         """Returns an XML DOM of this model."""
