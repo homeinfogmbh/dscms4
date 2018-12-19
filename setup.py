@@ -17,6 +17,7 @@ setup(
         'dscms4.orm',
         'dscms4.orm.charts',
         'dscms4.orm.content',
+        'dscms4.presentation',
         'dscms4.wsgi',
         'dscms4.wsgi.content',
         'dscms4.wsgi.content.group',
