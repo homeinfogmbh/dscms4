@@ -18,7 +18,7 @@ from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.orm.settings import Settings
 from dscms4.paging import page, pages
-from dscms4.presentation import Presentation
+from dscms4.presentation.terminal import Presentation
 
 
 __all__ = ['get_terminal', 'ROUTES']

@@ -9,9 +9,10 @@ from terminallib import Terminal
 
 from dscms4.messages.preview import NoSuchObject
 from dscms4.orm.common import DSCMS4Model
+from dscms4.orm.group import Group
 
 
-__all__ = ['TYPES', 'TerminalPreviewToken']
+__all__ = ['TYPES', 'TerminalPreviewToken', 'GroupPreviewToken']
 
 
 class _PreviewToken(DSCMS4Model):
@@ -48,7 +49,7 @@ class _PreviewToken(DSCMS4Model):
 class TerminalPreviewToken(_PreviewToken):
     """Preview tokens for terminals."""
 
-    class Meta:
+    class Meta:     # pylint: disable=C0111,R0903
         table_name = 'terminal_preview_token'
 
     obj = ForeignKeyField(
@@ -60,5 +61,19 @@ class TerminalPreviewToken(_PreviewToken):
         return model.tid == ident
 
 
-MODELS = (TerminalPreviewToken,)
-TYPES = {'terminal': TerminalPreviewToken}
+class GroupPreviewToken(_PreviewToken):
+    """Preview tokens for groups."""
+
+    class Meta:     # pylint: disable=C0111,R0903
+        table_name = 'group_preview_token'
+
+    obj = ForeignKeyField(Group, column_name='group', on_delete='CASCADE')
+
+    @staticmethod
+    def identify(model, ident):
+        """Identifies the group by its ID."""
+        return model.id == ident
+
+
+MODELS = (TerminalPreviewToken, GroupPreviewToken)
+TYPES = {'terminal': TerminalPreviewToken, 'group': GroupPreviewToken}
