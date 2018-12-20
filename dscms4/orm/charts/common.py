@@ -57,23 +57,32 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         """Resolves chart-referencing models for
         JSON deserialization and patching.
         """
-        current_models = frozenset(current_models)
-        new_ids = {json_identifier(obj) for obj in new_json}
-        current_ids = {model_identifier(model) for model in current_models}
-        unchanged_ids = {ident for ident in current_ids if ident in new_ids}
-        delete_ids = set()
+        current_models = {
+            model_identifier(model): model for model in current_models}
+        new_json = {json_identifier(obj): obj for obj in new_json}
+        patched_ids = set()
 
-        for model in current_models:
-            ident = model_identifier(model)
+        for ident, model in current_models.items():
+            try:
+                obj = new_json[ident]
+            except KeyError:
+                continue
 
-            if ident not in new_ids:
-                delete_ids.add(ident)
+            patched_ids.add(ident)
+            model.patch(obj)
+            self.add(obj)
+
+        deleted_ids = set()
+
+        for ident, model in current_models.items():
+            if ident not in new_json:
+                deleted_ids.add(ident)
                 self.delete(model)
 
-        not_new_ids = unchanged_ids | delete_ids
+        not_new_ids = patched_ids | deleted_ids
 
-        for obj in new_json:
-            if json_identifier(obj) not in not_new_ids:
+        for ident, obj in new_json.items():
+            if ident not in not_new_ids:
                 model = model_class.from_json(obj, self.chart)
                 self.add(model)
 
