@@ -62,19 +62,15 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         processed = set()
 
         for ident, record in records.items():
+            processed.add(ident)
+
             try:
                 json = json_objects[ident]
             except KeyError:
-                continue
-
-            processed.add(ident)
-            record.patch(json)
-            self.add(record)
-
-        for ident, record in records.items():
-            if ident not in json_objects:
-                processed.add(ident)
                 self.delete(record)
+            else:
+                record.patch(json)
+                self.add(record)
 
         for ident, json in json_objects.items():
             if ident not in processed:
