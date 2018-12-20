@@ -51,39 +51,39 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         """Adds the record as to be deleted."""
         self.related.append((False, record))
 
-    def resolve_refs(self, model_class, models, json_list, *,
-                     model_identifier=lambda model: model.id,
+    def resolve_refs(self, model, records, json_list, *,
+                     record_identifier=lambda record: record.id,
                      json_identifier=lambda json: json.get('id')):
-        """Resolves chart-referencing models for
+        """Resolves chart-referencing records for
         JSON deserialization and patching.
         """
-        models = {model_identifier(model): model for model in models}
+        records = {record_identifier(record): record for record in records}
         json_objects = {json_identifier(json): json for json in json_list}
         patched_ids = set()
 
-        for ident, model in models.items():
+        for ident, record in records.items():
             try:
                 json = json_objects[ident]
             except KeyError:
                 continue
 
             patched_ids.add(ident)
-            model.patch(json)
-            self.add(model)
+            record.patch(json)
+            self.add(record)
 
         deleted_ids = set()
 
-        for ident, model in models.items():
+        for ident, record in records.items():
             if ident not in json_objects:
                 deleted_ids.add(ident)
-                self.delete(model)
+                self.delete(record)
 
         not_new_ids = patched_ids | deleted_ids
 
         for ident, json in json_objects.items():
             if ident not in not_new_ids:
-                model = model_class.from_json(json, self.chart)
-                self.add(model)
+                record = model.from_json(json, self.chart)
+                self.add(record)
 
         return self
 
