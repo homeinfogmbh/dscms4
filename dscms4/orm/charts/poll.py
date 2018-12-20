@@ -58,7 +58,7 @@ class Poll(Chart):
 
         return transaction.resolve_refs(
             Option, self.options, options,
-            model_identifier=lambda model: model.text,
+            record_identifier=lambda record: record.text,
             json_identifier=lambda obj: obj.get('text'))
 
     def to_dom(self, brief=False):
