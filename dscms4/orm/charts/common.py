@@ -51,6 +51,34 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         """Adds the record as to be deleted."""
         self.related.append((False, record))
 
+    def resolve_refs(self, model_class, current_models, new_json, *,
+                     model_identifier=lambda model: model.id,
+                     json_identifier=lambda obj: obj.get('id')):
+        """Resolves referenced models for
+        JSON deserialization and patching.
+        """
+        current_models = frozenset(current_models)
+        new_ids = {json_identifier(obj) for obj in new_json}
+        current_ids = {model_identifier(model) for model in current_models}
+        unchanged_ids = {ident for ident in current_ids if ident in new_ids}
+        delete_ids = set()
+
+        for model in current_models:
+            ident = model_identifier(model)
+
+            if ident not in new_ids:
+                delete_ids.add(ident)
+                self.delete(model)
+
+        not_new_ids = unchanged_ids | delete_ids
+
+        for obj in new_json:
+            if json_identifier(obj) not in not_new_ids:
+                model = model_class.from_json(obj, self.chart)
+                self.add(model)
+
+        return self
+
     def commit(self):
         """Saves the base chart, chart and
         related record in preserved order.
