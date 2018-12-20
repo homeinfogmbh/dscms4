@@ -113,4 +113,27 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+
+
+    <xs:complexType name="PollOption">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Auswahloption für Umfragen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="votes" type="xs:positiveInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="de">
+                            Anzahl der Stimmen.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 </xs:schema>
+
+
+                              

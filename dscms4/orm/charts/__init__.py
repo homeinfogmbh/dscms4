@@ -14,6 +14,7 @@ from dscms4.orm.charts.image_text import ImageText
 from dscms4.orm.charts.image_text import Image as ImageTextImage
 from dscms4.orm.charts.image_text import Text
 from dscms4.orm.charts.news import News
+from dscms4.orm.charts.poll import PollMode, Poll, Option as PollOption
 from dscms4.orm.charts.public_transport import PublicTransport
 from dscms4.orm.charts.quotes import Quotes
 from dscms4.orm.charts.real_estates import RealEstates
@@ -29,5 +30,5 @@ __all__ = ['MODELS', 'ChartMode', 'BaseChart', 'Chart']
 MODELS = (
     BaseChart, Cleaning, Facebook, Account, Form, GarbageCollection,
     GuessPicture, ImageText, ImageTextImage, Blackboard, BlackboardImage, Text,
-    News, PublicTransport, Quotes, RealEstates, IdFilter, ZipCodeFilter, Video,
-    Weather, WeatherImage)
+    News, Poll, PollOption, PublicTransport, Quotes, RealEstates, IdFilter,
+    ZipCodeFilter, Video, Weather, WeatherImage)

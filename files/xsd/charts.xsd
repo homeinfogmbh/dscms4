@@ -411,6 +411,42 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
     </xs:complexType>
 
 
+    <xs:complexType name="Poll">
+        <xs:annotation>
+            <xs:documentation xml:lang="de">
+                Umfrage Chart.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="Chart">
+                <xs:sequence>
+                    <xs:element name="text" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Fragetext.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="mode" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Umfragemodus (Single- oder Multiple-Choice).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="option" type="PollOption" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="de">
+                                Antwortoptionen.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
     <xs:complexType name="PublicTransport">
         <xs:annotation>
             <xs:documentation xml:lang="de">
