@@ -59,7 +59,7 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         """
         records = {record_identifier(record): record for record in records}
         json_objects = {json_identifier(json): json for json in json_objects}
-        patched_ids = set()
+        processed = set()
 
         for ident, record in records.items():
             try:
@@ -67,21 +67,17 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
             except KeyError:
                 continue
 
-            patched_ids.add(ident)
+            processed.add(ident)
             record.patch(json)
             self.add(record)
 
-        deleted_ids = set()
-
         for ident, record in records.items():
             if ident not in json_objects:
-                deleted_ids.add(ident)
+                processed.add(ident)
                 self.delete(record)
 
-        not_new_ids = patched_ids | deleted_ids
-
         for ident, json in json_objects.items():
-            if ident not in not_new_ids:
+            if ident not in processed:
                 record = model.from_json(json, self.chart)
                 self.add(record)
 
