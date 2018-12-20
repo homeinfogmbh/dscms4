@@ -51,14 +51,14 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
         """Adds the record as to be deleted."""
         self.related.append((False, record))
 
-    def resolve_refs(self, model, records, json_list, *,
+    def resolve_refs(self, model, records, json_objects, *,
                      record_identifier=lambda record: record.id,
                      json_identifier=lambda json: json.get('id')):
         """Resolves chart-referencing records for
         JSON deserialization and patching.
         """
         records = {record_identifier(record): record for record in records}
-        json_objects = {json_identifier(json): json for json in json_list}
+        json_objects = {json_identifier(json): json for json in json_objects}
         patched_ids = set()
 
         for ident, record in records.items():
