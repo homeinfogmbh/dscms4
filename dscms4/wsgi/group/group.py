@@ -3,11 +3,18 @@
 from flask import request
 
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, XML
 
-from dscms4.messages.group import NoSuchGroup, GroupAdded, GroupPatched, \
-    GroupDeleted
+from dscms4.exceptions import AmbiguousConfigurationsError
+from dscms4.exceptions import NoConfigurationFound
+from dscms4.messages.group import GroupAdded
+from dscms4.messages.group import GroupDeleted
+from dscms4.messages.group import GroupPatched
+from dscms4.messages.group import NoSuchGroup
+from dscms4.messages.presentation import NoConfigurationAssigned
+from dscms4.messages.presentation import AmbiguousConfigurations
 from dscms4.orm.group import Group
+from dscms4.presentation.group import Presentation
 
 
 __all__ = ['ROUTES', 'get_group']
@@ -46,6 +53,29 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
+def get_presentation(ident):
+    """Returns the presentation for the respective group."""
+
+    group = get_group(ident)
+    presentation = Presentation(group)
+
+    try:
+        request.args['xml']
+    except KeyError:
+        return JSON(presentation.to_json())
+
+    try:
+        presentation_dom = presentation.to_dom()
+    except AmbiguousConfigurationsError:
+        return AmbiguousConfigurations()
+    except NoConfigurationFound:
+        return NoConfigurationAssigned()
+
+    return XML(presentation_dom)
+
+
+@authenticated
+@authorized('dscms4')
 def add():
     """Adds a new group."""
 
@@ -78,6 +108,8 @@ def delete(ident):
 ROUTES = (
     ('GET', '/group', list_, 'list_groups'),
     ('GET', '/group/<int:ident>', get, 'get_group'),
+    ('GET', '/group/<int:ident>/presentation', get_presentation,
+     'get_group_presentation'),
     ('POST', '/group', add, 'add_group'),
     ('PATCH', '/group/<int:ident>', patch, 'patch_group'),
     ('DELETE', '/group/<int:ident>', delete, 'delete_group'))
