@@ -56,15 +56,16 @@ class Poll(Chart):
         if options is UNCHANGED:
             return transaction
 
+        new_texts = {option.get('text') for option in options}
         unchanged_options = {
-            option.text for option in self.options if option.text in options}
+            option.text for option in self.options if option.text in new_texts}
 
         for option in self.options:
             if option.text not in unchanged_options:
                 transaction.delete(option)
 
         for option in options:
-            if option not in unchanged_options:
+            if option.get('text') not in unchanged_options:
                 option = Option.from_json(option, transaction.chart)
                 transaction.add(option)
 
