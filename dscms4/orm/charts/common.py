@@ -54,7 +54,7 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
     def resolve_refs(self, model_class, current_models, new_json, *,
                      model_identifier=lambda model: model.id,
                      json_identifier=lambda obj: obj.get('id')):
-        """Resolves referenced models for
+        """Resolves chart-referencing models for
         JSON deserialization and patching.
         """
         current_models = frozenset(current_models)
