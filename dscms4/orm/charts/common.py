@@ -53,24 +53,24 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
 
     def resolve_refs(self, model_class, current_models, new_json, *,
                      model_identifier=lambda model: model.id,
-                     json_identifier=lambda obj: obj.get('id')):
+                     json_identifier=lambda json: json.get('id')):
         """Resolves chart-referencing models for
         JSON deserialization and patching.
         """
         current_models = {
             model_identifier(model): model for model in current_models}
-        new_json = {json_identifier(obj): obj for obj in new_json}
+        new_json = {json_identifier(json): json for json in new_json}
         patched_ids = set()
 
         for ident, model in current_models.items():
             try:
-                obj = new_json[ident]
+                json = new_json[ident]
             except KeyError:
                 continue
 
             patched_ids.add(ident)
-            model.patch(obj)
-            self.add(obj)
+            model.patch(json)
+            self.add(model)
 
         deleted_ids = set()
 
@@ -81,9 +81,9 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
 
         not_new_ids = patched_ids | deleted_ids
 
-        for ident, obj in new_json.items():
+        for ident, json in new_json.items():
             if ident not in not_new_ids:
-                model = model_class.from_json(obj, self.chart)
+                model = model_class.from_json(json, self.chart)
                 self.add(model)
 
         return self
