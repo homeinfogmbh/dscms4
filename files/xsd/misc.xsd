@@ -121,7 +121,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                 Auswahloption für Umfragen.
             </xs:documentation>
         </xs:annotation>
-        <xs:complexContent>
+        <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="votes" type="xs:positiveInteger">
                     <xs:annotation>
@@ -131,7 +131,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                     </xs:annotation>
                 </xs:attribute>
             </xs:extension>
-        </xs:complexContent>
+        </xs:simpleContent>
     </xs:complexType>
 </xs:schema>
 
