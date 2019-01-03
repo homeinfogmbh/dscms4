@@ -3,9 +3,8 @@
 from flask import request
 
 from his import CUSTOMER, authenticated, authorized
-from his.messages import InvalidData
 from terminallib import Terminal
-from wsgilib import JSON, XML
+from wsgilib import Browser, JSON, XML
 
 from dscms4.exceptions import AmbiguousConfigurationsError
 from dscms4.exceptions import NoConfigurationFound
@@ -17,11 +16,13 @@ from dscms4.orm.content.terminal import TerminalBaseChart
 from dscms4.orm.content.terminal import TerminalConfiguration
 from dscms4.orm.content.terminal import TerminalMenu
 from dscms4.orm.settings import Settings
-from dscms4.paging import page, pages
 from dscms4.presentation.terminal import Presentation
 
 
 __all__ = ['get_terminal', 'ROUTES']
+
+
+BROWSER = Browser()
 
 
 def get_terminal(tid):
@@ -57,26 +58,13 @@ def list_():
 
     terminals = Terminal.select().where(expression)
 
-    try:
-        size = int(request.args['size'])
-    except KeyError:
-        size = None
-    except ValueError:
-        raise InvalidData(parameter='size')
+    if BROWSER.wanted:
+        if BROWSER.info:
+            return BROWSER.pages.to_json()
 
-    if size is not None:
-        try:
-            pageno = int(request.args['page'])
-        except KeyError:
-            pageno = None
-        except ValueError:
-            raise InvalidData(parameter='page')
-
-        if pageno is not None:
-            return JSON([terminal.to_json(short=True) for terminal in page(
-                terminals, size, pageno)])
-
-        return JSON({'pages': pages(terminals, size)})
+        return [
+            terminal.to_json(short=True) for terminal
+            in BROWSER.browse(terminals)]
 
     if 'assoc' in request.args:
         return JSON({
