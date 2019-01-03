@@ -1,4 +1,4 @@
-"""File hooks."""
+"""Hooks for filedb actions."""
 
 from logging import INFO, basicConfig, getLogger
 
