@@ -50,8 +50,10 @@ def _remove_wc_image(ident):
         image.delete_instance()
 
 
-def _remove_video_charts(ident):
-    """Removes the respective video charts."""
+def _null_video_charts(ident):
+    """Sets the image fields of the
+    respective video charts to NULL.
+    """
 
     for video in Video.select().where(Video.video == ident):
         LOGGER.info('Setting video = %i to NULL on Video %i.', ident, video.id)
@@ -95,5 +97,5 @@ def on_delete(ident):
     _remove_bc_images(ident)
     _remove_itc_images(ident)
     _remove_wc_image(ident)
-    _remove_video_charts(ident)
+    _null_video_charts(ident)
     _null_configurations(ident)
