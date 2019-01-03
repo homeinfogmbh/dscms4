@@ -66,7 +66,7 @@ class MenuTreeItem:
     def __add__(self, other):
         """Adds two menu tree items."""
         if self.signature != other.signature:
-            raise ValueError('Can only add menu items of same name.')
+            raise ValueError('Can only add menu items with same signature.')
 
         children = merge(chain(self.children, other.children))
         base_charts = set()
