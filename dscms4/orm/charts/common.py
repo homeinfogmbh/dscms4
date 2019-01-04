@@ -69,7 +69,7 @@ class Transaction(namedtuple('Transaction', ('chart', 'related'))):
             except KeyError:
                 self.delete(record)
             else:
-                record.patch(json)
+                record.patch_json(json)
                 self.add(record)
 
         for ident, json in json_objects.items():
