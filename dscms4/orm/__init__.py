@@ -4,8 +4,14 @@ This package provides the CMS's database models.
 """
 from sys import stderr
 
-from dscms4.orm import charts, content, chart_types, configuration, group, \
-    menu, preview, settings
+from dscms4.orm import charts
+from dscms4.orm import content
+from dscms4.orm import chart_types
+from dscms4.orm import configuration
+from dscms4.orm import group
+from dscms4.orm import menu
+from dscms4.orm import preview
+from dscms4.orm import settings
 
 
 __all__ = ['create_tables']
