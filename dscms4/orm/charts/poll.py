@@ -36,13 +36,8 @@ class Poll(Chart):
         options = json.pop('options', ())
         transaction = super().from_json(json, **kwargs)
 
-        for index, option in enumerate(options):
-            if isinstance(option, str):
-                option = Option.from_text(
-                    option, transaction.chart, index=index)
-            else:
-                option = Option.from_json(option, transaction.chart)
-
+        for option in options:
+            option = Option.from_json(option, transaction.chart)
             transaction.add(option)
 
         return transaction
@@ -100,16 +95,6 @@ class Option(DSCMS4Model):
     text = CharField(255)
     votes = IntegerField(default=0)
     index = IntegerField(default=0)
-
-    @classmethod
-    def from_text(cls, text, poll, votes=0, index=0):
-        """Creates the image from a text."""
-        record = cls()
-        record.poll = poll
-        record.text = text
-        record.votes = votes
-        record.index = index
-        return record
 
     @classmethod
     def from_json(cls, json, poll, **kwargs):
