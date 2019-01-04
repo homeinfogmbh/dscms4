@@ -7,7 +7,7 @@ from peewee import CharField, ForeignKeyField, IntegerField, TextField
 from peeweeplus import EnumField
 
 from dscms4 import dom
-from dscms4.orm.charts.common import Chart
+from dscms4.orm.charts.common import ChartMode, Chart
 from dscms4.orm.common import UNCHANGED, DSCMS4Model
 
 
@@ -66,6 +66,17 @@ class Poll(Chart):
             record_identifier=lambda record: record.text,
             json_identifier=lambda obj: obj.get('text'))
 
+    def to_json(self, mode=ChartMode.FULL, **kwargs):
+        """Returns the dictionary representation of this chart's fields."""
+        json = super().to_json(mode=mode, **kwargs)
+
+        if mode == ChartMode.FULL:
+            json['options'] = [
+                option.to_json(fk_fields=False, autofields=True)
+                for option in self.options.order_by(Option.index)]
+
+        return json
+
     def to_dom(self, brief=False):
         """Returns an XML DOM of this chart."""
         if brief:
@@ -84,13 +95,14 @@ class Option(DSCMS4Model):
     class Meta:
         table_name = 'poll_option'
 
-    poll = ForeignKeyField(Poll, column_name='poll', on_delete='CASCADE')
+    poll = ForeignKeyField(
+        Poll, column_name='poll', backref='options', on_delete='CASCADE')
     text = CharField(255)
     votes = IntegerField(default=0)
     index = IntegerField(default=0)
 
     @classmethod
-    def from_text(cls, text, poll, votes=0, index=0, **kwargs):
+    def from_text(cls, text, poll, votes=0, index=0):
         """Creates the image from a text."""
         record = cls()
         record.poll = poll
