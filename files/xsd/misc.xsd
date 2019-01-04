@@ -123,6 +123,13 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
         </xs:annotation>
         <xs:simpleContent>
             <xs:extension base="xs:string">
+                <xs:attribute name="id" type="xs:positiveInteger">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="de">
+                            ID des Datenbakeintrags.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="votes" type="xs:positiveInteger">
                     <xs:annotation>
                         <xs:documentation xml:lang="de">

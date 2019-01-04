@@ -94,5 +94,6 @@ class Option(DSCMS4Model):
     def to_dom(self):
         """Returns an XML DOM of this model."""
         xml = dom.PollOption(self.text)
+        xml.id = self.id
         xml.votes = self.votes
         return xml
