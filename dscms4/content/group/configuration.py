@@ -9,8 +9,8 @@ from cmslib.messages.content import ContentExists
 from cmslib.messages.content import NoSuchContent
 from cmslib.orm.content.group import GroupConfiguration
 
-from dscms4.wsgi.configuration import get_configuration
-from dscms4.wsgi.group.group import get_group
+from dscms4.configuration import get_configuration
+from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']

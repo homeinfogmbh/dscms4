@@ -15,7 +15,7 @@ from cmslib.messages.menu import NoSuchMenuItemChart
 from cmslib.orm.charts import BaseChart, Chart
 from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
 
-from dscms4.wsgi.menu.item import get_menu_item
+from dscms4.menu.item import get_menu_item
 
 
 __all__ = ['ROUTES']

@@ -11,8 +11,8 @@ from cmslib.messages.content import NoSuchContent
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.terminal import TerminalBaseChart
 
-from dscms4.wsgi.charts import get_chart
-from dscms4.wsgi.terminal import get_terminal
+from dscms4.charts import get_chart
+from dscms4.terminal import get_terminal
 
 
 __all__ = ['ROUTES']

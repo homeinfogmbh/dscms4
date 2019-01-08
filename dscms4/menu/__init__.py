@@ -1,6 +1,6 @@
 """DSCMS4 WSGI handlers for menus."""
 
-from dscms4.wsgi.menu import menu, item, charts
+from dscms4.menu import menu, item, charts
 
 __all__ = ['ROUTES']
 

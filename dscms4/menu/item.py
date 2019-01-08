@@ -16,7 +16,7 @@ from cmslib.messages.menu import MenuItemsSorted
 from cmslib.messages.menu import NoSuchMenuItem
 from cmslib.orm.menu import Menu, MenuItem
 
-from dscms4.wsgi.menu.menu import get_menu
+from dscms4.menu.menu import get_menu
 
 
 __all__ = ['ROUTES', 'get_menu_item']

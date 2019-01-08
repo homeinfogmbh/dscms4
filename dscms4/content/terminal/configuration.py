@@ -9,8 +9,8 @@ from cmslib.messages.content import ContentExists
 from cmslib.messages.content import NoSuchContent
 from cmslib.orm.content.terminal import TerminalConfiguration
 
-from dscms4.wsgi.configuration import get_configuration
-from dscms4.wsgi.terminal import get_terminal
+from dscms4.configuration import get_configuration
+from dscms4.terminal import get_terminal
 
 
 __all__ = ['ROUTES']

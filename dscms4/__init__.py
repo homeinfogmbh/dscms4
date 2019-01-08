@@ -4,16 +4,16 @@ from itertools import chain
 
 from his import Application
 
-from dscms4.wsgi import charts
-from dscms4.wsgi import configuration
-from dscms4.wsgi import content
-from dscms4.wsgi import group
-from dscms4.wsgi import membership
-from dscms4.wsgi import menu
-from dscms4.wsgi import preview
-from dscms4.wsgi import previewgen
-from dscms4.wsgi import settings
-from dscms4.wsgi import terminal
+from dscms4 import charts
+from dscms4 import configuration
+from dscms4 import content
+from dscms4 import group
+from dscms4 import membership
+from dscms4 import menu
+from dscms4 import preview
+from dscms4 import previewgen
+from dscms4 import settings
+from dscms4 import terminal
 
 
 __all__ = ['APPLICATION', 'ROUTES']

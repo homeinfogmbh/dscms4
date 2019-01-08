@@ -1,6 +1,6 @@
 """Preview access."""
 
-from dscms4.wsgi.preview import comcat_account, group, terminal
+from dscms4.preview import comcat_account, group, terminal
 
 
 __all__ = ['ROUTES']

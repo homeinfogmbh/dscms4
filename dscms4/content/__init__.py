@@ -1,6 +1,6 @@
 """Content handlers."""
 
-from dscms4.wsgi.content import group, terminal
+from dscms4.content import group, terminal
 
 __all__ = ['ROUTES']
 

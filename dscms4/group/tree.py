@@ -9,7 +9,7 @@ from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
 from cmslib.orm.group import Group, GroupMemberTerminal
 
-from dscms4.wsgi.group.group import get_group
+from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']

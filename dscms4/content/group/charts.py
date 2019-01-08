@@ -11,8 +11,8 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.group import Group
 
-from dscms4.wsgi.charts import get_chart
-from dscms4.wsgi.group.group import get_group
+from dscms4.charts import get_chart
+from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']

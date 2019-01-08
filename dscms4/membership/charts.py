@@ -7,7 +7,7 @@ from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.terminal import TerminalBaseChart
 from cmslib.orm.menu import MenuItemChart
 
-from dscms4.wsgi.charts import get_chart
+from dscms4.charts import get_chart
 
 
 __all__ = ['ROUTES']

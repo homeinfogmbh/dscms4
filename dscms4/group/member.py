@@ -9,7 +9,7 @@ from cmslib.messages.group import NoSuchMember
 from cmslib.messages.group import NoSuchMemberType
 from cmslib.orm.group import GROUP_MEMBERS, GroupMember
 
-from dscms4.wsgi.group.group import get_group
+from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']
