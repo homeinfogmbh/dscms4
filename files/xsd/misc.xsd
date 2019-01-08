@@ -130,7 +130,7 @@ Maintainer: Richard Neumann <r dot neumann at homeinfo fullstop de>
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="votes" type="xs:positiveInteger">
+                <xs:attribute name="votes" type="xs:nonNegativeInteger">
                     <xs:annotation>
                         <xs:documentation xml:lang="de">
                             Anzahl der Stimmen.
