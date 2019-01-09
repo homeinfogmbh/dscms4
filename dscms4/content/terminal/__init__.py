@@ -1,4 +1,4 @@
-"""Group content management."""
+"""Terminal content management."""
 
 from dscms4.content.terminal import charts, configuration, menu
 

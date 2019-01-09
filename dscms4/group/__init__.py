@@ -1,4 +1,4 @@
-"""WSGI handlers for groups and group members."""
+"""Handling of groups and group members."""
 
 from dscms4.group import group, member, tree
 

@@ -1,4 +1,8 @@
-"""WSGI application routes."""
+"""Digital Signage Content Management System, version 4.
+
+A web application to allow customers to edit
+and organize digital signage content.
+"""
 
 from itertools import chain
 

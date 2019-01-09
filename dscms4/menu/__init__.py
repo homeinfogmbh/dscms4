@@ -1,4 +1,4 @@
-"""DSCMS4 WSGI handlers for menus."""
+"""Handling of menus and related entities."""
 
 from dscms4.menu import menu, item, charts
 

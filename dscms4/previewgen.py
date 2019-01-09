@@ -1,4 +1,4 @@
-"""Authenticated generation of preview tokens."""
+"""Authenticated generation of tokens for previews."""
 
 from his import authenticated, authorized
 from wsgilib import JSON
