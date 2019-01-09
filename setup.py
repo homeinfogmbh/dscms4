@@ -10,7 +10,7 @@ setup(
     author_email='<info at homeinfo dot de>',
     maintainer='Richard Neumann',
     maintainer_email='<r dot neumann at homeinfo period de>',
-    requires=['his'],
+    requires=['his', 'cmslib'],
     packages=[
         'dscms4',
         'dscms4.content',
