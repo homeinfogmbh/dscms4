@@ -3,7 +3,7 @@
 from his import authenticated, authorized
 from wsgilib import JSON
 
-from cmslib.messages.preview import InvalidTokenType
+from cmslib.messages.preview import INVALID_TOKEN_TYPE
 from cmslib.orm.preview import TYPES
 
 
@@ -20,7 +20,7 @@ def generate(type_, ident):
     try:
         token_class = TYPES[type_]
     except KeyError:
-        raise InvalidTokenType()
+        raise INVALID_TOKEN_TYPE
 
     token = token_class.generate(ident)
     return JSON({'token': token.token.hex})

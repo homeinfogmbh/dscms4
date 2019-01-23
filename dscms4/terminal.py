@@ -8,9 +8,9 @@ from wsgilib import Browser, JSON, XML
 
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
-from cmslib.messages.presentation import NoConfigurationAssigned
-from cmslib.messages.presentation import AmbiguousConfigurations
-from cmslib.messages.terminal import NoSuchTerminal
+from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
+from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
+from cmslib.messages.terminal import NO_SUCH_TERMINAL
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.terminal import TerminalBaseChart
 from cmslib.orm.content.terminal import TerminalConfiguration
@@ -32,7 +32,7 @@ def get_terminal(tid):
         return Terminal.get(
             (Terminal.tid == tid) & (Terminal.customer == CUSTOMER.id))
     except Terminal.DoesNotExist:
-        raise NoSuchTerminal()
+        raise NO_SUCH_TERMINAL
 
 
 def with_terminal(function):
@@ -60,7 +60,7 @@ def list_():
 
     if BROWSER.wanted:
         if BROWSER.info:
-            return BROWSER.pages.to_json()
+            return BROWSER.pages(terminals).to_json()
 
         return [
             terminal.to_json(short=True) for terminal
@@ -99,9 +99,9 @@ def get_presentation(terminal):
     try:
         presentation_dom = presentation.to_dom()
     except AmbiguousConfigurationsError:
-        return AmbiguousConfigurations()
+        return AMBIGUOUS_CONFIGURATIONS
     except NoConfigurationFound:
-        return NoConfigurationAssigned()
+        return NO_CONFIGURATION_ASSIGNED
 
     return XML(presentation_dom)
 

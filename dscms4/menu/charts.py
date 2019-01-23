@@ -6,12 +6,12 @@ from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from his.messages import MissingData
 from wsgilib import JSON
 
-from cmslib.messages.charts import InvalidChartType, NoSuchChart
-from cmslib.messages.menu import DifferentMenuItemsError
-from cmslib.messages.menu import MenuItemChartAdded
-from cmslib.messages.menu import MenuItemChartDeleted
-from cmslib.messages.menu import MenuItemChartsSorted
-from cmslib.messages.menu import NoSuchMenuItemChart
+from cmslib.messages.charts import INVALID_CHART_TYPE, NO_SUCH_CHART
+from cmslib.messages.menu import DIFFERENT_MENU_ITEMS
+from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
+from cmslib.messages.menu import MENU_ITEM_CHART_DELETED
+from cmslib.messages.menu import MENU_ITEM_CHARTS_SORTED
+from cmslib.messages.menu import NO_SUCH_MENU_ITEM_CHART
 from cmslib.orm.charts import BaseChart, Chart
 from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
 
@@ -27,13 +27,13 @@ def get_chart(type_, ident):
     try:
         type_ = Chart.types[type_]
     except KeyError:
-        raise InvalidChartType()
+        raise INVALID_CHART_TYPE
 
     try:
         return type_.select().join(BaseChart).where(
             (BaseChart.customer == CUSTOMER) & (type_.id == ident)).get()
     except type_.DoesNotExist:
-        raise NoSuchChart()
+        raise NO_SUCH_CHART
 
 
 def get_menu_item_chart(ident):
@@ -43,7 +43,7 @@ def get_menu_item_chart(ident):
         return MenuItemChart.select().join(MenuItem).join(Menu).where(
             (Menu.customer == CUSTOMER.id) & (MenuItemChart.id == ident)).get()
     except MenuItemChart.DoesNotExist:
-        raise NoSuchMenuItemChart()
+        raise NO_SUCH_MENU_ITEM_CHART
 
 
 @authenticated
@@ -86,7 +86,7 @@ def add():
     chart = get_chart(type_, chart_id)
     menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
     menu_item_chart.save()
-    return MenuItemChartAdded(id=menu_item_chart.id)
+    return MENU_ITEM_CHART_ADDED.update(id=menu_item_chart.id)
 
 
 @authenticated
@@ -95,7 +95,7 @@ def delete(ident):
     """Deletes a menu or menu item."""
 
     get_menu_item_chart(ident).delete_instance()
-    return MenuItemChartDeleted()
+    return MENU_ITEM_CHART_DELETED
 
 
 @authenticated
@@ -108,7 +108,7 @@ def order():
     try:
         first, *other = menu_item_charts
     except ValueError:
-        return MenuItemChartsSorted()   # Empty set of MenuItemsCharts.
+        return MENU_ITEM_CHARTS_SORTED  # Empty set of MenuItemsCharts.
 
     if all(menu_item_chart.menu_item == first.menu_item
            for menu_item_chart in other):
@@ -116,9 +116,9 @@ def order():
             menu_item_chart.index = index
             menu_item_chart.save()
 
-        return MenuItemChartsSorted()
+        return MENU_ITEM_CHARTS_SORTED
 
-    return DifferentMenuItemsError()
+    return DIFFERENT_MENU_ITEMS
 
 
 ROUTES = (

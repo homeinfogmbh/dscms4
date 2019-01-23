@@ -7,10 +7,10 @@ from flask import request
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from cmslib.messages.configuration import NoSuchConfiguration
-from cmslib.messages.configuration import ConfigurationAdded
-from cmslib.messages.configuration import ConfigurationPatched
-from cmslib.messages.configuration import ConfigurationDeleted
+from cmslib.messages.configuration import NO_SUCH_CONFIGURATION
+from cmslib.messages.configuration import CONFIGURATION_ADDED
+from cmslib.messages.configuration import CONFIGURATION_PATCHED
+from cmslib.messages.configuration import CONFIGURATION_DELETED
 from cmslib.orm.configuration import TIME_FORMAT
 from cmslib.orm.configuration import Colors
 from cmslib.orm.configuration import Configuration
@@ -61,7 +61,7 @@ def get_configuration(ident):
             (Configuration.customer == CUSTOMER.id)
             & (Configuration.id == ident))
     except Configuration.DoesNotExist:
-        raise NoSuchConfiguration()
+        raise NO_SUCH_CONFIGURATION
 
 
 @authenticated
@@ -105,7 +105,7 @@ def add():
     configuration.save()
     _update_tickers(tickers, configuration, delete=False)
     _update_backlights(backlight, configuration, delete=False)
-    return ConfigurationAdded(id=configuration.id)
+    return CONFIGURATION_ADDED.update(id=configuration.id)
 
 
 @authenticated
@@ -134,7 +134,7 @@ def patch(ident):
     if backlight is not None:
         _update_backlights(backlight, configuration)
 
-    return ConfigurationPatched()
+    return CONFIGURATION_PATCHED
 
 
 @authenticated
@@ -143,7 +143,7 @@ def delete(ident):
     """Modifies an existing configuration."""
 
     get_configuration(ident).delete_instance()
-    return ConfigurationDeleted()
+    return CONFIGURATION_DELETED
 
 
 ROUTES = (
