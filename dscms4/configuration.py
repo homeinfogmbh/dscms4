@@ -4,9 +4,6 @@ from datetime import datetime
 
 from flask import request
 
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
-
 from cmslib.messages.configuration import NO_SUCH_CONFIGURATION
 from cmslib.messages.configuration import CONFIGURATION_ADDED
 from cmslib.messages.configuration import CONFIGURATION_PATCHED
@@ -16,6 +13,8 @@ from cmslib.orm.configuration import Colors
 from cmslib.orm.configuration import Configuration
 from cmslib.orm.configuration import Ticker
 from cmslib.orm.configuration import Backlight
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from wsgilib import JSON
 
 
 __all__ = ['ROUTES', 'list_configurations', 'get_configuration']

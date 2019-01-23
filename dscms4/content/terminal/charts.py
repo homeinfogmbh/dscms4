@@ -1,15 +1,14 @@
 """Management of charts in terminals."""
 
+from cmslib.messages.content import CONTENT_ADDED
+from cmslib.messages.content import CONTENT_DELETED
+from cmslib.messages.content import CONTENT_PATCHED
+from cmslib.messages.content import NO_SUCH_CONTENT
+from cmslib.orm.charts import BaseChart
+from cmslib.orm.content.terminal import TerminalBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
-
-from cmslib.messages.content import ContentAdded
-from cmslib.messages.content import ContentDeleted
-from cmslib.messages.content import ContentPatched
-from cmslib.messages.content import NoSuchContent
-from cmslib.orm.charts import BaseChart
-from cmslib.orm.content.terminal import TerminalBaseChart
 
 from dscms4.charts import get_chart
 from dscms4.terminal import get_terminal
@@ -41,7 +40,7 @@ def get_tbc(tid, ident):
             & (Terminal.customer == CUSTOMER.id)
             & (Terminal.tid == tid)).get()
     except TerminalBaseChart.DoesNotExist:
-        raise NoSuchContent()
+        raise NO_SUCH_CONTENT
 
 
 @authenticated
@@ -61,7 +60,7 @@ def add(tid, ident):
     base_chart = get_chart(ident).base
     tbc = TerminalBaseChart.from_json(JSON_DATA, terminal, base_chart)
     tbc.save()
-    return ContentAdded(id=tbc.id)
+    return CONTENT_ADDED.update(id=tbc.id)
 
 
 @authenticated
@@ -72,7 +71,7 @@ def patch(tid, ident):
     tbc = get_tbc(tid, ident)
     tbc.patch_json(JSON_DATA)
     tbc.save()
-    return ContentPatched()
+    return CONTENT_PATCHED
 
 
 @authenticated
@@ -82,7 +81,7 @@ def delete(tid, ident):
 
     terminal_base_chart = get_tbc(tid, ident)
     terminal_base_chart.delete_instance()
-    return ContentDeleted()
+    return CONTENT_DELETED
 
 
 ROUTES = (

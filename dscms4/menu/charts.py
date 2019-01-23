@@ -2,10 +2,6 @@
 
 from itertools import chain
 
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from his.messages import MissingData
-from wsgilib import JSON
-
 from cmslib.messages.charts import INVALID_CHART_TYPE, NO_SUCH_CHART
 from cmslib.messages.menu import DIFFERENT_MENU_ITEMS
 from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
@@ -14,6 +10,9 @@ from cmslib.messages.menu import MENU_ITEM_CHARTS_SORTED
 from cmslib.messages.menu import NO_SUCH_MENU_ITEM_CHART
 from cmslib.orm.charts import BaseChart, Chart
 from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from his.messages.data import MISSING_DATA
+from wsgilib import JSON
 
 from dscms4.menu.item import get_menu_item
 
@@ -64,24 +63,24 @@ def add():
     try:
         menu_item = json.pop('menu_item')
     except KeyError:
-        raise MissingData(key='menu_item')
+        raise MISSING_DATA.update(key='menu_item')
 
     menu_item = get_menu_item(menu_item)
 
     try:
         chart = json.pop('chart')
     except KeyError:
-        raise MissingData(key='chart')
+        raise MISSING_DATA.update(key='chart')
 
     try:
         type_ = chart['type']
     except KeyError:
-        raise MissingData(key='chart→type')
+        raise MISSING_DATA.update(key='chart→type')
 
     try:
         chart_id = chart['id']
     except KeyError:
-        raise MissingData(key='chart→id')
+        raise MISSING_DATA.update(key='chart→id')
 
     chart = get_chart(type_, chart_id)
     menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)

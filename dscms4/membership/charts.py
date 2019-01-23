@@ -1,11 +1,10 @@
 """Memberships of a chart."""
 
-from his import authenticated, authorized
-from wsgilib import JSON
-
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.terminal import TerminalBaseChart
 from cmslib.orm.menu import MenuItemChart
+from his import authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.charts import get_chart
 

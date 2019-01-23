@@ -4,17 +4,16 @@ from itertools import chain
 
 from flask import request
 
+from cmslib.messages.menu import DIFFERENT_MENUS
+from cmslib.messages.menu import DIFFERENT_PARENTS
+from cmslib.messages.menu import MENU_ITEM_ADDED
+from cmslib.messages.menu import MENU_ITEM_DELETED
+from cmslib.messages.menu import MENU_ITEM_PATCHED
+from cmslib.messages.menu import MENU_ITEMS_SORTED
+from cmslib.messages.menu import NO_SUCH_MENU_ITEM
+from cmslib.orm.menu import Menu, MenuItem
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.menu import DifferentMenusError
-from cmslib.messages.menu import DifferentParentsError
-from cmslib.messages.menu import MenuItemAdded
-from cmslib.messages.menu import MenuItemDeleted
-from cmslib.messages.menu import MenuItemPatched
-from cmslib.messages.menu import MenuItemsSorted
-from cmslib.messages.menu import NoSuchMenuItem
-from cmslib.orm.menu import Menu, MenuItem
 
 from dscms4.menu.menu import get_menu
 
@@ -29,7 +28,7 @@ def get_menu_item(ident):
         return MenuItem.select().join(Menu).where(
             (Menu.customer == CUSTOMER.id) & (MenuItem.id == ident)).get()
     except MenuItem.DoesNotExist:
-        raise NoSuchMenuItem()
+        raise NO_SUCH_MENU_ITEM
 
 
 @authenticated
@@ -61,7 +60,7 @@ def add():
 
     menu_item_group = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
     menu_item_group.save()
-    return MenuItemAdded(id=menu_item_group.id)
+    return MENU_ITEM_ADDED.update(id=menu_item_group.id)
 
 
 @authenticated
@@ -72,7 +71,7 @@ def patch(ident):
     menu_item = get_menu_item(ident)
     menu_item_group = menu_item.patch_json(JSON_DATA)
     menu_item_group.save()
-    return MenuItemPatched()
+    return MENU_ITEM_PATCHED
 
 
 @authenticated
@@ -83,7 +82,7 @@ def delete(ident):
     update_children = 'updateChildren' in request.args
     menu_item = get_menu_item(ident)
     menu_item.delete_instance(update_children=update_children)
-    return MenuItemDeleted()
+    return MENU_ITEM_DELETED
 
 
 @authenticated
@@ -96,19 +95,19 @@ def order():
     try:
         first, *other = menu_items
     except ValueError:
-        return MenuItemsSorted()    # Empty set of MenuItems.
+        return MENU_ITEMS_SORTED    # Empty set of MenuItems.
 
     if not all(menu_item.menu == first.menu for menu_item in other):
-        return DifferentMenusError()
+        return DIFFERENT_MENUS
 
     if not all(menu_item.parent == first.parent for menu_item in other):
-        return DifferentParentsError()
+        return DIFFERENT_PARENTS
 
     for index, menu_item in enumerate(chain((first,), other)):
         menu_item.index = index
         menu_item.save()
 
-    return MenuItemsSorted()
+    return MENU_ITEMS_SORTED
 
 
 ROUTES = (

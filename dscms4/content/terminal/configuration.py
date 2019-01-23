@@ -1,13 +1,12 @@
 """Management of configurations in terminals."""
 
+from cmslib.messages.content import CONTENT_ADDED
+from cmslib.messages.content import CONTENT_DELETED
+from cmslib.messages.content import CONTENT_EXISTS
+from cmslib.messages.content import NO_SUCH_CONTENT
+from cmslib.orm.content.terminal import TerminalConfiguration
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.content import ContentAdded
-from cmslib.messages.content import ContentDeleted
-from cmslib.messages.content import ContentExists
-from cmslib.messages.content import NoSuchContent
-from cmslib.orm.content.terminal import TerminalConfiguration
 
 from dscms4.configuration import get_configuration
 from dscms4.terminal import get_terminal
@@ -46,9 +45,9 @@ def add(gid, ident):
         terminal_configuration.terminal = terminal
         terminal_configuration.configuration = configuration
         terminal_configuration.save()
-        return ContentAdded()
+        return CONTENT_ADDED
 
-    return ContentExists()
+    return CONTENT_EXISTS
 
 
 @authenticated
@@ -64,10 +63,10 @@ def delete(gid, ident):
             (TerminalConfiguration.terminal == terminal)
             & (TerminalConfiguration.configuration == configuration))
     except TerminalConfiguration.DoesNotExist:
-        raise NoSuchContent()
+        raise NO_SUCH_CONTENT
 
     terminal_configuration.delete_instance()
-    return ContentDeleted()
+    return CONTENT_DELETED
 
 
 ROUTES = (

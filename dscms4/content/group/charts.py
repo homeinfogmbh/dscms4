@@ -1,15 +1,14 @@
 """Management of charts in groups."""
 
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
-
-from cmslib.messages.content import ContentAdded
-from cmslib.messages.content import ContentDeleted
-from cmslib.messages.content import ContentPatched
-from cmslib.messages.content import NoSuchContent
+from cmslib.messages.content import CONTENT_ADDED
+from cmslib.messages.content import CONTENT_DELETED
+from cmslib.messages.content import CONTENT_PATCHED
+from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.group import Group
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.charts import get_chart
 from dscms4.group.group import get_group
@@ -40,7 +39,7 @@ def get_gbc(gid, ident):
             (Group.customer == CUSTOMER.id) & (Group.id == gid)
             & (GroupBaseChart.id == ident)).get()
     except GroupBaseChart.DoesNotExist:
-        raise NoSuchContent()
+        raise NO_SUCH_CONTENT
 
 
 @authenticated
@@ -60,7 +59,7 @@ def add(gid, ident):
     base_chart = get_chart(ident).base
     gbc = GroupBaseChart.from_json(JSON_DATA, group, base_chart)
     gbc.save()
-    return ContentAdded(id=gbc.id)
+    return CONTENT_ADDED.update(id=gbc.id)
 
 
 @authenticated
@@ -71,7 +70,7 @@ def patch(gid, ident):
     group_base_chart = get_gbc(gid, ident)
     group_base_chart.patch_json(JSON_DATA)
     group_base_chart.save()
-    return ContentPatched()
+    return CONTENT_PATCHED
 
 
 @authenticated
@@ -81,7 +80,7 @@ def delete(gid, ident):
 
     group_base_chart = get_gbc(gid, ident)
     group_base_chart.delete_instance()
-    return ContentDeleted()
+    return CONTENT_DELETED
 
 
 ROUTES = (

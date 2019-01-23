@@ -1,13 +1,12 @@
 """Groups tree endpoint."""
 
-from his import CUSTOMER, authenticated, authorized
-from wsgilib import JSON
-
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
 from cmslib.orm.group import Group, GroupMemberTerminal
+from his import CUSTOMER, authenticated, authorized
+from wsgilib import JSON
 
 from dscms4.group.group import get_group
 

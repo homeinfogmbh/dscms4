@@ -2,11 +2,10 @@
 
 from flask import request
 
+from cmslib.messages.settings import SETTINGS_SAVED
+from cmslib.orm.settings import Settings
 from his import CUSTOMER, admin, authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.settings import SettingsSaved
-from cmslib.orm.settings import Settings
 
 
 __all__ = ['ROUTES']
@@ -30,7 +29,7 @@ def set_settings():
     settings = Settings.for_customer(CUSTOMER.id)
     settings.patch_json(request.json)
     settings.save()
-    return SettingsSaved()
+    return SETTINGS_SAVED
 
 
 ROUTES = (

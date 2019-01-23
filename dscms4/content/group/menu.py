@@ -1,13 +1,12 @@
 """Management of menus in groups."""
 
+from cmslib.messages.content import CONTENT_ADDED
+from cmslib.messages.content import CONTENT_DELETED
+from cmslib.messages.content import CONTENT_EXISTS
+from cmslib.messages.content import NO_SUCH_CONTENT
+from cmslib.orm.content.group import GroupMenu
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.content import ContentAdded
-from cmslib.messages.content import ContentDeleted
-from cmslib.messages.content import ContentExists
-from cmslib.messages.content import NoSuchContent
-from cmslib.orm.content.group import GroupMenu
 
 from dscms4.group.group import get_group
 from dscms4.menu.menu import get_menu
@@ -43,9 +42,9 @@ def add(gid, ident):
         group_menu.group = group
         group_menu.menu = menu
         group_menu.save()
-        return ContentAdded()
+        return CONTENT_ADDED
 
-    return ContentExists()
+    return CONTENT_EXISTS
 
 
 @authenticated
@@ -60,10 +59,10 @@ def delete(gid, ident):
         group_menu = GroupMenu.get(
             (GroupMenu.group == group) & (GroupMenu.menu == menu))
     except GroupMenu.DoesNotExist:
-        raise NoSuchContent()
+        raise NO_SUCH_CONTENT
 
     group_menu.delete_instance()
-    return ContentDeleted()
+    return CONTENT_DELETED
 
 
 ROUTES = (

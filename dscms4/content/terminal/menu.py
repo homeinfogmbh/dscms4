@@ -1,13 +1,12 @@
 """Management of menus in terminals."""
 
+from cmslib.messages.content import CONTENT_ADDED
+from cmslib.messages.content import CONTENT_DELETED
+from cmslib.messages.content import CONTENT_EXISTS
+from cmslib.messages.content import NO_SUCH_CONTENT
+from cmslib.orm.content.terminal import TerminalMenu
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.content import ContentAdded
-from cmslib.messages.content import ContentDeleted
-from cmslib.messages.content import ContentExists
-from cmslib.messages.content import NoSuchContent
-from cmslib.orm.content.terminal import TerminalMenu
 
 from dscms4.menu.menu import get_menu
 from dscms4.terminal import get_terminal
@@ -42,9 +41,9 @@ def add(gid, ident):
         terminal_menu.terminal = terminal
         terminal_menu.menu = menu
         terminal_menu.save()
-        return ContentAdded()
+        return CONTENT_ADDED
 
-    return ContentExists()
+    return CONTENT_EXISTS
 
 
 @authenticated
@@ -59,10 +58,10 @@ def delete(gid, ident):
         terminal_menu = TerminalMenu.get(
             (TerminalMenu.terminal == terminal) & (TerminalMenu.menu == menu))
     except TerminalMenu.DoesNotExist:
-        raise NoSuchContent()
+        raise NO_SUCH_CONTENT
 
     terminal_menu.delete_instance()
-    return ContentDeleted()
+    return CONTENT_DELETED
 
 
 ROUTES = (

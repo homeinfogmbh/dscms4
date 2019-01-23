@@ -1,10 +1,9 @@
 """Authenticated generation of tokens for previews."""
 
-from his import authenticated, authorized
-from wsgilib import JSON
-
 from cmslib.messages.preview import INVALID_TOKEN_TYPE
 from cmslib.orm.preview import TYPES
+from his import authenticated, authorized
+from wsgilib import JSON
 
 
 __all__ = ['ROUTES']

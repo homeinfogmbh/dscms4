@@ -1,13 +1,12 @@
 """Controllers for chart types."""
 
-from his import CUSTOMER, authenticated, authorized, root
-from his.messages import NoSuchCustomer
-from mdb import Customer
-from wsgilib import JSON
-
 from cmslib.orm.chart_types import ChartType
 from cmslib.orm.charts import Chart
-from cmslib.messages.charts import InvalidChartType, ChartTypeAdded
+from cmslib.messages.charts import INVALID_CHART_TYPE, CHART_TYPE_ADDED
+from his import CUSTOMER, authenticated, authorized, root
+from his.messages.customer import NO_SUCH_CUSTOMER
+from mdb import Customer
+from wsgilib import JSON
 
 
 __all__ = ['ROUTES']
@@ -30,16 +29,16 @@ def add(cid, chart_type):
     try:
         customer = Customer.get(Customer.id == cid)
     except Customer.DoesNotExist:
-        return NoSuchCustomer()
+        return NO_SUCH_CUSTOMER
 
     try:
         Chart.types[chart_type]  # Test whether type is valid.
     except KeyError:
-        return InvalidChartType()
+        return INVALID_CHART_TYPE
 
     chart_type = ChartType(customer=customer, chart_type=chart_type)
     chart_type.save()
-    return ChartTypeAdded()
+    return CHART_TYPE_ADDED
 
 
 ROUTES = (

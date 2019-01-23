@@ -5,18 +5,17 @@ from collections import defaultdict
 from flask import request
 from werkzeug.local import LocalProxy
 
+from cmslib.messages.charts import NO_CHART_TYPE_SPECIFIED
+from cmslib.messages.charts import INVALID_CHART_TYPE
+from cmslib.messages.charts import NO_SUCH_CHART
+from cmslib.messages.charts import CHART_ADDED
+from cmslib.messages.charts import CHART_DELETED
+from cmslib.messages.charts import CHART_PATCHED
+from cmslib.orm.charts import ChartMode, BaseChart, Chart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from his.messages import InvalidData, NotAnInteger
+from his.messages.data import INVALID_DATA, NOT_AN_INTEGER
 from peeweeplus import InvalidKeys
 from wsgilib import JSON
-
-from cmslib.messages.charts import NoChartTypeSpecified
-from cmslib.messages.charts import InvalidChartType
-from cmslib.messages.charts import NoSuchChart
-from cmslib.messages.charts import ChartAdded
-from cmslib.messages.charts import ChartDeleted
-from cmslib.messages.charts import ChartPatched
-from cmslib.orm.charts import ChartMode, BaseChart, Chart
 
 
 __all__ = ['get_chart', 'CHART_TYPES', 'CHART_TYPE', 'ROUTES']
@@ -29,12 +28,13 @@ def get_chart_types():
         type_names = request.args['types']
     except KeyError:
         yield from Chart.types.values()
-    else:
-        for type_name in type_names.split(','):
-            try:
-                yield Chart.types[type_name]
-            except KeyError:
-                raise InvalidChartType()
+        return
+
+    for type_name in type_names.split(','):
+        try:
+            yield Chart.types[type_name]
+        except KeyError:
+            raise INVALID_CHART_TYPE
 
 
 CHART_TYPES = LocalProxy(get_chart_types)
@@ -46,12 +46,12 @@ def get_chart_type():
     try:
         chart_type = request.args['type']
     except KeyError:
-        raise NoChartTypeSpecified()
+        raise NO_CHART_TYPE_SPECIFIED
 
     try:
         return Chart.types[chart_type]
     except KeyError:
-        raise InvalidChartType()
+        raise INVALID_CHART_TYPE
 
 
 CHART_TYPE = LocalProxy(get_chart_type)
@@ -68,7 +68,7 @@ def get_trashed():
     try:
         trashed = int(trashed)
     except ValueError:
-        raise NotAnInteger(key='trashed', value=trashed)
+        raise NOT_AN_INTEGER.update(key='trashed', value=trashed)
 
     if trashed:
         return BaseChart.trashed == 1
@@ -93,7 +93,7 @@ def get_chart(ident):
             (BaseChart.customer == CUSTOMER.id)
             & (CHART_TYPE.id == ident)).get()
     except CHART_TYPE.DoesNotExist:
-        raise NoSuchChart()
+        raise NO_SUCH_CHART
 
 
 def get_mode():
@@ -107,7 +107,7 @@ def get_mode():
     try:
         return ChartMode(mode)
     except ValueError:
-        raise InvalidData(key='mode', value=mode)
+        raise INVALID_DATA.update(key='mode', value=mode)
 
 
 @authenticated
@@ -143,10 +143,10 @@ def add():
     try:
         transaction = CHART_TYPE.from_json(JSON_DATA)
     except InvalidKeys as invalid_keys:
-        return InvalidData(invalid_keys=invalid_keys.invalid_keys)
+        return INVALID_DATA.update(invalid_keys=invalid_keys.invalid_keys)
 
     transaction.commit()
-    return ChartAdded(id=transaction.chart.id)
+    return CHART_ADDED.update(id=transaction.chart.id)
 
 
 @authenticated
@@ -159,10 +159,10 @@ def patch(ident):
     try:
         transaction = chart.patch_json(JSON_DATA)
     except InvalidKeys as invalid_keys:
-        return InvalidData(invalid_keys=invalid_keys.invalid_keys)
+        return INVALID_DATA.update(invalid_keys=invalid_keys.invalid_keys)
 
     transaction.commit()
-    return ChartPatched()
+    return CHART_PATCHED
 
 
 @authenticated
@@ -171,7 +171,7 @@ def delete(ident):
     """Deletes the specified chart."""
 
     get_chart(ident).delete_instance()
-    return ChartDeleted()
+    return CHART_DELETED
 
 
 ROUTES = (

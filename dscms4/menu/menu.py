@@ -2,16 +2,15 @@
 
 from flask import request
 
+from cmslib.messages.menu import INVALID_MENU_DATA
+from cmslib.messages.menu import MENU_ADDED
+from cmslib.messages.menu import MENU_COPIED
+from cmslib.messages.menu import MENU_DELETED
+from cmslib.messages.menu import MENU_PATCHED
+from cmslib.messages.menu import NO_SUCH_MENU
+from cmslib.orm.menu import Menu
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.menu import InvalidMenuData
-from cmslib.messages.menu import MenuAdded
-from cmslib.messages.menu import MenuCopied
-from cmslib.messages.menu import MenuDeleted
-from cmslib.messages.menu import MenuPatched
-from cmslib.messages.menu import NoSuchMenu
-from cmslib.orm.menu import Menu
 
 
 __all__ = ['ROUTES', 'get_menu']
@@ -23,7 +22,7 @@ def get_menu(ident):
     try:
         return Menu.get((Menu.customer == CUSTOMER.id) & (Menu.id == ident))
     except Menu.DoesNotExist:
-        raise NoSuchMenu()
+        raise NO_SUCH_MENU
 
 
 @authenticated
@@ -57,10 +56,10 @@ def add():
     try:
         menu = Menu.from_json(JSON_DATA)
     except ValueError:
-        return InvalidMenuData()
+        return INVALID_MENU_DATA
 
     menu.save()
-    return MenuAdded(id=menu.id)
+    return MENU_ADDED.update(id=menu.id)
 
 
 @authenticated
@@ -73,10 +72,10 @@ def patch(ident):
     try:
         menu.patch_json(JSON_DATA)
     except ValueError:
-        return InvalidMenuData()
+        return INVALID_MENU_DATA
 
     menu.save()
-    return MenuPatched()
+    return MENU_PATCHED
 
 
 @authenticated
@@ -85,13 +84,13 @@ def copy(ident):
     """Copies the respective menu."""
 
     menu = get_menu(ident)
-    copy, *records = menu.copy()
+    copy, *records = menu.copy()    # pylint: disable=W0621
     copy.save()
 
     for record in records:
         record.save()
 
-    return MenuCopied(id=copy.id)
+    return MENU_COPIED.update(id=copy.id)
 
 
 @authenticated
@@ -101,7 +100,7 @@ def delete(ident):
 
     menu = get_menu(ident)
     menu.delete_instance()
-    return MenuDeleted()
+    return MENU_DELETED
 
 
 ROUTES = (

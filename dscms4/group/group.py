@@ -2,19 +2,18 @@
 
 from flask import request
 
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON, XML
-
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
-from cmslib.messages.group import GroupAdded
-from cmslib.messages.group import GroupDeleted
-from cmslib.messages.group import GroupPatched
-from cmslib.messages.group import NoSuchGroup
-from cmslib.messages.presentation import NoConfigurationAssigned
-from cmslib.messages.presentation import AmbiguousConfigurations
+from cmslib.messages.group import GROUP_ADDED
+from cmslib.messages.group import GROUP_DELETED
+from cmslib.messages.group import GROUP_PATCHED
+from cmslib.messages.group import NO_SUCH_GROUP
+from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
+from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
 from cmslib.orm.group import Group
 from cmslib.presentation.group import Presentation
+from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from wsgilib import JSON, XML
 
 
 __all__ = ['ROUTES', 'get_group']
@@ -26,7 +25,7 @@ def get_group(ident):
     try:
         return Group.get((Group.customer == CUSTOMER.id) & (Group.id == ident))
     except Group.DoesNotExist:
-        raise NoSuchGroup()
+        raise NO_SUCH_GROUP
 
 
 @authenticated
@@ -67,9 +66,9 @@ def get_presentation(ident):
     try:
         presentation_dom = presentation.to_dom()
     except AmbiguousConfigurationsError:
-        return AmbiguousConfigurations()
+        return AMBIGUOUS_CONFIGURATIONS
     except NoConfigurationFound:
-        return NoConfigurationAssigned()
+        return NO_CONFIGURATION_ASSIGNED
 
     return XML(presentation_dom)
 
@@ -81,7 +80,7 @@ def add():
 
     group = Group.from_json(JSON_DATA)
     group.save()
-    return GroupAdded(id=group.id)
+    return GROUP_ADDED.update(id=group.id)
 
 
 @authenticated
@@ -92,7 +91,7 @@ def patch(ident):
     group = get_group(ident)
     group.patch_json(JSON_DATA)
     group.save()
-    return GroupPatched()
+    return GROUP_PATCHED
 
 
 @authenticated
@@ -102,7 +101,7 @@ def delete(ident):
 
     group = get_group(ident)
     group.delete_instance()
-    return GroupDeleted()
+    return GROUP_DELETED
 
 
 ROUTES = (

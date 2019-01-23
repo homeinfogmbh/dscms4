@@ -2,10 +2,6 @@
 
 from flask import request
 
-from his import CUSTOMER, authenticated, authorized
-from terminallib import Terminal
-from wsgilib import Browser, JSON, XML
-
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
@@ -17,6 +13,9 @@ from cmslib.orm.content.terminal import TerminalConfiguration
 from cmslib.orm.content.terminal import TerminalMenu
 from cmslib.orm.settings import Settings
 from cmslib.presentation.terminal import Presentation
+from his import CUSTOMER, authenticated, authorized
+from terminallib import Terminal
+from wsgilib import Browser, JSON, XML
 
 
 __all__ = ['get_terminal', 'ROUTES']

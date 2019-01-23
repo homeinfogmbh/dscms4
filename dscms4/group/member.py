@@ -1,13 +1,12 @@
 """Group member controllers."""
 
+from cmslib.messages.group import MEMBER_ADDED
+from cmslib.messages.group import MEMBER_DELETED
+from cmslib.messages.group import NO_SUCH_MEMBER
+from cmslib.messages.group import NO_SUCH_MEMBER_TYPE
+from cmslib.orm.group import GROUP_MEMBERS, GroupMember
 from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
-
-from cmslib.messages.group import MemberAdded
-from cmslib.messages.group import MemberDeleted
-from cmslib.messages.group import NoSuchMember
-from cmslib.messages.group import NoSuchMemberType
-from cmslib.orm.group import GROUP_MEMBERS, GroupMember
 
 from dscms4.group.group import get_group
 
@@ -21,7 +20,7 @@ def get_member_class(member_type):
     try:
         return GROUP_MEMBERS[member_type]
     except KeyError:
-        raise NoSuchMemberType()
+        raise NO_SUCH_MEMBER_TYPE
 
 
 @authenticated
@@ -44,7 +43,7 @@ def add(gid):
     group = get_group(gid)
     member = GroupMember.from_json(JSON_DATA, group)
     member.save()
-    return MemberAdded(id=member.id)
+    return MEMBER_ADDED.update(id=member.id)
 
 
 @authenticated
@@ -59,10 +58,10 @@ def delete(gid, member_type, member_id):
         member = member_class.get(
             (member_class.group == group) & (member_class.id == member_id))
     except member_class.DoesNotExist:
-        raise NoSuchMember()
+        raise NO_SUCH_MEMBER
 
     member.delete_instance()
-    return MemberDeleted()
+    return MEMBER_DELETED
 
 
 ROUTES = (
