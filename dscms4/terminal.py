@@ -61,9 +61,9 @@ def list_():
         if BROWSER.info:
             return BROWSER.pages(terminals).to_json()
 
-        return [
+        return JSON([
             terminal.to_json(short=True) for terminal
-            in BROWSER.browse(terminals)]
+            in BROWSER.browse(terminals)])
 
     if 'assoc' in request.args:
         return JSON({
