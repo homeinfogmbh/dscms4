@@ -38,17 +38,17 @@ def get_abc(acc_id, ident):
         return AccountBaseChart.select().join(Account).where(
             (AccountBaseChart.id == ident)
             & (Account.customer == CUSTOMER.id)
-            & (Account.tid == acc_id)).get()
+            & (Account.id == acc_id)).get()
     except AccountBaseChart.DoesNotExist:
         raise NO_SUCH_CONTENT
 
 
 @authenticated
 @authorized('comcat')
-def get(tid):
+def get(acc_id):
     """Returns a list of IDs of the charts in the respective account."""
 
-    return JSON([abc.to_json() for abc in list_abc(tid)])
+    return JSON([abc.to_json() for abc in list_abc(acc_id)])
 
 
 @authenticated

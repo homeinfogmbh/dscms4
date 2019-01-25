@@ -17,7 +17,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('comcat')
-def get(ident):
+def get(acc_id):
     """Returns a list of IDs of the configurations
     in the respective account.
     """
@@ -25,7 +25,7 @@ def get(ident):
     return JSON([
         account_configuration.configuration.id for account_configuration
         in AccountConfiguration.select().where(
-            AccountConfiguration.account == get_account(ident))])
+            AccountConfiguration.account == get_account(acc_id))])
 
 
 @authenticated
@@ -70,9 +70,10 @@ def delete(acc_id, ident):
 
 
 ROUTES = (
-    ('GET', '/content/comcat_account/<int:gid>/configuration', get,
+    ('GET', '/content/comcat_account/<int:acc_id>/configuration', get,
      'list_comcat_account_configurations'),
-    ('POST', '/content/comcat_account/<int:gid>/configuration/<int:ident>',
+    ('POST', '/content/comcat_account/<int:acc_id>/configuration/<int:ident>',
      add, 'add_comcat_account_configuration'),
-    ('DELETE', '/content/comcat_account/<int:gid>/configuration/<int:ident>',
+    ('DELETE',
+     '/content/comcat_account/<int:acc_id>/configuration/<int:ident>',
      delete, 'delete_comcat_accountl_configuration'))
