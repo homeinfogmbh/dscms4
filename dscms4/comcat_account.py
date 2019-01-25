@@ -4,6 +4,7 @@ from functools import wraps
 
 from flask import request
 
+from cmslib.presentation.comcat_account import Presentation
 from comcatlib import Account
 from comcatlib.messages import ACCOUNT_ADDED
 from comcatlib.messages import ACCOUNT_DELETED
@@ -96,9 +97,34 @@ def delete(account):
     return ACCOUNT_DELETED
 
 
+@authenticated
+@authorized('dscms4')
+@with_account
+def get_presentation(account):
+    """Returns the presentation for the respective terminal."""
+
+    presentation = Presentation(account)
+
+    try:
+        request.args['xml']
+    except KeyError:
+        return JSON(presentation.to_json())
+
+    try:
+        presentation_dom = presentation.to_dom()
+    except AmbiguousConfigurationsError:
+        return AMBIGUOUS_CONFIGURATIONS
+    except NoConfigurationFound:
+        return NO_CONFIGURATION_ASSIGNED
+
+    return XML(presentation_dom)
+
+
 ROUTES = (
     ('GET', '/comcat_account', list_, 'list_comcat_accounts'),
     ('GET', '/comcat_account/<int:ident>', get, 'get_comcat_account'),
     ('POST', '/comcat_account', add, 'add_comcat_account'),
     ('PATCH', '/comcat_account/<int:ident>', patch, 'patch_comcat_account'),
-    ('DELETE', '/comcat_account/<int:ident>', delete, 'delete_comcat_account'))
+    ('DELETE', '/comcat_account/<int:ident>', delete, 'delete_comcat_account'),
+    ('GET', '/comcat_account/<int:tid>/presentation', get_presentation,
+     'get_comcat_account_presentation'))
