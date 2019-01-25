@@ -31,7 +31,7 @@ def list_abc(ident):
                 & (BaseChart.trashed == 0))
 
 
-def get_tbc(acc_id, ident):
+def get_abc(acc_id, ident):
     """Returns the respective account base chart."""
 
     try:
@@ -48,7 +48,7 @@ def get_tbc(acc_id, ident):
 def get(tid):
     """Returns a list of IDs of the charts in the respective account."""
 
-    return JSON([tbc.to_json() for tbc in list_tbc(tid)])
+    return JSON([abc.to_json() for abc in list_abc(tid)])
 
 
 @authenticated
@@ -79,13 +79,13 @@ def patch(acc_id, ident):
 def delete(acc_id, ident):
     """Deletes the chart from the respective account."""
 
-    account_base_chart = get_account(acc_id, ident)
+    account_base_chart = get_abc(acc_id, ident)
     account_base_chart.delete_instance()
     return CONTENT_DELETED
 
 
 ROUTES = (
-    ('GET', '/content/comcat_account/<int:acc_id>/chart', get
+    ('GET', '/content/comcat_account/<int:acc_id>/chart', get,
      'list_comcat_account_charts'),
     ('POST', '/content/comcat_account/<int:acc_id>/chart/<int:ident>', add,
      'add_comcat_account_chart'),
