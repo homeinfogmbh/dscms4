@@ -16,7 +16,7 @@ __all__ = ['ROUTES']
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def get(ident):
     """Returns a list of IDs of the configurations
     in the respective account.
@@ -29,7 +29,7 @@ def get(ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def add(acc_id, ident):
     """Adds the configuration to the respective account."""
 
@@ -51,7 +51,7 @@ def add(acc_id, ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def delete(acc_id, ident):
     """Deletes the configuration from the respective account."""
 

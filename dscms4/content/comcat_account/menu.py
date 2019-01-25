@@ -16,7 +16,7 @@ __all__ = ['ROUTES']
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def get(acc_id):
     """Returns a list of IDs of the menus in the respective account."""
 
@@ -26,7 +26,7 @@ def get(acc_id):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def add(acc_id, ident):
     """Adds the menu to the respective account."""
 
@@ -47,7 +47,7 @@ def add(acc_id, ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def delete(acc_id, ident):
     """Deletes the menu from the respective account."""
 

@@ -44,7 +44,7 @@ def get_abc(acc_id, ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def get(tid):
     """Returns a list of IDs of the charts in the respective account."""
 
@@ -52,7 +52,7 @@ def get(tid):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def add(acc_id, ident):
     """Adds the chart to the respective account."""
 
@@ -64,7 +64,7 @@ def add(acc_id, ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def patch(acc_id, ident):
     """Adds the chart to the respective account."""
 
@@ -75,7 +75,7 @@ def patch(acc_id, ident):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 def delete(acc_id, ident):
     """Deletes the chart from the respective account."""
 

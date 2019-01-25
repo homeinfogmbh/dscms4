@@ -98,7 +98,7 @@ def delete(account):
 
 
 @authenticated
-@authorized('dscms4')
+@authorized('comcat')
 @with_account
 def get_presentation(account):
     """Returns the presentation for the respective terminal."""
