@@ -126,5 +126,5 @@ ROUTES = (
     ('POST', '/comcat_account', add, 'add_comcat_account'),
     ('PATCH', '/comcat_account/<int:ident>', patch, 'patch_comcat_account'),
     ('DELETE', '/comcat_account/<int:ident>', delete, 'delete_comcat_account'),
-    ('GET', '/comcat_account/<int:tid>/presentation', get_presentation,
+    ('GET', '/comcat_account/<int:ident>/presentation', get_presentation,
      'get_comcat_account_presentation'))
