@@ -3,8 +3,8 @@
 A web application to allow customers to edit
 and organize digital signage content.
 """
-
 from itertools import chain
+from logging import INFO, basicConfig
 
 from his import Application
 
@@ -24,9 +24,17 @@ from dscms4 import terminal
 __all__ = ['APPLICATION', 'ROUTES']
 
 
+LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
 APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
     charts.ROUTES + comcat_account.ROUTES + configuration.ROUTES
     + content.ROUTES + group.ROUTES + membership.ROUTES + menu.ROUTES
     + preview.ROUTES + previewgen.ROUTES + settings.ROUTES + terminal.ROUTES)
 APPLICATION.add_routes(ROUTES)
+
+
+@APPLICATION.before_first_request
+def _init_logger():
+    """Initializes the logger."""
+
+    basicConfig(level=INFO, format=LOG_FORMAT)
