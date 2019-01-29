@@ -4,6 +4,10 @@ from functools import wraps
 
 from flask import request
 
+from cmslib.exceptions import AmbiguousConfigurationsError
+from cmslib.exceptions import NoConfigurationFound
+from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
+from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
 from cmslib.presentation.comcat_account import Presentation
 from comcatlib import Account
 from comcatlib.messages import ACCOUNT_ADDED
@@ -11,7 +15,7 @@ from comcatlib.messages import ACCOUNT_DELETED
 from comcatlib.messages import ACCOUNT_PATCHED
 from comcatlib.messages import NO_SUCH_ACCOUNT
 from his import CUSTOMER, authenticated, authorized, admin
-from wsgilib import JSON
+from wsgilib import JSON, XML
 
 
 __all__ = ['ROUTES']
