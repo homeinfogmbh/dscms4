@@ -14,7 +14,6 @@ setup(
     packages=[
         'dscms4',
         'dscms4.content',
-        'dscms4.content.comcat_account',
         'dscms4.content.group',
         'dscms4.content.terminal',
         'dscms4.group',
