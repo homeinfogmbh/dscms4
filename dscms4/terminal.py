@@ -50,6 +50,8 @@ def list_():
     """Lists all terminals of the respective customer."""
 
     expression = Terminal.customer == CUSTOMER.id
+    expression &= Terminal.deleted >> None
+    expression &= Terminal.tainted == 0
     settings = Settings.for_customer(CUSTOMER.id)
 
     if not settings.show_testing_terminals:
