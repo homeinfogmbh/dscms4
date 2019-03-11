@@ -5,7 +5,9 @@ from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
 from cmslib.orm.group import Group, GroupMemberTerminal
+from cmslib.orm.settings import Settings
 from his import CUSTOMER, authenticated, authorized
+from terminallib import Terminal
 from wsgilib import JSON
 
 from dscms4.group.group import get_group
@@ -82,8 +84,15 @@ class GroupContent:
     @property
     def terminals(self):
         """Yields the group's terminals."""
-        for group_member_terminal in GroupMemberTerminal.select().where(
-                GroupMemberTerminal.group == self.group):
+        if Settings.for_customer(CUSTOMER.id).show_testing_terminals:
+            selection = GroupMemberTerminal.select().where(
+                GroupMemberTerminal.group == self.group)
+        else:
+            selection = GroupMemberTerminal.select().join(Terminal).where(
+                (GroupMemberTerminal.group == self.group)
+                & (Terminal.testing == 0))
+
+        for group_member_terminal in selection:
             yield group_member_terminal.to_json()
 
     @property
