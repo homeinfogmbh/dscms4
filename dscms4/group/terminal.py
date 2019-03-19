@@ -1,4 +1,4 @@
-"""Group member controllers."""
+"""Terminals as members in groups."""
 
 from cmslib.functions.group import get_group
 from cmslib.messages.group import MEMBER_ADDED
