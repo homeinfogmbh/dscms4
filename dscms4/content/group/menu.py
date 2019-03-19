@@ -1,5 +1,7 @@
 """Management of menus in groups."""
 
+from cmslib.functions.group import get_group
+from cmslib.functions.menu import get_menu
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_EXISTS
@@ -7,9 +9,6 @@ from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.group import GroupMenu
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from dscms4.group.group import get_group
-from dscms4.menu.menu import get_menu
 
 
 __all__ = ['ROUTES']

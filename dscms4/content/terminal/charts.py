@@ -1,5 +1,7 @@
 """Management of charts in terminals."""
 
+from cmslib.functions.charts import get_chart
+from cmslib.functions.terminal import get_terminal
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_PATCHED
@@ -9,9 +11,6 @@ from cmslib.orm.content.terminal import TerminalBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from terminallib import Terminal
 from wsgilib import JSON
-
-from dscms4.charts import get_chart
-from dscms4.terminal import get_terminal
 
 
 __all__ = ['ROUTES']

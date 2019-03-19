@@ -4,10 +4,10 @@ from flask import request
 
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
+from cmslib.functions.group import get_group
 from cmslib.messages.group import GROUP_ADDED
 from cmslib.messages.group import GROUP_DELETED
 from cmslib.messages.group import GROUP_PATCHED
-from cmslib.messages.group import NO_SUCH_GROUP
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
 from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
 from cmslib.orm.group import Group
@@ -16,16 +16,7 @@ from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON, XML
 
 
-__all__ = ['ROUTES', 'get_group']
-
-
-def get_group(ident):
-    """Returns the respective group of the current customer."""
-
-    try:
-        return Group.get((Group.customer == CUSTOMER.id) & (Group.id == ident))
-    except Group.DoesNotExist:
-        raise NO_SUCH_GROUP
+__all__ = ['ROUTES']
 
 
 @authenticated

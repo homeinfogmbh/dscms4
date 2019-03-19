@@ -2,47 +2,21 @@
 
 from itertools import chain
 
-from cmslib.messages.charts import INVALID_CHART_TYPE, NO_SUCH_CHART
+from cmslib.functions.charts import get_chart
+from cmslib.functions.menu import get_menu_item, get_menu_item_chart
+from cmslib.messages.charts import INVALID_CHART_TYPE
 from cmslib.messages.menu import DIFFERENT_MENU_ITEMS
 from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
 from cmslib.messages.menu import MENU_ITEM_CHART_DELETED
 from cmslib.messages.menu import MENU_ITEM_CHARTS_SORTED
-from cmslib.messages.menu import NO_SUCH_MENU_ITEM_CHART
-from cmslib.orm.charts import BaseChart, Chart
-from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from cmslib.orm.charts import Chart
+from cmslib.orm.menu import MenuItemChart
+from his import JSON_DATA, authenticated, authorized
 from his.messages.data import MISSING_DATA
 from wsgilib import JSON
 
-from dscms4.menu.item import get_menu_item
-
 
 __all__ = ['ROUTES']
-
-
-def get_chart(type_, ident):
-    """Gets a chart by type and ID."""
-
-    try:
-        type_ = Chart.types[type_]
-    except KeyError:
-        raise INVALID_CHART_TYPE
-
-    try:
-        return type_.select().join(BaseChart).where(
-            (BaseChart.customer == CUSTOMER) & (type_.id == ident)).get()
-    except type_.DoesNotExist:
-        raise NO_SUCH_CHART
-
-
-def get_menu_item_chart(ident):
-    """Returns the respective MenuItemChart."""
-
-    try:
-        return MenuItemChart.select().join(MenuItem).join(Menu).where(
-            (Menu.customer == CUSTOMER.id) & (MenuItemChart.id == ident)).get()
-    except MenuItemChart.DoesNotExist:
-        raise NO_SUCH_MENU_ITEM_CHART
 
 
 @authenticated
@@ -78,11 +52,16 @@ def add():
         raise MISSING_DATA.update(key='chart→type')
 
     try:
+        type_ = Chart.types[type_]
+    except KeyError:
+        raise INVALID_CHART_TYPE
+
+    try:
         chart_id = chart['id']
     except KeyError:
         raise MISSING_DATA.update(key='chart→id')
 
-    chart = get_chart(type_, chart_id)
+    chart = get_chart(chart_id, type=type_)
     menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
     menu_item_chart.save()
     return MENU_ITEM_CHART_ADDED.update(id=menu_item_chart.id)

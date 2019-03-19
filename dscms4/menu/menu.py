@@ -2,27 +2,18 @@
 
 from flask import request
 
+from cmslib.functions.menu import get_menu
 from cmslib.messages.menu import INVALID_MENU_DATA
 from cmslib.messages.menu import MENU_ADDED
 from cmslib.messages.menu import MENU_COPIED
 from cmslib.messages.menu import MENU_DELETED
 from cmslib.messages.menu import MENU_PATCHED
-from cmslib.messages.menu import NO_SUCH_MENU
 from cmslib.orm.menu import Menu
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 
-__all__ = ['ROUTES', 'get_menu']
-
-
-def get_menu(ident):
-    """Returns the respective menu of the current customer."""
-
-    try:
-        return Menu.get((Menu.customer == CUSTOMER.id) & (Menu.id == ident))
-    except Menu.DoesNotExist:
-        raise NO_SUCH_MENU
+__all__ = ['ROUTES']
 
 
 @authenticated

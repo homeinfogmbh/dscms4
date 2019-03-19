@@ -4,9 +4,9 @@ from flask import request
 
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
+from cmslib.functions.terminal import with_terminal
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
 from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
-from cmslib.messages.terminal import NO_SUCH_TERMINAL
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.terminal import TerminalBaseChart
 from cmslib.orm.content.terminal import TerminalConfiguration
@@ -18,30 +18,10 @@ from terminallib import Terminal
 from wsgilib import Browser, JSON, XML
 
 
-__all__ = ['get_terminal', 'ROUTES']
+__all__ = ['ROUTES']
 
 
 BROWSER = Browser()
-
-
-def get_terminal(tid):
-    """Returns the respective terminal."""
-
-    try:
-        return Terminal.get(
-            (Terminal.tid == tid) & (Terminal.customer == CUSTOMER.id))
-    except Terminal.DoesNotExist:
-        raise NO_SUCH_TERMINAL
-
-
-def with_terminal(function):
-    """Converts a TID into a terminal."""
-
-    def wrapper(tid, *args, **kwargs):
-        """Wraps the function."""
-        return function(get_terminal(tid), *args, **kwargs)
-
-    return wrapper
 
 
 @authenticated

@@ -1,5 +1,7 @@
 """Management of menus in terminals."""
 
+from cmslib.functions.menu import get_menu
+from cmslib.functions.terminal import get_terminal
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_EXISTS
@@ -7,9 +9,6 @@ from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.terminal import TerminalMenu
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from dscms4.menu.menu import get_menu
-from dscms4.terminal import get_terminal
 
 
 __all__ = ['ROUTES']

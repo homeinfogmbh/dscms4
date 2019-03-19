@@ -1,5 +1,7 @@
 """Management of charts in groups."""
 
+from cmslib.functions.charts import get_chart
+from cmslib.functions.group import get_group
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_PATCHED
@@ -9,9 +11,6 @@ from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.group import Group
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
-
-from dscms4.charts import get_chart
-from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']

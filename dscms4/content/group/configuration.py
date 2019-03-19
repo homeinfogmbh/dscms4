@@ -1,5 +1,7 @@
 """Management of configurations in groups."""
 
+from cmslib.functions.configuration import get_configuration
+from cmslib.functions.group import get_group
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_EXISTS
@@ -7,9 +9,6 @@ from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.group import GroupConfiguration
 from his import authenticated, authorized
 from wsgilib import JSON
-
-from dscms4.configuration import get_configuration
-from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']

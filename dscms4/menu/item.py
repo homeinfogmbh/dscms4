@@ -4,31 +4,19 @@ from itertools import chain
 
 from flask import request
 
+from cmslib.functions.menu import get_menu, get_menu_item
 from cmslib.messages.menu import DIFFERENT_MENUS
 from cmslib.messages.menu import DIFFERENT_PARENTS
 from cmslib.messages.menu import MENU_ITEM_ADDED
 from cmslib.messages.menu import MENU_ITEM_DELETED
 from cmslib.messages.menu import MENU_ITEM_PATCHED
 from cmslib.messages.menu import MENU_ITEMS_SORTED
-from cmslib.messages.menu import NO_SUCH_MENU_ITEM
-from cmslib.orm.menu import Menu, MenuItem
+from cmslib.orm.menu import MenuItem
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
-from dscms4.menu.menu import get_menu
 
-
-__all__ = ['ROUTES', 'get_menu_item']
-
-
-def get_menu_item(ident):
-    """Returns the respective menu item."""
-
-    try:
-        return MenuItem.select().join(Menu).where(
-            (Menu.customer == CUSTOMER.id) & (MenuItem.id == ident)).get()
-    except MenuItem.DoesNotExist:
-        raise NO_SUCH_MENU_ITEM
+__all__ = ['ROUTES']
 
 
 @authenticated

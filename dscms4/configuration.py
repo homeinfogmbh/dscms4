@@ -4,7 +4,8 @@ from datetime import datetime
 
 from flask import request
 
-from cmslib.messages.configuration import NO_SUCH_CONFIGURATION
+from cmslib.functions.configuration import get_configuration
+from cmslib.functions.configuration import list_configurations
 from cmslib.messages.configuration import CONFIGURATION_ADDED
 from cmslib.messages.configuration import CONFIGURATION_PATCHED
 from cmslib.messages.configuration import CONFIGURATION_DELETED
@@ -13,7 +14,7 @@ from cmslib.orm.configuration import Colors
 from cmslib.orm.configuration import Configuration
 from cmslib.orm.configuration import Ticker
 from cmslib.orm.configuration import Backlight
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 
@@ -44,23 +45,6 @@ def _update_backlights(backlights, configuration, *, delete=True):
         json = {'time': time, 'brightness': brightness}
         backlight = Backlight.from_json(json, configuration)
         backlight.save()
-
-
-def list_configurations():
-    """Returns the respective configuration."""
-
-    return Configuration.select().where(Configuration.customer == CUSTOMER.id)
-
-
-def get_configuration(ident):
-    """Returns the respective configuration."""
-
-    try:
-        return Configuration.get(
-            (Configuration.customer == CUSTOMER.id)
-            & (Configuration.id == ident))
-    except Configuration.DoesNotExist:
-        raise NO_SUCH_CONFIGURATION
 
 
 @authenticated

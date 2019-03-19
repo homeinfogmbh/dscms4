@@ -1,5 +1,6 @@
 """Group member controllers."""
 
+from cmslib.functions.group import get_group
 from cmslib.messages.group import MEMBER_ADDED
 from cmslib.messages.group import MEMBER_DELETED
 from cmslib.messages.group import NO_SUCH_MEMBER
@@ -7,8 +8,6 @@ from cmslib.messages.group import NO_SUCH_MEMBER_TYPE
 from cmslib.orm.group import GROUP_MEMBERS, GroupMember
 from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
-
-from dscms4.group.group import get_group
 
 
 __all__ = ['ROUTES']
