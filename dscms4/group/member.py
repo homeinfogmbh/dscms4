@@ -51,7 +51,7 @@ def delete(gid, member_id):
 
 
 ROUTES = (
-    ('GET', '/group/<int:gid>/member', get, 'get_group_members'),
-    ('POST', '/group/<int:gid>/member', add, 'add_group_member'),
-    ('DELETE', '/group/<int:gid>/member/terminal/<int:member_id>',
+    ('GET', '/group/<int:gid>/terminal', get, 'get_group_members'),
+    ('POST', '/group/<int:gid>/terminal', add, 'add_group_member'),
+    ('DELETE', '/group/<int:gid>/terminal/<int:member_id>',
      delete, 'delete_group_member'))
