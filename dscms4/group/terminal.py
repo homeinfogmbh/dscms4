@@ -21,7 +21,7 @@ def get(gid):
 
     for group_member_terminal in GroupMemberTerminal.select().where(
             GroupMemberTerminal.group == get_group(gid)):
-        terminals.append(group_member_terminal.member.to_json())
+        terminals.append(group_member_terminal.member.id)
 
     return JSON(terminals)
 
@@ -45,7 +45,7 @@ def delete(gid, member_id):
     try:
         group_member_terminal = GroupMemberTerminal.get(
             (GroupMemberTerminal.group == get_group(gid))
-            & (GroupMemberTerminal.id == member_id))
+            & (GroupMemberTerminal.member == member_id))
     except GroupMemberTerminal.DoesNotExist:
         raise NO_SUCH_MEMBER
 
