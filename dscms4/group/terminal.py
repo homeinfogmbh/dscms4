@@ -21,7 +21,7 @@ def get(gid):
 
     for group_member_terminal in GroupMemberTerminal.select().where(
             GroupMemberTerminal.group == get_group(gid)):
-        terminals.append(group_member_terminal.terminal.to_json())
+        terminals.append(group_member_terminal.member.to_json())
 
     return JSON(terminals)
 
