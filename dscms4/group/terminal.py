@@ -17,8 +17,12 @@ __all__ = ['ROUTES']
 def get(gid):
     """Returns the group's members."""
 
-    group = get_group(gid)
-    terminals = [terminal.to_json() for terminal in group.terminals]
+    terminals = []
+
+    for group_member_terminal in GroupMemberTerminal.select().where(
+            GroupMemberTerminal.group == get_group(gid)):
+        terminals.append(group_member_terminal.terminal.to_json())
+
     return JSON(terminals)
 
 

@@ -5,7 +5,7 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
-from cmslib.orm.group import Group, GroupMemberTerminal
+from cmslib.orm.group import Group
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
@@ -79,20 +79,12 @@ class GroupContent:
             yield group_menu.to_json()
 
     @property
-    def terminals(self):
-        """Yields the group's terminals."""
-        for group_member_terminal in GroupMemberTerminal.select().where(
-                GroupMemberTerminal.group == self.group):
-            yield group_member_terminal.to_json()
-
-    @property
-    def content_and_terminals(self):
+    def content(self):
         """Returns content and terminals."""
-        content = {
+        return {
             'charts': list(self.charts),
             'configurations': list(self.configurations),
             'menus': list(self.menus)}
-        return (content, list(self.terminals))
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
@@ -107,8 +99,7 @@ class GroupContent:
                 for group in self.children]
 
         json['children'] = children
-        json['content'], terminals = self.content_and_terminals
-        json['members'] = {'terminals': terminals}
+        json['content'] = self.content
         return json
 
 
