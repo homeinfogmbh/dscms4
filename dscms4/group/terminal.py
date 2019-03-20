@@ -19,8 +19,7 @@ def get(gid):
 
     group = get_group(gid)
     terminals = [terminal.to_json() for terminal in group.terminals]
-    json = {'terminal': terminals}
-    return JSON(json)
+    return JSON(terminals)
 
 
 @authenticated
