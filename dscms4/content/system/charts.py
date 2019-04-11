@@ -32,7 +32,7 @@ def list_sbc(ident):
             & (BaseChart.trashed == 0))
 
 
-def get_tbc(system_id, ident):
+def get_sbc(system_id, ident):
     """Returns the respective system base chart."""
 
     try:
@@ -46,19 +46,19 @@ def get_tbc(system_id, ident):
 
 @authenticated
 @authorized('dscms4')
-def get(system_id):
+def get(system):
     """Returns a list of IDs of the charts in the respective system."""
 
-    return JSON([tbc.to_json() for tbc in list_sbc(system_id)])
+    return JSON([sbc.to_json() for sbc in list_sbc(system)])
 
 
 @authenticated
 @authorized('dscms4')
-def add(system_id, ident):
+def add(system, chart):
     """Adds the chart to the respective system."""
 
-    system = get_system(system_id)
-    base_chart = get_chart(ident).base
+    system = get_system(system)
+    base_chart = get_chart(chart).base
     sbc = SystemBaseChart.from_json(JSON_DATA, system, base_chart)
     sbc.save()
     return CONTENT_ADDED.update(id=sbc.id)
@@ -66,10 +66,10 @@ def add(system_id, ident):
 
 @authenticated
 @authorized('dscms4')
-def patch(system_id, ident):
+def patch(system, chart):
     """Adds the chart to the respective system."""
 
-    sbc = get_sbc(system_id, ident)
+    sbc = get_sbc(system, chart)
     sbc.patch_json(JSON_DATA)
     sbc.save()
     return CONTENT_PATCHED
@@ -77,19 +77,17 @@ def patch(system_id, ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(system_id, ident):
+def delete(system, chart):
     """Deletes the chart from the respective system."""
 
-    sbc = get_sbc(system_id, ident)
+    sbc = get_sbc(system, chart)
     sbc.delete_instance()
     return CONTENT_DELETED
 
 
 ROUTES = (
-    ('GET', '/content/system/<int:system_id>/chart', get, 'list_system_charts'),
-    ('POST', '/content/system/<int:system_id>/chart/<int:ident>', add,
-     'add_system_chart'),
-    ('PATCH', '/content/system/<int:system_id>/chart/<int:ident>', patch,
-     'patch_system_chart'),
-    ('DELETE', '/content/system/<int:system_id>/chart/<int:ident>', delete,
-     'delete_system_chart'))
+    ('GET', '/content/system/<int:system>/chart', get),
+    ('POST', '/content/system/<int:system>/chart/<int:chart>', add),
+    ('PATCH', '/content/system/<int:system>/chart/<int:chart>', patch),
+    ('DELETE', '/content/system/<int:system>/chart/<int:chart>', delete)
+)

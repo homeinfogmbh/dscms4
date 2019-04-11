@@ -14,7 +14,7 @@ from cmslib.orm.content.system import SystemMenu
 from cmslib.orm.settings import Settings
 from cmslib.presentation.system import Presentation
 from his import CUSTOMER, authenticated, authorized
-from terminallib import System
+from terminallib import Location, System
 from wsgilib import Browser, JSON, XML
 
 
@@ -46,7 +46,7 @@ def list_():
 
     if 'assoc' in request.args:
         return JSON({
-            system.id: TerminalContent(system).to_json()
+            system.id: SystenContent(system).to_json()
             for system in systems})
 
     return JSON([system.to_json(short=True) for system in systems])
@@ -84,7 +84,7 @@ def get_presentation(system):
     return XML(presentation_dom)
 
 
-class TerminalContent:
+class SystenContent:
     """Represents content of a system."""
 
     def __init__(self, system):
@@ -133,7 +133,7 @@ class TerminalContent:
 
 
 ROUTES = (
-    ('GET', '/system', list_, 'list_systems'),
-    ('GET', '/system/<int:ident>', get, 'get_systeml'),
-    ('GET', '/system/<int:ident>/presentation', get_presentation,
-     'get_system_presentation'))
+    ('GET', '/system', list_),
+    ('GET', '/system/<int:ident>', get),
+    ('GET', '/system/<int:ident>/presentation', get_presentation)
+)

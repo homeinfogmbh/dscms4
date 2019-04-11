@@ -1,11 +1,11 @@
-"""Preview for a terminal."""
+"""Preview for a digital signage system."""
 
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
 from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
-from cmslib.orm.preview import TerminalPreviewToken
-from cmslib.presentation.terminal import Presentation
+from cmslib.orm.preview import SystemPreviewToken
+from cmslib.presentation.system import Presentation
 from cmslib.preview import preview, file_preview
 from his.messages.request import INVALID_CONTENT_TYPE
 from tenant2tenant import TenantMessage
@@ -16,11 +16,11 @@ from wsgilib import ACCEPT, JSON, XML, Binary
 __all__ = ['ROUTES']
 
 
-@preview(TerminalPreviewToken)
-def get_presentation(terminal):
-    """Returns the presentation for the respective terminal."""
+@preview(SystemPreviewToken)
+def get_presentation(system):
+    """Returns the presentation for the respective system."""
 
-    presentation = Presentation(terminal)
+    presentation = Presentation(system)
 
     if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         try:
@@ -36,19 +36,19 @@ def get_presentation(terminal):
     return INVALID_CONTENT_TYPE
 
 
-@preview(TerminalPreviewToken)
+@preview(SystemPreviewToken)
 @file_preview(Presentation)
 def get_file(file):
-    """Returns the presentation for the respective terminal."""
+    """Returns the presentation for the respective system."""
 
     return Binary(file.bytes)
 
 
-@preview(TerminalPreviewToken)
-def get_tenant2tenant(terminal):
-    """Returns the tenant-to-tenant messages for the requested terminal."""
+@preview(SystemPreviewToken)
+def get_tenant2tenant(system):
+    """Returns the tenant-to-tenant messages for the requested system."""
 
-    messages = TenantMessage.for_terminal(terminal)
+    messages = TenantMessage.for_system(system)
 
     if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         xml = tenant2tenant()
@@ -65,9 +65,7 @@ def get_tenant2tenant(terminal):
 
 
 ROUTES = (
-    ('GET', '/preview/terminal', get_presentation,
-     'preview_terminal_presentation'),
-    ('GET', '/preview/terminal/file/<int:ident>', get_file,
-     'preview_terminal_file'),
-    ('GET', '/preview/terminal/tenant2tenant', get_tenant2tenant,
-     'preview_terminal_tenant2tenant'))
+    ('GET', '/preview/system', get_presentation),
+    ('GET', '/preview/system/file/<int:ident>', get_file),
+    ('GET', '/preview/system/tenant2tenant', get_tenant2tenant)
+)

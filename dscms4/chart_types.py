@@ -42,5 +42,6 @@ def add(cid, chart_type):
 
 
 ROUTES = (
-    ('GET', '/chart-types', list_, 'list_chart_types'),
-    ('POST', '/chart-types/<int:cid>/<chart_type>', add, 'add_chart_type'))
+    ('GET', '/chart-types', list_),
+    ('POST', '/chart-types/<int:cid>/<chart_type>', add)
+)

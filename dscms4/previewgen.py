@@ -25,6 +25,4 @@ def generate(type_, ident):
     return JSON({'token': token.token.hex})
 
 
-ROUTES = (
-    ('GET', '/previewgen/<type_>/<int:ident>', generate,
-     'generate_preview_token'),)
+ROUTES = (('GET', '/previewgen/<type_>/<int:ident>', generate),)

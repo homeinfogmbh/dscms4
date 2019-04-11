@@ -1,12 +1,12 @@
-"""Management of configurations in terminals."""
+"""Management of configurations in digital signage systems."""
 
 from cmslib.functions.configuration import get_configuration
-from cmslib.functions.terminal import get_terminal
+from cmslib.functions.system import get_system
 from cmslib.messages.content import CONTENT_ADDED
 from cmslib.messages.content import CONTENT_DELETED
 from cmslib.messages.content import CONTENT_EXISTS
 from cmslib.messages.content import NO_SUCH_CONTENT
-from cmslib.orm.content.terminal import TerminalConfiguration
+from cmslib.orm.content.system import SystemConfiguration
 from his import authenticated, authorized
 from wsgilib import JSON
 
@@ -16,34 +16,34 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(gid):
+def get(system):
     """Returns a list of IDs of the configurations
-    in the respective terminal.
+    in the respective system.
     """
 
     return JSON([
-        terminal_configuration.configuration.id for terminal_configuration
-        in TerminalConfiguration.select().where(
-            TerminalConfiguration.terminal == get_terminal(gid))])
+        system_configuration.configuration.id for system_configuration
+        in SystemConfiguration.select().where(
+            SystemConfiguration.system == get_system(system))])
 
 
 @authenticated
 @authorized('dscms4')
-def add(gid, ident):
-    """Adds the configuration to the respective terminal."""
+def add(system, configuration):
+    """Adds the configuration to the respective system."""
 
-    terminal = get_terminal(gid)
-    configuration = get_configuration(ident)
+    system = get_system(system)
+    configuration = get_configuration(configuration)
 
     try:
-        TerminalConfiguration.get(
-            (TerminalConfiguration.terminal == terminal)
-            & (TerminalConfiguration.configuration == configuration))
-    except TerminalConfiguration.DoesNotExist:
-        terminal_configuration = TerminalConfiguration()
-        terminal_configuration.terminal = terminal
-        terminal_configuration.configuration = configuration
-        terminal_configuration.save()
+        SystemConfiguration.get(
+            (SystemConfiguration.system == system)
+            & (SystemConfiguration.configuration == configuration))
+    except SystemConfiguration.DoesNotExist:
+        system_configuration = SystemConfiguration()
+        system_configuration.system = system
+        system_configuration.configuration = configuration
+        system_configuration.save()
         return CONTENT_ADDED
 
     return CONTENT_EXISTS
@@ -51,27 +51,27 @@ def add(gid, ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(gid, ident):
-    """Deletes the configuration from the respective terminal."""
+def delete(system, configuration):
+    """Deletes the configuration from the respective system."""
 
-    terminal = get_terminal(gid)
-    configuration = get_configuration(ident)
+    system = get_system(system)
+    configuration = get_configuration(configuration)
 
     try:
-        terminal_configuration = TerminalConfiguration.get(
-            (TerminalConfiguration.terminal == terminal)
-            & (TerminalConfiguration.configuration == configuration))
-    except TerminalConfiguration.DoesNotExist:
+        system_configuration = SystemConfiguration.get(
+            (SystemConfiguration.system == system)
+            & (SystemConfiguration.configuration == configuration))
+    except SystemConfiguration.DoesNotExist:
         raise NO_SUCH_CONTENT
 
-    terminal_configuration.delete_instance()
+    system_configuration.delete_instance()
     return CONTENT_DELETED
 
 
 ROUTES = (
-    ('GET', '/content/terminal/<int:gid>/configuration', get,
-     'list_terminal_configurations'),
-    ('POST', '/content/terminal/<int:gid>/configuration/<int:ident>', add,
-     'add_terminal_configuration'),
-    ('DELETE', '/content/terminal/<int:gid>/configuration/<int:ident>', delete,
-     'delete_terminal_configuration'))
+    ('GET', '/content/system/<int:system>/configuration', get),
+    ('POST', '/content/system/<int:system>/configuration/<int:configuration>',
+     add),
+    ('DELETE',
+     '/content/system/<int:system>/configuration/<int:configuration>', delete)
+)

@@ -86,8 +86,9 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/charts', list_, 'list_charts'),
-    ('GET', '/charts/<int:ident>', get, 'get_charts'),
-    ('POST', '/charts', add, 'add_chart'),
-    ('PATCH', '/charts/<int:ident>', patch, 'patch_chart'),
-    ('DELETE', '/charts/<int:ident>', delete, 'delete_chart'))
+    ('GET', '/charts', list_),
+    ('GET', '/charts/<int:ident>', get),
+    ('POST', '/charts', add),
+    ('PATCH', '/charts/<int:ident>', patch),
+    ('DELETE', '/charts/<int:ident>', delete)
+)

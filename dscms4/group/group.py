@@ -96,10 +96,10 @@ def delete(ident):
 
 
 ROUTES = (
-    ('GET', '/group', list_, 'list_groups'),
-    ('GET', '/group/<int:ident>', get, 'get_group'),
-    ('GET', '/group/<int:ident>/presentation', get_presentation,
-     'get_group_presentation'),
-    ('POST', '/group', add, 'add_group'),
-    ('PATCH', '/group/<int:ident>', patch, 'patch_group'),
-    ('DELETE', '/group/<int:ident>', delete, 'delete_group'))
+    ('GET', '/group', list_),
+    ('GET', '/group/<int:ident>', get),
+    ('GET', '/group/<int:ident>/presentation', get_presentation),
+    ('POST', '/group', add),
+    ('PATCH', '/group/<int:ident>', patch),
+    ('DELETE', '/group/<int:ident>', delete)
+)

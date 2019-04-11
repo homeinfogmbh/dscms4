@@ -5,7 +5,7 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
-from cmslib.orm.group import Group, GroupMemberTerminal
+from cmslib.orm.group import Group, GroupMemberSystem
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
@@ -80,18 +80,18 @@ class GroupContent:
 
     @property
     def content(self):
-        """Returns content and terminals."""
+        """Returns content."""
         return {
             'charts': list(self.charts),
             'configurations': list(self.configurations),
             'menus': list(self.menus)}
 
     @property
-    def terminals(self):
-        """Yields terminals of this group."""
-        for group_member_terminal in GroupMemberTerminal.select().where(
-                GroupMemberTerminal.group == self.group):
-            yield group_member_terminal.member
+    def systems(self):
+        """Yields systems of this group."""
+        for group_member_system in GroupMemberSystem.select().where(
+                GroupMemberSystem.group == self.group):
+            yield group_member_system.system
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
@@ -107,11 +107,12 @@ class GroupContent:
 
         json['children'] = children
         json['content'] = self.content
-        json['terminals'] = [
-            terminal.to_json(short=True) for terminal in self.terminals]
+        json['systems'] = [
+            system.to_json(brief=True) for system in self.systems]
         return json
 
 
 ROUTES = (
-    ('GET', '/grouptree', groups_tree, 'groups_tree'),
-    ('GET', '/grouptree/<int:gid>', groups_subtree, 'groups_subtree'))
+    ('GET', '/grouptree', groups_tree),
+    ('GET', '/grouptree/<int:gid>', groups_subtree)
+)

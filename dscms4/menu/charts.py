@@ -100,8 +100,8 @@ def order():
 
 
 ROUTES = (
-    ('GET', '/menu/item/<ident>/charts', list_, 'list_menu_item_charts'),
-    ('POST', '/menu/item/chart', add, 'add_menu_item_chart'),
-    ('DELETE', '/menu/item/chart/<int:ident>', delete,
-     'delete_menu_item_chart'),
-    ('POST', '/menu/item/chart/order', order, 'order_menu_item_charts'))
+    ('GET', '/menu/item/<ident>/charts', list_),
+    ('POST', '/menu/item/chart', add),
+    ('DELETE', '/menu/item/chart/<int:ident>', delete),
+    ('POST', '/menu/item/chart/order', order)
+)
