@@ -17,7 +17,7 @@ from dscms4 import menu
 from dscms4 import preview
 from dscms4 import previewgen
 from dscms4 import settings
-from dscms4 import terminal
+from dscms4 import system
 
 
 __all__ = ['APPLICATION', 'ROUTES']
@@ -28,7 +28,7 @@ APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
     charts.ROUTES + configuration.ROUTES + content.ROUTES + group.ROUTES
     + membership.ROUTES + menu.ROUTES + preview.ROUTES + previewgen.ROUTES
-    + settings.ROUTES + terminal.ROUTES)
+    + settings.ROUTES + system.ROUTES)
 APPLICATION.add_routes(ROUTES)
 
 

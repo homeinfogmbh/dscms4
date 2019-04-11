@@ -1,9 +1,9 @@
 """Handling of content associated with certain entities."""
 
-from dscms4.content import group, terminal
+from dscms4.content import group, system
 
 
 __all__ = ['ROUTES']
 
 
-ROUTES = group.ROUTES + terminal.ROUTES
+ROUTES = group.ROUTES + system.ROUTES
