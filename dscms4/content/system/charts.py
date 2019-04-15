@@ -26,10 +26,11 @@ def list_sbc(ident):
     bc_join = SystemBaseChart.base_chart == BaseChart.id
     return SystemBaseChart.select().join(
         System, join_type='LEFT', on=term_join).join(
-        Location, join_type='LEFT', on=location_join).join(
-        BaseChart, join_type='LEFT', on=bc_join).where(
-            (Location.customer == CUSTOMER.id) & (System.id == ident)
-            & (BaseChart.trashed == 0))
+            Location, join_type='LEFT', on=location_join).join(
+                BaseChart, join_type='LEFT', on=bc_join).where(
+                    (System.id == ident)
+                    & (Location.customer == CUSTOMER.id)
+                    & (BaseChart.trashed == 0))
 
 
 def get_sbc(system_id, ident):

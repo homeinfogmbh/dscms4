@@ -64,7 +64,7 @@ def add(gid, ident):
 @authenticated
 @authorized('dscms4')
 def patch(gid, ident):
-    """Adds the chart to the respective terminal."""
+    """Adds the chart to the respective group."""
 
     group_base_chart = get_gbc(gid, ident)
     group_base_chart.patch_json(JSON_DATA)
