@@ -9,7 +9,7 @@ from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.system import SystemBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from terminallib import Location, System
+from terminallib import Deployment, System
 from wsgilib import JSON
 
 
@@ -22,14 +22,14 @@ def list_sbc(ident):
     """
 
     term_join = SystemBaseChart.system == System.id
-    location_join = System.location == Location.id
+    deployment_join = System.deployment == Deployment.id
     bc_join = SystemBaseChart.base_chart == BaseChart.id
     return SystemBaseChart.select().join(
         System, join_type='LEFT', on=term_join).join(
-            Location, join_type='LEFT', on=location_join).join(
+            Deployment, join_type='LEFT', on=deployment_join).join(
                 BaseChart, join_type='LEFT', on=bc_join).where(
                     (System.id == ident)
-                    & (Location.customer == CUSTOMER.id)
+                    & (Deployment.customer == CUSTOMER.id)
                     & (BaseChart.trashed == 0))
 
 
@@ -37,10 +37,10 @@ def get_sbc(system_id, ident):
     """Returns the respective system base chart."""
 
     try:
-        return SystemBaseChart.select().join(System).join(Location).where(
+        return SystemBaseChart.select().join(System).join(Deployment).where(
             (SystemBaseChart.id == ident)
             & (System.id == system_id)
-            & (Location.customer == CUSTOMER.id)).get()
+            & (Deployment.customer == CUSTOMER.id)).get()
     except SystemBaseChart.DoesNotExist:
         raise NO_SUCH_CONTENT
 

@@ -14,7 +14,7 @@ from cmslib.orm.content.system import SystemMenu
 from cmslib.orm.settings import Settings
 from cmslib.presentation.system import Presentation
 from his import CUSTOMER, authenticated, authorized
-from terminallib import Location, System
+from terminallib import Deployment, System
 from wsgilib import Browser, JSON, XML
 
 
@@ -29,13 +29,13 @@ BROWSER = Browser()
 def list_():
     """Lists all systems of the respective customer."""
 
-    expression = Location.customer == CUSTOMER.id
+    expression = Deployment.customer == CUSTOMER.id
     settings = Settings.for_customer(CUSTOMER.id)
 
     if not settings.show_testing_systems:
-        expression &= Location.testing == 0
+        expression &= Deployment.testing == 0
 
-    systems = System.select().join(Location).where(expression)
+    systems = System.select().join(Deployment).where(expression)
 
     if BROWSER.wanted:
         if BROWSER.info:
@@ -123,7 +123,7 @@ class SystenContent:
     def to_json(self):
         """Returns the system and its content as a JSON-ish dict."""
         try:
-            address = self.system.location.address
+            address = self.system.deployment.address
         except AttributeError:
             address = None
 
