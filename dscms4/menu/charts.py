@@ -1,14 +1,11 @@
 """DSCMS4 WSGI handlers for menu item charts."""
 
-from itertools import chain
-
 from cmslib.functions.charts import get_chart
 from cmslib.functions.menu import get_menu_item, get_menu_item_chart
 from cmslib.messages.charts import INVALID_CHART_TYPE
-from cmslib.messages.menu import DIFFERENT_MENU_ITEMS
 from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
 from cmslib.messages.menu import MENU_ITEM_CHART_DELETED
-from cmslib.messages.menu import MENU_ITEM_CHARTS_SORTED
+from cmslib.messages.menu import MENU_ITEM_CHART_PATCHED
 from cmslib.orm.charts import Chart
 from cmslib.orm.menu import MenuItemChart
 from his import JSON_DATA, authenticated, authorized
@@ -17,6 +14,9 @@ from wsgilib import JSON
 
 
 __all__ = ['ROUTES']
+
+
+EXCLUDED_FIELDS = {'menu_item', 'base_chart'}
 
 
 @authenticated
@@ -69,6 +69,18 @@ def add():
 
 @authenticated
 @authorized('dscms4')
+def patch(ident):
+    """Orders the respective menu items."""
+
+    menu_item_chart = get_menu_item_chart(ident)
+    json = dict(JSON_DATA)
+    menu_item_chart.patch_json(json, skip=EXCLUDED_FIELDS)
+    menu_item_chart.save()
+    return MENU_ITEM_CHART_PATCHED
+
+
+@authenticated
+@authorized('dscms4')
 def delete(ident):
     """Deletes a menu or menu item."""
 
@@ -76,32 +88,9 @@ def delete(ident):
     return MENU_ITEM_CHART_DELETED
 
 
-@authenticated
-@authorized('dscms4')
-def order():
-    """Orders the respective menu items."""
-
-    menu_item_charts = (get_menu_item_chart(ident) for ident in JSON_DATA)
-
-    try:
-        first, *other = menu_item_charts
-    except ValueError:
-        return MENU_ITEM_CHARTS_SORTED  # Empty set of MenuItemsCharts.
-
-    if all(menu_item_chart.menu_item == first.menu_item
-           for menu_item_chart in other):
-        for index, menu_item_chart in enumerate(chain((first,), other)):
-            menu_item_chart.index = index
-            menu_item_chart.save()
-
-        return MENU_ITEM_CHARTS_SORTED
-
-    return DIFFERENT_MENU_ITEMS
-
-
 ROUTES = (
     ('GET', '/menu/item/<ident>/charts', list_),
     ('POST', '/menu/item/chart', add),
-    ('DELETE', '/menu/item/chart/<int:ident>', delete),
-    ('POST', '/menu/item/chart/order', order)
+    ('PATCH', '/menu/item/chart/<int:ident>', patch),
+    ('DELETE', '/menu/item/chart/<int:ident>', delete)
 )
