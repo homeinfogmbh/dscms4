@@ -42,14 +42,16 @@ def list_():
             return BROWSER.pages(systems).to_json()
 
         return JSON([
-            system.to_json(brief=True) for system in BROWSER.browse(systems)])
+            system.to_json(brief=True, cascade=True)
+            for system in BROWSER.browse(systems)])
 
     if 'assoc' in request.args:
         return JSON({
             system.id: SystenContent(system).to_json()
             for system in systems})
 
-    return JSON([system.to_json(brief=True) for system in systems])
+    return JSON([
+        system.to_json(brief=True, cascade=True) for system in systems])
 
 
 @authenticated
