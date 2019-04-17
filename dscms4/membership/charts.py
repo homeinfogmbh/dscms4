@@ -52,7 +52,7 @@ def list_(ident):
                 GroupBaseChart.base_chart == base_chart)],
         'systems': [
             {
-                'system': system_base_chart.system.tid,
+                'system': system_base_chart.system.id,
                 'member': system_base_chart.id
             }
             for system_base_chart in SystemBaseChart.select().where(
