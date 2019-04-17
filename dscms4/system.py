@@ -58,7 +58,7 @@ def list_():
 def get(system):
     """Returns the respective system."""
 
-    return JSON(system.to_json(brief=True))
+    return JSON(system.to_json(brief=True, cascade=True))
 
 
 @authenticated
