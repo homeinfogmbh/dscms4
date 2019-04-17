@@ -15,7 +15,7 @@ setup(
         'dscms4',
         'dscms4.content',
         'dscms4.content.group',
-        'dscms4.content.terminal',
+        'dscms4.content.system',
         'dscms4.group',
         'dscms4.membership',
         'dscms4.menu',
