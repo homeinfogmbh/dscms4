@@ -34,7 +34,7 @@ def add(gid):
     group = get_group(gid)
     group_member_system = GroupMemberSystem.from_json(JSON_DATA, group)
     group_member_system.save()
-    return MEMBER_ADDED.update(id=group_member_system.member.id)
+    return MEMBER_ADDED.update(id=group_member_system.system.id)
 
 
 @authenticated
