@@ -49,7 +49,7 @@ def list_():
             system.id: SystenContent(system).to_json()
             for system in systems})
 
-    return JSON([system.to_json(short=True) for system in systems])
+    return JSON([system.to_json(brief=True) for system in systems])
 
 
 @authenticated
