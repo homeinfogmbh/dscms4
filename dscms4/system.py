@@ -32,7 +32,7 @@ def list_():
     expression = Deployment.customer == CUSTOMER.id
     settings = Settings.for_customer(CUSTOMER.id)
 
-    if not settings.show_testing_systems:
+    if not settings.testing:
         expression &= Deployment.testing == 0
 
     systems = System.select().join(Deployment).where(expression)
