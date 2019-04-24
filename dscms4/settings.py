@@ -1,10 +1,8 @@
 """Per-customer settings interface."""
 
-from flask import request
-
 from cmslib.messages.settings import SETTINGS_SAVED
 from cmslib.orm.settings import Settings
-from his import CUSTOMER, admin, authenticated, authorized
+from his import CUSTOMER, JSON_DATA, admin, authenticated, authorized
 from wsgilib import JSON
 
 
@@ -26,8 +24,9 @@ def get_settings():
 def set_settings():
     """Sets the customer's settings."""
 
+    json = dict(JSON_DATA)
     settings = Settings.for_customer(CUSTOMER.id)
-    settings.patch_json(request.json)
+    settings.patch_json(json)
     settings.save()
     return SETTINGS_SAVED
 
