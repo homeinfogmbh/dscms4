@@ -124,14 +124,11 @@ class SystenContent:
 
     def to_json(self):
         """Returns the system and its content as a JSON-ish dict."""
-        try:
-            address = self.system.deployment.address
-        except AttributeError:
-            address = None
-
-        json = {'address': address.to_json()} if address else {}
-        json['content'] = self.content()
-        return json
+        deployment = self.system.deployment
+        return {
+            'deployment': deployment.to_json() if deployment else None,
+            'content': self.content()
+        }
 
 
 ROUTES = (
