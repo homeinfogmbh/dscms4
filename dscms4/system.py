@@ -125,10 +125,8 @@ class SystenContent:
     def to_json(self):
         """Returns the system and its content as a JSON-ish dict."""
         deployment = self.system.deployment
-        return {
-            'deployment': deployment.to_json() if deployment else None,
-            'content': self.content()
-        }
+        deployment = deployment.to_json(cascade=True) if deployment else None
+        return {'deployment': deployment, 'content': self.content()}
 
 
 ROUTES = (
