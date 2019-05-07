@@ -77,14 +77,13 @@ def get(ident):
 def add():
     """Adds a new configuration."""
 
-    json = JSON_DATA
-    colors = json.pop('colors', {})
-    tickers = json.pop('tickers', ())
-    backlight = json.pop('backlight', {})
+    colors = JSON_DATA.pop('colors', {})
+    tickers = JSON_DATA.pop('tickers', ())
+    backlight = JSON_DATA.pop('backlight', {})
     # Create related colors first.
     colors = Colors.from_json(colors)
     colors.save()
-    configuration = Configuration.from_json(json, colors)
+    configuration = Configuration.from_json(JSON_DATA, colors)
     configuration.save()
     _update_tickers(tickers, configuration, delete=False)
     _update_backlights(backlight, configuration, delete=False)
@@ -96,12 +95,11 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    json = JSON_DATA
-    colors = json.pop('colors', None)
-    tickers = json.pop('tickers', None)
-    backlight = json.pop('backlight', None)
+    colors = JSON_DATA.pop('colors', None)
+    tickers = JSON_DATA.pop('tickers', None)
+    backlight = JSON_DATA.pop('backlight', None)
     configuration = get_configuration(ident)
-    configuration.patch_json(json)
+    configuration.patch_json(JSON_DATA)
     configuration.save()
 
     # Patch related colors.
