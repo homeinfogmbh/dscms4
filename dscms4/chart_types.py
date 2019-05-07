@@ -3,7 +3,7 @@
 from cmslib.orm.chart_types import ChartType
 from cmslib.orm.charts import Chart
 from cmslib.messages.charts import INVALID_CHART_TYPE, CHART_TYPE_ADDED
-from his import CUSTOMER, authenticated, authorized, root
+from his import CUSTOMER, JSON_DATA, authenticated, authorized, root
 from his.messages.customer import NO_SUCH_CUSTOMER
 from mdb import Customer
 from wsgilib import JSON
@@ -23,8 +23,11 @@ def list_():
 
 @authenticated
 @root
-def add(cid, chart_type):
+def add():
     """Adds a chart type for the respective customer."""
+
+    cid = JSON_DATA.get('cid')
+    chart_type = JSON_DATA.get('chartType')
 
     try:
         customer = Customer.get(Customer.id == cid)
@@ -43,5 +46,5 @@ def add(cid, chart_type):
 
 ROUTES = (
     ('GET', '/chart-types', list_),
-    ('POST', '/chart-types/<int:cid>/<chart_type>', add)
+    ('POST', '/chart-types', add)
 )
