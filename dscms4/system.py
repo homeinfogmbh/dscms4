@@ -41,17 +41,14 @@ def list_():
         if BROWSER.info:
             return BROWSER.pages(systems).to_json()
 
-        return JSON([
-            system.to_json(brief=True, cascade=True)
-            for system in BROWSER.browse(systems)])
+        systems = BROWSER.browse(systems)
+        return JSON([system.to_json(brief=True) for system in systems])
 
     if 'assoc' in request.args:
-        return JSON({
-            system.id: SystenContent(system).to_json()
-            for system in systems})
+        mapping = {sys.id: SystenContent(sys).to_json() for sys in systems}
+        return JSON(mapping)
 
-    return JSON([
-        system.to_json(brief=True, cascade=True) for system in systems])
+    return JSON([system.to_json(brief=True) for system in systems])
 
 
 @authenticated
