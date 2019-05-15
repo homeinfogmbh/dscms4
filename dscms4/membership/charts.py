@@ -28,7 +28,7 @@ def list_(ident):
                 GroupBaseChart.base_chart == base_chart)],
         'deployments': [
             {
-                'deployment': deployment_base_chart.deployment.id,
+                'deployment': deployment_base_chart.deployment,
                 'member': deployment_base_chart.id
             }
             for deployment_base_chart in DeploymentBaseChart.select().where(
