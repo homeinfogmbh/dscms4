@@ -33,7 +33,7 @@ def all_():
     chart_types = defaultdict(list)
 
     for chart_type in ChartType:
-        chart_types[ChartType.customer.id].append(chart_type.to_json())
+        chart_types[chart_type.customer.id].append(chart_type.to_json())
 
     return JSON(chart_types)
 
