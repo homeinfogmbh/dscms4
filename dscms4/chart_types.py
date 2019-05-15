@@ -2,7 +2,9 @@
 
 from cmslib.orm.chart_types import ChartType
 from cmslib.orm.charts import Chart
-from cmslib.messages.charts import INVALID_CHART_TYPE, CHART_TYPE_ADDED
+from cmslib.messages.charts import CHART_TYPE_ADDED
+from cmslib.messages.charts import CHART_TYPE_DELETED
+from cmslib.messages.charts import INVALID_CHART_TYPE
 from his import CUSTOMER, JSON_DATA, authenticated, authorized, root
 from his.messages.customer import NO_SUCH_CUSTOMER
 from mdb import Customer
@@ -26,11 +28,11 @@ def list_():
 def add():
     """Adds a chart type for the respective customer."""
 
-    cid = JSON_DATA.get('cid')
+    customer = JSON_DATA.get('customer')
     chart_type = JSON_DATA.get('chartType')
 
     try:
-        customer = Customer.get(Customer.id == cid)
+        customer = Customer.get(Customer.id == customer)
     except Customer.DoesNotExist:
         return NO_SUCH_CUSTOMER
 
@@ -44,7 +46,26 @@ def add():
     return CHART_TYPE_ADDED
 
 
+@authenticated
+@root
+def delete(chart_type):
+    """Adds a chart type for the respective customer."""
+
+    customer = JSON_DATA.get('customer')
+
+    try:
+        chart_type = ChartType.get(
+            (ChartType.chart_type == chart_type)
+            & (ChartType.customer == customer))
+    except ChartType.DoesNotExist:
+        return CHART_TYPE_DELETED
+
+    chart_type.delete_instance()
+    return CHART_TYPE_DELETED
+
+
 ROUTES = (
     ('GET', '/chart-types', list_),
-    ('POST', '/chart-types', add)
+    ('POST', '/chart-types', add),
+    ('DELETE', '/chart-types/<chart_type>', delete)
 )
