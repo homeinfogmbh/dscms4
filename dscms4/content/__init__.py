@@ -1,9 +1,9 @@
 """Handling of content associated with certain entities."""
 
-from dscms4.content import group, system
+from dscms4.content import deployment, group
 
 
 __all__ = ['ROUTES']
 
 
-ROUTES = group.ROUTES + system.ROUTES
+ROUTES = deployment.ROUTES + group.ROUTES

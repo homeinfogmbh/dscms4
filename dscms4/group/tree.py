@@ -5,7 +5,7 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
 from cmslib.orm.content.group import GroupMenu
-from cmslib.orm.group import Group, GroupMemberSystem
+from cmslib.orm.group import Group, GroupMemberDeployment
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
@@ -87,11 +87,11 @@ class GroupContent:
             'menus': list(self.menus)}
 
     @property
-    def systems(self):
-        """Yields systems of this group."""
-        for group_member_system in GroupMemberSystem.select().where(
-                GroupMemberSystem.group == self.group):
-            yield group_member_system.system
+    def deployments(self):
+        """Yields deployments of this group."""
+        for group_member_deployment in GroupMemberDeployment.select().where(
+                GroupMemberDeployment.group == self.group):
+            yield group_member_deployment.deployment
 
     def to_json(self, recursive=True):
         """Recursively converts the group content into a JSON-ish dict."""
@@ -107,8 +107,8 @@ class GroupContent:
 
         json['children'] = children
         json['content'] = self.content
-        json['systems'] = [
-            system.to_json(brief=True) for system in self.systems]
+        json['deployments'] = [
+            deployment.to_json() for deployment in self.deployments]
         return json
 
 

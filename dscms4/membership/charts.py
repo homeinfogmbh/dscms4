@@ -2,37 +2,13 @@
 
 from cmslib.functions.charts import get_chart
 from cmslib.orm.content.group import GroupBaseChart
-from cmslib.orm.content.system import SystemBaseChart
+from cmslib.orm.content.deployment import DeploymentBaseChart
 from cmslib.orm.menu import MenuItemChart
 from his import authenticated, authorized
 from wsgilib import JSON
 
 
 __all__ = ['ROUTES']
-
-
-def get_groups(ident):
-    """Returns the groups, this base chart is member of."""
-
-    for group_base_chart in GroupBaseChart.select().where(
-            GroupBaseChart.base_chart == ident):
-        yield group_base_chart.group
-
-
-def get_systems(ident):
-    """Returns the systems, this base chart is member of."""
-
-    for system_base_chart in SystemBaseChart.select().where(
-            SystemBaseChart.base_chart == ident):
-        yield system_base_chart.system
-
-
-def get_menu_items(ident):
-    """Returns the menu items, this base chart is member of."""
-
-    for menu_item_chart in MenuItemChart.select().where(
-            MenuItemChart.base_chart == ident):
-        yield menu_item_chart.menu_item
 
 
 @authenticated
@@ -50,13 +26,13 @@ def list_(ident):
             }
             for group_base_chart in GroupBaseChart.select().where(
                 GroupBaseChart.base_chart == base_chart)],
-        'systems': [
+        'deployments': [
             {
-                'system': system_base_chart.system.id,
-                'member': system_base_chart.id
+                'deployment': deployment_base_chart.deployment.id,
+                'member': deployment_base_chart.id
             }
-            for system_base_chart in SystemBaseChart.select().where(
-                SystemBaseChart.base_chart == base_chart)],
+            for deployment_base_chart in DeploymentBaseChart.select().where(
+                DeploymentBaseChart.base_chart == base_chart)],
         'menus': [
             {
                 'menu': menu_item_chart.menu_item.menu.id,

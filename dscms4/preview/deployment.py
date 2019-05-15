@@ -1,11 +1,11 @@
-"""Preview for a digital signage system."""
+"""Preview for deployments."""
 
 from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
 from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
-from cmslib.orm.preview import SystemPreviewToken
-from cmslib.presentation.system import Presentation
+from cmslib.orm.preview import DeploymentPreviewToken
+from cmslib.presentation.deployment import Presentation
 from cmslib.preview import preview, file_preview
 from his.messages.request import INVALID_CONTENT_TYPE
 from tenant2tenant import TenantMessage
@@ -16,11 +16,11 @@ from wsgilib import ACCEPT, JSON, XML, Binary
 __all__ = ['ROUTES']
 
 
-@preview(SystemPreviewToken)
-def get_presentation(system):
-    """Returns the presentation for the respective system."""
+@preview(DeploymentPreviewToken)
+def get_presentation(deployment):
+    """Returns the presentation for the respective deployment."""
 
-    presentation = Presentation(system)
+    presentation = Presentation(deployment)
 
     if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         try:
@@ -36,19 +36,21 @@ def get_presentation(system):
     return INVALID_CONTENT_TYPE
 
 
-@preview(SystemPreviewToken)
+@preview(DeploymentPreviewToken)
 @file_preview(Presentation)
 def get_file(file):
-    """Returns the presentation for the respective system."""
+    """Returns the presentation for the respective deployment."""
 
     return Binary(file.bytes)
 
 
-@preview(SystemPreviewToken)
-def get_tenant2tenant(system):
-    """Returns the tenant-to-tenant messages for the requested system."""
+@preview(DeploymentPreviewToken)
+def get_tenant2tenant(deployment):
+    """Returns the tenant-to-tenant
+    messages for the requested deployment.
+    """
 
-    messages = TenantMessage.for_system(system)
+    messages = TenantMessage.for_deployment(deployment)
 
     if  'application/xml' in ACCEPT or '*/*' in ACCEPT:
         xml = tenant2tenant()
@@ -65,7 +67,7 @@ def get_tenant2tenant(system):
 
 
 ROUTES = (
-    ('GET', '/preview/system', get_presentation),
-    ('GET', '/preview/system/file/<int:ident>', get_file),
-    ('GET', '/preview/system/tenant2tenant', get_tenant2tenant)
+    ('GET', '/preview/deployment', get_presentation),
+    ('GET', '/preview/deployment/file/<int:ident>', get_file),
+    ('GET', '/preview/deployment/tenant2tenant', get_tenant2tenant)
 )

@@ -11,13 +11,13 @@ from his import Application
 from dscms4 import charts
 from dscms4 import configuration
 from dscms4 import content
+from dscms4 import deployment
 from dscms4 import group
 from dscms4 import membership
 from dscms4 import menu
 from dscms4 import preview
 from dscms4 import previewgen
 from dscms4 import settings
-from dscms4 import system
 
 
 __all__ = ['APPLICATION', 'ROUTES']
@@ -26,9 +26,9 @@ __all__ = ['APPLICATION', 'ROUTES']
 LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
 APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
-    charts.ROUTES + configuration.ROUTES + content.ROUTES + group.ROUTES
-    + membership.ROUTES + menu.ROUTES + preview.ROUTES + previewgen.ROUTES
-    + settings.ROUTES + system.ROUTES)
+    charts.ROUTES + configuration.ROUTES + content.ROUTES + deployment.ROUTES
+    + group.ROUTES + membership.ROUTES + menu.ROUTES + preview.ROUTES
+    + previewgen.ROUTES + settings.ROUTES)
 APPLICATION.add_routes(ROUTES)
 
 

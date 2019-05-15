@@ -2,10 +2,10 @@
 HIS authentication with token authentication.
 """
 
-from dscms4.preview import group, system
+from dscms4.preview import deployment, group
 
 
 __all__ = ['ROUTES']
 
 
-ROUTES = group.ROUTES + system.ROUTES
+ROUTES = deployment.ROUTES + group.ROUTES
