@@ -128,7 +128,7 @@ class DeploymentContent:
     def to_json(self):
         """Returns the deployment and its content as a JSON-ish dict."""
         return {
-            'deployment': self.deployment.to_json(cascade=True),
+            'deployment': self.deployment.to_json(systems=True, cascade=2),
             'content': self.content()}
 
 
