@@ -1,5 +1,7 @@
 """Controllers for chart types."""
 
+from collections import defaultdict
+
 from cmslib.orm.chart_types import ChartType
 from cmslib.orm.charts import Chart
 from cmslib.messages.charts import CHART_TYPE_ADDED
@@ -21,6 +23,19 @@ def list_():
 
     chart_types = ChartType.select().where(ChartType.customer == CUSTOMER.id)
     return JSON([chart_type.to_json() for chart_type in chart_types])
+
+
+@authenticated
+@root
+def all_():
+    """Returns a mapping of all charts types of all customers."""
+
+    chart_types = defaultdict(list)
+
+    for chart_type in ChartType:
+        chart_types[ChartType.customer.id].append(chart_type.to_json())
+
+    return JSON(chart_types)
 
 
 @authenticated
@@ -66,6 +81,7 @@ def delete(chart_type):
 
 ROUTES = (
     ('GET', '/chart-types', list_),
+    ('GET', '/chart-types/all', all_),
     ('POST', '/chart-types', add),
     ('DELETE', '/chart-types/<chart_type>', delete)
 )
