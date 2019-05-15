@@ -11,6 +11,37 @@ from wsgilib import JSON
 __all__ = ['ROUTES']
 
 
+def get_groups(base_chart):
+    """Yields JSON representations of groups."""
+
+    for group_base_chart in GroupBaseChart.select().where(
+            GroupBaseChart.base_chart == base_chart):
+        yield {
+            'group': group_base_chart.group.id,
+            'member': group_base_chart.id}
+
+
+def get_deployments(base_chart):
+    """Yields JSON representations of deployments."""
+
+    for deployment_base_chart in DeploymentBaseChart.select().where(
+            DeploymentBaseChart.base_chart == base_chart):
+        yield {
+            'deployment': deployment_base_chart.deployment,
+            'member': deployment_base_chart.id}
+
+
+def get_menus(base_chart):
+    """Yields JSON representations of menus."""
+
+    for menu_item_chart in MenuItemChart.select().where(
+            MenuItemChart.base_chart == base_chart):
+        yield {
+            'menu': menu_item_chart.menu_item.menu.id,
+            'menuItem': menu_item_chart.menu_item.id,
+            'member': menu_item_chart.id}
+
+
 @authenticated
 @authorized('dscms4')
 def list_(ident):
@@ -19,29 +50,9 @@ def list_(ident):
     chart = get_chart(ident)
     base_chart = chart.base
     json = {
-        'groups': [
-            {
-                'group': group_base_chart.group.id,
-                'member': group_base_chart.id
-            }
-            for group_base_chart in GroupBaseChart.select().where(
-                GroupBaseChart.base_chart == base_chart)],
-        'deployments': [
-            {
-                'deployment': deployment_base_chart.deployment,
-                'member': deployment_base_chart.id
-            }
-            for deployment_base_chart in DeploymentBaseChart.select().where(
-                DeploymentBaseChart.base_chart == base_chart)],
-        'menus': [
-            {
-                'menu': menu_item_chart.menu_item.menu.id,
-                'menuItem': menu_item_chart.menu_item.id,
-                'member': menu_item_chart.id
-            }
-            for menu_item_chart in MenuItemChart.select().where(
-                MenuItemChart.base_chart == base_chart)]
-    }
+        'groups': list(get_groups(base_chart)),
+        'deployments': list(get_deployments(base_chart)),
+        'menus': list(get_menus(base_chart))}
     return JSON(json)
 
 
