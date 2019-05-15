@@ -43,7 +43,7 @@ def list_():
 
         deployments = BROWSER.browse(deployments)
         return JSON([
-            deployment.to_json(systems=True, cascade=2)
+            deployment.to_json(systems=True, cascade=1, skip={'customer'})
             for deployment in deployments])
 
     if 'assoc' in request.args:
@@ -53,7 +53,7 @@ def list_():
         return JSON(mapping)
 
     return JSON([
-        deployment.to_json(systems=True, cascade=2)
+        deployment.to_json(systems=True, cascade=1, skip={'customer'})
         for deployment in deployments])
 
 
@@ -63,7 +63,7 @@ def list_():
 def get(deployment):
     """Returns the respective deployment."""
 
-    return JSON(deployment.to_json(systems=True, cascade=2))
+    return JSON(deployment.to_json(systems=True, cascade=1))
 
 
 @authenticated
@@ -128,7 +128,8 @@ class DeploymentContent:
     def to_json(self):
         """Returns the deployment and its content as a JSON-ish dict."""
         return {
-            'deployment': self.deployment.to_json(systems=True, cascade=2),
+            'deployment': self.deployment.to_json(
+                systems=True, cascade=1, skip={'customer'}),
             'content': self.content()}
 
 
