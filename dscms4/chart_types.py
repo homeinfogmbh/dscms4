@@ -60,7 +60,7 @@ def add():
 
     chart_type = ChartType(customer=customer, chart_type=chart_type)
     chart_type.save()
-    return CHART_TYPE_ADDED
+    return CHART_TYPE_ADDED.update(id=chart_type.id)
 
 
 @authenticated
