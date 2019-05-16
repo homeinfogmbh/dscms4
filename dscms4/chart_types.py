@@ -7,6 +7,7 @@ from cmslib.orm.charts import Chart
 from cmslib.messages.charts import CHART_TYPE_ADDED
 from cmslib.messages.charts import CHART_TYPE_DELETED
 from cmslib.messages.charts import INVALID_CHART_TYPE
+from cmslib.messages.charts import NO_SUCH_CHART_TYPE
 from his import CUSTOMER, JSON_DATA, authenticated, authorized, root
 from his.messages.customer import NO_SUCH_CUSTOMER
 from mdb import Customer
@@ -64,17 +65,13 @@ def add():
 
 @authenticated
 @root
-def delete(chart_type):
+def delete(ident):
     """Adds a chart type for the respective customer."""
 
-    customer = JSON_DATA.get('customer')
-
     try:
-        chart_type = ChartType.get(
-            (ChartType.chart_type == chart_type)
-            & (ChartType.customer == customer))
+        chart_type = ChartType[ident]
     except ChartType.DoesNotExist:
-        return CHART_TYPE_DELETED
+        return NO_SUCH_CHART_TYPE
 
     chart_type.delete_instance()
     return CHART_TYPE_DELETED
@@ -84,5 +81,5 @@ ROUTES = (
     ('GET', '/chart-types', list_),
     ('GET', '/chart-types/all', all_),
     ('POST', '/chart-types', add),
-    ('DELETE', '/chart-types/<chart_type>', delete)
+    ('DELETE', '/chart-types/<int:ident>', delete)
 )
