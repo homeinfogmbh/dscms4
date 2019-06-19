@@ -48,7 +48,7 @@ def _get_deployments(expression):
     return deployments.values()
 
 
-def _json_list(deployment):
+def _jsonify(deployment):
     """Returns a JSON representation of the
     deployment with address and system IDs.
     """
@@ -76,7 +76,7 @@ def list_():
             return BROWSER.pages(deployments).to_json()
 
         deployments = BROWSER.browse(deployments)
-        return JSON([_json_list(deployment) for deployment in deployments])
+        return JSON([_jsonify(deployment) for deployment in deployments])
 
     if 'assoc' in request.args:
         mapping = {
@@ -84,7 +84,7 @@ def list_():
             for deployment in deployments}
         return JSON(mapping)
 
-    return JSON([_json_list(deployment) for deployment in deployments])
+    return JSON([_jsonify(deployment) for deployment in deployments])
 
 
 @authenticated
@@ -158,8 +158,7 @@ class DeploymentContent:
     def to_json(self):
         """Returns the deployment and its content as a JSON-ish dict."""
         return {
-            'deployment': self.deployment.to_json(
-                systems=True, cascade=1, skip={'customer'}),
+            'deployment': _jsonify(self.deployment),
             'content': self.content()}
 
 
