@@ -35,15 +35,18 @@ def _get_deployments(expression):
     for deployment in Deployment.select(Deployment, Address, System.id).join(
             System, on=system_join, attr='system').join(
                 Address, on=address_join).where(expression):
-        deployment.systems = [deployment.system] if deployment.system else []
-
         try:
             stored_deployment = deployments[deployment.id]
         except KeyError:
             deployments[deployment.id] = deployment
+
+            if deployment.system:
+                deployment.systems = [deployment.system.id]
+            else:
+                deployment.systems = []
         else:
             if deployment.system:
-                stored_deployment.systems.append(deployment.system)
+                stored_deployment.systems.append(deployment.system.id)
 
     return deployments.values()
 
