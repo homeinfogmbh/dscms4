@@ -14,7 +14,8 @@ from cmslib.orm.content.deployment import DeploymentMenu
 from cmslib.orm.settings import Settings
 from cmslib.presentation.deployment import Presentation
 from his import CUSTOMER, authenticated, authorized
-from terminallib import Deployment
+from mdb import Address
+from terminallib import Deployment, System
 from wsgilib import Browser, JSON, XML
 
 
@@ -22,6 +23,39 @@ __all__ = ['ROUTES']
 
 
 BROWSER = Browser()
+
+
+def _get_deployments(expression):
+    """Yields deployments with address and system IDs."""
+
+    deployments = {}
+    system_join = Deployment.id == System.deployment
+    address_join = Deployment.address == Address.id
+
+    for deployment in Deployment.select(Deployment, Address, System.id).join(
+            System, on=system_join, attr='system').join(
+                Address, on=address_join).where(expression):
+        deployment.systems = [deployment.system] if deployment.system else []
+
+        try:
+            stored_deployment = deployments[deployment.id]
+        except KeyError:
+            deployments[deployment.id] = deployment
+        else:
+            if deployment.system:
+                stored_deployment.systems.append(deployment.system)
+
+    return deployments.values()
+
+
+def _json_list(deployment):
+    """Returns a JSON representation of the
+    deployment with address and system IDs.
+    """
+
+    json = deployment.to_json(cascade=1, skip={'customer'})
+    json['systems'] = deployment.systems
+    return json
 
 
 @authenticated
@@ -35,16 +69,14 @@ def list_():
     if not settings.testing:
         expression &= Deployment.testing == 0
 
-    deployments = Deployment.select().where(expression)
+    deployments = _get_deployments(expression)
 
     if BROWSER.wanted:
         if BROWSER.info:
             return BROWSER.pages(deployments).to_json()
 
         deployments = BROWSER.browse(deployments)
-        return JSON([
-            deployment.to_json(systems=True, cascade=1, skip={'customer'})
-            for deployment in deployments])
+        return JSON([_json_list(deployment) for deployment in deployments])
 
     if 'assoc' in request.args:
         mapping = {
@@ -52,9 +84,7 @@ def list_():
             for deployment in deployments}
         return JSON(mapping)
 
-    return JSON([
-        deployment.to_json(systems=True, cascade=1, skip={'customer'})
-        for deployment in deployments])
+    return JSON([_json_list(deployment) for deployment in deployments])
 
 
 @authenticated
