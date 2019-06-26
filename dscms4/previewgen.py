@@ -1,5 +1,7 @@
 """Authenticated generation of tokens for previews."""
 
+from flask import request
+
 from cmslib.messages.preview import INVALID_TOKEN_TYPE
 from cmslib.orm.preview import TYPES
 from his import authenticated, authorized
@@ -21,7 +23,9 @@ def generate(type_, ident):
     except KeyError:
         raise INVALID_TOKEN_TYPE
 
-    token = token_class.generate(ident)
+    force = 'force' in request.args
+    token = token_class.generate(ident, force=force)
+    token.save()
     return JSON({'token': token.token.hex})
 
 
