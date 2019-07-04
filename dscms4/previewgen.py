@@ -26,7 +26,6 @@ def generate(type_, ident):
     force = 'force' in request.args
     token = token_class.generate(ident, force=force)
     token.save()
-    print('DEBUG:', token.id, token.token, token.obj.id, token.obj, flush=True)
     return JSON({'token': token.token.hex})
 
 
