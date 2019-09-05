@@ -6,7 +6,7 @@ from cmslib.messages.charts import INVALID_CHART_TYPE
 from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
 from cmslib.messages.menu import MENU_ITEM_CHART_DELETED
 from cmslib.messages.menu import MENU_ITEM_CHART_PATCHED
-from cmslib.orm.charts import Chart
+from cmslib.orm.charts import CHARTS
 from cmslib.orm.menu import MenuItemChart
 from his import JSON_DATA, authenticated, authorized
 from his.messages.data import MISSING_DATA
@@ -52,7 +52,7 @@ def add():
         raise MISSING_DATA.update(key='chart→type')
 
     try:
-        type_ = Chart.types[type_]
+        type_ = CHARTS[type_]
     except KeyError:
         raise INVALID_CHART_TYPE
 

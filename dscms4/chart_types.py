@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 from cmslib.orm.chart_types import ChartType
-from cmslib.orm.charts import Chart
+from cmslib.orm.charts import CHARTS
 from cmslib.messages.charts import CHART_TYPE_ADDED
 from cmslib.messages.charts import CHART_TYPE_DELETED
 from cmslib.messages.charts import INVALID_CHART_TYPE
@@ -54,7 +54,7 @@ def add():
         return NO_SUCH_CUSTOMER
 
     try:
-        Chart.types[chart_type]  # Test whether type is valid.
+        CHARTS[chart_type]  # Test whether type is valid.
     except KeyError:
         return INVALID_CHART_TYPE
 
