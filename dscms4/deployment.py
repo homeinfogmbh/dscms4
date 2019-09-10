@@ -15,7 +15,7 @@ from cmslib.orm.settings import Settings
 from cmslib.presentation.deployment import Presentation
 from his import CUSTOMER, authenticated, authorized
 from mdb import Address
-from terminallib import Deployment, System
+from terminallib import Deployment
 from wsgilib import Browser, JSON, XML
 
 
@@ -28,27 +28,9 @@ BROWSER = Browser()
 def _get_deployments(expression):
     """Yields deployments with address and system IDs."""
 
-    deployments = {}
-    system_join = Deployment.id == System.deployment
     address_join = Deployment.address == Address.id
-
-    for deployment in Deployment.select(Deployment, Address, System.id).join(
-            System, on=system_join, attr='system').join(
-                Address, on=address_join).where(expression):
-        try:
-            stored_deployment = deployments[deployment.id]
-        except KeyError:
-            deployments[deployment.id] = deployment
-
-            if deployment.system:
-                deployment.systems = [deployment.system.id]
-            else:
-                deployment.systems = []
-        else:
-            if deployment.system:
-                stored_deployment.systems.append(deployment.system.id)
-
-    return deployments.values()
+    return Deployment.select(Deployment, Address).join(
+        Address, on=address_join).where(expression)
 
 
 def _jsonify(deployment):
@@ -57,7 +39,7 @@ def _jsonify(deployment):
     """
 
     json = deployment.to_json(cascade=1, skip={'customer'})
-    json['systems'] = deployment.systems
+    json['systems'] = [system.id for system in deployment.systems]
     return json
 
 
