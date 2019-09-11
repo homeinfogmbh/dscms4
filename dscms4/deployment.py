@@ -38,9 +38,7 @@ def _jsonify(deployment):
     deployment with address and system IDs.
     """
 
-    json = deployment.to_json(cascade=1, skip={'customer'})
-    json['systems'] = [system.id for system in deployment.systems]
-    return json
+    return deployment.to_json(cascade=1, systems=True, skip={'customer'})
 
 
 @authenticated
