@@ -4,10 +4,9 @@ from cmslib.exceptions import AmbiguousConfigurationsError
 from cmslib.exceptions import NoConfigurationFound
 from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
 from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
-from cmslib.orm.preview import DeploymentPreviewToken
 from cmslib.presentation.deployment import Presentation
-from cmslib.preview import preview, file_preview
 from his.messages.request import INVALID_CONTENT_TYPE
+from previewlib import preview, file_preview, DeploymentPreviewToken
 from tenant2tenant import TenantMessage
 from tenant2tenant.dom import tenant2tenant     # pylint: disable=E0401,E0611
 from wsgilib import ACCEPT, JSON, XML, Binary
