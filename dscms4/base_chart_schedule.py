@@ -5,7 +5,7 @@ from cmslib.messages.schedule import SCHEDULE_PATCHED
 from cmslib.messages.schedule import SCHEDULE_DELETED
 
 from cmslib.functions.base_chart_schedule import get_base_chart_schedule
-from cmslib.orm.schedule import BaseChartSchedule
+from cmslib.orm.base_chart_schedule import BaseChartSchedule
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
