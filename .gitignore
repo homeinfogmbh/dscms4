@@ -7,3 +7,5 @@ setup.cfg
 dist
 .buildconfig
 dscms4/dom.py
+*.anjuta
+.anjuta*
