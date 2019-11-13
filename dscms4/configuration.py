@@ -47,7 +47,8 @@ def add():
 
     transaction = Configuration.from_json(JSON_DATA)
     transaction.commit()
-    return CONFIGURATION_ADDED.update(id=transaction[0].id)
+    configuration = transaction.get_instance_of(Configuration)
+    return CONFIGURATION_ADDED.update(id=configuration.id)
 
 
 @authenticated
