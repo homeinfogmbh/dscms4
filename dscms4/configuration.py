@@ -1,7 +1,5 @@
 """Configurations controller."""
 
-from datetime import datetime
-
 from flask import request
 
 from cmslib.functions.configuration import get_configuration
@@ -9,42 +7,12 @@ from cmslib.functions.configuration import list_configurations
 from cmslib.messages.configuration import CONFIGURATION_ADDED
 from cmslib.messages.configuration import CONFIGURATION_PATCHED
 from cmslib.messages.configuration import CONFIGURATION_DELETED
-from cmslib.orm.configuration import TIME_FORMAT
-from cmslib.orm.configuration import Colors
 from cmslib.orm.configuration import Configuration
-from cmslib.orm.configuration import Ticker
-from cmslib.orm.configuration import Backlight
 from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON
 
 
 __all__ = ['ROUTES', 'list_configurations', 'get_configuration']
-
-
-def _update_tickers(tickers, configuration, *, delete=True):
-    """Updates the respective ticker records."""
-
-    if delete:
-        for ticker in configuration.tickers:
-            ticker.delete_instance()
-
-    for json in tickers:
-        ticker = Ticker.from_json(json, configuration)
-        ticker.save()
-
-
-def _update_backlights(backlights, configuration, *, delete=True):
-    """Updates the respective backlight records."""
-
-    if delete:
-        for backlight in configuration.backlights:
-            backlight.delete_instance()
-
-    for time, brightness in backlights.items():
-        time = datetime.strptime(time, TIME_FORMAT).time()
-        json = {'time': time, 'brightness': brightness}
-        backlight = Backlight.from_json(json, configuration)
-        backlight.save()
 
 
 @authenticated
@@ -77,17 +45,9 @@ def get(ident):
 def add():
     """Adds a new configuration."""
 
-    colors = JSON_DATA.pop('colors', {})
-    tickers = JSON_DATA.pop('tickers', ())
-    backlight = JSON_DATA.pop('backlight', {})
-    # Create related colors first.
-    colors = Colors.from_json(colors)
-    colors.save()
-    configuration = Configuration.from_json(JSON_DATA, colors)
-    configuration.save()
-    _update_tickers(tickers, configuration, delete=False)
-    _update_backlights(backlight, configuration, delete=False)
-    return CONFIGURATION_ADDED.update(id=configuration.id)
+    transaction = Configuration.from_json(JSON_DATA)
+    transaction.commit()
+    return CONFIGURATION_ADDED.update(id=transaction[0].id)
 
 
 @authenticated
@@ -95,26 +55,9 @@ def add():
 def patch(ident):
     """Modifies an existing configuration."""
 
-    colors = JSON_DATA.pop('colors', None)
-    tickers = JSON_DATA.pop('tickers', None)
-    backlight = JSON_DATA.pop('backlight', None)
     configuration = get_configuration(ident)
-    configuration.patch_json(JSON_DATA)
-    configuration.save()
-
-    # Patch related colors.
-    if colors is not None:
-        configuration.colors.patch_json(colors)
-        configuration.colors.save()
-
-    # Update related tickers.
-    if tickers is not None:
-        _update_tickers(tickers, configuration)
-
-    # Update backlight settings.
-    if backlight is not None:
-        _update_backlights(backlight, configuration)
-
+    transaction = configuration.patch_json(JSON_DATA)
+    transaction.commit()
     return CONFIGURATION_PATCHED
 
 
