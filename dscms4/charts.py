@@ -57,7 +57,7 @@ def add():
         return INVALID_DATA.update(invalid_keys=invalid_keys.invalid_keys)
 
     transaction.commit()
-    return CHART_ADDED.update(id=transaction.chart.id)
+    return CHART_ADDED.update(id=transaction.id)
 
 
 @authenticated
