@@ -22,11 +22,15 @@ def list_():
     """List menus."""
 
     menus = Menu.select().where(Menu.customer == CUSTOMER.id)
+    items = 'items' in request.args
 
     if 'assoc' in request.args:
-        return JSON({menu.id: menu.to_json(skip=('id',)) for menu in menus})
+        json = {
+            menu.id: menu.to_json(skip=('id',), items=items) for menu in menus
+        }
+        return JSON(json)
 
-    return JSON([menu.to_json() for menu in menus])
+    return JSON([menu.to_json(items=items) for menu in menus])
 
 
 @authenticated
