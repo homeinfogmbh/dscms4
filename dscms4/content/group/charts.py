@@ -1,5 +1,7 @@
 """Management of charts in groups."""
 
+from peewee import JOIN
+
 from cmslib.functions.charts import get_chart
 from cmslib.functions.group import get_group
 from cmslib.messages.content import CONTENT_ADDED
@@ -24,8 +26,8 @@ def list_gbc(gid):
     group_join = GroupBaseChart.group == Group.id
     bc_join = GroupBaseChart.base_chart == BaseChart.id
     return GroupBaseChart.select().join(
-        Group, join_type='LEFT', on=group_join).join(
-            BaseChart, join_type='LEFT', on=bc_join).where(
+        Group, join_type=JOIN.LEFT_OUTER, on=group_join).join(
+            BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join).where(
                 (Group.customer == CUSTOMER.id) & (Group.id == gid)
                 & (BaseChart.trashed == 0))
 

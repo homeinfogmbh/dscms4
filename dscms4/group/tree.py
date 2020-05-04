@@ -1,5 +1,7 @@
 """Groups tree endpoint."""
 
+from peewee import JOIN
+
 from cmslib.functions.group import get_group
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
@@ -59,7 +61,7 @@ class GroupContent:
         bc_join = GroupBaseChart.base_chart == BaseChart.id
 
         for group_base_chart in GroupBaseChart.select().join(
-                BaseChart, join_type='LEFT', on=bc_join).where(
+                BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join).where(
                     (GroupBaseChart.group == self.group)
                     & (BaseChart.trashed == 0)):
             yield group_base_chart.to_json()
