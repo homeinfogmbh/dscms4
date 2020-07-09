@@ -14,8 +14,8 @@ from cmslib.orm.content.deployment import DeploymentMenu
 from cmslib.orm.settings import Settings
 from cmslib.presentation.deployment import Presentation
 from his import CUSTOMER, authenticated, authorized
+from hwdb import Deployment
 from mdb import Address
-from terminallib import Deployment
 from wsgilib import Browser, JSON, XML
 
 

@@ -9,7 +9,7 @@ from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from terminallib import Deployment
+from hwdb import Deployment
 from wsgilib import JSON
 
 
