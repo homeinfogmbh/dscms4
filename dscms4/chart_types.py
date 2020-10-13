@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-from cmslib.orm.chart_types import ChartType
+from cmslib.orm.chart_acl import ChartACL
 from cmslib.orm.charts import CHARTS
 from cmslib.messages.charts import CHART_TYPE_ADDED
 from cmslib.messages.charts import CHART_TYPE_DELETED
@@ -22,7 +22,7 @@ __all__ = ['ROUTES']
 def list_():
     """Lists available chart types."""
 
-    chart_types = ChartType.select().where(ChartType.customer == CUSTOMER.id)
+    chart_types = ChartACL.select().where(ChartACL.customer == CUSTOMER.id)
     return JSON([chart_type.to_json() for chart_type in chart_types])
 
 
@@ -33,7 +33,7 @@ def all_():
 
     chart_types = defaultdict(list)
 
-    for chart_type in ChartType:
+    for chart_type in ChartACL:
         json = chart_type.to_json(skip={'customer'})
         chart_types[chart_type.customer.id].append(json)
 
@@ -58,7 +58,7 @@ def add():
     except KeyError:
         return INVALID_CHART_TYPE
 
-    chart_type = ChartType(customer=customer, chart_type=chart_type)
+    chart_type = ChartACL(customer=customer, chart_type=chart_type)
     chart_type.save()
     return CHART_TYPE_ADDED.update(id=chart_type.id)
 
@@ -69,8 +69,8 @@ def delete(ident):
     """Adds a chart type for the respective customer."""
 
     try:
-        chart_type = ChartType[ident]
-    except ChartType.DoesNotExist:
+        chart_type = ChartACL[ident]
+    except ChartACL.DoesNotExist:
         return NO_SUCH_CHART_TYPE
 
     chart_type.delete_instance()
