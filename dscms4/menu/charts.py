@@ -47,12 +47,12 @@ def add():
         raise MISSING_DATA.update(key='chart')
 
     try:
-        type_ = chart['type']
+        typename = chart['type']
     except KeyError:
         raise MISSING_DATA.update(key='chart→type')
 
     try:
-        type_ = CHARTS[type_]
+        cls = CHARTS[typename]
     except KeyError:
         raise INVALID_CHART_TYPE
 
@@ -61,7 +61,7 @@ def add():
     except KeyError:
         raise MISSING_DATA.update(key='chart→id')
 
-    chart = get_chart(chart_id, type=type_)
+    chart = get_chart(chart_id, cls=cls)
     menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
     menu_item_chart.save()
     return MENU_ITEM_CHART_ADDED.update(id=menu_item_chart.id)
