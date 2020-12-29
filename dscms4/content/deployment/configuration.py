@@ -8,7 +8,7 @@ from cmslib.messages.content import CONTENT_EXISTS
 from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.deployment import DeploymentConfiguration
 from his import authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
