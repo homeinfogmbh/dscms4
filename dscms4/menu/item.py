@@ -13,7 +13,7 @@ from cmslib.messages.menu import MENU_ITEM_PATCHED
 from cmslib.messages.menu import MENU_ITEMS_SORTED
 from cmslib.orm.menu import MenuItem
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -21,18 +21,19 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_(menu):
+def list_(menu: int) -> JSON:
     """Lists the respective menu's items."""
 
     menu = get_menu(menu)
     return JSON([
         menu_item.to_json() for menu_item in MenuItem.select().where(
-            MenuItem.menu == menu)])
+            MenuItem.menu == menu)
+    ])
 
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident: int) -> JSON:
     """Returns the respective menu item."""
 
     charts = 'charts' in request.args
@@ -43,7 +44,7 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a new menu item."""
 
     menu_item_group = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
@@ -53,7 +54,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
@@ -64,7 +65,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes a menu or menu item."""
 
     update_children = 'updateChildren' in request.args
@@ -75,7 +76,7 @@ def delete(ident):
 
 @authenticated
 @authorized('dscms4')
-def order():
+def order() -> JSONMessage:
     """Orders the respective menu items."""
 
     menu_items = (get_menu_item(ident) for ident in JSON_DATA)

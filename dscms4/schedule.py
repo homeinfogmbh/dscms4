@@ -7,7 +7,7 @@ from cmslib.messages.schedule import SCHEDULE_DELETED
 from cmslib.functions.schedule import get_schedule
 from cmslib.orm.schedule import Schedule
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -15,7 +15,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """Lists the customer's schedules."""
 
     schedules = Schedule.select().where(Schedule.customer == CUSTOMER.id)
@@ -24,15 +24,15 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident) -> JSON:
     """Returns a specific schedule."""
 
-    return get_schedule(ident).to_json()
+    return JSON(get_schedule(ident).to_json())
 
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a schedule."""
 
     json = dict(JSON_DATA)
@@ -43,7 +43,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Patches a schedule."""
 
     schedule = get_schedule(ident)
@@ -55,7 +55,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes a schedule."""
 
     schedule = get_schedule(ident)

@@ -6,4 +6,4 @@ from dscms4.group import deployment, group, tree
 __all__ = ['ROUTES']
 
 
-ROUTES = deployment.ROUTES + group.ROUTES + tree.ROUTES
+ROUTES = (*deployment.ROUTES, *group.ROUTES, *tree.ROUTES)

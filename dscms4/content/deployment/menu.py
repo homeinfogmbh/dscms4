@@ -8,7 +8,7 @@ from cmslib.messages.content import CONTENT_EXISTS
 from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.deployment import DeploymentMenu
 from his import authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -16,7 +16,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(deployment):
+def get(deployment: int) -> JSON:
     """Returns a list of IDs of the menus in the respective deployment."""
 
     return JSON([
@@ -27,7 +27,7 @@ def get(deployment):
 
 @authenticated
 @authorized('dscms4')
-def add(deployment, menu):
+def add(deployment: int, menu: int) -> JSONMessage:
     """Adds the menu to the respective deployment."""
 
     deployment = get_deployment(deployment)
@@ -49,7 +49,7 @@ def add(deployment, menu):
 
 @authenticated
 @authorized('dscms4')
-def delete(deployment, menu):
+def delete(deployment: int , menu: int) -> JSONMessage:
     """Deletes the menu from the respective deployment."""
 
     deployment = get_deployment(deployment)
@@ -60,7 +60,7 @@ def delete(deployment, menu):
             (DeploymentMenu.deployment == deployment)
             & (DeploymentMenu.menu == menu))
     except DeploymentMenu.DoesNotExist:
-        raise NO_SUCH_CONTENT
+        return NO_SUCH_CONTENT
 
     deployment_menu.delete_instance()
     return CONTENT_DELETED

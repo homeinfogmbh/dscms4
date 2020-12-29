@@ -10,7 +10,7 @@ from cmslib.messages.menu import MENU_DELETED
 from cmslib.messages.menu import MENU_PATCHED
 from cmslib.orm.menu import Menu
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -18,7 +18,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """List menus."""
 
     menus = Menu.select().where(Menu.customer == CUSTOMER.id)
@@ -35,7 +35,7 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident: int) -> JSON:
     """Returns the respective menu."""
 
     menu = get_menu(ident)
@@ -45,7 +45,7 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a new menu."""
 
     try:
@@ -59,7 +59,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Patches the respective menu."""
 
     menu = get_menu(ident)
@@ -75,7 +75,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def copy(ident):
+def copy(ident: int) -> JSONMessage:
     """Copies the respective menu."""
 
     menu = get_menu(ident)
@@ -90,7 +90,7 @@ def copy(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes a menu."""
 
     menu = get_menu(ident)

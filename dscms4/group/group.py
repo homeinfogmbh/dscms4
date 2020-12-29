@@ -1,5 +1,7 @@
 """Group Controllers."""
 
+from typing import Union
+
 from flask import request
 
 from cmslib.exceptions import AmbiguousConfigurationsError
@@ -13,7 +15,7 @@ from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
 from cmslib.orm.group import Group
 from cmslib.presentation.group import Presentation
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON, XML
+from wsgilib import JSON, JSONMessage, XML
 
 
 __all__ = ['ROUTES']
@@ -21,7 +23,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """Lists IDs of groups of the respective customer."""
 
     if 'tree' in request.args:
@@ -34,7 +36,7 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident: int) -> JSON:
     """Returns the respective group."""
 
     group = get_group(ident)
@@ -43,7 +45,7 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
-def get_presentation(ident):
+def get_presentation(ident: int) -> Union[JSON, JSONMessage, XML]:
     """Returns the presentation for the respective group."""
 
     group = get_group(ident)
@@ -66,7 +68,7 @@ def get_presentation(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a new group."""
 
     group = Group.from_json(JSON_DATA)
@@ -76,7 +78,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Patches the respective group."""
 
     group = get_group(ident)
@@ -87,7 +89,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes the respective group."""
 
     group = get_group(ident)

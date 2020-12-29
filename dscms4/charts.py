@@ -15,7 +15,7 @@ from cmslib.orm.charts import ChartMode
 from his import JSON_DATA, authenticated, authorized
 from his.messages.data import INVALID_DATA
 from peeweeplus import InvalidKeys
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -23,7 +23,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """Lists IDs of charts of the respective customer."""
 
     if 'assoc' in request.args:
@@ -40,7 +40,7 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident: int) -> JSON:
     """Returns the respective chart of the current customer."""
 
     return JSON(get_chart(ident).to_json(mode=get_mode()))
@@ -48,7 +48,7 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds new charts."""
 
     try:
@@ -62,7 +62,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Patches a chart."""
 
     chart = get_chart(ident)
@@ -78,7 +78,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes the specified chart."""
 
     get_chart(ident).delete_instance()

@@ -1,5 +1,7 @@
 """Management of charts in deployments."""
 
+from typing import Iterable
+
 from cmslib.functions.charts import get_chart
 from cmslib.functions.deployment import get_deployment
 from cmslib.messages.content import CONTENT_ADDED
@@ -10,13 +12,13 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
 from hwdb import Deployment
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
 
 
-def list_dbc(ident):
+def list_dbc(ident: int) -> Iterable[DeploymentBaseChart]:
     """Yields the deployment base charts of the
     current customer for the respective termianl.
     """
@@ -27,7 +29,7 @@ def list_dbc(ident):
         & (BaseChart.trashed == 0))
 
 
-def get_dbc(deployment, ident):
+def get_dbc(deployment: int, ident: int) -> DeploymentBaseChart:
     """Returns the respective deployment base chart."""
 
     try:
@@ -36,12 +38,12 @@ def get_dbc(deployment, ident):
             & (Deployment.id == deployment)
             & (Deployment.customer == CUSTOMER.id)).get()
     except DeploymentBaseChart.DoesNotExist:
-        raise NO_SUCH_CONTENT
+        raise NO_SUCH_CONTENT from None
 
 
 @authenticated
 @authorized('dscms4')
-def get(deployment):
+def get(deployment: int) -> JSON:
     """Returns a list of IDs of the charts in the respective deployment."""
 
     return JSON([dbc.to_json() for dbc in list_dbc(deployment)])
@@ -49,7 +51,7 @@ def get(deployment):
 
 @authenticated
 @authorized('dscms4')
-def add(deployment, chart):
+def add(deployment: int, chart: int) -> JSONMessage:
     """Adds the chart to the respective deployment."""
 
     deployment = get_deployment(deployment)
@@ -61,7 +63,7 @@ def add(deployment, chart):
 
 @authenticated
 @authorized('dscms4')
-def patch(deployment, chart):
+def patch(deployment: int, chart: int) -> JSONMessage:
     """Adds the chart to the respective deployment."""
 
     dbc = get_dbc(deployment, chart)
@@ -72,7 +74,7 @@ def patch(deployment, chart):
 
 @authenticated
 @authorized('dscms4')
-def delete(deployment, chart):
+def delete(deployment: int, chart: int) -> JSONMessage:
     """Deletes the chart from the respective deployment."""
 
     dbc = get_dbc(deployment, chart)

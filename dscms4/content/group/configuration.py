@@ -8,7 +8,7 @@ from cmslib.messages.content import CONTENT_EXISTS
 from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.group import GroupConfiguration
 from his import authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -16,7 +16,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(gid):
+def get(gid: int) -> JSON:
     """Returns a list of IDs of the configurations in the respective group."""
 
     group = get_group(gid)
@@ -29,7 +29,7 @@ def get(gid):
 
 @authenticated
 @authorized('dscms4')
-def add(gid, ident):
+def add(gid: int, ident: int) -> JSONMessage:
     """Adds the configuration to the respective group."""
 
     group = get_group(gid)
@@ -51,7 +51,7 @@ def add(gid, ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(gid, ident):
+def delete(gid: int, ident: int) -> JSONMessage:
     """Deletes the configuration from the respective group."""
 
     group = get_group(gid)
@@ -62,7 +62,7 @@ def delete(gid, ident):
             (GroupConfiguration.group == group)
             & (GroupConfiguration.configuration == configuration))
     except GroupConfiguration.DoesNotExist:
-        raise NO_SUCH_CONTENT
+        return NO_SUCH_CONTENT
 
     group_configuration.delete_instance()
     return CONTENT_DELETED

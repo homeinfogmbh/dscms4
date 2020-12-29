@@ -16,7 +16,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(deployment):
+def get(deployment: int) -> JSON:
     """Returns a list of IDs of the configurations
     in the respective deployment.
     """
@@ -29,7 +29,7 @@ def get(deployment):
 
 @authenticated
 @authorized('dscms4')
-def add(deployment, configuration):
+def add(deployment: int, configuration: int) -> JSONMessage:
     """Adds the configuration to the respective deployment."""
 
     deployment = get_deployment(deployment)
@@ -51,7 +51,7 @@ def add(deployment, configuration):
 
 @authenticated
 @authorized('dscms4')
-def delete(deployment, configuration):
+def delete(deployment: int, configuration: int) -> JSONMessage:
     """Deletes the configuration from the respective deployment."""
 
     deployment = get_deployment(deployment)
@@ -62,7 +62,7 @@ def delete(deployment, configuration):
             (DeploymentConfiguration.deployment == deployment)
             & (DeploymentConfiguration.configuration == configuration))
     except DeploymentConfiguration.DoesNotExist:
-        raise NO_SUCH_CONTENT
+        return NO_SUCH_CONTENT
 
     deployment_conf.delete_instance()
     return CONTENT_DELETED

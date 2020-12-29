@@ -11,7 +11,7 @@ from cmslib.messages.charts import NO_SUCH_CHART_TYPE
 from his import CUSTOMER, JSON_DATA, authenticated, authorized, root
 from his.messages.customer import NO_SUCH_CUSTOMER
 from mdb import Customer
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -19,7 +19,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """Lists available chart types."""
 
     chart_types = ChartACL.select().where(ChartACL.customer == CUSTOMER.id)
@@ -28,7 +28,7 @@ def list_():
 
 @authenticated
 @root
-def all_():
+def all_() -> JSON:
     """Returns a mapping of all charts types of all customers."""
 
     chart_types = defaultdict(list)
@@ -42,7 +42,7 @@ def all_():
 
 @authenticated
 @root
-def add():
+def add() -> JSONMessage:
     """Adds a chart type for the respective customer."""
 
     customer = JSON_DATA.get('customer')
@@ -65,7 +65,7 @@ def add():
 
 @authenticated
 @root
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Adds a chart type for the respective customer."""
 
     try:

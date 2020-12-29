@@ -10,7 +10,7 @@ from cmslib.orm.charts import CHARTS
 from cmslib.orm.menu import MenuItemChart
 from his import JSON_DATA, authenticated, authorized
 from his.messages.data import MISSING_DATA
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -21,7 +21,7 @@ EXCLUDED_FIELDS = {'menu_item', 'base_chart'}
 
 @authenticated
 @authorized('dscms4')
-def list_(ident):
+def list_(ident: int) -> JSON:
     """Lists the respective menu's items."""
 
     return JSON([chart.to_json() for chart in get_menu_item(ident).charts])
@@ -29,7 +29,7 @@ def list_(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a new menu item."""
 
     json = dict(JSON_DATA)
@@ -37,29 +37,29 @@ def add():
     try:
         menu_item = json.pop('menu_item')
     except KeyError:
-        raise MISSING_DATA.update(key='menu_item')
+        return MISSING_DATA.update(key='menu_item')
 
     menu_item = get_menu_item(menu_item)
 
     try:
         chart = json.pop('chart')
     except KeyError:
-        raise MISSING_DATA.update(key='chart')
+        return MISSING_DATA.update(key='chart')
 
     try:
         typename = chart['type']
     except KeyError:
-        raise MISSING_DATA.update(key='chart→type')
+        return MISSING_DATA.update(key='chart→type')
 
     try:
         cls = CHARTS[typename]
     except KeyError:
-        raise INVALID_CHART_TYPE
+        return INVALID_CHART_TYPE
 
     try:
         chart_id = chart['id']
     except KeyError:
-        raise MISSING_DATA.update(key='chart→id')
+        return MISSING_DATA.update(key='chart→id')
 
     chart = get_chart(chart_id, cls=cls)
     menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
@@ -69,7 +69,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Orders the respective menu items."""
 
     menu_item_chart = get_menu_item_chart(ident)
@@ -81,7 +81,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Deletes a menu or menu item."""
 
     get_menu_item_chart(ident).delete_instance()

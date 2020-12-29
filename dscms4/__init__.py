@@ -27,9 +27,10 @@ __all__ = ['APPLICATION', 'ROUTES']
 LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
 APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
-    chart_types.ROUTES + charts.ROUTES + configuration.ROUTES + content.ROUTES
-    + deployment.ROUTES + group.ROUTES + membership.ROUTES + menu.ROUTES
-    + preview.ROUTES + schedule.ROUTES + settings.ROUTES)
+    *chart_types.ROUTES, *charts.ROUTES, *configuration.ROUTES,
+    *content.ROUTES, *deployment.ROUTES, *group.ROUTES, *membership.ROUTES,
+    *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES, *settings.ROUTES
+)
 APPLICATION.add_routes(ROUTES)
 
 

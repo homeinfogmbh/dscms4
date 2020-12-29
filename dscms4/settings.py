@@ -3,7 +3,7 @@
 from cmslib.messages.settings import SETTINGS_SAVED
 from cmslib.orm.settings import Settings
 from his import CUSTOMER, JSON_DATA, admin, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -11,7 +11,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get_settings():
+def get_settings() -> JSON:
     """Gets the customer's settings."""
 
     settings = Settings.for_customer(CUSTOMER.id)
@@ -21,7 +21,7 @@ def get_settings():
 @authenticated
 @authorized('dscms4')
 @admin
-def set_settings():
+def set_settings() -> JSONMessage:
     """Sets the customer's settings."""
 
     json = dict(JSON_DATA)

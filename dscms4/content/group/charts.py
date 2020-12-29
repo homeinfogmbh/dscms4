@@ -1,5 +1,7 @@
 """Management of charts in groups."""
 
+from typing import Iterable
+
 from peewee import JOIN
 
 from cmslib.functions.charts import get_chart
@@ -12,13 +14,13 @@ from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.group import Group
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
 
 
-def list_gbc(gid):
+def list_gbc(gid: int) -> Iterable[GroupBaseChart]:
     """Lists group base charts of the current
     customer with the respective group ID.
     """
@@ -32,7 +34,7 @@ def list_gbc(gid):
                 & (BaseChart.trashed == 0))
 
 
-def get_gbc(gid, ident):
+def get_gbc(gid: int, ident: int) -> GroupBaseChart:
     """Returns the respective group base chart."""
 
     try:
@@ -40,12 +42,12 @@ def get_gbc(gid, ident):
             (Group.customer == CUSTOMER.id) & (Group.id == gid)
             & (GroupBaseChart.id == ident)).get()
     except GroupBaseChart.DoesNotExist:
-        raise NO_SUCH_CONTENT
+        raise NO_SUCH_CONTENT from None
 
 
 @authenticated
 @authorized('dscms4')
-def get(gid):
+def get(gid: int) -> JSON:
     """Returns a list of IDs of the charts in the respective group."""
 
     return JSON([gbc.to_json() for gbc in list_gbc(gid)])
@@ -53,7 +55,7 @@ def get(gid):
 
 @authenticated
 @authorized('dscms4')
-def add(gid, ident):
+def add(gid: int, ident: int) -> JSONMessage:
     """Adds the chart to the respective group."""
 
     group = get_group(gid)
@@ -65,7 +67,7 @@ def add(gid, ident):
 
 @authenticated
 @authorized('dscms4')
-def patch(gid, ident):
+def patch(gid: int, ident: int) -> JSONMessage:
     """Adds the chart to the respective group."""
 
     group_base_chart = get_gbc(gid, ident)
@@ -76,7 +78,7 @@ def patch(gid, ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(gid, ident):
+def delete(gid: int, ident: int) -> JSONMessage:
     """Deletes the chart from the respective group."""
 
     group_base_chart = get_gbc(gid, ident)

@@ -6,7 +6,7 @@ from cmslib.messages.group import MEMBER_DELETED
 from cmslib.messages.group import NO_SUCH_MEMBER
 from cmslib.orm.group import GroupMemberDeployment
 from his import JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
@@ -14,7 +14,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(gid):
+def get(gid: int) -> JSON:
     """Returns the group's members."""
 
     deployments = []
@@ -28,7 +28,7 @@ def get(gid):
 
 @authenticated
 @authorized('dscms4')
-def add(gid):
+def add(gid: int) -> JSONMessage:
     """Adds a deployment to the respective group."""
 
     group = get_group(gid)
@@ -39,7 +39,7 @@ def add(gid):
 
 @authenticated
 @authorized('dscms4')
-def delete(gid, deployment):
+def delete(gid: int, deployment: int) -> JSONMessage:
     """Deletes the respective deployment from the group."""
 
     try:
@@ -47,7 +47,7 @@ def delete(gid, deployment):
             (GroupMemberDeployment.group == get_group(gid))
             & (GroupMemberDeployment.deployment == deployment))
     except GroupMemberDeployment.DoesNotExist:
-        raise NO_SUCH_MEMBER
+        return NO_SUCH_MEMBER
 
     group_member_deployment.delete_instance()
     return MEMBER_DELETED

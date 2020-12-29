@@ -9,7 +9,7 @@ from cmslib.messages.configuration import CONFIGURATION_PATCHED
 from cmslib.messages.configuration import CONFIGURATION_DELETED
 from cmslib.orm.configuration import Configuration
 from his import JSON_DATA, authenticated, authorized
-from wsgilib import JSON
+from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES', 'list_configurations', 'get_configuration']
@@ -17,7 +17,7 @@ __all__ = ['ROUTES', 'list_configurations', 'get_configuration']
 
 @authenticated
 @authorized('dscms4')
-def list_():
+def list_() -> JSON:
     """Returns a list of IDs of the customer's configurations."""
 
     configurations = list_configurations()
@@ -34,7 +34,7 @@ def list_():
 
 @authenticated
 @authorized('dscms4')
-def get(ident):
+def get(ident: int) -> JSON:
     """Returns the respective configuration."""
 
     return JSON(get_configuration(ident).to_json(cascade=True))
@@ -42,7 +42,7 @@ def get(ident):
 
 @authenticated
 @authorized('dscms4')
-def add():
+def add() -> JSONMessage:
     """Adds a new configuration."""
 
     transaction = Configuration.from_json(JSON_DATA)
@@ -52,7 +52,7 @@ def add():
 
 @authenticated
 @authorized('dscms4')
-def patch(ident):
+def patch(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
     configuration = get_configuration(ident)
@@ -63,7 +63,7 @@ def patch(ident):
 
 @authenticated
 @authorized('dscms4')
-def delete(ident):
+def delete(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
     get_configuration(ident).delete_instance()
