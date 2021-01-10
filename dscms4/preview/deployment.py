@@ -1,9 +1,8 @@
 """Preview for deployments."""
 
-from hwdb import Deployment
-
 from cmslib.presentation.deployment import Presentation
 from cmslib.preview import Response, make_response
+from hwdb import Deployment
 from previewlib import preview, DeploymentPreviewToken
 
 
