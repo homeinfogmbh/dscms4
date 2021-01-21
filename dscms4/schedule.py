@@ -1,8 +1,10 @@
 """Time schedules."""
 
+from flask import request
+
 from cmslib.functions.schedule import get_schedule, get_schedules
 from cmslib.orm.schedule import Schedule
-from his import JSON_DATA, authenticated, authorized
+from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 
 
@@ -27,23 +29,23 @@ def get(ident) -> JSON:
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a schedule."""
 
-    json = dict(JSON_DATA)
-    schedule = Schedule.from_json(json)
+    schedule = Schedule.from_json(request.json)
     schedule.save()
     return JSONMessage('Added schedule.', id=schedule.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches a schedule."""
 
     schedule = get_schedule(ident)
-    json = dict(JSON_DATA)
-    schedule = schedule.patch_json(json)
+    schedule = schedule.patch_json(request.json)
     schedule.save()
     return JSONMessage('Schedule patched.', status=200)
 
