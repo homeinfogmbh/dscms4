@@ -4,18 +4,11 @@ from typing import Union
 
 from flask import request
 
-from cmslib.exceptions import AmbiguousConfigurationsError
-from cmslib.exceptions import NoConfigurationFound
-from cmslib.functions.group import get_group
-from cmslib.messages.group import GROUP_ADDED
-from cmslib.messages.group import GROUP_DELETED
-from cmslib.messages.group import GROUP_PATCHED
-from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
-from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
+from cmslib.functions.group import get_group, get_groups
 from cmslib.orm.group import Group
 from cmslib.presentation.group import Presentation
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON, JSONMessage, XML
+from his import CUSTOMER, authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, XML, get_bool
 
 
 __all__ = ['ROUTES']
@@ -26,12 +19,12 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists IDs of groups of the respective customer."""
 
-    if 'tree' in request.args:
-        return JSON([group.json_tree for group in Group.select().where(
-            (Group.customer == CUSTOMER.id) & (Group.parent >> None))])
+    if get_bool('tree'):
+        return JSON([
+            group.json_tree for group in get_groups().where(Group.parent >> None)
+        ])
 
-    return JSON([group.to_json() for group in Group.select().where(
-        Group.customer == CUSTOMER.id)])
+    return JSON([group.to_json() for group in get_groups()])
 
 
 @authenticated
@@ -39,52 +32,49 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective group."""
 
-    group = get_group(ident)
-    return JSON(group.to_json())
+    return JSON( get_group(ident).to_json())
 
 
 @authenticated
 @authorized('dscms4')
-def get_presentation(ident: int) -> Union[JSON, JSONMessage, XML]:
+def get_presentation(ident: int) -> Union[JSON, XML]:
     """Returns the presentation for the respective group."""
 
-    group = get_group(ident)
-    presentation = Presentation(group)
+    presentation = Presentation(get_group(ident))
 
-    try:
-        request.args['xml']
-    except KeyError:
-        return JSON(presentation.to_json())
+    if get_bool('xml'):
+        return XML(presentation.to_dom())
 
-    try:
-        presentation_dom = presentation.to_dom()
-    except AmbiguousConfigurationsError:
-        return AMBIGUOUS_CONFIGURATIONS
-    except NoConfigurationFound:
-        return NO_CONFIGURATION_ASSIGNED
+    return JSON(presentation.to_json())
 
-    return XML(presentation_dom)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a new group."""
 
-    group = Group.from_json(JSON_DATA)
+    parent = request.json.pop('parent', None)
+
+    if parent is not None:
+        parent = get_group(parent)
+
+    group = Group.from_json(request.json, CUSTOMER.id, parent)
     group.save()
-    return GROUP_ADDED.update(id=group.id)
+    return JSONMessage('Group added.', id=group.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches the respective group."""
 
     group = get_group(ident)
-    group.patch_json(JSON_DATA)
+    group.patch_json(request.json)
     group.save()
-    return GROUP_PATCHED
+    return JSONMessage('Group patched.', status=200)
 
 
 @authenticated
@@ -92,16 +82,15 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the respective group."""
 
-    group = get_group(ident)
-    group.delete_instance()
-    return GROUP_DELETED
+    get_group(ident).delete_instance()
+    return JSONMessage('Group deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/group', list_),
     ('GET', '/group/<int:ident>', get),
     ('GET', '/group/<int:ident>/presentation', get_presentation),
     ('POST', '/group', add),
     ('PATCH', '/group/<int:ident>', patch),
     ('DELETE', '/group/<int:ident>', delete)
-)
+]
