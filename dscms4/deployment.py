@@ -13,7 +13,7 @@ from cmslib.orm.settings import Settings
 from cmslib.presentation.deployment import Presentation
 from his import CUSTOMER, authenticated, authorized
 from hwdb import Deployment
-from wsgilib import Browser, JSON, JSONMessage, XML, get_bool
+from wsgilib import Browser, JSON, XML, get_bool
 
 
 __all__ = ['ROUTES']
@@ -69,15 +69,15 @@ def get(deployment: Deployment) -> JSON:
 @authenticated
 @authorized('dscms4')
 @with_deployment
-def get_presentation(deployment: Deployment) -> Union[JSON, JSONMessage, XML]:
+def get_presentation(deployment: Deployment) -> Union[JSON, XML]:
     """Returns the presentation for the respective deployment."""
 
     presentation = Presentation(deployment)
 
     if get_bool('xml'):
-        return JSON(presentation.to_json())
+        return XML(presentation.to_dom())
 
-    return XML(presentation.to_dom())
+    return JSON(presentation.to_json())
 
 
 class DeploymentContent:
