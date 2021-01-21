@@ -8,7 +8,7 @@ from cmslib.functions.content import get_deployment_base_charts
 from cmslib.functions.deployment import get_deployment
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool
+from wsgilib import JSON, JSONMessage, get_bool, get_int
 
 
 __all__ = ['ROUTES']
@@ -19,13 +19,8 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists deployment base charts."""
 
-    deployment = request.args.get('deployment')
-
-    if deployment is not None:
-        deployment = int(deployment)
-
     return JSON([record.to_json() for record in get_deployment_base_charts(
-        deployment=deployment, trashed=get_bool('trashed', None))])
+        deployment=get_int('deployment'), trashed=get_bool('trashed', None))])
 
 
 @authenticated
