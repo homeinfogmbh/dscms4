@@ -41,7 +41,7 @@ def add() -> JSONMessage:
     configuration = get_configuration(request.json.pop('configuration'))
     record = GroupConfiguration(group=group, configuration=configuration)
     record.save()
-    return JSONMessage('Group configuration added.', status=201)
+    return JSONMessage('Group configuration added.', id=record.id, status=201)
 
 
 @authenticated
