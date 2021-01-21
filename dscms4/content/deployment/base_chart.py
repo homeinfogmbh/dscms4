@@ -17,7 +17,7 @@ __all__ = ['ROUTES']
 @authenticated
 @authorized('dscms4')
 def list_() -> JSON:
-    """Returns a list of IDs of the charts in the respective deployment."""
+    """Lists deployment base charts."""
 
     deployment = request.args.get('deployment')
 
@@ -31,7 +31,7 @@ def list_() -> JSON:
 @authenticated
 @authorized('dscms4')
 def get(ident: int) -> JSON:
-    """Returns a list of IDs of the charts in the respective deployment."""
+    """Returns the requested deployment base chart."""
 
     return JSON(get_deployment_base_chart(ident).to_json())
 

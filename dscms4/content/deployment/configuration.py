@@ -14,6 +14,15 @@ from wsgilib import JSON, JSONMessage
 __all__ = ['ROUTES']
 
 
+def get_deployment_configurations(deployment: int) -> ModelSelect:
+    """Selects deployment configurations."""
+
+    return DeploymentConfiguration.select(cascade=True).where(
+        (DeploymentConfiguration.deployment == deployment)
+        & (Configuration.customer == CUSTOMER.id)
+        & (Deployment.customer == CUSTOMER.id))
+
+
 @authenticated
 @authorized('dscms4')
 def get(deployment: int) -> JSON:
@@ -23,8 +32,7 @@ def get(deployment: int) -> JSON:
 
     return JSON([
         deployment_conf.configuration.id for deployment_conf
-        in DeploymentConfiguration.select().where(
-            DeploymentConfiguration.deployment == get_deployment(deployment))])
+        in )])
 
 
 @authenticated
