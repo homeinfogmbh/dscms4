@@ -17,4 +17,4 @@ def get_presentation(deployment: Deployment) -> Response:
     return make_response(Presentation(deployment))
 
 
-ROUTES = (('GET', '/preview/deployment', get_presentation),)
+ROUTES = [('GET', '/preview/deployment', get_presentation)]

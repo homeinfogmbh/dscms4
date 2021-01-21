@@ -16,4 +16,4 @@ def get_presentation(group: Group) -> Response:
     return make_response(Presentation(group))
 
 
-ROUTES = (('GET', '/preview/group', get_presentation),)
+ROUTES = [('GET', '/preview/group', get_presentation)]
