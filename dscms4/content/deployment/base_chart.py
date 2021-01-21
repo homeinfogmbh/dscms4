@@ -35,31 +35,32 @@ def get(ident: int) -> JSON:
 @authorized('dscms4')
 @require_json(dict)
 def add() -> JSONMessage:
-    """Adds the chart to the respective deployment."""
+    """Adds a new deployment <> base chart mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'))
     base_chart = get_base_chart(request.json.pop('baseChart'))
-    dbc = DeploymentBaseChart.from_json(request.json, deployment, base_chart)
-    dbc.save()
-    return JSONMessage('Deployment base chart added.', id=dbc.id, status=201)
+    record = DeploymentBaseChart.from_json(request.json, deployment, base_chart)
+    record.save()
+    return JSONMessage('Deployment base chart added.', id=record.id,
+                       status=201)
 
 
 @authenticated
 @authorized('dscms4')
 @require_json(dict)
 def patch(ident: int) -> JSONMessage:
-    """Adds the chart to the respective deployment."""
+    """Patches a deployment <> base chart mapping, i.e. changes its index."""
 
-    dbc = get_deployment_base_chart(ident)
-    dbc.patch_json(request.json)
-    dbc.save()
+    record = get_deployment_base_chart(ident)
+    record.patch_json(request.json)
+    record.save()
     return JSONMessage('Deployment base chart patched.', status=200)
 
 
 @authenticated
 @authorized('dscms4')
 def delete(ident: int) -> JSONMessage:
-    """Deletes the chart from the respective deployment."""
+    """Deletes a deployment <> base chart mapping."""
 
     get_deployment_base_chart(ident).delete_instance()
     return JSONMessage('Deployment base chart deleted.', status=200)

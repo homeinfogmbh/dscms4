@@ -35,7 +35,7 @@ def get(ident: int) -> JSON:
 @authorized('dscms4')
 @require_json(dict)
 def add() -> JSONMessage:
-    """Adds the configuration to the respective deployment."""
+    """Adds a deployment <> configuration mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'))
     configuration = get_configuration(request.json.pop('configuration'))
@@ -49,7 +49,7 @@ def add() -> JSONMessage:
 @authenticated
 @authorized('dscms4')
 def delete(ident: int) -> JSONMessage:
-    """Deletes the configuration from the respective deployment."""
+    """Deleted a deployment <> configuration mapping."""
 
     get_deployment_configuration(ident).delete_instance()
     return JSONMessage('Deployment configuration deleted.', status=200)

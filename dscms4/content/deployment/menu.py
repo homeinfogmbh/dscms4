@@ -35,7 +35,7 @@ def get(ident: int) -> JSON:
 @authorized('dscms4')
 @require_json(dict)
 def add() -> JSONMessage:
-    """Adds the menu to the respective deployment."""
+    """Adds a deployment <> base chart mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'))
     menu = get_menu(request.json.pop('menu'))
@@ -47,7 +47,7 @@ def add() -> JSONMessage:
 @authenticated
 @authorized('dscms4')
 def delete(ident: int) -> JSONMessage:
-    """Deletes the menu from the respective deployment."""
+    """Deletes a deployment <> base chart mapping."""
 
     get_deployment_menu(ident).delete_instance()
     return JSONMessage('Deployment menu deleted.', status=200)
