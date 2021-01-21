@@ -30,7 +30,9 @@ def list_() -> JSON:
 
         return JSON(charts)
 
-    return JSON([chart.to_json(mode=get_mode()) for chart in get_charts()])
+    charts = [chart.to_json(mode=get_mode()) for chart in get_charts()]
+    print('CHARTS:', charts, flush=True)
+    return JSON(charts)
 
 
 @authenticated
