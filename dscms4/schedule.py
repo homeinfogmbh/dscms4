@@ -1,12 +1,8 @@
 """Time schedules."""
 
-from cmslib.messages.schedule import SCHEDULE_ADDED
-from cmslib.messages.schedule import SCHEDULE_PATCHED
-from cmslib.messages.schedule import SCHEDULE_DELETED
-
-from cmslib.functions.schedule import get_schedule
+from cmslib.functions.schedule import get_schedule, get_schedules
 from cmslib.orm.schedule import Schedule
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
+from his import JSON_DATA, authenticated, authorized
 from wsgilib import JSON, JSONMessage
 
 
@@ -18,8 +14,7 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists the customer's schedules."""
 
-    schedules = Schedule.select().where(Schedule.customer == CUSTOMER.id)
-    return JSON([schedule.to_json() for schedule in schedules])
+    return JSON([schedule.to_json() for schedule in get_schedules()])
 
 
 @authenticated
@@ -38,7 +33,7 @@ def add() -> JSONMessage:
     json = dict(JSON_DATA)
     schedule = Schedule.from_json(json)
     schedule.save()
-    return SCHEDULE_ADDED.update(id=schedule.id)
+    return JSONMessage('Added schedule.', id=schedule.id, status=201)
 
 
 @authenticated
@@ -50,7 +45,7 @@ def patch(ident: int) -> JSONMessage:
     json = dict(JSON_DATA)
     schedule = schedule.patch_json(json)
     schedule.save()
-    return SCHEDULE_PATCHED
+    return JSONMessage('Schedule patched.', status=200)
 
 
 @authenticated
@@ -58,15 +53,14 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a schedule."""
 
-    schedule = get_schedule(ident)
-    schedule = schedule.delete_instance()
-    return SCHEDULE_DELETED
+    get_schedule(ident).delete_instance()
+    return JSONMessage('Schedule deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/schedule', list_),
     ('GET', '/schedule/<int:ident>', get),
     ('POST', '/schedule', add),
     ('PATCH', '/schedule/<int:ident>', patch),
     ('DELETE', '/schedule/<int:ident>', delete)
-)
+]
