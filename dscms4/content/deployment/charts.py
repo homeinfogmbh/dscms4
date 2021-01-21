@@ -4,10 +4,6 @@ from typing import Iterable
 
 from cmslib.functions.charts import get_chart
 from cmslib.functions.deployment import get_deployment
-from cmslib.messages.content import CONTENT_ADDED
-from cmslib.messages.content import CONTENT_DELETED
-from cmslib.messages.content import CONTENT_PATCHED
-from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from his import CUSTOMER, JSON_DATA, authenticated, authorized
@@ -18,13 +14,13 @@ from wsgilib import JSON, JSONMessage
 __all__ = ['ROUTES']
 
 
-def list_dbc(ident: int) -> Iterable[DeploymentBaseChart]:
+def list_dbc(deployment: int) -> Iterable[DeploymentBaseChart]:
     """Yields the deployment base charts of the
     current customer for the respective termianl.
     """
 
-    return DeploymentBaseChart.select().join(Deployment).join(BaseChart).where(
-        (Deployment.id == ident)
+    return DeploymentBaseChart.select(cascade=True).where(
+        (Deployment.id == deployment)
         & (Deployment.customer == CUSTOMER.id)
         & (BaseChart.trashed == 0))
 
@@ -32,13 +28,10 @@ def list_dbc(ident: int) -> Iterable[DeploymentBaseChart]:
 def get_dbc(deployment: int, ident: int) -> DeploymentBaseChart:
     """Returns the respective deployment base chart."""
 
-    try:
-        return DeploymentBaseChart.select().join(Deployment).where(
-            (DeploymentBaseChart.id == ident)
-            & (Deployment.id == deployment)
-            & (Deployment.customer == CUSTOMER.id)).get()
-    except DeploymentBaseChart.DoesNotExist:
-        raise NO_SUCH_CONTENT from None
+    return DeploymentBaseChart.select(cascade=True).where(
+        (DeploymentBaseChart.id == ident)
+        & (Deployment.id == deployment)
+        & (Deployment.customer == CUSTOMER.id)).get()
 
 
 @authenticated
@@ -58,7 +51,7 @@ def add(deployment: int, chart: int) -> JSONMessage:
     base_chart = get_chart(chart).base
     dbc = DeploymentBaseChart.from_json(JSON_DATA, deployment, base_chart)
     dbc.save()
-    return CONTENT_ADDED.update(id=dbc.id)
+    return JSONMessage('Deployment base chart added.', id=dbc.id, status=201)
 
 
 @authenticated
@@ -69,7 +62,7 @@ def patch(deployment: int, chart: int) -> JSONMessage:
     dbc = get_dbc(deployment, chart)
     dbc.patch_json(JSON_DATA)
     dbc.save()
-    return CONTENT_PATCHED
+    return JSONMessage('Deployment base chart patched.', status=200)
 
 
 @authenticated
@@ -79,7 +72,7 @@ def delete(deployment: int, chart: int) -> JSONMessage:
 
     dbc = get_dbc(deployment, chart)
     dbc.delete_instance()
-    return CONTENT_DELETED
+    return JSONMessage('Deployment base chart deleted.', status=200)
 
 
 ROUTES = (
