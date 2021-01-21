@@ -8,7 +8,7 @@ from cmslib.functions.configuration import get_configuration
 from cmslib.functions.group import get_group
 from cmslib.orm.content.group import GroupConfiguration
 from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool
+from wsgilib import JSON, JSONMessage, get_int
 
 
 __all__ = ['ROUTES']
@@ -28,7 +28,7 @@ def list_() -> JSON:
     """Returns a list of IDs of the configurations in the respective group."""
 
     return JSON([record.to_json() for record in get_group_configurations(
-        group=get_bool('group'))])
+        group=get_int('group'))])
 
 
 @authenticated
