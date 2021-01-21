@@ -32,6 +32,7 @@ setup(
         'dscms4.group',
         'dscms4.membership',
         'dscms4.menu',
-        'dscms4.preview'],
+        'dscms4.preview'
+    ],
     description='HOMEINFO Digital Signage Content Management System v4.'
 )
