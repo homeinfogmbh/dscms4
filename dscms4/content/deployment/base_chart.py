@@ -24,7 +24,7 @@ def list_() -> JSON:
     if deployment is not None:
         deployment = int(deployment)
 
-    return JSON([dbc.to_json() for dbc in get_deployment_base_charts(
+    return JSON([record.to_json() for record in get_deployment_base_charts(
         deployment=deployment, trashed=get_bool('trashed', None))])
 
 
