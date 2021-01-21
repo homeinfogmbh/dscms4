@@ -31,7 +31,8 @@ def list_() -> JSON:
         return JSON(charts)
 
     charts = [chart.to_json(mode=get_mode()) for chart in get_charts()]
-    print('CHARTS:', charts, flush=True)
+    print('CHARTS:', len(charts), flush=True)
+    print('CHARTS:', [chart.keys() for chart in charts], flush=True)
     return JSON(charts)
 
 
