@@ -16,34 +16,34 @@ __all__ = ['ROUTES']
 def get_groups(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of groups."""
 
-    for group_base_chart in GroupBaseChart.select().where(
+    for record in GroupBaseChart.select().where(
             GroupBaseChart.base_chart == base_chart):
         yield {
-            'group': group_base_chart.group.id,
-            'member': group_base_chart.id
+            'group': record.group.id,
+            'member': record.id
         }
 
 
 def get_deployments(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of deployments."""
 
-    for deployment_base_chart in DeploymentBaseChart.select().where(
+    for record in DeploymentBaseChart.select().where(
             DeploymentBaseChart.base_chart == base_chart):
         yield {
-            'deployment': deployment_base_chart.deployment,
-            'member': deployment_base_chart.id
+            'deployment': record.deployment,
+            'member': record.id
         }
 
 
 def get_menus(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of menus."""
 
-    for menu_item_chart in MenuItemChart.select().where(
+    for record in MenuItemChart.select(cascade=True).where(
             MenuItemChart.base_chart == base_chart):
         yield {
-            'menu': menu_item_chart.menu_item.menu.id,
-            'menuItem': menu_item_chart.menu_item.id,
-            'member': menu_item_chart.id
+            'menu': record.menu_item.menu.id,
+            'menuItem': record.menu_item.id,
+            'member': record.id
         }
 
 
@@ -52,8 +52,7 @@ def get_menus(base_chart: int) -> Iterator[dict]:
 def list_(ident: int) -> JSON:
     """Lists the chart's containers."""
 
-    chart = get_chart(ident)
-    base_chart = chart.base
+    base_chart = get_chart(ident).base
     json = {
         'groups': list(get_groups(base_chart)),
         'deployments': list(get_deployments(base_chart)),
