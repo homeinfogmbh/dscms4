@@ -1,87 +1,70 @@
 """Management of configurations in digital signage deployment."""
 
+from flask import request
+
 from cmslib.functions.configuration import get_configuration
+from cmslib.functions.content import get_deployment_configuration
+from cmslib.functions.content import get_deployment_configurations
 from cmslib.functions.deployment import get_deployment
-from cmslib.messages.content import CONTENT_ADDED
-from cmslib.messages.content import CONTENT_DELETED
-from cmslib.messages.content import CONTENT_EXISTS
-from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.deployment import DeploymentConfiguration
-from his import authenticated, authorized
+from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 
 
 __all__ = ['ROUTES']
 
 
-def get_deployment_configurations(deployment: int) -> ModelSelect:
-    """Selects deployment configurations."""
-
-    return DeploymentConfiguration.select(cascade=True).where(
-        (DeploymentConfiguration.deployment == deployment)
-        & (Configuration.customer == CUSTOMER.id)
-        & (Deployment.customer == CUSTOMER.id))
-
-
 @authenticated
 @authorized('dscms4')
-def get(deployment: int) -> JSON:
-    """Returns a list of IDs of the configurations
-    in the respective deployment.
-    """
+def list_() -> JSON:
+    """Lists deployment configurations."""
+
+    deployment = request.args.get('deployment')
+
+    if deployment is not None:
+        deployment = int(deployment)
 
     return JSON([
-        deployment_conf.configuration.id for deployment_conf
-        in )])
+        dc.configuration.to_json() for dc in get_deployment_configurations(
+            deployment=deployment)
+    ])
 
 
 @authenticated
 @authorized('dscms4')
-def add(deployment: int, configuration: int) -> JSONMessage:
+def get(ident: int) -> JSON:
+    """Returns the respective deployment configuration."""
+
+    return JSON(get_deployment_configuration(ident).to_json())
+
+
+@authenticated
+@authorized('dscms4')
+@require_json(dict)
+def add() -> JSONMessage:
     """Adds the configuration to the respective deployment."""
 
-    deployment = get_deployment(deployment)
-    configuration = get_configuration(configuration)
-
-    try:
-        DeploymentConfiguration.get(
-            (DeploymentConfiguration.deployment == deployment)
-            & (DeploymentConfiguration.configuration == configuration))
-    except DeploymentConfiguration.DoesNotExist:
-        deployment_conf = DeploymentConfiguration()
-        deployment_conf.deployment = deployment
-        deployment_conf.configuration = configuration
-        deployment_conf.save()
-        return CONTENT_ADDED
-
-    return CONTENT_EXISTS
+    deployment = get_deployment(request.json.pop('deployment'))
+    configuration = get_configuration(request.json.pop('configuration'))
+    record = DeploymentConfiguration(
+        deployment=deployment, configuration=configuration)
+    record.save()
+    return JSONMessage(
+        'Deployment configuration added.', id=record.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
-def delete(deployment: int, configuration: int) -> JSONMessage:
+def delete(ident: int) -> JSONMessage:
     """Deletes the configuration from the respective deployment."""
 
-    deployment = get_deployment(deployment)
-    configuration = get_configuration(configuration)
-
-    try:
-        deployment_conf = DeploymentConfiguration.get(
-            (DeploymentConfiguration.deployment == deployment)
-            & (DeploymentConfiguration.configuration == configuration))
-    except DeploymentConfiguration.DoesNotExist:
-        return NO_SUCH_CONTENT
-
-    deployment_conf.delete_instance()
-    return CONTENT_DELETED
+    get_deployment_configuration(ident).delete_instance()
+    return JSONMessage('Deployment configuration deleted.', status=200)
 
 
 ROUTES = (
-    ('GET', '/content/deployment/<int:deployment>/configuration', get),
-    ('POST',
-     '/content/deployment/<int:deployment>/configuration/<int:configuration>',
-     add),
-    ('DELETE',
-     '/content/deployment/<int:deployment>/configuration/<int:configuration>',
-     delete)
+    ('GET', '/content/deployment/configuration', list_),
+    ('GET', '/content/deployment/configuration/<int:ident>', get),
+    ('POST', '/content/deployment/configuration', add),
+    ('DELETE', '/content/deployment/configuration/<int:ident>', delete)
 )

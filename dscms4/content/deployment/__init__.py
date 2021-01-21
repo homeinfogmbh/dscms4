@@ -1,9 +1,9 @@
 """Deployments content management."""
 
-from dscms4.content.deployment import charts, configuration, menu
+from dscms4.content.deployment import base_chart, configuration, menu
 
 
 __all__ = ['ROUTES']
 
 
-ROUTES = (*charts.ROUTES, *configuration.ROUTES, *menu.ROUTES)
+ROUTES = (*base_chart.ROUTES, *configuration.ROUTES, *menu.ROUTES)
