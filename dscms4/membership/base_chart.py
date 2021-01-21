@@ -61,4 +61,4 @@ def list_(ident: int) -> JSON:
     return JSON(json)
 
 
-ROUTES = (('GET', '/membership/base_chart/<int:ident>', list_),)
+ROUTES = [('GET', '/membership/base_chart/<int:ident>', list_)]

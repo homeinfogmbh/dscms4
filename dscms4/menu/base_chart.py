@@ -57,9 +57,9 @@ def delete(ident: int) -> JSONMessage:
     return JSONMessage('Menu item chart deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/menu/item/<ident>/charts', list_),
     ('POST', '/menu/item/chart', add),
     ('PATCH', '/menu/item/chart/<int:ident>', patch),
     ('DELETE', '/menu/item/chart/<int:ident>', delete)
-)
+]
