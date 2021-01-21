@@ -120,7 +120,7 @@ class GroupContent:
         return json
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/grouptree', groups_tree),
     ('GET', '/grouptree/<int:gid>', groups_subtree)
-)
+]
