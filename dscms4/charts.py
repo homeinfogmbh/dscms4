@@ -8,14 +8,9 @@ from cmslib.functions.charts import CHART_TYPE
 from cmslib.functions.charts import get_chart
 from cmslib.functions.charts import get_charts
 from cmslib.functions.charts import get_mode
-from cmslib.messages.charts import CHART_ADDED
-from cmslib.messages.charts import CHART_DELETED
-from cmslib.messages.charts import CHART_PATCHED
 from cmslib.orm.charts import ChartMode
-from his import JSON_DATA, authenticated, authorized
-from his.messages.data import INVALID_DATA
-from peeweeplus import InvalidKeys
-from wsgilib import JSON, JSONMessage
+from his import authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
@@ -26,7 +21,7 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists IDs of charts of the respective customer."""
 
-    if 'assoc' in request.args:
+    if get_bool('assoc'):
         charts = defaultdict(dict)
 
         for chart in get_charts():
@@ -48,32 +43,25 @@ def get(ident: int) -> JSON:
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds new charts."""
 
-    try:
-        transaction = CHART_TYPE.from_json(JSON_DATA)
-    except InvalidKeys as invalid_keys:
-        return INVALID_DATA.update(invalid_keys=invalid_keys.invalid_keys)
-
+    transaction = CHART_TYPE.from_json(request.json)
     transaction.commit()
-    return CHART_ADDED.update(id=transaction.id)
+    return JSONMessage('Chart added.', id=transaction.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches a chart."""
 
     chart = get_chart(ident)
-
-    try:
-        transaction = chart.patch_json(JSON_DATA)
-    except InvalidKeys as invalid_keys:
-        return INVALID_DATA.update(invalid_keys=invalid_keys.invalid_keys)
-
+    transaction = chart.patch_json(request.json)
     transaction.commit()
-    return CHART_PATCHED
+    return JSONMessage('Chart patched.', status=200)
 
 
 @authenticated
@@ -82,13 +70,13 @@ def delete(ident: int) -> JSONMessage:
     """Deletes the specified chart."""
 
     get_chart(ident).delete_instance()
-    return CHART_DELETED
+    return JSONMessage('Chart deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/charts', list_),
     ('GET', '/charts/<int:ident>', get),
     ('POST', '/charts', add),
     ('PATCH', '/charts/<int:ident>', patch),
     ('DELETE', '/charts/<int:ident>', delete)
-)
+]
