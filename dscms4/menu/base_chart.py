@@ -1,11 +1,11 @@
 """DSCMS4 WSGI handlers for menu item charts."""
 
-from cmslib.functions.charts import get_chart
+from flask import request
+
+from cmslib.functions.charts import get_base_chart
 from cmslib.functions.menu import get_menu_item, get_menu_item_chart
-from cmslib.orm.charts import CHARTS
 from cmslib.orm.menu import MenuItemChart
 from his import authenticated, authorized, require_json
-from his.messages.data import MISSING_DATA
 from wsgilib import JSON, JSONMessage
 
 
