@@ -1,8 +1,9 @@
 """Handling of menus and related entities."""
 
-from dscms4.menu import menu, item, charts
+from dscms4.menu import base_chart, item, menu
+
 
 __all__ = ['ROUTES']
 
 
-ROUTES = (*menu.ROUTES, *item.ROUTES, *charts.ROUTES)
+ROUTES = (*base_chart.ROUTES, *item.ROUTES, *menu.ROUTES)

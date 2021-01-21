@@ -1,9 +1,9 @@
 """Handling of entities that are asspciated with certain content."""
 
-from dscms4.membership import charts
+from dscms4.membership import base_chart
 
 
 __all__ = ['ROUTES']
 
 
-ROUTES = charts.ROUTES
+ROUTES = base_chart.ROUTES
