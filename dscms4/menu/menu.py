@@ -2,15 +2,10 @@
 
 from flask import request
 
-from cmslib.functions.menu import get_menu
-from cmslib.messages.menu import INVALID_MENU_DATA
-from cmslib.messages.menu import MENU_ADDED
-from cmslib.messages.menu import MENU_COPIED
-from cmslib.messages.menu import MENU_DELETED
-from cmslib.messages.menu import MENU_PATCHED
+from cmslib.functions.menu import get_menu, get_menus
 from cmslib.orm.menu import Menu
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON, JSONMessage
+from his import authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
@@ -21,16 +16,15 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """List menus."""
 
-    menus = Menu.select().where(Menu.customer == CUSTOMER.id)
-    items = 'items' in request.args
+    items = get_bool('items')
 
-    if 'assoc' in request.args:
-        json = {
-            menu.id: menu.to_json(skip=('id',), items=items) for menu in menus
-        }
-        return JSON(json)
+    if get_bool('assoc'):
+        return JSON({
+            menu.id: menu.to_json(skip={'id'}, items=items)
+            for menu in get_menus()
+        })
 
-    return JSON([menu.to_json(items=items) for menu in menus])
+    return JSON([menu.to_json(items=items) for menu in get_menus()])
 
 
 @authenticated
@@ -38,54 +32,45 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu."""
 
-    menu = get_menu(ident)
-    items = 'items' in request.args
-    return JSON(menu.to_json(items=items))
+    return JSON(get_menu(ident).to_json(items=get_bool('items')))
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a new menu."""
 
-    try:
-        menu = Menu.from_json(JSON_DATA)
-    except ValueError:
-        return INVALID_MENU_DATA
-
+    menu = Menu.from_json(request.json)
     menu.save()
-    return MENU_ADDED.update(id=menu.id)
+    return JSONMessage('Menu added.', id=menu.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches the respective menu."""
 
     menu = get_menu(ident)
-
-    try:
-        menu.patch_json(JSON_DATA)
-    except ValueError:
-        return INVALID_MENU_DATA
-
+    menu.patch_json(request.json)
     menu.save()
-    return MENU_PATCHED
+    return JSONMessage('Menu patched.', status=200)
 
 
 @authenticated
 @authorized('dscms4')
-def copy(ident: int) -> JSONMessage:
+def copy_(ident: int) -> JSONMessage:
     """Copies the respective menu."""
 
     menu = get_menu(ident)
-    copy, *records = menu.copy()    # pylint: disable=W0621
+    copy, *records = menu.copy()
     copy.save()
 
     for record in records:
         record.save()
 
-    return MENU_COPIED.update(id=copy.id)
+    return JSONMessage('Menu copied.', id=copy.id, status=200)
 
 
 @authenticated
@@ -93,16 +78,15 @@ def copy(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a menu."""
 
-    menu = get_menu(ident)
-    menu.delete_instance()
-    return MENU_DELETED
+    get_menu(ident).delete_instance()
+    return JSONMessage('Menu deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/menu', list_),
     ('GET', '/menu/<int:ident>', get),
     ('POST', '/menu', add),
     ('PATCH', '/menu/<int:ident>', patch),
-    (('COPY', 'PUT'), '/menu/<int:ident>', copy),
+    (('COPY', 'PUT'), '/menu/<int:ident>', copy_),
     ('DELETE', '/menu/<int:ident>', delete)
-)
+]
