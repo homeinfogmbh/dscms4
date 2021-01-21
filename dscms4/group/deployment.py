@@ -1,12 +1,13 @@
 """Digital signage deployments as members in groups."""
 
+from flask import request
+
 from cmslib.functions.group import get_group
-from cmslib.messages.group import MEMBER_ADDED
-from cmslib.messages.group import MEMBER_DELETED
-from cmslib.messages.group import NO_SUCH_MEMBER
+from cmslib.functions.group import get_group_member_deployment
+from cmslib.functions.group import get_group_member_deployments
 from cmslib.orm.group import GroupMemberDeployment
-from his import JSON_DATA, authenticated, authorized
-from wsgilib import JSON, JSONMessage
+from his import authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_int
 
 
 __all__ = ['ROUTES']
@@ -14,47 +15,47 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(gid: int) -> JSON:
-    """Returns the group's members."""
+def list_() -> JSON:
+    """Lists group member deployments."""
 
-    deployments = []
-
-    for group_member_deployment in GroupMemberDeployment.select().where(
-            GroupMemberDeployment.group == get_group(gid)):
-        deployments.append(group_member_deployment.deployment.id)
-
-    return JSON(deployments)
+    return JSON([
+        record.to_json(cascade=True) for record
+        in get_group_member_deployments(group=get_int('group'))
+    ])
 
 
 @authenticated
 @authorized('dscms4')
+def get(ident: int) -> JSON:
+    """Returns a group member deployment."""
+
+    return JSON(get_group_member_deployment(ident).to_json(cascade=True))
+
+
+@authenticated
+@authorized('dscms4')
+@require_json(dict)
 def add(gid: int) -> JSONMessage:
     """Adds a deployment to the respective group."""
 
-    group = get_group(gid)
-    group_member_deployment = GroupMemberDeployment.from_json(JSON_DATA, group)
-    group_member_deployment.save()
-    return MEMBER_ADDED.update(id=group_member_deployment.deployment.id)
+    record = GroupMemberDeployment.from_json(request.json, get_group(gid))
+    record.save()
+    return JSONMessage('Group member deployment added.', id=record.id,
+                       status=201)
 
 
 @authenticated
 @authorized('dscms4')
-def delete(gid: int, deployment: int) -> JSONMessage:
+def delete(ident: int) -> JSONMessage:
     """Deletes the respective deployment from the group."""
 
-    try:
-        group_member_deployment = GroupMemberDeployment.get(
-            (GroupMemberDeployment.group == get_group(gid))
-            & (GroupMemberDeployment.deployment == deployment))
-    except GroupMemberDeployment.DoesNotExist:
-        return NO_SUCH_MEMBER
-
-    group_member_deployment.delete_instance()
-    return MEMBER_DELETED
+    get_group_member_deployment(ident).delete_instance()
+    return JSONMessage('Group member deployment deleted.', status=200)
 
 
-ROUTES = (
-    ('GET', '/group/<int:gid>/deployment', get),
+ROUTES = [
+    ('GET', '/group/deployment', list_),
+    ('GET', '/group/deployment/<int:gid>', get),
     ('POST', '/group/<int:gid>/deployment', add),
     ('DELETE', '/group/<int:gid>/deployment/<int:deployment>', delete)
-)
+]
