@@ -24,10 +24,8 @@ def list_() -> JSON:
     if deployment is not None:
         deployment = int(deployment)
 
-    return JSON([
-        dc.configuration.to_json() for dc in get_deployment_configurations(
-            deployment=deployment)
-    ])
+    return JSON([record.to_json() for record in get_deployment_configurations(
+        deployment=deployment)])
 
 
 @authenticated
@@ -62,9 +60,9 @@ def delete(ident: int) -> JSONMessage:
     return JSONMessage('Deployment configuration deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/content/deployment/configuration', list_),
     ('GET', '/content/deployment/configuration/<int:ident>', get),
     ('POST', '/content/deployment/configuration', add),
     ('DELETE', '/content/deployment/configuration/<int:ident>', delete)
-)
+]
