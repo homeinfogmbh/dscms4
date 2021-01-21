@@ -17,7 +17,7 @@ __all__ = ['ROUTES']
 @authenticated
 @authorized('dscms4')
 def list_() -> JSON:
-    """Lists deployment base charts."""
+    """Lists deployment <> base chart mappings."""
 
     return JSON([record.to_json() for record in get_deployment_base_charts(
         deployment=get_int('deployment'), trashed=get_bool('trashed', None))])
@@ -26,7 +26,7 @@ def list_() -> JSON:
 @authenticated
 @authorized('dscms4')
 def get(ident: int) -> JSON:
-    """Returns the requested deployment base chart."""
+    """Returns the requested deployment <> base chart mapping."""
 
     return JSON(get_deployment_base_chart(ident).to_json())
 

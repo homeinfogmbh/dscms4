@@ -17,7 +17,7 @@ __all__ = ['ROUTES']
 @authenticated
 @authorized('dscms4')
 def list_() -> JSON:
-    """Lists deployment configurations."""
+    """Lists deployment <> configuration mappings."""
 
     return JSON([record.to_json() for record in get_deployment_configurations(
         deployment=get_int('deployment'))])
@@ -26,7 +26,7 @@ def list_() -> JSON:
 @authenticated
 @authorized('dscms4')
 def get(ident: int) -> JSON:
-    """Returns the respective deployment configuration."""
+    """Returns the respective deployment <> configuration mapping."""
 
     return JSON(get_deployment_configuration(ident).to_json())
 
