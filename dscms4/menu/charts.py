@@ -2,13 +2,9 @@
 
 from cmslib.functions.charts import get_chart
 from cmslib.functions.menu import get_menu_item, get_menu_item_chart
-from cmslib.messages.charts import INVALID_CHART_TYPE
-from cmslib.messages.menu import MENU_ITEM_CHART_ADDED
-from cmslib.messages.menu import MENU_ITEM_CHART_DELETED
-from cmslib.messages.menu import MENU_ITEM_CHART_PATCHED
 from cmslib.orm.charts import CHARTS
 from cmslib.orm.menu import MenuItemChart
-from his import JSON_DATA, authenticated, authorized
+from his import authenticated, authorized, require_json
 from his.messages.data import MISSING_DATA
 from wsgilib import JSON, JSONMessage
 
@@ -29,42 +25,15 @@ def list_(ident: int) -> JSON:
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a new menu item."""
 
-    json = dict(JSON_DATA)
-
-    try:
-        menu_item = json.pop('menu_item')
-    except KeyError:
-        return MISSING_DATA.update(key='menu_item')
-
-    menu_item = get_menu_item(menu_item)
-
-    try:
-        chart = json.pop('chart')
-    except KeyError:
-        return MISSING_DATA.update(key='chart')
-
-    try:
-        typename = chart['type']
-    except KeyError:
-        return MISSING_DATA.update(key='chart→type')
-
-    try:
-        cls = CHARTS[typename]
-    except KeyError:
-        return INVALID_CHART_TYPE
-
-    try:
-        chart_id = chart['id']
-    except KeyError:
-        return MISSING_DATA.update(key='chart→id')
-
-    chart = get_chart(chart_id, cls=cls)
-    menu_item_chart = MenuItemChart.from_json(json, menu_item, chart.base)
-    menu_item_chart.save()
-    return MENU_ITEM_CHART_ADDED.update(id=menu_item_chart.id)
+    menu_item = get_menu_item(request.json.pop('menuItem'))
+    base_chart = get_base_chart(request.json.pop('baseChart'))
+    record = MenuItemChart.from_json(request.json, menu_item, base_chart)
+    record.save()
+    return JSONMessage('Menu item chart added.', id=record.id, status=201)
 
 
 @authenticated
@@ -73,10 +42,9 @@ def patch(ident: int) -> JSONMessage:
     """Orders the respective menu items."""
 
     menu_item_chart = get_menu_item_chart(ident)
-    json = dict(JSON_DATA)
-    menu_item_chart.patch_json(json, skip=EXCLUDED_FIELDS)
+    menu_item_chart.patch_json(request.json, skip=EXCLUDED_FIELDS)
     menu_item_chart.save()
-    return MENU_ITEM_CHART_PATCHED
+    return JSONMessage('Menu item chart patched.', status=200)
 
 
 @authenticated
@@ -85,7 +53,7 @@ def delete(ident: int) -> JSONMessage:
     """Deletes a menu or menu item."""
 
     get_menu_item_chart(ident).delete_instance()
-    return MENU_ITEM_CHART_DELETED
+    return JSONMessage('Menu item chart deleted.', status=200)
 
 
 ROUTES = (
