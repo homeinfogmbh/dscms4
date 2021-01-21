@@ -88,11 +88,11 @@ def order() -> JSONMessage:
     return JSONMessage('Menu items sorted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/menu/<int:menu>/items', list_),
     ('GET', '/menu/item/<int:ident>', get),
     ('POST', '/menu/item', add),
     ('PATCH', '/menu/item/<int:ident>', patch),
     ('DELETE', '/menu/item/<int:ident>', delete),
     ('POST', '/menu/item/order', order)
-)
+]
