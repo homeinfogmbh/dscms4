@@ -38,12 +38,13 @@ def add() -> JSONMessage:
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Orders the respective menu items."""
 
-    menu_item_chart = get_menu_item_chart(ident)
-    menu_item_chart.patch_json(request.json, skip=EXCLUDED_FIELDS)
-    menu_item_chart.save()
+    record = get_menu_item_chart(ident)
+    record.patch_json(request.json, skip=EXCLUDED_FIELDS)
+    record.save()
     return JSONMessage('Menu item chart patched.', status=200)
 
 
