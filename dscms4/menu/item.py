@@ -4,16 +4,10 @@ from itertools import chain
 
 from flask import request
 
-from cmslib.functions.menu import get_menu, get_menu_item
-from cmslib.messages.menu import DIFFERENT_MENUS
-from cmslib.messages.menu import DIFFERENT_PARENTS
-from cmslib.messages.menu import MENU_ITEM_ADDED
-from cmslib.messages.menu import MENU_ITEM_DELETED
-from cmslib.messages.menu import MENU_ITEM_PATCHED
-from cmslib.messages.menu import MENU_ITEMS_SORTED
+from cmslib.functions.menu import get_menu_item, get_menu_items
 from cmslib.orm.menu import MenuItem
-from his import CUSTOMER, JSON_DATA, authenticated, authorized
-from wsgilib import JSON, JSONMessage
+from his import CUSTOMER, authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_bool, get_int
 
 
 __all__ = ['ROUTES']
@@ -21,14 +15,11 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_(menu: int) -> JSON:
+def list_() -> JSON:
     """Lists the respective menu's items."""
 
-    menu = get_menu(menu)
-    return JSON([
-        menu_item.to_json() for menu_item in MenuItem.select().where(
-            MenuItem.menu == menu)
-    ])
+    return JSON([record.to_json() for record in get_menu_items(
+        menu=get_int('menu'))])
 
 
 @authenticated
@@ -36,31 +27,31 @@ def list_(menu: int) -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu item."""
 
-    charts = 'charts' in request.args
-    children = 'children' in request.args
-    menu_item = get_menu_item(ident)
-    return JSON(menu_item.to_json(charts=charts, children=children))
+    return JSON(get_menu_item(ident).to_json(
+        charts=get_bool('charts'), children=get_bool('children')))
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a new menu item."""
 
-    menu_item_group = MenuItem.from_json(JSON_DATA, CUSTOMER.id)
-    menu_item_group.save()
-    return MENU_ITEM_ADDED.update(id=menu_item_group.id)
+    record = MenuItem.from_json(request.json, CUSTOMER.id)
+    record.save()
+    return JSONMessage('Menu item added.', id=record.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-    menu_item_group = menu_item.patch_json(JSON_DATA)
-    menu_item_group.save()
-    return MENU_ITEM_PATCHED
+    record = menu_item.patch_json(request.json)
+    record.save()
+    return JSONMessage('Menu item patched.', status=200)
 
 
 @authenticated
@@ -68,35 +59,33 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a menu or menu item."""
 
-    update_children = 'updateChildren' in request.args
-    menu_item = get_menu_item(ident)
-    menu_item.delete_instance(update_children=update_children)
-    return MENU_ITEM_DELETED
+    record = get_menu_item(ident)
+    record.delete_instance(update_children=get_bool('updateChildren'))
+    return JSONMessage('Menu item delted.', status=200)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(list)
 def order() -> JSONMessage:
     """Orders the respective menu items."""
 
-    menu_items = (get_menu_item(ident) for ident in JSON_DATA)
-
     try:
-        first, *other = menu_items
+        first, *other = map(get_menu_item, request.json)
     except ValueError:
-        return MENU_ITEMS_SORTED    # Empty set of MenuItems.
+        return JSONMessage('No items to sort.', status=200)
 
     if not all(menu_item.menu == first.menu for menu_item in other):
-        return DIFFERENT_MENUS
+        return JSONMessage('Items belong to different menus.', status=400)
 
     if not all(menu_item.parent == first.parent for menu_item in other):
-        return DIFFERENT_PARENTS
+        return JSONMessage('Items have different parents.', status=400)
 
-    for index, menu_item in enumerate(chain((first,), other)):
-        menu_item.index = index
-        menu_item.save()
+    for index, record in enumerate(chain((first,), other)):
+        record.index = index
+        record.save()
 
-    return MENU_ITEMS_SORTED
+    return JSONMessage('Menu items sorted.', status=200)
 
 
 ROUTES = (
