@@ -3,16 +3,13 @@
 from flask import request
 
 from cmslib.functions.configuration import get_configuration
-from cmslib.functions.configuration import list_configurations
-from cmslib.messages.configuration import CONFIGURATION_ADDED
-from cmslib.messages.configuration import CONFIGURATION_PATCHED
-from cmslib.messages.configuration import CONFIGURATION_DELETED
+from cmslib.functions.configuration import get_configurations
 from cmslib.orm.configuration import Configuration
-from his import JSON_DATA, authenticated, authorized
-from wsgilib import JSON, JSONMessage
+from his import authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_bool
 
 
-__all__ = ['ROUTES', 'list_configurations', 'get_configuration']
+__all__ = ['ROUTES']
 
 
 @authenticated
@@ -20,16 +17,15 @@ __all__ = ['ROUTES', 'list_configurations', 'get_configuration']
 def list_() -> JSON:
     """Returns a list of IDs of the customer's configurations."""
 
-    configurations = list_configurations()
-
-    if 'assoc' in request.args:
+    if get_bool('assoc'):
         return JSON({
             configuration.id: configuration.to_json(fk_fields=False)
-            for configuration in configurations})
+            for configuration in get_configurations()
+        })
 
     return JSON([
         configuration.to_json(fk_fields=False)
-        for configuration in configurations])
+        for configuration in get_configurations()])
 
 
 @authenticated
@@ -42,23 +38,25 @@ def get(ident: int) -> JSON:
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def add() -> JSONMessage:
     """Adds a new configuration."""
 
-    transaction = Configuration.from_json(JSON_DATA)
+    transaction = Configuration.from_json(request.json)
     transaction.commit()
-    return CONFIGURATION_ADDED.update(id=transaction.id)
+    return JSONMessage('Configuration added.', id=transaction.id, status=201)
 
 
 @authenticated
 @authorized('dscms4')
+@require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
     configuration = get_configuration(ident)
-    transaction = configuration.patch_json(JSON_DATA)
+    transaction = configuration.patch_json(request.json)
     transaction.commit()
-    return CONFIGURATION_PATCHED
+    return JSONMessage('Configuration patched.', status=200)
 
 
 @authenticated
@@ -67,13 +65,13 @@ def delete(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
     get_configuration(ident).delete_instance()
-    return CONFIGURATION_DELETED
+    return JSONMessage('Configuration deleted.', status=200)
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/configuration', list_),
     ('GET', '/configuration/<int:ident>', get),
     ('POST', '/configuration', add),
     ('PATCH', '/configuration/<int:ident>', patch),
     ('DELETE', '/configuration/<int:ident>', delete)
-)
+]

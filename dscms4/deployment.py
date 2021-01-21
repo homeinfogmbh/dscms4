@@ -1,15 +1,10 @@
 """Digital signage deployment-related requests."""
 
-from typing import Iterable, Iterator, Union
+from typing import Iterator, Union
 
 from flask import request
-from peewee import Expression
 
-from cmslib.exceptions import AmbiguousConfigurationsError
-from cmslib.exceptions import NoConfigurationFound
-from cmslib.functions.deployment import with_deployment
-from cmslib.messages.presentation import NO_CONFIGURATION_ASSIGNED
-from cmslib.messages.presentation import AMBIGUOUS_CONFIGURATIONS
+from cmslib.functions.deployment import get_deployments, with_deployment
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from cmslib.orm.content.deployment import DeploymentConfiguration
@@ -18,22 +13,13 @@ from cmslib.orm.settings import Settings
 from cmslib.presentation.deployment import Presentation
 from his import CUSTOMER, authenticated, authorized
 from hwdb import Deployment
-from mdb import Address
-from wsgilib import Browser, JSON, JSONMessage, XML
+from wsgilib import Browser, JSON, JSONMessage, XML, get_bool
 
 
 __all__ = ['ROUTES']
 
 
 BROWSER = Browser()
-
-
-def _get_deployments(expression: Expression) -> Iterable[Deployment]:
-    """Yields deployments with address and system IDs."""
-
-    address_join = Deployment.address == Address.id
-    return Deployment.select(Deployment, Address).join(
-        Address, on=address_join).where(expression)
 
 
 def _jsonify(deployment: Deployment) -> dict:
@@ -49,13 +35,11 @@ def _jsonify(deployment: Deployment) -> dict:
 def list_() -> JSON:
     """Lists all deployments of the respective customer."""
 
-    expression = Deployment.customer == CUSTOMER.id
+    deployments = get_deployments()
     settings = Settings.for_customer(CUSTOMER.id)
 
     if not settings.testing:
-        expression &= Deployment.testing == 0
-
-    deployments = _get_deployments(expression)
+        deployments = deployments.where(Deployment.testing == 0)
 
     if BROWSER.wanted:
         if BROWSER.info:
@@ -65,10 +49,10 @@ def list_() -> JSON:
         return JSON([_jsonify(deployment) for deployment in deployments])
 
     if 'assoc' in request.args:
-        mapping = {
+        return JSON({
             deployment.id: DeploymentContent(deployment).to_json()
-            for deployment in deployments}
-        return JSON(mapping)
+            for deployment in deployments
+        })
 
     return JSON([_jsonify(deployment) for deployment in deployments])
 
@@ -90,19 +74,10 @@ def get_presentation(deployment: Deployment) -> Union[JSON, JSONMessage, XML]:
 
     presentation = Presentation(deployment)
 
-    try:
-        request.args['xml']
-    except KeyError:
+    if get_bool('xml'):
         return JSON(presentation.to_json())
 
-    try:
-        presentation_dom = presentation.to_dom()
-    except AmbiguousConfigurationsError:
-        return AMBIGUOUS_CONFIGURATIONS
-    except NoConfigurationFound:
-        return NO_CONFIGURATION_ASSIGNED
-
-    return XML(presentation_dom)
+    return XML(presentation.to_dom())
 
 
 class DeploymentContent:
@@ -150,8 +125,8 @@ class DeploymentContent:
         }
 
 
-ROUTES = (
+ROUTES = [
     ('GET', '/deployment', list_),
     ('GET', '/deployment/<int:ident>', get),
     ('GET', '/deployment/<int:ident>/presentation', get_presentation)
-)
+]
