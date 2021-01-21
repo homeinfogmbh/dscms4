@@ -1,14 +1,14 @@
 """Management of configurations in groups."""
 
+from flask import request
+
+from cmslib.functions.content import get_group_configuration
+from cmslib.functions.content import get_group_configurations
 from cmslib.functions.configuration import get_configuration
 from cmslib.functions.group import get_group
-from cmslib.messages.content import CONTENT_ADDED
-from cmslib.messages.content import CONTENT_DELETED
-from cmslib.messages.content import CONTENT_EXISTS
-from cmslib.messages.content import NO_SUCH_CONTENT
 from cmslib.orm.content.group import GroupConfiguration
-from his import authenticated, authorized
-from wsgilib import JSON, JSONMessage
+from his import authenticated, authorized, require_json
+from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
@@ -16,60 +16,46 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get(gid: int) -> JSON:
+def get(ident: int) -> JSON:
+    """Returns the request group configuration."""
+
+    return JSON(get_group_configuration(ident).to_json(cascade=True))
+
+
+@authenticated
+@authorized('dscms4')
+def list_() -> JSON:
     """Returns a list of IDs of the configurations in the respective group."""
 
-    group = get_group(gid)
-
-    return JSON([
-        group_configuration.configuration.id for group_configuration
-        in GroupConfiguration.select().where(
-            GroupConfiguration.group == group)])
+    return JSON([record.to_json() for record in get_group_configurations(
+        group=get_bool('group'))])
 
 
 @authenticated
 @authorized('dscms4')
-def add(gid: int, ident: int) -> JSONMessage:
+@require_json(dict)
+def add() -> JSONMessage:
     """Adds the configuration to the respective group."""
 
-    group = get_group(gid)
-    configuration = get_configuration(ident)
-
-    try:
-        GroupConfiguration.get(
-            (GroupConfiguration.group == group)
-            & (GroupConfiguration.configuration == configuration))
-    except GroupConfiguration.DoesNotExist:
-        group_configuration = GroupConfiguration()
-        group_configuration.group = group
-        group_configuration.configuration = configuration
-        group_configuration.save()
-        return CONTENT_ADDED
-
-    return CONTENT_EXISTS
+    group = get_group(request.json.pop('group'))
+    configuration = get_configuration(request.json.pop('configuration'))
+    record = GroupConfiguration(group=group, configuration=configuration)
+    record.save()
+    return JSONMessage('Group configuration added.', status=201)
 
 
 @authenticated
 @authorized('dscms4')
-def delete(gid: int, ident: int) -> JSONMessage:
+def delete(ident: int) -> JSONMessage:
     """Deletes the configuration from the respective group."""
 
-    group = get_group(gid)
-    configuration = get_configuration(ident)
-
-    try:
-        group_configuration = GroupConfiguration.get(
-            (GroupConfiguration.group == group)
-            & (GroupConfiguration.configuration == configuration))
-    except GroupConfiguration.DoesNotExist:
-        return NO_SUCH_CONTENT
-
-    group_configuration.delete_instance()
-    return CONTENT_DELETED
+    get_group_configuration(ident).delete_instance()
+    return JSONMessage('Group configuration deleted.', status=200)
 
 
-ROUTES = (
-    ('GET', '/content/group/<int:gid>/configuration', get),
-    ('POST', '/content/group/<int:gid>/configuration/<int:ident>', add),
-    ('DELETE', '/content/group/<int:gid>/configuration/<int:ident>', delete)
-)
+ROUTES = [
+    ('GET', '/content/group/configuration', list_),
+    ('GET', '/content/group/configuration/<int:ident>', get),
+    ('POST', '/content/group/configuration', add),
+    ('DELETE', '/content/group/configuration/<int:ident>', delete)
+]
