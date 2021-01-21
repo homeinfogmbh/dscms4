@@ -11,7 +11,6 @@ from his import Application
 from dscms4 import chart_types
 from dscms4 import charts
 from dscms4 import configuration
-from dscms4 import customers
 from dscms4 import content
 from dscms4 import deployment
 from dscms4 import group
@@ -29,9 +28,8 @@ LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
 APPLICATION = Application('DSCMS4', debug=True)
 ROUTES = (
     *chart_types.ROUTES, *charts.ROUTES, *configuration.ROUTES,
-    *customers.ROUTES, *content.ROUTES, *deployment.ROUTES, *group.ROUTES,
-    *membership.ROUTES, *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES,
-    *settings.ROUTES
+    *content.ROUTES, *deployment.ROUTES, *group.ROUTES, *membership.ROUTES,
+    *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES, *settings.ROUTES
 )
 APPLICATION.add_routes(ROUTES)
 
