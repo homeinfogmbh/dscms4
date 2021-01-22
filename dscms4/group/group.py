@@ -21,7 +21,8 @@ def list_() -> JSON:
 
     if get_bool('tree'):
         return JSON([
-            group.json_tree for group in get_groups().where(Group.parent >> None)
+            group.json_tree for group in get_groups().where(
+                Group.parent >> None)
         ])
 
     return JSON([group.to_json() for group in get_groups()])
@@ -87,8 +88,8 @@ def delete(ident: int) -> JSONMessage:
 
 
 ROUTES = [
-    ('GET', '/group/deployment', list_),
-    ('GET', '/group/deployment/<int:gid>', get),
-    ('POST', '/group/<int:gid>/deployment', add),
-    ('DELETE', '/group/<int:gid>/deployment/<int:deployment>', delete)
+    ('GET', '/group', list_),
+    ('GET', '/group/<int:ident>', get),
+    ('POST', '/group', add),
+    ('DELETE', '/group/<int:ident>', delete)
 ]
