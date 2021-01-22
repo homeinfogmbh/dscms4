@@ -1,11 +1,13 @@
 """Groups tree endpoint."""
 
 from __future__ import annotations
-from typing import Iterator
+from typing import Iterator, Union
 
-from peewee import JOIN
+from peewee import JOIN, ModelSelect
 
+from functoolsplus import coerce
 from hwdb import Deployment
+from mdb import Address, Company, Customer
 
 from cmslib.functions.group import get_group
 from cmslib.orm.charts import BaseChart
@@ -18,6 +20,16 @@ from wsgilib import JSON
 
 
 __all__ = ['ROUTES']
+
+
+def deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
+    """Selects deployments fromt the database."""
+
+    return Deployment.select(Deployment, Customer, Company, Address).join(
+        Customer).join(Company).join_from(
+        Deployment, Address, on=Deployment.address == Address.id).where(
+        Deployment.id << set(ids)
+    )
 
 
 def get_groups_tree() -> Iterator[GroupContent]:
@@ -95,6 +107,7 @@ class GroupContent:
         }
 
     @property
+    @coerce(deployments)
     def deployments(self) -> Iterator[Deployment]:
         """Yields deployments of this group."""
         for group_member_deployment in GroupMemberDeployment.select().where(
