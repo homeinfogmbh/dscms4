@@ -2,6 +2,7 @@
 
 from flask import request
 
+from cmslib.functions.deployment import get_deployment
 from cmslib.functions.group import get_group
 from cmslib.functions.group import get_group_member_deployment
 from cmslib.functions.group import get_group_member_deployments
@@ -35,10 +36,12 @@ def get(ident: int) -> JSON:
 @authenticated
 @authorized('dscms4')
 @require_json(dict)
-def add(gid: int) -> JSONMessage:
+def add() -> JSONMessage:
     """Adds a deployment to the respective group."""
 
-    record = GroupMemberDeployment.from_json(request.json, get_group(gid))
+    group = get_group(request.json.get('group'))
+    deployment = get_deployment(request.json.get('deployment'))
+    record = GroupMemberDeployment.from_json(request.json, deployment, group)
     record.save()
     return JSONMessage('Group member deployment added.', id=record.id,
                        status=201)
@@ -55,7 +58,7 @@ def delete(ident: int) -> JSONMessage:
 
 ROUTES = [
     ('GET', '/group/deployment', list_),
-    ('GET', '/group/deployment/<int:gid>', get),
-    ('POST', '/group/<int:gid>/deployment', add),
-    ('DELETE', '/group/<int:gid>/deployment/<int:deployment>', delete)
+    ('GET', '/group/deployment/<int:ident>', get),
+    ('POST', '/group/deployment', add),
+    ('DELETE', '/group/deployment/<int:ident>', delete)
 ]
