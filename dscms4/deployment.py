@@ -2,8 +2,6 @@
 
 from typing import Iterator, Union
 
-from flask import request
-
 from cmslib.functions.deployment import get_deployments, with_deployment
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
@@ -48,7 +46,7 @@ def list_() -> JSON:
         deployments = BROWSER.browse(deployments)
         return JSON([_jsonify(deployment) for deployment in deployments])
 
-    if 'assoc' in request.args:
+    if get_bool('assoc'):
         return JSON({
             deployment.id: DeploymentContent(deployment).to_json()
             for deployment in deployments
