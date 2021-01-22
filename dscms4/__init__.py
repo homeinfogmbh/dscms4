@@ -3,7 +3,6 @@
 A web application to allow customers to edit
 and organize digital signage content.
 """
-from itertools import chain
 from logging import INFO, basicConfig
 
 from his import Application

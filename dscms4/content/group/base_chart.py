@@ -7,7 +7,7 @@ from cmslib.functions.content import get_group_base_chart
 from cmslib.functions.content import get_group_base_charts
 from cmslib.functions.group import get_group
 from cmslib.orm.content.group import GroupBaseChart
-from his import authenticated, authorized,require_json
+from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool, get_int
 
 

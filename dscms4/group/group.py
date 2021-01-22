@@ -33,7 +33,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective group."""
 
-    return JSON( get_group(ident).to_json())
+    return JSON(get_group(ident).to_json())
 
 
 @authenticated
@@ -47,7 +47,6 @@ def get_presentation(ident: int) -> Union[JSON, XML]:
         return XML(presentation.to_dom())
 
     return JSON(presentation.to_json())
-
 
 
 @authenticated

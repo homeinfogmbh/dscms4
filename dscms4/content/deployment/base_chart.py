@@ -39,7 +39,8 @@ def add() -> JSONMessage:
 
     deployment = get_deployment(request.json.pop('deployment'))
     base_chart = get_base_chart(request.json.pop('baseChart'))
-    record = DeploymentBaseChart.from_json(request.json, deployment, base_chart)
+    record = DeploymentBaseChart.from_json(
+        request.json, deployment, base_chart)
     record.save()
     return JSONMessage('Deployment base chart added.', id=record.id,
                        status=201)
