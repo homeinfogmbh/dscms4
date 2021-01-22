@@ -8,7 +8,6 @@ from cmslib.functions.charts import CHART_TYPE
 from cmslib.functions.charts import get_chart
 from cmslib.functions.charts import get_charts
 from cmslib.functions.charts import get_mode
-from cmslib.orm.charts import ChartMode
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 
@@ -26,7 +25,7 @@ def list_() -> JSON:
 
         for chart in get_charts():
             charts[type(chart).__name__][chart.id] = chart.to_json(
-                mode=ChartMode.ANON)
+                mode=get_mode())
 
         return JSON(charts)
 
