@@ -22,7 +22,7 @@ from wsgilib import JSON
 __all__ = ['ROUTES']
 
 
-def deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
+def get_deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
     """Selects deployments fromt the database."""
 
     return Deployment.select(Deployment, Customer, Company, Address).join(
@@ -107,7 +107,7 @@ class GroupContent:
         }
 
     @property
-    @coerce(deployments)
+    @coerce(get_deployments)
     def deployments(self) -> Iterator[Deployment]:
         """Yields deployments of this group."""
         for group_member_deployment in GroupMemberDeployment.select().where(
