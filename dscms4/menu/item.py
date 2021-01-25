@@ -44,9 +44,9 @@ def add() -> JSONMessage:
     if parent is not None:
         parent = get_menu_item(parent)
 
-    record = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
-    record.save()
-    return JSONMessage('Menu item added.', id=record.id, status=201)
+    records = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
+    records.save()
+    return JSONMessage('Menu item added.', id=records.id, status=201)
 
 
 @authenticated
@@ -56,10 +56,18 @@ def patch(ident: int) -> JSONMessage:
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-    menu = get_menu(request.json.pop('menu', UNCHANGED))
+    menu = request.json.pop('menu', UNCHANGED)
+
+    if menu is not None and menu is not UNCHANGED:
+        menu = get_menu(menu)
+
     parent = get_menu_item(request.json.pop('parent', UNCHANGED))
-    menu_item_group = menu_item.patch_json(request.json, menu, parent)
-    menu_item_group.save()
+
+    if parent is not None and parent is not UNCHANGED:
+        parent = get_menu_item(parent)
+
+    records = menu_item.patch_json(request.json, menu, parent)
+    records.save()
     return JSONMessage('Menu item patched.', status=200)
 
 
