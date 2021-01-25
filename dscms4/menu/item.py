@@ -4,7 +4,8 @@ from itertools import chain
 
 from flask import request
 
-from cmslib.functions.menu import get_menu_item, get_menu_items
+from cmslib.orm.common import UNCHANGED
+from cmslib.functions.menu import get_menu, get_menu_item, get_menu_items
 from cmslib.orm.menu import MenuItem
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool, get_int
@@ -37,7 +38,9 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a new menu item."""
 
-    record = MenuItem.from_json(request.json, CUSTOMER.id)
+    menu = get_menu(request.json.pop('menu'))
+    parent = get_menu_item(request.json.pop('parent'))
+    record = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
     record.save()
     return JSONMessage('Menu item added.', id=record.id, status=201)
 
@@ -49,7 +52,9 @@ def patch(ident: int) -> JSONMessage:
     """Patches a new menu item."""
 
     menu_item = get_menu_item(ident)
-    record = menu_item.patch_json(request.json)
+    menu = get_menu(request.json.pop('menu', UNCHANGED))
+    parent = get_menu_item(request.json.pop('parent', UNCHANGED))
+    record = menu_item.patch_json(request.json, menu, parent)
     record.save()
     return JSONMessage('Menu item patched.', status=200)
 
