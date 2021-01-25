@@ -13,10 +13,10 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def get_presentation(gid: int) -> Union[JSON, XML]:
+def get_presentation(ident: int) -> Union[JSON, XML]:
     """Returns the presentation for the respective deployment."""
 
-    presentation = Presentation(get_group(gid))
+    presentation = Presentation(get_group(ident))
 
     if get_bool('xml'):
         return XML(presentation.to_dom())
