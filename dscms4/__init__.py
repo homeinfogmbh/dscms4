@@ -5,6 +5,7 @@ and organize digital signage content.
 """
 from logging import INFO, basicConfig
 
+from cmslib.errors import ERRORS
 from his import Application
 
 from dscms4 import chart_types
@@ -38,3 +39,7 @@ def _init_logger():
     """Initializes the logger."""
 
     basicConfig(level=INFO, format=LOG_FORMAT)
+
+
+for exception, function in ERRORS.items():
+    APPLICATION.register_error_handler(exception, function)
