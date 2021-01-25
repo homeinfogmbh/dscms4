@@ -61,7 +61,7 @@ def patch(ident: int) -> JSONMessage:
     if menu is not None and menu is not UNCHANGED:
         menu = get_menu(menu)
 
-    parent = get_menu_item(request.json.pop('parent', UNCHANGED))
+    parent = request.json.pop('parent', UNCHANGED)
 
     if parent is not None and parent is not UNCHANGED:
         parent = get_menu_item(parent)
