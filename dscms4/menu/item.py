@@ -39,10 +39,15 @@ def add() -> JSONMessage:
     """Adds a new menu item."""
 
     menu = get_menu(request.json.pop('menu'))
-    parent = get_menu_item(request.json.pop('parent', None))
-    record = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
-    record.save()
-    return JSONMessage('Menu item added.', id=record.id, status=201)
+    parent = request.json.pop('parent', None)
+
+    if parent is not None:
+        parent = get_menu_item(parent)
+
+    menu_item_group = MenuItem.from_json(
+        request.json, CUSTOMER.id, menu, parent)
+    menu_item_group.save()
+    return JSONMessage('Menu item added.', id=menu_item_group.id, status=201)
 
 
 @authenticated
