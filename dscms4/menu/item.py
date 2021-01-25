@@ -54,8 +54,8 @@ def patch(ident: int) -> JSONMessage:
     menu_item = get_menu_item(ident)
     menu = get_menu(request.json.pop('menu', UNCHANGED))
     parent = get_menu_item(request.json.pop('parent', UNCHANGED))
-    record = menu_item.patch_json(request.json, menu, parent)
-    record.save()
+    menu_item_group = menu_item.patch_json(request.json, menu, parent)
+    menu_item_group.save()
     return JSONMessage('Menu item patched.', status=200)
 
 
