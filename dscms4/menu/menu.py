@@ -3,22 +3,24 @@
 from flask import request
 
 from cmslib.functions.menu import get_menu, get_menus
-from cmslib.orm.menu import Menu, MenuItem
-from his import CUSTOMER, authenticated, authorized, require_json
+from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
+from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
 
 
-def get_menu_items():
+def get_kwargs():
     """Returns the menu items."""
 
-    if get_bool('items'):
-        return MenuItem.select(cascade=True).where(
-            MenuItem.customer == CUSTOMER.id)
+    kwargs = {}
 
-    return None
+    if get_bool('items'):
+        kwargs['menu_items'] = MenuItem.select(cascade=True)
+        kwargs['menu_items_charts'] = MenuItemChart.select(cascade=True)
+
+    return kwargs
 
 
 @authenticated
@@ -28,12 +30,12 @@ def list_() -> JSON:
 
     if get_bool('assoc'):
         return JSON({
-            menu.id: menu.to_json(skip={'id'}, menu_items=get_menu_items())
+            menu.id: menu.to_json(skip={'id'}, **get_kwargs())
             for menu in get_menus()
         })
 
     return JSON([
-        menu.to_json(menu_items=get_menu_items()) for menu in get_menus()
+        menu.to_json(**get_kwargs()) for menu in get_menus()
     ])
 
 
@@ -42,7 +44,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu."""
 
-    return JSON(get_menu(ident).to_json(menu_items=get_menu_items()))
+    return JSON(get_menu(ident).to_json(**get_kwargs()))
 
 
 @authenticated
