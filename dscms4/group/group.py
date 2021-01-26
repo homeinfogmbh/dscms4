@@ -1,14 +1,11 @@
 """Group Controllers."""
 
-from typing import Union
-
 from flask import request
 
 from cmslib.functions.group import get_group, get_groups
 from cmslib.orm.group import Group
-from cmslib.presentation.group import Presentation
 from his import CUSTOMER, authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, XML, get_bool
+from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
@@ -34,19 +31,6 @@ def get(ident: int) -> JSON:
     """Returns the respective group."""
 
     return JSON(get_group(ident).to_json())
-
-
-@authenticated
-@authorized('dscms4')
-def get_presentation(ident: int) -> Union[JSON, XML]:
-    """Returns the presentation for the respective group."""
-
-    presentation = Presentation(get_group(ident))
-
-    if get_bool('xml'):
-        return XML(presentation.to_dom())
-
-    return JSON(presentation.to_json())
 
 
 @authenticated
@@ -90,5 +74,6 @@ ROUTES = [
     ('GET', '/group', list_),
     ('GET', '/group/<int:ident>', get),
     ('POST', '/group', add),
+    ('PATCH', '/group/<int:ident>', patch),
     ('DELETE', '/group/<int:ident>', delete)
 ]
