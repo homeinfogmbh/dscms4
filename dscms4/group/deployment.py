@@ -39,8 +39,8 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment to the respective group."""
 
-    group = get_group(request.json.get('group'))
-    deployment = get_deployment(request.json.get('deployment'))
+    group = get_group(request.json.pop('group'))
+    deployment = get_deployment(request.json.pop('deployment'))
     record = GroupMemberDeployment.from_json(request.json, deployment, group)
     record.save()
     return JSONMessage('Group member deployment added.', id=record.id,
