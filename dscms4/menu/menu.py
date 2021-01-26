@@ -3,12 +3,22 @@
 from flask import request
 
 from cmslib.functions.menu import get_menu, get_menus
-from cmslib.orm.menu import Menu
-from his import authenticated, authorized, require_json
+from cmslib.orm.menu import Menu, MenuItem
+from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 
 
 __all__ = ['ROUTES']
+
+
+def get_menu_items():
+    """Returns the menu items."""
+
+    if get_bool('items'):
+        return MenuItem.select(cascade=True).where(
+            MenuItem.customer == CUSTOMER.id)
+
+    return None
 
 
 @authenticated
@@ -16,15 +26,15 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """List menus."""
 
-    items = get_bool('items')
-
     if get_bool('assoc'):
         return JSON({
-            menu.id: menu.to_json(skip={'id'}, items=items)
+            menu.id: menu.to_json(skip={'id'}, menu_items=get_menu_items())
             for menu in get_menus()
         })
 
-    return JSON([menu.to_json(items=items) for menu in get_menus()])
+    return JSON([
+        menu.to_json(menu_items=get_menu_items()) for menu in get_menus()
+    ])
 
 
 @authenticated
@@ -32,7 +42,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu."""
 
-    return JSON(get_menu(ident).to_json(items=get_bool('items')))
+    return JSON(get_menu(ident).to_json(menu_items=get_menu_items()))
 
 
 @authenticated
