@@ -20,7 +20,7 @@ def list_() -> JSON:
     """Lists group member deployments."""
 
     return JSON([
-        record.to_json(cascade=True) for record
+        record.to_json() for record
         in get_group_member_deployments(group=get_int('group'))
     ])
 
@@ -30,7 +30,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns a group member deployment."""
 
-    return JSON(get_group_member_deployment(ident).to_json(cascade=True))
+    return JSON(get_group_member_deployment(ident).to_json())
 
 
 @authenticated
