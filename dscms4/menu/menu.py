@@ -18,7 +18,7 @@ def get_kwargs():
 
     if get_bool('items'):
         kwargs['menu_items'] = MenuItem.select(cascade=True)
-        kwargs['menu_items_charts'] = MenuItemChart.select(cascade=True)
+        kwargs['menu_item_charts'] = MenuItemChart.select(cascade=True)
 
     return kwargs
 
