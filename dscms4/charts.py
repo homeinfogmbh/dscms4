@@ -48,7 +48,9 @@ def add() -> JSONMessage:
 
     transaction = CHART_TYPE.from_json(request.json)
     transaction.commit()
-    return JSONMessage('Chart added.', id=transaction.id, status=201)
+    return JSONMessage(
+        'Chart added.', id=transaction.id, base_chart=transaction.base.id,
+        status=201)
 
 
 @authenticated
