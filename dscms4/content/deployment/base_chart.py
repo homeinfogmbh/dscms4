@@ -2,13 +2,13 @@
 
 from flask import request
 
-from cmslib.functions.charts import get_base_chart, get_trashed
+from cmslib.functions.charts import get_base_chart
 from cmslib.functions.content import get_deployment_base_chart
 from cmslib.functions.content import get_deployment_base_charts
 from cmslib.functions.deployment import get_deployment
 from cmslib.orm.content.deployment import DeploymentBaseChart
 from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool, get_int
+from wsgilib import JSON, JSONMessage, get_int
 
 
 __all__ = ['ROUTES']
@@ -20,7 +20,7 @@ def list_() -> JSON:
     """Lists deployment <> base chart mappings."""
 
     return JSON([record.to_json() for record in get_deployment_base_charts(
-        deployment=get_int('deployment'), trashed=get_trashed())])
+        deployment=get_int('deployment'))])
 
 
 @authenticated

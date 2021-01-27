@@ -91,7 +91,7 @@ class DeploymentContent:
         """Yields the deployment's charts."""
         for dbc in DeploymentBaseChart.select().join(BaseChart).where(
                 (DeploymentBaseChart.deployment == self.deployment)
-                & (BaseChart.trashed == get_trashed())):
+                & get_trashed()):
             yield dbc.to_json()
 
     @property
