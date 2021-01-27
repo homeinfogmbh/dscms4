@@ -2,6 +2,7 @@
 
 from typing import Iterator, Union
 
+from cmslib.functions.charts import get_trashed
 from cmslib.functions.deployment import get_deployments, with_deployment
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.deployment import DeploymentBaseChart
@@ -90,7 +91,7 @@ class DeploymentContent:
         """Yields the deployment's charts."""
         for dbc in DeploymentBaseChart.select().join(BaseChart).where(
                 (DeploymentBaseChart.deployment == self.deployment)
-                & (BaseChart.trashed == 0)):
+                & (BaseChart.trashed == get_trashed())):
             yield dbc.to_json()
 
     @property

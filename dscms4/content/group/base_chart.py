@@ -2,7 +2,7 @@
 
 from flask import request
 
-from cmslib.functions.charts import get_base_chart
+from cmslib.functions.charts import get_base_chart, get_trashed
 from cmslib.functions.content import get_group_base_chart
 from cmslib.functions.content import get_group_base_charts
 from cmslib.functions.group import get_group
@@ -20,7 +20,7 @@ def list_() -> JSON:
     """Lists the requested group <> base chart mappings."""
 
     return JSON([record.to_json() for record in get_group_base_charts(
-        deployment=get_int('group'), trashed=get_bool('trashed', None))])
+        deployment=get_int('group'), trashed=get_trashed())])
 
 
 @authenticated

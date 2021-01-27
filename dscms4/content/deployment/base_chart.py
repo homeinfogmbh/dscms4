@@ -2,7 +2,7 @@
 
 from flask import request
 
-from cmslib.functions.charts import get_base_chart
+from cmslib.functions.charts import get_base_chart, get_trashed
 from cmslib.functions.content import get_deployment_base_chart
 from cmslib.functions.content import get_deployment_base_charts
 from cmslib.functions.deployment import get_deployment
@@ -20,7 +20,7 @@ def list_() -> JSON:
     """Lists deployment <> base chart mappings."""
 
     return JSON([record.to_json() for record in get_deployment_base_charts(
-        deployment=get_int('deployment'), trashed=get_bool('trashed', None))])
+        deployment=get_int('deployment'), trashed=get_trashed())])
 
 
 @authenticated

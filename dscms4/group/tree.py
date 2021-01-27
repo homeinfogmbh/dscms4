@@ -10,6 +10,7 @@ from hwdb import Deployment
 from mdb import Address, Company, Customer
 
 from cmslib.functions.group import get_group
+from cmslib.functions.charts import get_trashed
 from cmslib.orm.charts import BaseChart
 from cmslib.orm.content.group import GroupBaseChart
 from cmslib.orm.content.group import GroupConfiguration
@@ -80,7 +81,7 @@ class GroupContent:
         for group_base_chart in GroupBaseChart.select().join(
                 BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join).where(
                     (GroupBaseChart.group == self.group)
-                    & (BaseChart.trashed == 0)):
+                    & (BaseChart.trashed == get_trashed())):
             yield group_base_chart.to_json()
 
     @property
