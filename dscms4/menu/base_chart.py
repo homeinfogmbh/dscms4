@@ -58,8 +58,8 @@ def delete(ident: int) -> JSONMessage:
 
 
 ROUTES = [
-    ('GET', '/menu/item/<ident>/charts', list_),
-    ('POST', '/menu/item/chart', add),
-    ('PATCH', '/menu/item/chart/<int:ident>', patch),
-    ('DELETE', '/menu/item/chart/<int:ident>', delete)
+    ('GET', '/menu/item/<ident>/base_charts', list_),
+    ('POST', '/menu/item/base_chart', add),
+    ('PATCH', '/menu/item/base_chart/<int:ident>', patch),
+    ('DELETE', '/menu/item/base_chart/<int:ident>', delete)
 ]
