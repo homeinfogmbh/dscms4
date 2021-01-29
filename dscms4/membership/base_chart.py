@@ -2,10 +2,10 @@
 
 from typing import Iterator
 
-from cmslib.functions.charts import get_base_chart
-from cmslib.orm.content.group import GroupBaseChart
-from cmslib.orm.content.deployment import DeploymentBaseChart
-from cmslib.orm.menu import MenuItemChart
+from cmslib import DeploymentBaseChart
+from cmslib import GroupBaseChart
+from cmslib import MenuItemChart
+from cmslib import get_base_chart
 from his import authenticated, authorized
 from wsgilib import JSON
 

@@ -2,8 +2,7 @@
 
 from typing import Union
 
-from cmslib.functions.group import get_group
-from cmslib.presentation.group import Presentation
+from cmslib import Presentation, get_group
 from his import authenticated, authorized
 from wsgilib import JSON, XML, get_bool
 

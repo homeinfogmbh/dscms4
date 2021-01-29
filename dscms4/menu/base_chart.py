@@ -2,9 +2,10 @@
 
 from flask import request
 
-from cmslib.functions.charts import get_base_chart
-from cmslib.functions.menu import get_menu_item, get_menu_item_chart
-from cmslib.orm.menu import MenuItemChart
+from cmslib import MenuItemChart
+from cmslib import get_base_chart
+from cmslib import get_menu_item
+from cmslib import get_menu_item_chart
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 

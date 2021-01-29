@@ -2,8 +2,7 @@
 
 from flask import request
 
-from cmslib.functions.group import get_group, get_groups
-from cmslib.orm.group import Group
+from cmslib import Group, get_group, get_groups
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 

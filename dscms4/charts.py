@@ -4,10 +4,10 @@ from collections import defaultdict
 
 from flask import request
 
-from cmslib.functions.charts import CHART_TYPE
-from cmslib.functions.charts import get_chart
-from cmslib.functions.charts import get_charts
-from cmslib.functions.charts import get_mode
+from cmslib import CHART_TYPE
+from cmslib import get_chart
+from cmslib import get_charts
+from cmslib import get_mode
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 

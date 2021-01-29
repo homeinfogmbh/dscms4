@@ -9,13 +9,14 @@ from functoolsplus import coerce
 from hwdb import Deployment
 from mdb import Address, Company, Customer
 
-from cmslib.functions.group import get_group
-from cmslib.functions.charts import get_trashed
-from cmslib.orm.charts import BaseChart
-from cmslib.orm.content.group import GroupBaseChart
-from cmslib.orm.content.group import GroupConfiguration
-from cmslib.orm.content.group import GroupMenu
-from cmslib.orm.group import Group, GroupMemberDeployment
+from cmslib import BaseChart
+from cmslib import Group
+from cmslib import GroupBaseChart
+from cmslib import GroupConfiguration
+from cmslib import GroupMemberDeployment
+from cmslib import GroupMenu
+from cmslib import get_group
+from cmslib import get_trashed
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 

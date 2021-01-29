@@ -5,7 +5,7 @@ and organize digital signage content.
 """
 from logging import INFO, basicConfig
 
-from cmslib.errors import ERRORS
+from cmslib import ERRORS
 from his import Application
 
 from dscms4 import chart_types

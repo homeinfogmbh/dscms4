@@ -2,11 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.menu import get_menu
-from cmslib.functions.content import get_deployment_menu
-from cmslib.functions.content import get_deployment_menus
-from cmslib.functions.deployment import get_deployment
-from cmslib.orm.content.deployment import DeploymentMenu
+from cmslib import DeploymentMenu
+from cmslib import get_deployment
+from cmslib import get_deployment_menu
+from cmslib import get_deployment_menus
+from cmslib import get_menu
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_int
 

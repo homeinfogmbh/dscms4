@@ -2,11 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.charts import get_base_chart
-from cmslib.functions.content import get_deployment_base_chart
-from cmslib.functions.content import get_deployment_base_charts
-from cmslib.functions.deployment import get_deployment
-from cmslib.orm.content.deployment import DeploymentBaseChart
+from cmslib import DeploymentBaseChart
+from cmslib import get_base_chart
+from cmslib import get_deployment
+from cmslib import get_deployment_base_chart
+from cmslib import get_deployment_base_charts
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_int
 

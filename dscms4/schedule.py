@@ -2,8 +2,7 @@
 
 from flask import request
 
-from cmslib.functions.schedule import get_schedule, get_schedules
-from cmslib.orm.schedule import Schedule
+from cmslib import Schedule, get_schedule, get_schedules
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 

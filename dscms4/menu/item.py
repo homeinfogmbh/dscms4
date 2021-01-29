@@ -4,9 +4,11 @@ from itertools import chain
 
 from flask import request
 
-from cmslib.orm.common import UNCHANGED
-from cmslib.functions.menu import get_menu, get_menu_item, get_menu_items
-from cmslib.orm.menu import MenuItem
+from cmslib import UNCHANGED
+from cmslib import MenuItem
+from cmslib import get_menu
+from cmslib import get_menu_item
+from cmslib import get_menu_items
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool, get_int
 

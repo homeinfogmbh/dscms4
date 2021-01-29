@@ -2,11 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.deployment import get_deployment
-from cmslib.functions.group import get_group
-from cmslib.functions.group import get_group_member_deployment
-from cmslib.functions.group import get_group_member_deployments
-from cmslib.orm.group import GroupMemberDeployment
+from cmslib import GroupMemberDeployment
+from cmslib import get_deployment
+from cmslib import get_group
+from cmslib import get_group_member_deployment
+from cmslib import get_group_member_deployments
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_int
 

@@ -2,11 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.content import get_group_configuration
-from cmslib.functions.content import get_group_configurations
-from cmslib.functions.configuration import get_configuration
-from cmslib.functions.group import get_group
-from cmslib.orm.content.group import GroupConfiguration
+from cmslib import GroupConfiguration
+from cmslib import get_configuration
+from cmslib import get_group
+from cmslib import get_group_configuration
+from cmslib import get_group_configurations
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_int
 

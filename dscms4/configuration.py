@@ -2,9 +2,9 @@
 
 from flask import request
 
-from cmslib.functions.configuration import get_configuration
-from cmslib.functions.configuration import get_configurations
-from cmslib.orm.configuration import Configuration
+from cmslib import Configuration
+from cmslib import get_configuration
+from cmslib import get_configurations
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 

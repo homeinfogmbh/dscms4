@@ -2,7 +2,7 @@
 
 from flask import request
 
-from cmslib.orm.settings import Settings
+from cmslib import Settings
 from his import CUSTOMER, admin, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 

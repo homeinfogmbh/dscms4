@@ -2,10 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.content import get_group_menu, get_group_menus
-from cmslib.functions.group import get_group
-from cmslib.functions.menu import get_menu
-from cmslib.orm.content.group import GroupMenu
+from cmslib import GroupMenu
+from cmslib import get_group
+from cmslib import get_group_menu
+from cmslib import get_group_menus
+from cmslib import get_menu
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_int
 

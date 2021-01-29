@@ -1,6 +1,6 @@
 """Preview for deployments."""
 
-from cmslib.presentation.deployment import Presentation
+from cmslib import DeploymentPresentation
 from hwdb import Deployment
 from previewlib import DeploymentPreviewToken
 from previewlib import Response
@@ -15,7 +15,7 @@ __all__ = ['ROUTES']
 def get_presentation(deployment: Deployment) -> Response:
     """Returns the presentation for the respective deployment."""
 
-    return make_response(Presentation(deployment))
+    return make_response(DeploymentPresentation(deployment))
 
 
 ROUTES = [('GET', '/preview/deployment', get_presentation)]

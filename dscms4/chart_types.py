@@ -4,9 +4,9 @@ from collections import defaultdict
 
 from flask import request
 
-from cmslib.functions.charts import get_chart_acls
-from cmslib.orm.chart_acl import ChartACL
-from cmslib.orm.charts import CHARTS
+from cmslib import CHARTS
+from cmslib import ChartACL
+from cmslib import get_chart_acls
 from his import authenticated, authorized, root, require_json
 from mdb import Customer
 from wsgilib import JSON, JSONMessage

@@ -2,8 +2,11 @@
 
 from flask import request
 
-from cmslib.functions.menu import get_menu, get_menus
-from cmslib.orm.menu import Menu, MenuItem, MenuItemChart
+from cmslib import Menu
+from cmslib import MenuItem
+from cmslib import MenuItemChart
+from cmslib import get_menu
+from cmslib import get_menus
 from his import authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage, get_bool
 

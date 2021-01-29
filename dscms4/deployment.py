@@ -2,14 +2,15 @@
 
 from typing import Iterator, Union
 
-from cmslib.functions.charts import get_trashed
-from cmslib.functions.deployment import get_deployments, with_deployment
-from cmslib.orm.charts import BaseChart
-from cmslib.orm.content.deployment import DeploymentBaseChart
-from cmslib.orm.content.deployment import DeploymentConfiguration
-from cmslib.orm.content.deployment import DeploymentMenu
-from cmslib.orm.settings import Settings
-from cmslib.presentation.deployment import Presentation
+from cmslib import BaseChart
+from cmslib import DeploymentBaseChart
+from cmslib import DeploymentConfiguration
+from cmslib import DeploymentMenu
+from cmslib import DeploymentPresentation
+from cmslib import Settings
+from cmslib import get_deployments
+from cmslib import get_trashed
+from cmslib import with_deployment
 from his import CUSTOMER, authenticated, authorized
 from hwdb import Deployment
 from wsgilib import Browser, JSON, XML, get_bool
@@ -71,7 +72,7 @@ def get(deployment: Deployment) -> JSON:
 def get_presentation(deployment: Deployment) -> Union[JSON, XML]:
     """Returns the presentation for the respective deployment."""
 
-    presentation = Presentation(deployment)
+    presentation = DeploymentPresentation(deployment)
 
     if get_bool('xml'):
         return XML(presentation.to_dom())
