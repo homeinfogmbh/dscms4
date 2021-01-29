@@ -25,7 +25,7 @@ __all__ = ['APPLICATION', 'ROUTES']
 
 
 LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
-APPLICATION = Application('DSCMS4', debug=True)
+APPLICATION = Application('DSCMS4')
 ROUTES = (
     *chart_types.ROUTES, *charts.ROUTES, *configuration.ROUTES,
     *content.ROUTES, *deployment.ROUTES, *group.ROUTES, *membership.ROUTES,
