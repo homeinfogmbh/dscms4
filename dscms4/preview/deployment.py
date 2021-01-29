@@ -1,9 +1,11 @@
 """Preview for deployments."""
 
 from cmslib.presentation.deployment import Presentation
-from cmslib.preview import Response, make_response
 from hwdb import Deployment
-from previewlib import preview, DeploymentPreviewToken
+from previewlib import DeploymentPreviewToken
+from previewlib import Response
+from previewlib import make_response
+from previewlib import preview
 
 
 __all__ = ['ROUTES']
