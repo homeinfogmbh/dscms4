@@ -30,7 +30,22 @@ def _jsonify(deployment: Deployment) -> dict:
     deployment with address and system IDs.
     """
 
-    return deployment.to_json(cascade=1, systems=True, skip={'customer'})
+    json = deployment.to_json(cascade=1, systems=True, skip={'customer'})
+
+    try:
+        content = {
+            'charts': [
+                dbc.to_json() for dbc in deployment.deploymentbasechart
+            ],
+            'configurations': [
+                dc.to_json() for dc in deployment.deploymentconfiguration
+            ],
+            'menus': [dm.to_json() for dm in deployment.deploymentmenu]
+        }
+    except AttributeError:
+        return json
+
+    return {'deployment': json, 'content': content}
 
 
 @authenticated
@@ -38,7 +53,7 @@ def _jsonify(deployment: Deployment) -> dict:
 def list_() -> JSON:
     """Lists all deployments of the respective customer."""
 
-    deployments = get_deployments()
+    deployments = get_deployments(content=get_bool('assoc'))
     settings = Settings.for_customer(CUSTOMER.id)
 
     if not settings.testing:
@@ -53,8 +68,7 @@ def list_() -> JSON:
 
     if get_bool('assoc'):
         return JSON({
-            deployment.id: DeploymentContent(deployment).to_json()
-            for deployment in deployments
+            deployment.id: _jsonify(deployment) for deployment in deployments
         })
 
     return JSON([_jsonify(deployment) for deployment in deployments])
