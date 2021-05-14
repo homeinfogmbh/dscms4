@@ -1,6 +1,5 @@
 """Digital signage deployment-related requests."""
 
-from sys import stdout
 from typing import Union
 
 from cmslib import DATABASE
@@ -8,7 +7,6 @@ from cmslib import DeploymentPresentation
 from cmslib import Settings
 from cmslib import get_deployments
 from cmslib import with_deployment
-from functoolsplus import timeit
 from his import CUSTOMER, authenticated, authorized
 from hwdb import Deployment
 from wsgilib import Browser, JSON, XML, get_bool
@@ -20,7 +18,6 @@ __all__ = ['ROUTES']
 BROWSER = Browser()
 
 
-@timeit(file=stdout, flush=True)
 def jsonify(deployment: Deployment) -> dict:
     """Returns a JSON representation of the
     deployment with address and system IDs.
