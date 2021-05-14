@@ -21,27 +21,39 @@ BROWSER = Browser()
 
 
 @timeit(file=stdout, flush=True)
-def _jsonify(deployment: Deployment) -> dict:
+def jsonify(deployment: Deployment) -> dict:
     """Returns a JSON representation of the
     deployment with address and system IDs.
     """
 
     json = deployment.to_json(cascade=1, systems=True, skip={'customer'})
+    content = {}
 
     try:
-        content = {
-            'charts': [
-                dbc.to_json() for dbc in deployment.deploymentbasechart_set
-            ],
-            'configurations': [
-                dc.to_json() for dc in deployment.deploymentconfiguration_set
-            ],
-            'menus': [dm.to_json() for dm in deployment.deploymentmenu_set]
-        }
+        base_charts = deployment.deploymentbasechart_set
     except AttributeError:
-        return json
+        pass
+    else:
+        content['charts'] = [dbc.to_json() for dbc in base_charts]
 
-    return {'deployment': json, 'content': content}
+    try:
+        configurations = deployment.deploymentconfiguration_set
+    except AttributeError:
+        pass
+    else:
+        content['configurations'] = [dc.to_json() for dc in configurations]
+
+    try:
+        menus = deployment.deploymentmenu_set
+    except AttributeError:
+        pass
+    else:
+        content['menus'] = [dm.to_json() for dm in menus]
+
+    if content:
+        return {'deployment': json, 'content': content}
+
+    return json
 
 
 @authenticated
@@ -63,14 +75,14 @@ def list_() -> JSON:
             return BROWSER.pages(deployments).to_json()
 
         deployments = BROWSER.browse(deployments)
-        return JSON([_jsonify(deployment) for deployment in deployments])
+        return JSON([jsonify(deployment) for deployment in deployments])
 
     if get_bool('assoc'):
         return JSON({
-            deployment.id: _jsonify(deployment) for deployment in deployments
+            deployment.id: jsonify(deployment) for deployment in deployments
         })
 
-    return JSON([_jsonify(deployment) for deployment in deployments])
+    return JSON([jsonify(deployment) for deployment in deployments])
 
 
 @authenticated
