@@ -3,6 +3,7 @@
 from sys import stdout
 from typing import Iterator, Union
 
+from cmslib import DATABASE
 from cmslib import BaseChart
 from cmslib import DeploymentBaseChart
 from cmslib import DeploymentConfiguration
@@ -58,6 +59,9 @@ def list_() -> JSON:
 
     if not settings.testing:
         deployments = deployments.where(Deployment.testing == 0)
+
+    # Run query as dscms4 database user.
+    deployments = deployments.execute(DATABASE)
 
     if BROWSER.wanted:
         if BROWSER.info:
