@@ -1,17 +1,12 @@
 """Digital signage deployment-related requests."""
 
 from sys import stdout
-from typing import Iterator, Union
+from typing import Union
 
 from cmslib import DATABASE
-from cmslib import BaseChart
-from cmslib import DeploymentBaseChart
-from cmslib import DeploymentConfiguration
-from cmslib import DeploymentMenu
 from cmslib import DeploymentPresentation
 from cmslib import Settings
 from cmslib import get_deployments
-from cmslib import get_trashed
 from cmslib import with_deployment
 from functoolsplus import timeit
 from his import CUSTOMER, authenticated, authorized
@@ -99,51 +94,6 @@ def get_presentation(deployment: Deployment) -> Union[JSON, XML]:
         return XML(presentation.to_dom())
 
     return JSON(presentation.to_json())
-
-
-class DeploymentContent:
-    """Represents content of a deployment."""
-
-    def __init__(self, deployment: Deployment):
-        """Sets the deployment."""
-        self.deployment = deployment
-
-    @property
-    def charts(self) -> Iterator[dict]:
-        """Yields the deployment's charts."""
-        for dbc in DeploymentBaseChart.select().join(BaseChart).where(
-                (DeploymentBaseChart.deployment == self.deployment)
-                & get_trashed()):
-            yield dbc.to_json()
-
-    @property
-    def configurations(self) -> Iterator[dict]:
-        """Yields the deployment's configurations."""
-        for deployment_config in DeploymentConfiguration.select().where(
-                DeploymentConfiguration.deployment == self.deployment):
-            yield deployment_config.to_json()
-
-    @property
-    def menus(self) -> Iterator[dict]:
-        """Yields the deployment's menus."""
-        for deployment_menu in DeploymentMenu.select().where(
-                DeploymentMenu.deployment == self.deployment):
-            yield deployment_menu.to_json()
-
-    def content(self) -> dict:
-        """Returns content."""
-        return {
-            'charts': list(self.charts),
-            'configurations': list(self.configurations),
-            'menus': list(self.menus)
-        }
-
-    def to_json(self) -> dict:
-        """Returns the deployment and its content as a JSON-ish dict."""
-        return {
-            'deployment': _jsonify(self.deployment),
-            'content': self.content()
-        }
 
 
 ROUTES = [
