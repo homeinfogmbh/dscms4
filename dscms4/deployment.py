@@ -36,12 +36,12 @@ def _jsonify(deployment: Deployment) -> dict:
     try:
         content = {
             'charts': [
-                dbc.to_json() for dbc in deployment.deploymentbasechart
+                dbc.to_json() for dbc in deployment.deploymentbasechart_set
             ],
             'configurations': [
-                dc.to_json() for dc in deployment.deploymentconfiguration
+                dc.to_json() for dc in deployment.deploymentconfiguration_set
             ],
-            'menus': [dm.to_json() for dm in deployment.deploymentmenu]
+            'menus': [dm.to_json() for dm in deployment.deploymentmenu_set]
         }
     except AttributeError:
         return json
