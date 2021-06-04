@@ -19,6 +19,7 @@ from dscms4 import menu
 from dscms4 import preview
 from dscms4 import schedule
 from dscms4 import settings
+from dscms4 import vfs
 
 
 __all__ = ['APPLICATION', 'ROUTES']
@@ -29,7 +30,8 @@ APPLICATION = Application('DSCMS4')
 ROUTES = (
     *chart_types.ROUTES, *charts.ROUTES, *configuration.ROUTES,
     *content.ROUTES, *deployment.ROUTES, *group.ROUTES, *membership.ROUTES,
-    *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES, *settings.ROUTES
+    *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES, *settings.ROUTES,
+    *vfs.ROUTES
 )
 APPLICATION.add_routes(ROUTES)
 
