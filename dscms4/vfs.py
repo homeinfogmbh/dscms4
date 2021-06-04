@@ -2,7 +2,7 @@
 
 from flask import request
 
-from cmslib import Directory, get_root, get_directory
+from cmslib import Directory, get_base_chart, get_directory, get_root
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 
@@ -70,27 +70,27 @@ def add_base_chart(ident: int) -> JSONMessage:
     """Adds a base chart to the respective directory."""
 
     directory = get_directory(ident)
-    directory.add_base_chart(request['baseChart'])
-    return JSONMessage('Chart added.', status=201)
+    directory.add_base_chart(get_base_chart(request['baseChart']))
+    return JSONMessage('Base chart added.', status=201)
 
 
 @authenticated
 @authorized('dscms4')
 @require_json(dict)
-def remove_base_chart(ident: int, chart: int) -> JSONMessage:
+def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
     """Removes a base chart from the respective directory."""
 
     directory = get_directory(ident)
-    directory.remove_base_chart(chart)
-    return JSONMessage('Chart removed.', status=200)
+    directory.remove_base_chart(base_chart)
+    return JSONMessage('Base charts removed.', status=200)
 
 
 ROUTES = (
     ('GET', '/vfs', list_),
-    ('GET', '/vfs/<int: ident>', get),
+    ('GET', '/vfs/<int:ident>', get),
     ('POST', '/vfs', add),
-    ('PATCH', '/vfs/<int: ident>', patch),
-    ('DELETE', '/vfs/<int: ident>', delete),
-    ('POST', '/vfs/<int: ident>/chart', add_base_chart),
-    ('DELETE', '/vfs/<int: ident>/chart/<int: chart>', remove_base_chart)
+    ('PATCH', '/vfs/<int:ident>', patch),
+    ('DELETE', '/vfs/<int:ident>', delete),
+    ('POST', '/vfs/<int:ident>/chart', add_base_chart),
+    ('DELETE', '/vfs/<int: ident>/chart/<int:base_chart>', remove_base_chart)
 )
