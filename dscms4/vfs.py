@@ -92,5 +92,5 @@ ROUTES = (
     ('PATCH', '/vfs/<int:ident>', patch),
     ('DELETE', '/vfs/<int:ident>', delete),
     ('POST', '/vfs/<int:ident>/chart', add_base_chart),
-    ('DELETE', '/vfs/<int: ident>/chart/<int:base_chart>', remove_base_chart)
+    ('DELETE', '/vfs/<int:ident>/chart/<int:base_chart>', remove_base_chart)
 )
