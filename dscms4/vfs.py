@@ -63,10 +63,34 @@ def delete(ident: int) -> JSONMessage:
     return JSONMessage('Directory deleted.', status=200)
 
 
+@authenticated
+@authorized('dscms4')
+@require_json(dict)
+def add_base_chart(ident: int) -> JSONMessage:
+    """Adds a base chart to the respective directory."""
+
+    directory = get_directory(ident)
+    directory.add_base_chart(request['baseChart'])
+    return JSONMessage('Chart added.', status=201)
+
+
+@authenticated
+@authorized('dscms4')
+@require_json(dict)
+def remove_base_chart(ident: int, chart: int) -> JSONMessage:
+    """Removes a base chart from the respective directory."""
+
+    directory = get_directory(ident)
+    directory.remove_base_chart(chart)
+    return JSONMessage('Chart removed.', status=200)
+
+
 ROUTES = (
     ('GET', '/vfs', list_),
     ('GET', '/vfs/<int: ident>', get),
     ('POST', '/vfs', add),
     ('PATCH', '/vfs/<int: ident>', patch),
-    ('DELETE', '/vfs/<int: ident>', delete)
+    ('DELETE', '/vfs/<int: ident>', delete),
+    ('POST', '/vfs/<int: ident>/chart', add_base_chart),
+    ('DELETE', '/vfs/<int: ident>/chart/<int: chart>', remove_base_chart)
 )
