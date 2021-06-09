@@ -35,7 +35,7 @@ def get(ident: int) -> JSON:
 def list_root_base_charts() -> JSON:
     """Lists root charts."""
 
-    return JSON([cc.base_chart_id for cc in get_root_base_charts()])
+    return JSON([base_chart.id for base_chart in get_root_base_charts()])
 
 
 @authenticated
