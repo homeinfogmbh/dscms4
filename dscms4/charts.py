@@ -44,9 +44,9 @@ def get_chart_(ident: int) -> JSON:
 @authenticated
 @authorized('dscms4')
 def get_base_chart_(ident: int) -> JSON:
-    """Returns the respective chart by base chart of the current customer."""
+    """Returns the respective base chart of the current customer."""
 
-    return JSON(get_base_chart(ident).chart.to_json(mode=get_mode()))
+    return JSON(get_base_chart(ident).to_json())
 
 
 @authenticated
