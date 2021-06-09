@@ -30,7 +30,7 @@ def list_root() -> JSON:
 def get(ident: int) -> JSON:
     """Lists a specific directory."""
 
-    return JSON(get_directory(ident).to_json(base_charts=True))
+    return JSON(get_directory(ident).to_json(children=True, base_charts=True))
 
 
 @authenticated
