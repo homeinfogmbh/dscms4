@@ -23,7 +23,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Lists a specific directory."""
 
-    return JSON(get_directory(ident).to_json())
+    return JSON(get_directory(ident).to_json(charts=True))
 
 
 @authenticated
