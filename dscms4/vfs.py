@@ -70,13 +70,12 @@ def add_base_chart(ident: int) -> JSONMessage:
     """Adds a base chart to the respective directory."""
 
     directory = get_directory(ident)
-    directory.add_base_chart(get_base_chart(request['baseChart']))
+    directory.add_base_chart(get_base_chart(request.json['baseChart']))
     return JSONMessage('Base chart added.', status=201)
 
 
 @authenticated
 @authorized('dscms4')
-@require_json(dict)
 def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
     """Removes a base chart from the respective directory."""
 
