@@ -19,7 +19,10 @@ __all__ = ['ROUTES']
 def list_root() -> JSON:
     """Lists the directories."""
 
-    return JSON([directory.to_json() for directory in get_root()])
+    return JSON({
+        'directories': [directory.to_json() for directory in get_root()],
+        'baseCharts': [bc.id for bc in get_unassigned_base_charts()]
+    })
 
 
 @authenticated
@@ -28,14 +31,6 @@ def get(ident: int) -> JSON:
     """Lists a specific directory."""
 
     return JSON(get_directory(ident).to_json(base_charts=True))
-
-
-@authenticated
-@authorized('dscms4')
-def list_unassigned_base_charts() -> JSON:
-    """Lists root charts."""
-
-    return JSON([base_chart.id for base_chart in get_unassigned_base_charts()])
 
 
 @authenticated
@@ -99,7 +94,6 @@ def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
 ROUTES = (
     ('GET', '/vfs', list_root),
     ('GET', '/vfs/<int:ident>', get),
-    ('GET', '/vfs/unassigned', list_unassigned_base_charts),
     ('POST', '/vfs', add),
     ('PATCH', '/vfs/<int:ident>', patch),
     ('DELETE', '/vfs/<int:ident>', delete),
