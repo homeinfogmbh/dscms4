@@ -99,7 +99,7 @@ def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
 ROUTES = (
     ('GET', '/vfs', list_root),
     ('GET', '/vfs/<int:ident>', get),
-    ('GET', '/vfs/chart', list_root_base_charts),
+    ('GET', '/vfs/root-charts', list_root_base_charts),
     ('POST', '/vfs', add),
     ('PATCH', '/vfs/<int:ident>', patch),
     ('DELETE', '/vfs/<int:ident>', delete),
