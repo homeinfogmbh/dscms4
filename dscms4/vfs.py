@@ -2,7 +2,11 @@
 
 from flask import request
 
-from cmslib import Directory, get_base_chart, get_directory, get_root
+from cmslib import Directory
+from cmslib import get_base_chart
+from cmslib import get_root_base_charts
+from cmslib import get_directory
+from cmslib import get_root
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 
@@ -12,7 +16,7 @@ __all__ = ['ROUTES']
 
 @authenticated
 @authorized('dscms4')
-def list_() -> JSON:
+def list_root() -> JSON:
     """Lists the directories."""
 
     return JSON([directory.to_json() for directory in get_root()])
@@ -24,6 +28,14 @@ def get(ident: int) -> JSON:
     """Lists a specific directory."""
 
     return JSON(get_directory(ident).to_json(charts=True))
+
+
+@authenticated
+@authorized('dscms4')
+def list_root_base_charts() -> JSON:
+    """Lists root charts."""
+
+    return JSON([cc.base_chart_id for cc in get_root_base_charts()])
 
 
 @authenticated
@@ -85,8 +97,9 @@ def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
 
 
 ROUTES = (
-    ('GET', '/vfs', list_),
+    ('GET', '/vfs', list_root),
     ('GET', '/vfs/<int:ident>', get),
+    ('GET', '/vfs/chart', list_root_base_charts),
     ('POST', '/vfs', add),
     ('PATCH', '/vfs/<int:ident>', patch),
     ('DELETE', '/vfs/<int:ident>', delete),
