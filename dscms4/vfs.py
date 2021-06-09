@@ -20,7 +20,7 @@ def list_root() -> JSON:
     """Lists the directories."""
 
     return JSON({
-        'directories': [directory.to_json() for directory in get_root()],
+        'directories': [d.to_json(children=True) for d in get_root()],
         'baseCharts': [bc.id for bc in get_unassigned_base_charts()]
     })
 
