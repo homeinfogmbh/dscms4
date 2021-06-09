@@ -2,7 +2,7 @@
 
 from flask import request
 
-from cmslib import Directory, get_base_chart, get_directory, get_root
+from cmslib import Directory, get_base_chart, get_directories, get_directory
 from his import CUSTOMER, authenticated, authorized, require_json
 from wsgilib import JSON, JSONMessage
 
@@ -15,7 +15,7 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists the directories."""
 
-    return JSON([directory.to_json() for directory in get_root()])
+    return JSON([directory.to_json() for directory in get_directories()])
 
 
 @authenticated
