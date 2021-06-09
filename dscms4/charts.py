@@ -5,6 +5,7 @@ from collections import defaultdict
 from flask import request
 
 from cmslib import CHART_TYPE
+from cmslib import get_base_chart
 from cmslib import get_chart
 from cmslib import get_charts
 from cmslib import get_mode
@@ -34,10 +35,18 @@ def list_() -> JSON:
 
 @authenticated
 @authorized('dscms4')
-def get(ident: int) -> JSON:
+def get_chart_(ident: int) -> JSON:
     """Returns the respective chart of the current customer."""
 
     return JSON(get_chart(ident).to_json(mode=get_mode()))
+
+
+@authenticated
+@authorized('dscms4')
+def get_base_chart_(ident: int) -> JSON:
+    """Returns the respective chart by base chart of the current customer."""
+
+    return JSON(get_base_chart(ident).chart.to_json(mode=get_mode()))
 
 
 @authenticated
@@ -76,7 +85,8 @@ def delete(ident: int) -> JSONMessage:
 
 ROUTES = [
     ('GET', '/charts', list_),
-    ('GET', '/charts/<int:ident>', get),
+    ('GET', '/charts/<int:ident>', get_chart_),
+    ('GET', '/base-chart/<int:ident>', get_base_chart_),
     ('POST', '/charts', add),
     ('PATCH', '/charts/<int:ident>', patch),
     ('DELETE', '/charts/<int:ident>', delete)
