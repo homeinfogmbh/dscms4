@@ -4,7 +4,7 @@ from flask import request
 
 from cmslib import Directory
 from cmslib import get_base_chart
-from cmslib import get_root_base_charts
+from cmslib import get_unassigned_base_charts
 from cmslib import get_directory
 from cmslib import get_root
 from his import CUSTOMER, authenticated, authorized, require_json
@@ -32,10 +32,10 @@ def get(ident: int) -> JSON:
 
 @authenticated
 @authorized('dscms4')
-def list_root_base_charts() -> JSON:
+def list_unassigned_base_charts() -> JSON:
     """Lists root charts."""
 
-    return JSON([base_chart.id for base_chart in get_root_base_charts()])
+    return JSON([base_chart.id for base_chart in get_unassigned_base_charts()])
 
 
 @authenticated
@@ -99,7 +99,7 @@ def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
 ROUTES = (
     ('GET', '/vfs', list_root),
     ('GET', '/vfs/<int:ident>', get),
-    ('GET', '/vfs/root-charts', list_root_base_charts),
+    ('GET', '/vfs/unassigned', list_unassigned_base_charts),
     ('POST', '/vfs', add),
     ('PATCH', '/vfs/<int:ident>', patch),
     ('DELETE', '/vfs/<int:ident>', delete),
