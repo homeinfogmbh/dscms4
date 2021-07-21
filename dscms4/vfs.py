@@ -7,8 +7,8 @@ from cmslib import get_base_chart
 from cmslib import get_unassigned_base_charts
 from cmslib import get_directory
 from cmslib import get_root
-from his import CUSTOMER, authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage
+from his import CUSTOMER, authenticated, authorized
+from wsgilib import JSON, JSONMessage, require_json
 
 
 __all__ = ['ROUTES']

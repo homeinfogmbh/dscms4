@@ -3,8 +3,8 @@
 from flask import request
 
 from cmslib import Settings
-from his import CUSTOMER, admin, authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage
+from his import CUSTOMER, admin, authenticated, authorized
+from wsgilib import JSON, JSONMessage, require_json
 
 
 __all__ = ['ROUTES']

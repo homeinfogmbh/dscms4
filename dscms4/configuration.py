@@ -5,8 +5,8 @@ from flask import request
 from cmslib import Configuration
 from cmslib import get_configuration
 from cmslib import get_configurations
-from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool
+from his import authenticated, authorized
+from wsgilib import JSON, JSONMessage, get_bool, require_json
 
 
 __all__ = ['ROUTES']

@@ -7,8 +7,8 @@ from cmslib import MenuItem
 from cmslib import MenuItemChart
 from cmslib import get_menu
 from cmslib import get_menus
-from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool
+from his import authenticated, authorized
+from wsgilib import JSON, JSONMessage, get_bool, require_json
 
 
 __all__ = ['ROUTES']

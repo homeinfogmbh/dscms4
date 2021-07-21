@@ -9,8 +9,8 @@ from cmslib import MenuItem
 from cmslib import get_menu
 from cmslib import get_menu_item
 from cmslib import get_menu_items
-from his import CUSTOMER, authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool, get_int
+from his import CUSTOMER, authenticated, authorized
+from wsgilib import JSON, JSONMessage, get_bool, get_int, require_json
 
 
 __all__ = ['ROUTES']

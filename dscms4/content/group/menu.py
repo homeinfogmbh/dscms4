@@ -7,8 +7,8 @@ from cmslib import get_group
 from cmslib import get_group_menu
 from cmslib import get_group_menus
 from cmslib import get_menu
-from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_int
+from his import authenticated, authorized
+from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
 __all__ = ['ROUTES']

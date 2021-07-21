@@ -9,8 +9,8 @@ from cmslib import get_base_chart
 from cmslib import get_chart
 from cmslib import get_charts
 from cmslib import get_mode
-from his import authenticated, authorized, require_json
-from wsgilib import JSON, JSONMessage, get_bool
+from his import authenticated, authorized
+from wsgilib import JSON, JSONMessage, get_bool, require_json
 
 
 __all__ = ['ROUTES']
