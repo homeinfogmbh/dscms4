@@ -38,9 +38,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a new group."""
 
-    parent = request.json.pop('parent', None)
-
-    if parent is not None:
+    if (parent := request.json.pop('parent', None)) is not None:
         parent = get_group(parent)
 
     group = Group.from_json(request.json, CUSTOMER.id, parent)

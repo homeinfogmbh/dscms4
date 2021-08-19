@@ -34,13 +34,17 @@ def get_deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
     )
 
 
+def get_root_groups() -> ModelSelect:
+    """Selects root-level groups."""
+
+    return Group.select().where(
+        (Group.customer == CUSTOMER.id) & (Group.parent >> None))
+
+
 def get_groups_tree() -> Iterator[GroupContent]:
     """Returns the management tree."""
 
-    root_groups = Group.select().where(
-        (Group.customer == CUSTOMER.id) & (Group.parent >> None))
-
-    for root_group in root_groups:
+    for root_group in get_root_groups():
         yield GroupContent(root_group)
 
 

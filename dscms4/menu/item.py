@@ -41,9 +41,8 @@ def add() -> JSONMessage:
     """Adds a new menu item."""
 
     menu = get_menu(request.json.pop('menu'))
-    parent = request.json.pop('parent', None)
 
-    if parent is not None:
+    if (parent := request.json.pop('parent', None)) is not None:
         parent = get_menu_item(parent)
 
     records = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
