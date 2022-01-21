@@ -18,12 +18,16 @@ __all__ = ['ROUTES']
 BROWSER = Browser()
 
 
-def jsonify(deployment: Deployment) -> dict:
+def jsonify(deployment: Deployment, assoc: bool) -> dict:
     """Returns a JSON representation of the
     deployment with address and system IDs.
     """
 
     json = deployment.to_json(cascade=1, systems=True, skip={'customer'})
+
+    if not assoc:
+        return json
+
     content = {}
 
     try:
@@ -58,7 +62,7 @@ def jsonify(deployment: Deployment) -> dict:
 def list_() -> JSON:
     """Lists all deployments of the respective customer."""
 
-    deployments = get_deployments(content=get_bool('assoc'))
+    deployments = get_deployments(content=(assoc := get_bool('assoc')))
     settings = Settings.for_customer(CUSTOMER.id)
 
     if not settings.testing:
@@ -72,14 +76,19 @@ def list_() -> JSON:
             return BROWSER.pages(deployments).to_json()
 
         deployments = BROWSER.browse(deployments)
-        return JSON([jsonify(deployment) for deployment in deployments])
+        return JSON([
+            jsonify(deployment, assoc=assoc) for deployment in deployments
+        ])
 
     if get_bool('assoc'):
         return JSON({
-            deployment.id: jsonify(deployment) for deployment in deployments
+            deployment.id: jsonify(deployment, assoc=assoc)
+            for deployment in deployments
         })
 
-    return JSON([jsonify(deployment) for deployment in deployments])
+    return JSON([
+        jsonify(deployment, assoc=assoc) for deployment in deployments
+    ])
 
 
 @authenticated
