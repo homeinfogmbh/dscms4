@@ -7,7 +7,7 @@ from cmslib import get_configuration
 from cmslib import get_deployment
 from cmslib import get_deployment_configuration
 from cmslib import get_deployment_configurations
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -37,7 +37,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment <> configuration mapping."""
 
-    deployment = get_deployment(request.json.pop('deployment'))
+    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
     configuration = get_configuration(request.json.pop('configuration'))
     record = DeploymentConfiguration(
         deployment=deployment, configuration=configuration)

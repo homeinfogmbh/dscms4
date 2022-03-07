@@ -7,7 +7,7 @@ from cmslib import get_base_chart
 from cmslib import get_deployment
 from cmslib import get_deployment_base_chart
 from cmslib import get_deployment_base_charts
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -37,7 +37,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a new deployment <> base chart mapping."""
 
-    deployment = get_deployment(request.json.pop('deployment'))
+    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
     base_chart = get_base_chart(request.json.pop('baseChart'))
     record = DeploymentBaseChart.from_json(
         request.json, deployment, base_chart)

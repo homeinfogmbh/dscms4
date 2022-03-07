@@ -7,7 +7,7 @@ from cmslib import get_deployment
 from cmslib import get_group
 from cmslib import get_group_member_deployment
 from cmslib import get_group_member_deployments
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -40,7 +40,7 @@ def add() -> JSONMessage:
     """Adds a deployment to the respective group."""
 
     group = get_group(request.json.pop('group'))
-    deployment = get_deployment(request.json.pop('deployment'))
+    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
     record = GroupMemberDeployment.from_json(request.json, group, deployment)
     record.save()
     return JSONMessage('Group member deployment added.', id=record.id,

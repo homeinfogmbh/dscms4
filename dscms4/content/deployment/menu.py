@@ -7,7 +7,7 @@ from cmslib import get_deployment
 from cmslib import get_deployment_menu
 from cmslib import get_deployment_menus
 from cmslib import get_menu
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -37,7 +37,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment <> base chart mapping."""
 
-    deployment = get_deployment(request.json.pop('deployment'))
+    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
     menu = get_menu(request.json.pop('menu'))
     record = DeploymentMenu(deployment=deployment, menu=menu)
     record.save()
