@@ -23,9 +23,16 @@ def list_() -> JSON:
     deployments = get_deployments(
         CUSTOMER.id,
         testing=settings.testing,
-        content=get_bool('assoc')
+        content=(assoc := get_bool('assoc'))
     )
-    return JSON([deployment.to_json() for deployment in deployments])
+
+    if not assoc:
+        return JSON([deployment.to_json() for deployment in deployments])
+
+    return JSON({
+        deployment.id: deployment.to_json()
+        for deployment in deployments
+    })
 
 
 @authenticated
