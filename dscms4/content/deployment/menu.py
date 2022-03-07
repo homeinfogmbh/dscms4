@@ -37,7 +37,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment <> base chart mapping."""
 
-    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
+    deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
     menu = get_menu(request.json.pop('menu'))
     record = DeploymentMenu(deployment=deployment, menu=menu)
     record.save()

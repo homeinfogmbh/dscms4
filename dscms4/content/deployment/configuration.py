@@ -37,7 +37,7 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment <> configuration mapping."""
 
-    deployment = get_deployment(CUSTOMER.id, request.json.pop('deployment'))
+    deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
     configuration = get_configuration(request.json.pop('configuration'))
     record = DeploymentConfiguration(
         deployment=deployment, configuration=configuration)
