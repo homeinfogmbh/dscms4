@@ -26,13 +26,16 @@ def list_() -> JSON:
         content=(assoc := get_bool('assoc'))
     )
 
-    if not assoc:
-        return JSON([deployment.to_json() for deployment in deployments])
+    if assoc:
+        return JSON({
+            deployment.id: deployment.to_json()
+            for deployment in deployments
+        })
 
-    return JSON({
-        deployment.id: deployment.to_json()
+    return JSON([
+        deployment.to_json(address=True, systems=True)
         for deployment in deployments
-    })
+    ])
 
 
 @authenticated
