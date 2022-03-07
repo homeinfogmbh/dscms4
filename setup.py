@@ -17,6 +17,7 @@ setup(
     install_requires=[
         'cmslib',
         'flask',
+        'functoolsplus',
         'his',
         'hwdb',
         'mdb',
