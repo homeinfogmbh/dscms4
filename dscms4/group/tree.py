@@ -25,7 +25,7 @@ __all__ = ['ROUTES']
 
 
 def get_deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
-    """Selects deployments fromt the database."""
+    """Selects deployments from the database."""
 
     return Deployment.select(Deployment, Customer, Company, Address).join(
         Customer).join(Company).join_from(
