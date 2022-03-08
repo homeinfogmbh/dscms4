@@ -21,8 +21,11 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists the respective menu's items."""
 
-    return JSON([record.to_json() for record in get_menu_items(
-        menu=get_int('menu'))])
+    return JSON([
+        record.to_json() for record in get_menu_items(
+            CUSTOMER.id, menu=get_int('menu')
+        )
+    ])
 
 
 @authenticated
@@ -30,8 +33,9 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu item."""
 
-    return JSON(get_menu_item(ident).to_json(
-        charts=get_bool('charts'), children=get_bool('children')))
+    return JSON(get_menu_item(ident, CUSTOMER.id).to_json(
+        charts=get_bool('charts'), children=get_bool('children')
+    ))
 
 
 @authenticated
@@ -40,10 +44,10 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a new menu item."""
 
-    menu = get_menu(request.json.pop('menu'))
+    menu = get_menu(request.json.pop('menu'), CUSTOMER.id)
 
     if (parent := request.json.pop('parent', None)) is not None:
-        parent = get_menu_item(parent)
+        parent = get_menu_item(parent, CUSTOMER.id)
 
     records = MenuItem.from_json(request.json, CUSTOMER.id, menu, parent)
     records.save()
@@ -56,16 +60,16 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches a new menu item."""
 
-    menu_item = get_menu_item(ident)
+    menu_item = get_menu_item(ident, CUSTOMER.id)
     menu = request.json.pop('menu', UNCHANGED)
 
     if menu is not None and menu is not UNCHANGED:
-        menu = get_menu(menu)
+        menu = get_menu(menu, CUSTOMER.id)
 
     parent = request.json.pop('parent', UNCHANGED)
 
     if parent is not None and parent is not UNCHANGED:
-        parent = get_menu_item(parent)
+        parent = get_menu_item(parent, CUSTOMER.id)
 
     records = menu_item.patch_json(request.json, menu, parent)
     records.save()
@@ -77,9 +81,9 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a menu or menu item."""
 
-    record = get_menu_item(ident)
+    record = get_menu_item(ident, CUSTOMER.id)
     record.delete_instance(update_children=get_bool('updateChildren'))
-    return JSONMessage('Menu item delted.', status=200)
+    return JSONMessage('Menu item deleted.', status=200)
 
 
 @authenticated

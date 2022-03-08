@@ -6,7 +6,7 @@ from cmslib import DeploymentBaseChart
 from cmslib import GroupBaseChart
 from cmslib import MenuItemChart
 from cmslib import get_base_chart
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
 
@@ -52,7 +52,7 @@ def get_menus(base_chart: int) -> Iterator[dict]:
 def list_(ident: int) -> JSON:
     """Lists the chart's containers."""
 
-    base_chart = get_base_chart(ident)
+    base_chart = get_base_chart(ident, CUSTOMER.id)
     json = {
         'groups': list(get_groups(base_chart)),
         'deployments': list(get_deployments(base_chart)),

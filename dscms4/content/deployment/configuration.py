@@ -20,7 +20,8 @@ def list_() -> JSON:
     """Lists deployment <> configuration mappings."""
 
     return JSON([record.to_json() for record in get_deployment_configurations(
-        deployment=get_int('deployment'))])
+        CUSTOMER.id, deployment=get_int('deployment')
+    )])
 
 
 @authenticated
@@ -28,7 +29,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective deployment <> configuration mapping."""
 
-    return JSON(get_deployment_configuration(ident).to_json())
+    return JSON(get_deployment_configuration(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -38,9 +39,12 @@ def add() -> JSONMessage:
     """Adds a deployment <> configuration mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
-    configuration = get_configuration(request.json.pop('configuration'))
+    configuration = get_configuration(
+        request.json.pop('configuration'), CUSTOMER.id
+    )
     record = DeploymentConfiguration(
-        deployment=deployment, configuration=configuration)
+        deployment=deployment, configuration=configuration
+    )
     record.save()
     return JSONMessage(
         'Deployment configuration added.', id=record.id, status=201)
@@ -51,7 +55,7 @@ def add() -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deleted a deployment <> configuration mapping."""
 
-    get_deployment_configuration(ident).delete_instance()
+    get_deployment_configuration(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Deployment configuration deleted.', status=200)
 
 

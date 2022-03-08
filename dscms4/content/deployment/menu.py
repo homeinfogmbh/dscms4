@@ -20,7 +20,8 @@ def list_() -> JSON:
     """Lists deployment <> menu mappings."""
 
     return JSON([record.to_json() for record in get_deployment_menus(
-        deployment=get_int('deployment'))])
+        CUSTOMER.id, deployment=get_int('deployment')
+    )])
 
 
 @authenticated
@@ -28,7 +29,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the requested deployment <> menu mapping."""
 
-    return JSON(get_deployment_menu(ident).to_json())
+    return JSON(get_deployment_menu(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -38,7 +39,7 @@ def add() -> JSONMessage:
     """Adds a deployment <> base chart mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
-    menu = get_menu(request.json.pop('menu'))
+    menu = get_menu(request.json.pop('menu'), CUSTOMER.id)
     record = DeploymentMenu(deployment=deployment, menu=menu)
     record.save()
     return JSONMessage('Deplyoment menu added.', id=record.id, status=201)
@@ -49,7 +50,7 @@ def add() -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a deployment <> base chart mapping."""
 
-    get_deployment_menu(ident).delete_instance()
+    get_deployment_menu(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Deployment menu deleted.', status=200)
 
 

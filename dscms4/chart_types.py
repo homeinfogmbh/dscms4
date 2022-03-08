@@ -7,7 +7,7 @@ from flask import request
 from cmslib import CHARTS
 from cmslib import ChartACL
 from cmslib import get_chart_acls
-from his import authenticated, authorized, root
+from his import CUSTOMER, authenticated, authorized, root
 from mdb import Customer
 from wsgilib import JSON, JSONMessage, require_json
 
@@ -20,7 +20,7 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists available chart types."""
 
-    return JSON([acl.to_json() for acl in get_chart_acls()])
+    return JSON([acl.to_json() for acl in get_chart_acls(CUSTOMER.id)])
 
 
 @authenticated

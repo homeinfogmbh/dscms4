@@ -20,8 +20,16 @@ def list_root() -> JSON:
     """Lists the directories."""
 
     return JSON({
-        'directories': [d.to_json(children=True) for d in get_root()],
-        'baseCharts': [bc.id for bc in get_unassigned_base_charts()]
+        'directories': [
+            directory.to_json(children=True) for directory in get_root(
+                CUSTOMER.id
+            )
+        ],
+        'baseCharts': [
+            base_chart.id for base_chart in get_unassigned_base_charts(
+                CUSTOMER.id
+            )
+        ]
     })
 
 
@@ -30,7 +38,9 @@ def list_root() -> JSON:
 def get(ident: int) -> JSON:
     """Lists a specific directory."""
 
-    return JSON(get_directory(ident).to_json(children=True, base_charts=True))
+    return JSON(get_directory(ident, CUSTOMER.id).to_json(
+        children=True, base_charts=True
+    ))
 
 
 @authenticated
@@ -42,7 +52,7 @@ def add() -> JSONMessage:
     parent = request.json.pop('parent', None)
 
     if parent is not None:
-        parent = get_directory(parent)
+        parent = get_directory(parent, CUSTOMER.id)
 
     directory = Directory.from_json(request.json, CUSTOMER.id, parent)
     directory.save()
@@ -55,7 +65,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches the respective directory."""
 
-    directory = get_directory(ident)
+    directory = get_directory(ident, CUSTOMER.id)
     directory.patch_json(request.json)
     directory.save()
     return JSONMessage('Directory patched.', status=200)
@@ -66,7 +76,7 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the respective directory."""
 
-    get_directory(ident).delete_instance()
+    get_directory(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Directory deleted.', status=200)
 
 
@@ -76,8 +86,10 @@ def delete(ident: int) -> JSONMessage:
 def add_base_chart(ident: int) -> JSONMessage:
     """Adds a base chart to the respective directory."""
 
-    directory = get_directory(ident)
-    directory.add_base_chart(get_base_chart(request.json['baseChart']))
+    directory = get_directory(ident, CUSTOMER.id)
+    directory.add_base_chart(get_base_chart(
+        request.json['baseChart'], CUSTOMER.id
+    ))
     return JSONMessage('Base chart added.', status=201)
 
 
@@ -86,7 +98,7 @@ def add_base_chart(ident: int) -> JSONMessage:
 def remove_base_chart(ident: int, base_chart: int) -> JSONMessage:
     """Removes a base chart from the respective directory."""
 
-    directory = get_directory(ident)
+    directory = get_directory(ident, CUSTOMER.id)
     directory.remove_base_chart(base_chart)
     return JSONMessage('Base charts removed.', status=200)
 

@@ -7,7 +7,7 @@ from cmslib import MenuItem
 from cmslib import MenuItemChart
 from cmslib import get_menu
 from cmslib import get_menus
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_bool, require_json
 
 
@@ -34,11 +34,11 @@ def list_() -> JSON:
     if get_bool('assoc'):
         return JSON({
             menu.id: menu.to_json(skip={'id'}, **get_kwargs())
-            for menu in get_menus()
+            for menu in get_menus(CUSTOMER.id)
         })
 
     return JSON([
-        menu.to_json(**get_kwargs()) for menu in get_menus()
+        menu.to_json(**get_kwargs()) for menu in get_menus(CUSTOMER.id)
     ])
 
 
@@ -47,7 +47,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective menu."""
 
-    return JSON(get_menu(ident).to_json(**get_kwargs()))
+    return JSON(get_menu(ident, CUSTOMER.id).to_json(**get_kwargs()))
 
 
 @authenticated
@@ -67,7 +67,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches the respective menu."""
 
-    menu = get_menu(ident)
+    menu = get_menu(ident, CUSTOMER.id)
     menu.patch_json(request.json)
     menu.save()
     return JSONMessage('Menu patched.', status=200)
@@ -78,7 +78,7 @@ def patch(ident: int) -> JSONMessage:
 def copy_(ident: int) -> JSONMessage:
     """Copies the respective menu."""
 
-    menu = get_menu(ident)
+    menu = get_menu(ident, CUSTOMER.id)
     copy, *records = menu.copy()
     copy.save()
 
@@ -93,7 +93,7 @@ def copy_(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a menu."""
 
-    get_menu(ident).delete_instance()
+    get_menu(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Menu deleted.', status=200)
 
 

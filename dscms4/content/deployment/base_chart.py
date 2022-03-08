@@ -20,7 +20,8 @@ def list_() -> JSON:
     """Lists deployment <> base chart mappings."""
 
     return JSON([record.to_json() for record in get_deployment_base_charts(
-        deployment=get_int('deployment'))])
+        CUSTOMER.id, deployment=get_int('deployment')
+    )])
 
 
 @authenticated
@@ -28,7 +29,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the requested deployment <> base chart mapping."""
 
-    return JSON(get_deployment_base_chart(ident).to_json())
+    return JSON(get_deployment_base_chart(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -38,9 +39,10 @@ def add() -> JSONMessage:
     """Adds a new deployment <> base chart mapping."""
 
     deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
-    base_chart = get_base_chart(request.json.pop('baseChart'))
+    base_chart = get_base_chart(request.json.pop('baseChart'), CUSTOMER.id)
     record = DeploymentBaseChart.from_json(
-        request.json, deployment, base_chart)
+        request.json, deployment, base_chart
+    )
     record.save()
     return JSONMessage('Deployment base chart added.', id=record.id,
                        status=201)
@@ -52,7 +54,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches a deployment <> base chart mapping, i.e. changes its index."""
 
-    record = get_deployment_base_chart(ident)
+    record = get_deployment_base_chart(ident, CUSTOMER.id)
     record.patch_json(request.json)
     record.save()
     return JSONMessage('Deployment base chart patched.', status=200)
@@ -63,7 +65,7 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a deployment <> base chart mapping."""
 
-    get_deployment_base_chart(ident).delete_instance()
+    get_deployment_base_chart(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Deployment base chart deleted.', status=200)
 
 

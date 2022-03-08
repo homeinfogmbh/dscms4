@@ -5,7 +5,7 @@ from flask import request
 from cmslib import Configuration
 from cmslib import get_configuration
 from cmslib import get_configurations
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_bool, require_json
 
 
@@ -20,12 +20,13 @@ def list_() -> JSON:
     if get_bool('assoc'):
         return JSON({
             configuration.id: configuration.to_json(fk_fields=False)
-            for configuration in get_configurations()
+            for configuration in get_configurations(CUSTOMER.id)
         })
 
     return JSON([
         configuration.to_json(fk_fields=False)
-        for configuration in get_configurations()])
+        for configuration in get_configurations(CUSTOMER.id)
+    ])
 
 
 @authenticated
@@ -33,7 +34,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective configuration."""
 
-    return JSON(get_configuration(ident).to_json(cascade=True))
+    return JSON(get_configuration(ident, CUSTOMER.id).to_json(cascade=True))
 
 
 @authenticated
@@ -53,7 +54,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
-    configuration = get_configuration(ident)
+    configuration = get_configuration(ident, CUSTOMER.id)
     transaction = configuration.patch_json(request.json)
     transaction.commit()
     return JSONMessage('Configuration patched.', status=200)
@@ -64,7 +65,7 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Modifies an existing configuration."""
 
-    get_configuration(ident).delete_instance()
+    get_configuration(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Configuration deleted.', status=200)
 
 

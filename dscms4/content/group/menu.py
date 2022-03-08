@@ -7,7 +7,7 @@ from cmslib import get_group
 from cmslib import get_group_menu
 from cmslib import get_group_menus
 from cmslib import get_menu
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -20,7 +20,8 @@ def list_() -> JSON:
     """Lists the respective group menus."""
 
     return JSON([record.to_json() for record in get_group_menus(
-        group=get_int('group'))])
+        CUSTOMER.id, group=get_int('group')
+    )])
 
 
 @authenticated
@@ -28,7 +29,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Lists the respective group menus."""
 
-    return JSON(get_group_menu(ident).to_json(cascade=True))
+    return JSON(get_group_menu(ident, CUSTOMER.id).to_json(cascade=True))
 
 
 @authenticated
@@ -37,8 +38,8 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds the menu to the respective group."""
 
-    group = get_group(request.json.pop('group'))
-    menu = get_menu(request.json.pop('menu'))
+    group = get_group(request.json.pop('group'), CUSTOMER.id)
+    menu = get_menu(request.json.pop('menu'), CUSTOMER.id)
     record = GroupMenu(group=group, menu=menu)
     record.save()
     return JSONMessage('Group menu added.', id=record.id, status=201)
@@ -49,8 +50,8 @@ def add() -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the menu from the respective group."""
 
-    get_group_menu(ident).delete_instance()
-    return JSONMessage('Group menu delted.', status=200)
+    get_group_menu(ident, CUSTOMER.id).delete_instance()
+    return JSONMessage('Group menu deleted.', status=200)
 
 
 ROUTES = [

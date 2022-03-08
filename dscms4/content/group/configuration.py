@@ -7,7 +7,7 @@ from cmslib import get_configuration
 from cmslib import get_group
 from cmslib import get_group_configuration
 from cmslib import get_group_configurations
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
 
@@ -19,7 +19,9 @@ __all__ = ['ROUTES']
 def get(ident: int) -> JSON:
     """Returns the request group configuration."""
 
-    return JSON(get_group_configuration(ident).to_json(cascade=True))
+    return JSON(get_group_configuration(ident, CUSTOMER.id).to_json(
+        cascade=True
+    ))
 
 
 @authenticated
@@ -28,7 +30,8 @@ def list_() -> JSON:
     """Returns a list of IDs of the configurations in the respective group."""
 
     return JSON([record.to_json() for record in get_group_configurations(
-        group=get_int('group'))])
+        CUSTOMER.id, group=get_int('group')
+    )])
 
 
 @authenticated
@@ -37,8 +40,10 @@ def list_() -> JSON:
 def add() -> JSONMessage:
     """Adds the configuration to the respective group."""
 
-    group = get_group(request.json.pop('group'))
-    configuration = get_configuration(request.json.pop('configuration'))
+    group = get_group(request.json.pop('group'), CUSTOMER.id)
+    configuration = get_configuration(
+        request.json.pop('configuration'), CUSTOMER.id
+    )
     record = GroupConfiguration(group=group, configuration=configuration)
     record.save()
     return JSONMessage('Group configuration added.', id=record.id, status=201)
@@ -49,7 +54,7 @@ def add() -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the configuration from the respective group."""
 
-    get_group_configuration(ident).delete_instance()
+    get_group_configuration(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Group configuration deleted.', status=200)
 
 

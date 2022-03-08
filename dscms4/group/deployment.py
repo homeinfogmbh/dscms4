@@ -21,7 +21,7 @@ def list_() -> JSON:
 
     return JSON([
         record.to_json() for record
-        in get_group_member_deployments(group=get_int('group'))
+        in get_group_member_deployments(CUSTOMER.id, group=get_int('group'))
     ])
 
 
@@ -30,7 +30,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns a group member deployment."""
 
-    return JSON(get_group_member_deployment(ident).to_json())
+    return JSON(get_group_member_deployment(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -39,12 +39,13 @@ def get(ident: int) -> JSON:
 def add() -> JSONMessage:
     """Adds a deployment to the respective group."""
 
-    group = get_group(request.json.pop('group'))
+    group = get_group(request.json.pop('group'), CUSTOMER.id)
     deployment = get_deployment(request.json.pop('deployment'), CUSTOMER.id)
     record = GroupMemberDeployment.from_json(request.json, group, deployment)
     record.save()
-    return JSONMessage('Group member deployment added.', id=record.id,
-                       status=201)
+    return JSONMessage(
+        'Group member deployment added.', id=record.id, status=201
+    )
 
 
 @authenticated
@@ -52,7 +53,7 @@ def add() -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the respective deployment from the group."""
 
-    get_group_member_deployment(ident).delete_instance()
+    get_group_member_deployment(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Group member deployment deleted.', status=200)
 
 

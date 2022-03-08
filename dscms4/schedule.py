@@ -3,7 +3,7 @@
 from flask import request
 
 from cmslib import Schedule, get_schedule, get_schedules
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, require_json
 
 
@@ -15,7 +15,9 @@ __all__ = ['ROUTES']
 def list_() -> JSON:
     """Lists the customer's schedules."""
 
-    return JSON([schedule.to_json() for schedule in get_schedules()])
+    return JSON([
+        schedule.to_json() for schedule in get_schedules(CUSTOMER.id)
+    ])
 
 
 @authenticated
@@ -23,7 +25,7 @@ def list_() -> JSON:
 def get(ident) -> JSON:
     """Returns a specific schedule."""
 
-    return JSON(get_schedule(ident).to_json())
+    return JSON(get_schedule(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -43,7 +45,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches a schedule."""
 
-    schedule = get_schedule(ident)
+    schedule = get_schedule(ident, CUSTOMER.id)
     schedule = schedule.patch_json(request.json)
     schedule.save()
     return JSONMessage('Schedule patched.', status=200)
@@ -54,7 +56,7 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes a schedule."""
 
-    get_schedule(ident).delete_instance()
+    get_schedule(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Schedule deleted.', status=200)
 
 

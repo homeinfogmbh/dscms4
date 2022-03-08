@@ -3,7 +3,7 @@
 from typing import Union
 
 from cmslib import Presentation, get_group
-from his import authenticated, authorized
+from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, XML, get_bool
 
 
@@ -15,7 +15,7 @@ __all__ = ['ROUTES']
 def get_presentation(ident: int) -> Union[JSON, XML]:
     """Returns the presentation for the respective deployment."""
 
-    presentation = Presentation(get_group(ident))
+    presentation = Presentation(get_group(ident, CUSTOMER.id))
 
     if get_bool('xml'):
         return XML(presentation.to_dom())

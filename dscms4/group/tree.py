@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import Iterator, Union
 
-from peewee import JOIN, ModelSelect
+from peewee import JOIN, Select
 
 from functoolsplus import coerce
 from hwdb import Deployment
@@ -16,7 +16,7 @@ from cmslib import GroupConfiguration
 from cmslib import GroupMemberDeployment
 from cmslib import GroupMenu
 from cmslib import get_group
-from cmslib import get_trashed
+from cmslib import get_trashed_flag
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON
 
@@ -24,7 +24,7 @@ from wsgilib import JSON
 __all__ = ['ROUTES']
 
 
-def get_deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
+def get_deployments(ids: Iterator[Union[Deployment, int]]) -> Select:
     """Selects deployments from the database."""
 
     return Deployment.select(Deployment, Customer, Company, Address).join(
@@ -34,7 +34,7 @@ def get_deployments(ids: Iterator[Union[Deployment, int]]) -> ModelSelect:
     )
 
 
-def get_root_groups() -> ModelSelect:
+def get_root_groups() -> Select:
     """Selects root-level groups."""
 
     return Group.select().where(
@@ -61,7 +61,7 @@ def groups_tree() -> JSON:
 def groups_subtree(gid: int) -> JSON:
     """Lists the groups."""
 
-    group_content = GroupContent(get_group(gid))
+    group_content = GroupContent(get_group(gid, CUSTOMER.id))
     return JSON(group_content.to_json(recursive=False))
 
 
@@ -84,8 +84,11 @@ class GroupContent:
         bc_join = GroupBaseChart.base_chart == BaseChart.id
 
         for group_base_chart in GroupBaseChart.select().join(
-                BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join).where(
-                    (GroupBaseChart.group == self.group) & get_trashed()):
+                BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join
+        ).where(
+                    (GroupBaseChart.group == self.group)
+                    & get_trashed_flag(CUSTOMER.id)
+        ):
             yield group_base_chart.to_json()
 
     @property
@@ -125,16 +128,19 @@ class GroupContent:
 
         if recursive:
             children = [
-                group.to_json(recursive=True) for group in self.children]
+                group.to_json(recursive=True) for group in self.children
+            ]
         else:
             children = [
                 group.group.to_json(parent=False, skip=('customer',))
-                for group in self.children]
+                for group in self.children
+            ]
 
         json['children'] = children
         json['content'] = self.content
         json['deployments'] = [
-            deployment.to_json() for deployment in self.deployments]
+            deployment.to_json() for deployment in self.deployments
+        ]
         return json
 
 

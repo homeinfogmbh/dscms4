@@ -17,11 +17,12 @@ def list_() -> JSON:
 
     if get_bool('tree'):
         return JSON([
-            group.json_tree for group in get_groups().where(
-                Group.parent >> None)
+            group.json_tree for group in get_groups(CUSTOMER.id).where(
+                Group.parent >> None
+            )
         ])
 
-    return JSON([group.to_json() for group in get_groups()])
+    return JSON([group.to_json() for group in get_groups(CUSTOMER.id)])
 
 
 @authenticated
@@ -29,7 +30,7 @@ def list_() -> JSON:
 def get(ident: int) -> JSON:
     """Returns the respective group."""
 
-    return JSON(get_group(ident).to_json())
+    return JSON(get_group(ident, CUSTOMER.id).to_json())
 
 
 @authenticated
@@ -39,7 +40,7 @@ def add() -> JSONMessage:
     """Adds a new group."""
 
     if (parent := request.json.pop('parent', None)) is not None:
-        parent = get_group(parent)
+        parent = get_group(parent, CUSTOMER.id)
 
     group = Group.from_json(request.json, CUSTOMER.id, parent)
     group.save()
@@ -52,7 +53,7 @@ def add() -> JSONMessage:
 def patch(ident: int) -> JSONMessage:
     """Patches the respective group."""
 
-    group = get_group(ident)
+    group = get_group(ident, CUSTOMER.id)
     group.patch_json(request.json)
     group.save()
     return JSONMessage('Group patched.', status=200)
@@ -63,7 +64,7 @@ def patch(ident: int) -> JSONMessage:
 def delete(ident: int) -> JSONMessage:
     """Deletes the respective group."""
 
-    get_group(ident).delete_instance()
+    get_group(ident, CUSTOMER.id).delete_instance()
     return JSONMessage('Group deleted.', status=200)
 
 
