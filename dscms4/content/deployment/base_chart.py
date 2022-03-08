@@ -44,8 +44,9 @@ def add() -> JSONMessage:
         request.json, deployment, base_chart
     )
     record.save()
-    return JSONMessage('Deployment base chart added.', id=record.id,
-                       status=201)
+    return JSONMessage(
+        'Deployment base chart added.', id=record.id, status=201
+    )
 
 
 @authenticated
