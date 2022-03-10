@@ -30,7 +30,7 @@ def get_deployments(base_chart: int) -> Iterator[dict]:
     for record in DeploymentBaseChart.select().where(
             DeploymentBaseChart.base_chart == base_chart):
         yield {
-            'deployment': record.deployment,
+            'deployment': record.deployment_id,
             'member': record.id
         }
 
