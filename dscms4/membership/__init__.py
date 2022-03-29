@@ -1,4 +1,4 @@
-"""Handling of entities that are asspciated with certain content."""
+"""Handling of entities that are associated with certain content."""
 
 from dscms4.membership import base_chart, deployment, group
 
