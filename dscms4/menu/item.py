@@ -1,7 +1,5 @@
 """DSCMS4 WSGI handlers for menu items."""
 
-from itertools import chain
-
 from flask import request
 
 from cmslib import UNCHANGED
@@ -103,7 +101,7 @@ def order() -> JSONMessage:
     if not all(menu_item.parent == first.parent for menu_item in other):
         return JSONMessage('Items have different parents.', status=400)
 
-    for index, record in enumerate(chain((first,), other)):
+    for index, record in enumerate([first, *other]):
         record.index = index
         record.save()
 
