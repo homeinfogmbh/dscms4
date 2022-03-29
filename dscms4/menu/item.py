@@ -91,7 +91,7 @@ def order() -> JSONMessage:
     """Orders the respective menu items."""
 
     try:
-        first, *other = map(get_menu_item, request.json)
+        first, *other = get_menu_items(CUSTOMER.id, ids=request.json)
     except ValueError:
         return JSONMessage('No items to sort.', status=200)
 
