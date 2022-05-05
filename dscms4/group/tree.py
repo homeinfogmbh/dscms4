@@ -86,8 +86,8 @@ class GroupContent:
         for group_base_chart in GroupBaseChart.select().join(
                 BaseChart, join_type=JOIN.LEFT_OUTER, on=bc_join
         ).where(
-                    (GroupBaseChart.group == self.group)
-                    & get_trashed_flag(CUSTOMER.id)
+            (GroupBaseChart.group == self.group)
+            & get_trashed_flag(CUSTOMER.id)
         ):
             yield group_base_chart.to_json()
 
