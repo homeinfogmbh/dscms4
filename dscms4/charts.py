@@ -18,22 +18,28 @@ from wsgilib import JSON, JSONMessage, get_bool, require_json
 __all__ = ['ROUTES']
 
 
+def get_assoc_charts() -> JSON:
+    """Returns charts grouped by type and id."""
+
+    charts = defaultdict(dict)
+
+    for chart in get_charts(
+            CUSTOMER.id, CHART_TYPES, trashed=get_trashed_flag(CUSTOMER.id)
+    ):
+        charts[type(chart).__name__][chart.id] = chart.to_json(
+            mode=get_chart_mode()
+        )
+
+    return JSON(charts)
+
+
 @authenticated
 @authorized('dscms4')
 def list_() -> JSON:
     """Lists IDs of charts of the respective customer."""
 
     if get_bool('assoc'):
-        charts = defaultdict(dict)
-
-        for chart in get_charts(
-                CUSTOMER.id, CHART_TYPES, trashed=get_trashed_flag(CUSTOMER.id)
-        ):
-            charts[type(chart).__name__][chart.id] = chart.to_json(
-                mode=get_chart_mode()
-            )
-
-        return JSON(charts)
+        return get_assoc_charts()
 
     return JSON([
         chart.to_json(mode=get_chart_mode()) for chart in get_charts(
