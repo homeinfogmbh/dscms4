@@ -19,7 +19,7 @@ def get_groups(base_chart: int) -> Iterator[dict]:
     for record in GroupBaseChart.select().where(
             GroupBaseChart.base_chart == base_chart):
         yield {
-            'group': record.group.id,
+            'group': record.group,
             'member': record.id
         }
 
