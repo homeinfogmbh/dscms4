@@ -17,7 +17,8 @@ def get_groups(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of groups."""
 
     for record in GroupBaseChart.select().where(
-            GroupBaseChart.base_chart == base_chart):
+            GroupBaseChart.base_chart == base_chart
+    ):
         yield {
             'group': record.group,
             'member': record.id
@@ -28,7 +29,8 @@ def get_deployments(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of deployments."""
 
     for record in DeploymentBaseChart.select().where(
-            DeploymentBaseChart.base_chart == base_chart):
+            DeploymentBaseChart.base_chart == base_chart
+    ):
         yield {
             'deployment': record.deployment_id,
             'member': record.id
@@ -39,7 +41,8 @@ def get_menus(base_chart: int) -> Iterator[dict]:
     """Yields JSON representations of menus."""
 
     for record in MenuItemChart.select(cascade=True).where(
-            MenuItemChart.base_chart == base_chart):
+            MenuItemChart.base_chart == base_chart
+    ):
         yield {
             'menu': record.menu_item.menu.id,
             'menuItem': record.menu_item.id,
