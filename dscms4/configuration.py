@@ -6,7 +6,7 @@ from cmslib import Configuration
 from cmslib import get_configuration
 from cmslib import get_configurations
 from his import CUSTOMER, authenticated, authorized
-from wsgilib import JSON, JSONMessage, get_bool, require_json
+from wsgilib import JSON, JSONMessage, require_json
 
 
 __all__ = ['ROUTES']
@@ -16,12 +16,6 @@ __all__ = ['ROUTES']
 @authorized('dscms4')
 def list_() -> JSON:
     """Returns a list of IDs of the customer's configurations."""
-
-    if get_bool('assoc'):
-        return JSON({
-            configuration.id: configuration.to_json(fk_fields=False)
-            for configuration in get_configurations(CUSTOMER.id)
-        })
 
     return JSON([
         configuration.to_json(fk_fields=False)
