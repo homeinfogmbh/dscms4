@@ -31,12 +31,6 @@ def get_kwargs():
 def list_() -> JSON:
     """List menus."""
 
-    if get_bool('assoc'):
-        return JSON({
-            menu.id: menu.to_json(skip={'id'}, **get_kwargs())
-            for menu in get_menus(CUSTOMER.id)
-        })
-
     return JSON([
         menu.to_json(**get_kwargs()) for menu in get_menus(CUSTOMER.id)
     ])
