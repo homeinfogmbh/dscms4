@@ -1,4 +1,4 @@
-"""HIS management backend."""
+"""Tenant mobile app management backend."""
 
 from his import Application
 
