@@ -20,6 +20,14 @@ def list_() -> JSON:
 
 @authenticated
 @authorized('comcat')
+def get(ident: int) -> JSON:
+    """Get an offer."""
+
+    return JSON(get_offer(ident, customer=CUSTOMER.id).to_json())
+
+
+@authenticated
+@authorized('comcat')
 def delete(ident: int) -> JSONMessage:
     """Deletes an offer."""
 
@@ -46,6 +54,7 @@ def del_img(ident: int) -> JSONMessage:
 
 ROUTES = [
     ('GET', '/marketplace', list_),
+    ('GET', '/marketplace/<int:ident>', get),
     ('DELETE', '/marketplace/<int:ident>', delete),
     ('GET', '/marketplace/image/<int:ident>', get_img),
     ('DELETE', '/marketplace/image/<int:ident>', del_img)

@@ -23,12 +23,28 @@ def list_topics() -> JSON:
 
 @authenticated
 @authorized('comcat')
+def get_topic_(ident: int) -> JSON:
+    """Get a topic of the current customer."""
+
+    return JSON(get_topic(ident, CUSTOMER).to_json())
+
+
+@authenticated
+@authorized('comcat')
 def list_responses(topic: int) -> JSON:
     """Lists responses of the given topic and current customer."""
 
     return JSON([
         response.to_json() for response in get_responses(topic, CUSTOMER)
     ])
+
+
+@authenticated
+@authorized('comcat')
+def get_response_(ident: int) -> JSON:
+    """Get response of the current customer."""
+
+    return JSON(get_response(ident, CUSTOMER).to_json())
 
 
 @authenticated
@@ -51,7 +67,9 @@ def delete_response(ident: int) -> JSONMessage:
 
 ROUTES = [
     ('GET', '/tenantforum/topic', list_topics),
-    ('GET', '/tenantforum/response/<int:topic>', list_responses),
+    ('GET', '/tenantforum/topic/<int:ident>', get_topic_),
+    ('GET', '/tenantforum/topic/<int:topic>/response', list_responses),
+    ('GET', '/tenantforum/response/<int:ident>', get_response_),
     ('DELETE', '/tenantforum/topic/<int:ident>', delete_topic),
     ('DELETE', '/tenantforum/response/<int:ident>', delete_response)
 ]

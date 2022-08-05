@@ -59,6 +59,14 @@ def _list_user_events() -> JSON:
 
 @authenticated
 @authorized('comcat')
+def _get_user_event(ident: int) -> JSON:
+    """Get a user event."""
+
+    return JSON(get_user_event(ident, CUSTOMER.id).to_json())
+
+
+@authenticated
+@authorized('comcat')
 def add_customer_event() -> JSONMessage:
     """Adds a customer event."""
 
@@ -242,6 +250,7 @@ def remove_user_membership(ident: int) -> JSONMessage:
 ROUTES = [
     ('GET', '/tenantcalendar/customer', _list_customer_events),
     ('GET', '/tenantcalendar/user', _list_user_events),
+    ('GET', '/tenantcalendar/user/<int:ident>', _get_user_event),
     ('GET', '/tenantcalendar/membership/deployment',
      list_deployment_memberships),
     ('GET', '/tenantcalendar/membership/group', list_group_memberships),
