@@ -73,7 +73,7 @@ def patch(ident: int) -> JSONMessage:
     chart = get_chart(ident, CUSTOMER.id, CHART_TYPE)
     transaction = chart.patch_json(request.json)
     transaction.commit()
-    notify_base_chart(transaction.primary.base_chart)
+    notify_base_chart(transaction.primary.base)
     return JSONMessage('Chart patched.', status=200)
 
 
