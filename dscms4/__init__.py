@@ -6,6 +6,7 @@ and organize digital signage content.
 from logging import INFO, basicConfig
 
 from cmslib import ERRORS
+from comcatlib import init_fcm
 from his import Application
 
 from dscms4 import chart_types
@@ -41,6 +42,7 @@ def _init_logger():
     """Initializes the logger."""
 
     basicConfig(level=INFO, format=LOG_FORMAT)
+    init_fcm()
 
 
 for exception, function in ERRORS.items():
