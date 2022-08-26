@@ -19,6 +19,7 @@ setup(
         'cmslib',
         'comcatlib',
         'flask',
+        'firebase_admin',
         'functoolsplus',
         'his',
         'hwdb',
