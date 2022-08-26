@@ -8,6 +8,7 @@ from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage
 
 from dscms4.comcat.functions import get_menu_base_chart, get_menu_base_charts
+from dscms4.fcm import notify_base_chart
 
 
 __all__ = ['ROUTES']
@@ -38,6 +39,7 @@ def add() -> JSONMessage:
     menu = Menu(request.json.pop('menu'))
     mbc = MenuBaseChart(base_chart=base_chart, menu=menu)
     mbc.save()
+    notify_base_chart(base_chart)
     return JSONMessage('Base chart menu added.', id=mbc.id, status=201)
 
 

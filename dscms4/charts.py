@@ -12,6 +12,8 @@ from cmslib import get_trashed_flag
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, require_json
 
+from dscms4.fcm import notify_base_chart
+
 
 __all__ = ['ROUTES']
 
@@ -71,6 +73,7 @@ def patch(ident: int) -> JSONMessage:
     chart = get_chart(ident, CUSTOMER.id, CHART_TYPE)
     transaction = chart.patch_json(request.json)
     transaction.commit()
+    notify_base_chart(transaction.primary.base_chart)
     return JSONMessage('Chart patched.', status=200)
 
 

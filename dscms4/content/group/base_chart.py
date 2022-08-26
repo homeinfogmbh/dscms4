@@ -10,6 +10,8 @@ from cmslib import get_group_base_charts
 from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage, get_int, require_json
 
+from dscms4.fcm import notify_base_chart
+
 
 __all__ = ['ROUTES']
 
@@ -42,6 +44,7 @@ def add() -> JSONMessage:
     base_chart = get_base_chart(request.json.pop('baseChart'), CUSTOMER.id)
     record = GroupBaseChart.from_json(request.json, group, base_chart)
     record.save()
+    notify_base_chart(base_chart)
     return JSONMessage('Group base chart added.', id=record.id, status=201)
 
 
