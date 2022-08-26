@@ -1,26 +1,20 @@
 """News messaging."""
 
-from typing import Optional
-
 from firebase_admin.messaging import BatchResponse
 
 from cmslib import BaseChart
-from comcatlib import Menu
 from comcatlib import URLCode
 from comcatlib import get_tokens
 from comcatlib import multicast_base_chart
 
-from dscms4.fcm.common import affected_users, is_in_menu
+from dscms4.fcm.common import affected_users
 
 
 __all__ = ['notify']
 
 
-def notify(base_chart: BaseChart) -> Optional[BatchResponse]:
+def notify(base_chart: BaseChart) -> BatchResponse:
     """Notify via FCM about news."""
-
-    if not is_in_menu(base_chart, Menu.NEWS):
-        return
 
     return multicast_base_chart(
         base_chart.chart,
