@@ -45,7 +45,7 @@ def is_in_menu(base_chart: Union[BaseChart, int], menu: Menu) -> bool:
             (MenuBaseChart.base_chart == base_chart)
             & (MenuBaseChart.menu == menu)
         )
-    except MenuBaseChart.DoesNotEixst:
+    except MenuBaseChart.DoesNotExist:
         return False
 
     return True
