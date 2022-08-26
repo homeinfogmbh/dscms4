@@ -39,6 +39,7 @@ setup(
         'dscms4.content',
         'dscms4.content.group',
         'dscms4.content.deployment',
+        'dscms4.fcm',
         'dscms4.group',
         'dscms4.membership',
         'dscms4.menu',
