@@ -1,5 +1,9 @@
 """Firebase Cloud Messaging."""
 
+from typing import Optional
+
+from firebase_admin.messaging import BatchResponse
+
 from cmslib import BaseChart
 from comcatlib import Menu
 
@@ -11,11 +15,13 @@ from dscms4.fcm.news import notify as notify_news
 __all__ = ['notify_base_chart']
 
 
-def notify_base_chart(base_chart: BaseChart) -> None:
+def notify_base_chart(base_chart: BaseChart) -> Optional[BatchResponse]:
     """Notify via FCM about base chart-related changes."""
 
     if is_in_menu(base_chart, Menu.DOCUMENTS):
-        notify_download(base_chart)
+        return notify_download(base_chart)
 
     if is_in_menu(base_chart, Menu.NEWS):
-        notify_news(base_chart)
+        return notify_news(base_chart)
+
+    return None
