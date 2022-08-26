@@ -8,7 +8,7 @@ from dscms4.fcm.download import notify as notify_download
 from dscms4.fcm.news import notify as notify_news
 
 
-__all__ = ['notify_news']
+__all__ = ['notify_base_chart']
 
 
 def notify_base_chart(base_chart: BaseChart) -> None:
