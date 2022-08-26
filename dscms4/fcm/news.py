@@ -1,4 +1,4 @@
-"""Firebase Cloud Messaging."""
+"""News messaging."""
 
 from typing import Iterable, Union
 
