@@ -1,4 +1,4 @@
-"""CMS FCM messaging."""
+"""Firebase Cloud Messaging."""
 
 from dscms4.fcm.news import notify_news
 
