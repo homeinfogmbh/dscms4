@@ -10,6 +10,7 @@ from mdb import Tenement
 from wsgilib import JSON, JSONMessage
 
 from dscms4.comcat.functions import get_user
+from dscms4.fcm import notify_base_chart
 
 
 __all__ = ['ROUTES']
@@ -60,6 +61,7 @@ def add() -> JSONMessage:
     base_chart = get_base_chart(request.json.pop('baseChart'), CUSTOMER.id)
     user_base_chart = UserBaseChart.from_json(request.json, user, base_chart)
     user_base_chart.save()
+    notify_base_chart(base_chart)
     return JSONMessage(
         'User base chart added.', id=user_base_chart.id, status=201
     )
