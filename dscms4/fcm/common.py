@@ -15,17 +15,24 @@ __all__ = ['affected_users', 'is_in_menu']
 
 
 def affected_users(
-        target: Union[GroupBaseChart, UserBaseChart]
+        base_chart: Union[BaseChart, int]
 ) -> Iterable[Union[User, int]]:
     """Return a set of users affected by the
     change to the respective chart mapping.
     """
 
-    if isinstance(target, UserBaseChart):
-        return {UserBaseChart.user}
+    for user_base_chart in UserBaseChart.select().where(
+            UserBaseChart.base_chart == base_chart
+    ):
+        yield user_base_chart.user
 
     for member in GroupMemberUser.select().where(
-            GroupMemberUser.group << expand_groups(target.group)
+            GroupMemberUser.group << expand_groups({
+                group_base_chart.group for
+                group_base_chart in GroupBaseChart.select().where(
+                    GroupBaseChart.base_chart == base_chart
+                )
+            })
     ):
         yield member.user
 
