@@ -12,6 +12,7 @@ from his import CUSTOMER, authenticated, authorized
 from wsgilib import JSON, JSONMessage
 
 from dscms4.comcat.functions import get_user
+from dscms4.fcm import notify_customer_message
 
 
 __all__ = ['ROUTES']
@@ -64,6 +65,7 @@ def send_message() -> JSONMessage:
         text=request.json['text']
     )
     message.save()
+    notify_customer_message(message)
     return JSONMessage('Message sent.', id=message.id, status=201)
 
 
