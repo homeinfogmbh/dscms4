@@ -27,6 +27,7 @@ from tenantcalendar import UserCustomerEvent
 from tenantcalendar import UserEvent
 
 from dscms4.comcat.functions import get_user
+from dscms4.fcm import notify_customer_event
 
 
 __all__ = ['ERRORS', 'ROUTES']
@@ -93,6 +94,7 @@ def patch_customer_event(ident: int) -> JSONMessage:
 
     customer_event.patch_json(request.json, only=CUSTOMER_FIELDS)
     customer_event.save()
+    notify_customer_event(customer_event)
     return JSONMessage('Customer event patched.', status=200)
 
 
@@ -190,6 +192,7 @@ def add_group_membership() -> JSONMessage:
         get_customer_event(request.json['event'], CUSTOMER.id),
         get_group(request.json['group'], CUSTOMER.id)
     )
+    notify_customer_event(gce.event)
     return JSONMessage('Event added to group.', id=gce.id, status=201)
 
 
@@ -202,6 +205,7 @@ def add_user_membership() -> JSONMessage:
         get_customer_event(request.json['event'], CUSTOMER.id),
         get_user(request.json['user'], CUSTOMER.id)
     )
+    notify_customer_event(uce.event)
     return JSONMessage('Event added to user.', id=uce.id, status=201)
 
 
