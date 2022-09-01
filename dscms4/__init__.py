@@ -38,8 +38,8 @@ APPLICATION.add_routes(ROUTES)
 
 
 @APPLICATION.before_first_request
-def _init_logger():
-    """Initializes the logger."""
+def init_app():
+    """Initializes the application."""
 
     basicConfig(level=INFO, format=LOG_FORMAT)
     init_fcm()

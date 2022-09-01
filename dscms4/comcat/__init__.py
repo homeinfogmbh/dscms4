@@ -1,6 +1,9 @@
 """Tenant mobile app management backend."""
 
+from logging import INFO, basicConfig
+
 from his import Application
+from comcatlib import init_fcm
 
 import ccmessenger
 
@@ -50,3 +53,12 @@ ERRORS = {
 
 APPLICATION.add_routes(ROUTES)
 APPLICATION.register_error_handlers(ERRORS)
+LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
+
+
+@APPLICATION.before_first_request
+def init_app():
+    """Initializes the application."""
+
+    basicConfig(level=INFO, format=LOG_FORMAT)
+    init_fcm()
