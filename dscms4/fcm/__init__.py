@@ -1,5 +1,6 @@
 """Firebase Cloud Messaging."""
 
+from logging import getLogger
 from typing import Optional
 
 from firebase_admin.messaging import BatchResponse
@@ -23,6 +24,8 @@ __all__ = [
 
 def notify_base_chart(base_chart: BaseChart) -> Optional[BatchResponse]:
     """Notify via FCM about base chart-related changes."""
+
+    getLogger('dscms4').info('Notifying about chart: %s', base_chart)
 
     if is_in_menu(base_chart, Menu.DOCUMENTS):
         return notify_download(base_chart)
