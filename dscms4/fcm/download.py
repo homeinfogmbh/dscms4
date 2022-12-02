@@ -16,4 +16,4 @@ def notify(base_chart: BaseChart) -> BatchResponse:
     """Notify via FCM about downloads."""
 
     getLogger('dscms4').info('Notifying about download chart: %s', base_chart)
-    return multicast_base_chart(base_chart.chart, URLCode.DOWNLOAD)
+    return multicast_base_chart(base_chart, URLCode.DOWNLOAD)
