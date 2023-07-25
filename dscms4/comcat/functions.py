@@ -17,25 +17,25 @@ from dscms4.comcat.grouptree import GroupTree
 
 
 __all__ = [
-    'get_address',
-    'get_configuration',
-    'get_configurations',
-    'get_customer',
-    'get_group_member_user',
-    'get_group_member_users',
-    'get_groups_tree',
-    'get_menu',
-    'get_menus',
-    'get_menu_base_chart',
-    'get_menu_base_charts',
-    'get_tenement',
-    'get_tenements',
-    'get_user',
-    'get_users',
-    'get_user_registration',
-    'get_user_registrations',
-    'get_user_damage_reports',
-    'get_user_damage_report'
+    "get_address",
+    "get_configuration",
+    "get_configurations",
+    "get_customer",
+    "get_group_member_user",
+    "get_group_member_users",
+    "get_groups_tree",
+    "get_menu",
+    "get_menus",
+    "get_menu_base_chart",
+    "get_menu_base_charts",
+    "get_tenement",
+    "get_tenements",
+    "get_user",
+    "get_users",
+    "get_user_registration",
+    "get_user_registrations",
+    "get_user_damage_reports",
+    "get_user_damage_report",
 ]
 
 
@@ -56,10 +56,7 @@ def get_address(address: Annotated[list[str], 4]) -> Address:
     return address
 
 
-def get_configuration(
-        ident: int,
-        customer: Union[Customer, int]
-) -> Configuration:
+def get_configuration(ident: int, customer: Union[Customer, int]) -> Configuration:
     """Returns the selected configuration."""
 
     return get_configurations(customer).where(Configuration.id == ident).get()
@@ -78,29 +75,24 @@ def get_customer(ident: int) -> Customer:
 
 
 def get_group_member_user(
-        ident: int,
-        customer: Union[Customer, int]
+    ident: int, customer: Union[Customer, int]
 ) -> GroupMemberUser:
     """Returns the requested group <-> user mapping."""
 
-    return get_group_member_users(customer).where(
-        GroupMemberUser.id == ident
-    ).get()
+    return get_group_member_users(customer).where(GroupMemberUser.id == ident).get()
 
 
 def get_group_member_users(customer: Union[Customer, int]) -> ModelSelect:
     """Selects group <-> user mappings."""
 
-    return GroupMemberUser.select(cascade=True).where(
-        Tenement.customer == customer
-    )
+    return GroupMemberUser.select(cascade=True).where(Tenement.customer == customer)
 
 
 def get_groups_tree(customer: Union[Customer, int]) -> Iterator[GroupTree]:
     """Returns the management tree."""
 
     for root_group in Group.select(cascade=True).where(
-            (Group.customer == customer) & (Group.parent >> None)
+        (Group.customer == customer) & (Group.parent >> None)
     ):
         yield GroupTree(root_group)
 
@@ -117,23 +109,16 @@ def get_menus(customer: Union[Customer, int]) -> ModelSelect:
     return Menu.select().where(Menu.customer == customer)
 
 
-def get_menu_base_chart(
-        ident: int,
-        customer: Union[Customer, int]
-) -> MenuBaseChart:
+def get_menu_base_chart(ident: int, customer: Union[Customer, int]) -> MenuBaseChart:
     """Returns the respective base chart menu."""
 
-    return get_menu_base_charts(customer).where(
-        MenuBaseChart.id == ident
-    ).get()
+    return get_menu_base_charts(customer).where(MenuBaseChart.id == ident).get()
 
 
 def get_menu_base_charts(customer: Union[Customer, int]) -> ModelSelect:
     """Yields base chart menus for the given base chart."""
 
-    return MenuBaseChart.select(cascade=True).where(
-        BaseChart.customer == customer
-    )
+    return MenuBaseChart.select(cascade=True).where(BaseChart.customer == customer)
 
 
 def get_tenement(ident: int, customer: Union[Customer, int]) -> Tenement:
@@ -145,9 +130,7 @@ def get_tenement(ident: int, customer: Union[Customer, int]) -> Tenement:
 def get_tenements(customer: Union[Customer, int]) -> ModelSelect:
     """Yields tenements of the current user."""
 
-    return Tenement.select(cascade=True).where(
-        Tenement.customer == customer
-    )
+    return Tenement.select(cascade=True).where(Tenement.customer == customer)
 
 
 def get_user(ident: int, customer: Union[Customer, int]) -> User:
@@ -163,14 +146,11 @@ def get_users(customer: Union[Customer, int]) -> ModelSelect:
 
 
 def get_user_registration(
-        ident: int,
-        customer: Union[Customer, int]
+    ident: int, customer: Union[Customer, int]
 ) -> UserRegistration:
     """Returns the selected user registration."""
 
-    return get_user_registrations(customer).where(
-        UserRegistration.id == ident
-    ).get()
+    return get_user_registrations(customer).where(UserRegistration.id == ident).get()
 
 
 def get_user_registrations(customer: Union[Customer, int]) -> ModelSelect:
@@ -182,19 +162,19 @@ def get_user_registrations(customer: Union[Customer, int]) -> ModelSelect:
 
 
 def get_user_damage_report(
-        ident: int,
-        customer: Union[Customer, int]
+    ident: int, customer: Union[Customer, int]
 ) -> UserDamageReport:
     """Returns a damage report with the given ID."""
 
-    return get_user_damage_reports(customer).where(
-        UserDamageReport.id == ident
-    ).get()
+    return get_user_damage_reports(customer).where(UserDamageReport.id == ident).get()
 
 
 def get_user_damage_reports(customer: Union[Customer, int]) -> ModelSelect:
     """Yields damage reports for the current user."""
 
-    return UserDamageReport.select().join(User).join(Tenement).where(
-        Tenement.customer == customer
+    return (
+        UserDamageReport.select()
+        .join(User)
+        .join(Tenement)
+        .where(Tenement.customer == customer)
     )

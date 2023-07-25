@@ -7,7 +7,7 @@ from comcatlib import Menu
 from comcatlib import MenuBaseChart
 
 
-__all__ = ['is_in_menu']
+__all__ = ["is_in_menu"]
 
 
 def is_in_menu(base_chart: Union[BaseChart, int], menu: Menu) -> bool:
@@ -15,8 +15,7 @@ def is_in_menu(base_chart: Union[BaseChart, int], menu: Menu) -> bool:
 
     try:
         MenuBaseChart.get(
-            (MenuBaseChart.base_chart == base_chart)
-            & (MenuBaseChart.menu == menu)
+            (MenuBaseChart.base_chart == base_chart) & (MenuBaseChart.menu == menu)
         )
     except MenuBaseChart.DoesNotExist:
         return False

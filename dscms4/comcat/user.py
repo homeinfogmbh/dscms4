@@ -13,21 +13,19 @@ from dscms4.comcat.decorators import with_user
 from dscms4.comcat.functions import get_tenement, get_users
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_() -> JSON:
     """Lists ComCat users."""
 
-    return JSON([
-        user.to_json(cascade=True) for user in get_users(CUSTOMER.id)
-    ])
+    return JSON([user.to_json(cascade=True) for user in get_users(CUSTOMER.id)])
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @with_user
 def get(user: User) -> JSON:
     """Returns the respective ComCat user."""
@@ -36,68 +34,66 @@ def get(user: User) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @admin
 @with_user
 def patch(user: User) -> JSONMessage:
     """Updates the respective user."""
 
-    tenement = request.json.pop('tenement', None)
+    tenement = request.json.pop("tenement", None)
 
     if tenement is not None:
         tenement = get_tenement(tenement, CUSTOMER.id)
 
     try:
-        user.patch_json(
-            request.json, tenement=tenement, skip={'created', 'passwd'}
-        )
+        user.patch_json(request.json, tenement=tenement, skip={"created", "passwd"})
     except ValueError as error:
-        return JSONMessage('Invalid data.', details=str(error), status=400)
+        return JSONMessage("Invalid data.", details=str(error), status=400)
 
     user.save()
-    return JSONMessage('User patched.', status=200)
+    return JSONMessage("User patched.", status=200)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @admin
 @with_user
 def delete(user: User) -> JSONMessage:
     """Deletes the respective user."""
 
     user.delete_instance()
-    return JSONMessage('User deleted.', status=200)
+    return JSONMessage("User deleted.", status=200)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @with_user
 def get_presentation(user: User) -> Union[JSON, JSONMessage, XML]:
     """Returns the presentation for the respective terminal."""
 
     presentation = Presentation(user)
 
-    if 'xml' in request.args:
+    if "xml" in request.args:
         return XML(presentation.to_dom())
 
     return JSON(presentation.to_json())
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @with_user
 def logout_(user: User) -> JSONMessage:
     """Deletes the respective user."""
 
     logout(user)
-    return JSONMessage('User logged out.', status=200)
+    return JSONMessage("User logged out.", status=200)
 
 
 ROUTES = [
-    ('GET', '/user', list_),
-    ('GET', '/user/<int:ident>', get),
-    ('PATCH', '/user/<int:ident>', patch),
-    ('DELETE', '/user/<int:ident>', delete),
-    ('GET', '/user/<int:ident>/presentation', get_presentation),
-    ('DELETE', '/user/<int:ident>/logout', logout_)
+    ("GET", "/user", list_),
+    ("GET", "/user/<int:ident>", get),
+    ("PATCH", "/user/<int:ident>", patch),
+    ("DELETE", "/user/<int:ident>", delete),
+    ("GET", "/user/<int:ident>/presentation", get_presentation),
+    ("DELETE", "/user/<int:ident>/logout", logout_),
 ]

@@ -11,7 +11,7 @@ from wsgilib import JSON, JSONMessage
 from dscms4.comcat.functions import get_configuration, get_user
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 def list_user_configs(user: int) -> Iterable[UserConfiguration]:
@@ -27,13 +27,15 @@ def get_user_config(ident: int) -> UserConfiguration:
     by its ID and customer context.
     """
 
-    return UserConfiguration.select(cascade=True).where(
-        (UserConfiguration.id == ident) & (User.customer == CUSTOMER.id)
-    ).get()
+    return (
+        UserConfiguration.select(cascade=True)
+        .where((UserConfiguration.id == ident) & (User.customer == CUSTOMER.id))
+        .get()
+    )
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def get(ident: int) -> JSON:
     """Returns the given UserConfiguration."""
 
@@ -41,7 +43,7 @@ def get(ident: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_(user: int) -> JSON:
     """Returns a list of UserConfigurations of the given user."""
 
@@ -49,40 +51,36 @@ def list_(user: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def add() -> JSONMessage:
     """Adds the configuration to the respective user."""
 
     user_configuration = UserConfiguration.from_json(
         request.json,
-        get_user(request.json.pop('user'), CUSTOMER.id),
-        get_configuration(request.json.pop('configuration'), CUSTOMER.id)
+        get_user(request.json.pop("user"), CUSTOMER.id),
+        get_configuration(request.json.pop("configuration"), CUSTOMER.id),
     )
     user_configuration.save()
     return JSONMessage(
-        'User configuration added.',
-        id=user_configuration.id,
-        status=201
+        "User configuration added.", id=user_configuration.id, status=201
     )
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def delete(ident: int) -> JSONMessage:
     """Deletes the configuration from the respective user."""
 
     user_configuration = get_user_config(ident)
     user_configuration.delete_instance()
     return JSONMessage(
-        'User configuration deleted.',
-        id=user_configuration.id,
-        status=200
+        "User configuration deleted.", id=user_configuration.id, status=200
     )
 
 
 ROUTES = (
-    ('GET', '/content/user/configuration/<int:ident>', get),
-    ('GET', '/content/user/<int:user>/configuration', list_),
-    ('POST', '/content/user/configuration', add),
-    ('DELETE', '/content/user/configuration/<int:ident>', delete)
+    ("GET", "/content/user/configuration/<int:ident>", get),
+    ("GET", "/content/user/<int:user>/configuration", list_),
+    ("POST", "/content/user/configuration", add),
+    ("DELETE", "/content/user/configuration/<int:ident>", delete),
 )

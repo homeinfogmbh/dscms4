@@ -12,11 +12,11 @@ from mdb import Customer
 from wsgilib import JSON, JSONMessage, require_json
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def list_() -> JSON:
     """Lists available chart types."""
 
@@ -31,7 +31,7 @@ def all_() -> JSON:
     chart_types = defaultdict(list)
 
     for chart_type in ChartACL.select(cascade=True).where(True):
-        json = chart_type.to_json(skip={'customer'})
+        json = chart_type.to_json(skip={"customer"})
         chart_types[chart_type.customer.id].append(json)
 
     return JSON(chart_types)
@@ -43,13 +43,13 @@ def all_() -> JSON:
 def add() -> JSONMessage:
     """Adds a chart type for the respective customer."""
 
-    customer = request.json.get('customer')
-    chart_type = request.json.get('chartType')
+    customer = request.json.get("customer")
+    chart_type = request.json.get("chartType")
     customer = Customer.get(Customer.id == customer)
     _ = CHARTS[chart_type]  # Test whether type is valid.
     record = ChartACL(customer=customer, chart_type=chart_type)
     record.save()
-    return JSONMessage('Chart ACL added.', id=record.id, status=201)
+    return JSONMessage("Chart ACL added.", id=record.id, status=201)
 
 
 @authenticated
@@ -58,12 +58,12 @@ def delete(ident: int) -> JSONMessage:
     """Adds a chart type for the respective customer."""
 
     ChartACL[ident].delete_instance()
-    return JSONMessage('Chart ACL deleted.', status=200)
+    return JSONMessage("Chart ACL deleted.", status=200)
 
 
 ROUTES = [
-    ('GET', '/chart-types', list_),
-    ('GET', '/chart-types/all', all_),
-    ('POST', '/chart-types', add),
-    ('DELETE', '/chart-types/<int:ident>', delete)
+    ("GET", "/chart-types", list_),
+    ("GET", "/chart-types/all", all_),
+    ("POST", "/chart-types", add),
+    ("DELETE", "/chart-types/<int:ident>", delete),
 ]

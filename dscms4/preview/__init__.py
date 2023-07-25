@@ -5,7 +5,7 @@ HIS authentication with token authentication.
 from dscms4.preview import deployment, group
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 ROUTES = (*deployment.ROUTES, *group.ROUTES)

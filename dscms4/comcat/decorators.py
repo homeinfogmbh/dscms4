@@ -8,7 +8,7 @@ from his import CUSTOMER
 from dscms4.comcat.functions import get_user
 
 
-__all__ = ['with_user']
+__all__ = ["with_user"]
 
 
 def with_user(function: Callable) -> Callable:

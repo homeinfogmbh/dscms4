@@ -11,11 +11,11 @@ from dscms4.comcat.functions import get_menu_base_chart, get_menu_base_charts
 from dscms4.fcm import notify_base_chart
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_() -> JSON:
     """Lists menus of the respective base chart."""
 
@@ -23,7 +23,7 @@ def list_() -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def get(ident: int) -> JSON:
     """Returns the menus of the respective base chart."""
 
@@ -31,30 +31,30 @@ def get(ident: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def add() -> JSONMessage:
     """Adds a base chart menu."""
 
-    base_chart = get_base_chart(request.json.pop('baseChart'), CUSTOMER.id)
-    menu = Menu(request.json.pop('menu'))
+    base_chart = get_base_chart(request.json.pop("baseChart"), CUSTOMER.id)
+    menu = Menu(request.json.pop("menu"))
     mbc = MenuBaseChart(base_chart=base_chart, menu=menu)
     mbc.save()
     notify_base_chart(base_chart)
-    return JSONMessage('Base chart menu added.', id=mbc.id, status=201)
+    return JSONMessage("Base chart menu added.", id=mbc.id, status=201)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def delete(ident: int) -> JSONMessage:
     """Removes the base chart menu with the given ID."""
 
     get_menu_base_chart(ident, CUSTOMER.id).delete_instance()
-    return JSONMessage('Base chart menu deleted.', status=200)
+    return JSONMessage("Base chart menu deleted.", status=200)
 
 
 ROUTES = [
-    ('GET', '/menu/base_chart', list_),
-    ('GET', '/menu/base_chart/<int:ident>', get),
-    ('POST', '/menu/base_chart', add),
-    ('DELETE', '/menu/base_chart/<int:ident>', delete)
+    ("GET", "/menu/base_chart", list_),
+    ("GET", "/menu/base_chart/<int:ident>", get),
+    ("POST", "/menu/base_chart", add),
+    ("DELETE", "/menu/base_chart/<int:ident>", delete),
 ]

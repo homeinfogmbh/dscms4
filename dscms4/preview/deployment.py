@@ -8,7 +8,7 @@ from previewlib import make_response
 from previewlib import preview
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @preview(DeploymentPreviewToken)
@@ -18,4 +18,4 @@ def get_presentation(deployment: Deployment) -> Response:
     return make_response(DeploymentPresentation(deployment))
 
 
-ROUTES = [('GET', '/preview/deployment', get_presentation)]
+ROUTES = [("GET", "/preview/deployment", get_presentation)]

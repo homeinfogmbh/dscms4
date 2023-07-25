@@ -16,11 +16,11 @@ from dscms4.comcat.functions import get_user
 from dscms4.comcat.grouptree import GroupTree
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_() -> JSON:
     """Lists group <> user mappings."""
 
@@ -28,7 +28,7 @@ def list_() -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def get(ident: int) -> JSON:
     """Returns the respective group <> user mapping."""
 
@@ -36,7 +36,7 @@ def get(ident: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def groups_tree() -> JSON:
     """Returns a tree view of the groups."""
 
@@ -44,51 +44,47 @@ def groups_tree() -> JSON:
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def groups_subtree(ident: int) -> JSON:
     """Lists the groups."""
 
-    return JSON(
-        GroupTree(get_group(ident, CUSTOMER.id)).to_json(recursive=False)
-    )
+    return JSON(GroupTree(get_group(ident, CUSTOMER.id)).to_json(recursive=False))
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @require_json(dict)
 def add() -> JSONMessage:
     """Adds the ComCat user to the respective group."""
 
-    group = get_group(request.json.pop('group'), CUSTOMER.id)
-    user = get_user(request.json.pop('user'), CUSTOMER.id)
+    group = get_group(request.json.pop("group"), CUSTOMER.id)
+    user = get_user(request.json.pop("user"), CUSTOMER.id)
 
     try:
         group_member_user = GroupMemberUser.get(
-            (GroupMemberUser.group == group)
-            & (GroupMemberUser.user == user)
+            (GroupMemberUser.group == group) & (GroupMemberUser.user == user)
         )
     except GroupMemberUser.DoesNotExist:
         group_member_user = GroupMemberUser(group=group, user=user)
         group_member_user.save()
 
-    return JSONMessage(
-        'Group member added.', id=group_member_user.id, status=201)
+    return JSONMessage("Group member added.", id=group_member_user.id, status=201)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def delete(ident: int) -> JSONMessage:
     """Deletes the respective user from the group."""
 
     get_group_member_user(ident, CUSTOMER.id).delete_instance()
-    return JSONMessage('Group member user deleted.', status=200)
+    return JSONMessage("Group member user deleted.", status=200)
 
 
 ROUTES = [
-    ('GET', '/group/user', list_),
-    ('GET', '/group/user/<int:ident>', get),
-    ('GET', '/grouptree', groups_tree),
-    ('GET', '/grouptree/<int:ident>', groups_subtree),
-    ('POST', '/group/user', add),
-    ('DELETE', '/group/user/<int:ident>', delete)
+    ("GET", "/group/user", list_),
+    ("GET", "/group/user/<int:ident>", get),
+    ("GET", "/grouptree", groups_tree),
+    ("GET", "/grouptree/<int:ident>", groups_subtree),
+    ("POST", "/group/user", add),
+    ("DELETE", "/group/user/<int:ident>", delete),
 ]

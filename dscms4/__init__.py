@@ -23,16 +23,24 @@ from dscms4 import settings
 from dscms4 import vfs
 
 
-__all__ = ['APPLICATION', 'ROUTES']
+__all__ = ["APPLICATION", "ROUTES"]
 
 
-LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
-APPLICATION = Application('DSCMS4')
+LOG_FORMAT = "[%(levelname)s] %(name)s: %(message)s"
+APPLICATION = Application("DSCMS4")
 ROUTES = (
-    *chart_types.ROUTES, *charts.ROUTES, *configuration.ROUTES,
-    *content.ROUTES, *deployment.ROUTES, *group.ROUTES, *membership.ROUTES,
-    *menu.ROUTES, *preview.ROUTES, *schedule.ROUTES, *settings.ROUTES,
-    *vfs.ROUTES
+    *chart_types.ROUTES,
+    *charts.ROUTES,
+    *configuration.ROUTES,
+    *content.ROUTES,
+    *deployment.ROUTES,
+    *group.ROUTES,
+    *membership.ROUTES,
+    *menu.ROUTES,
+    *preview.ROUTES,
+    *schedule.ROUTES,
+    *settings.ROUTES,
+    *vfs.ROUTES,
 )
 APPLICATION.add_routes(ROUTES)
 

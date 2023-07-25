@@ -7,7 +7,7 @@ from previewlib import make_response
 from previewlib import preview
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @preview(GroupPreviewToken)
@@ -17,4 +17,4 @@ def get_presentation(group: Group) -> Response:
     return make_response(GroupPresentation(group))
 
 
-ROUTES = [('GET', '/preview/group', get_presentation)]
+ROUTES = [("GET", "/preview/group", get_presentation)]

@@ -13,7 +13,7 @@ from dscms4.comcat.functions import get_user
 from dscms4.fcm import notify_base_chart
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 def list_ubc(user: int = None) -> Select:
@@ -37,7 +37,7 @@ def get_ubc(ident: int) -> UserBaseChart:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def get(ident: int) -> JSON:
     """Returns the respective UserBaseChart."""
 
@@ -45,7 +45,7 @@ def get(ident: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_(user: int) -> JSON:
     """Returns a list of UserBaseCharts of the given user."""
 
@@ -53,63 +53,57 @@ def list_(user: int) -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def add() -> JSONMessage:
     """Adds the chart to the respective user."""
 
-    user = get_user(request.json.pop('user'), CUSTOMER.id)
-    base_chart = get_base_chart(request.json.pop('baseChart'), CUSTOMER.id)
+    user = get_user(request.json.pop("user"), CUSTOMER.id)
+    base_chart = get_base_chart(request.json.pop("baseChart"), CUSTOMER.id)
     user_base_chart = UserBaseChart.from_json(request.json, user, base_chart)
     user_base_chart.save()
     notify_base_chart(base_chart)
-    return JSONMessage(
-        'User base chart added.', id=user_base_chart.id, status=201
-    )
+    return JSONMessage("User base chart added.", id=user_base_chart.id, status=201)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def patch(ident: int) -> JSONMessage:
     """Alter the respective user <-> base chart mapping."""
 
     user_base_chart = get_ubc(ident)
     user_base_chart.patch_json(request.json)
     user_base_chart.save()
-    return JSONMessage(
-        'User base chart patched.', id=user_base_chart.id, status=200
-    )
+    return JSONMessage("User base chart patched.", id=user_base_chart.id, status=200)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def delete(ident: int) -> JSONMessage:
     """Deletes the chart from the respective user."""
 
     user_base_chart = get_ubc(ident)
     user_base_chart.delete_instance()
-    return JSONMessage(
-        'User base chart deleted.', id=user_base_chart.id, status=200
-    )
+    return JSONMessage("User base chart deleted.", id=user_base_chart.id, status=200)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def chart_user_base_charts(ident: int) -> JSON:
     """Returns a list of UserBaseChart for the given chart."""
 
     chart = get_chart(ident, CUSTOMER.id, CHART_TYPE)
     user_base_charts = UserBaseChart.select().where(
-        UserBaseChart.base_chart == chart.base)
+        UserBaseChart.base_chart == chart.base
+    )
     users_base_charts = [ubc.to_json() for ubc in user_base_charts]
     return JSON(users_base_charts)
 
 
 ROUTES = (
-    ('GET', '/content/user/base_chart/<int:ident>', get),
-    ('GET', '/content/user/<int:user>/base_chart', list_),
-    ('POST', '/content/user/base_chart', add),
-    ('PATCH', '/content/user/base_chart/<int:ident>', patch),
-    ('DELETE', '/content/user/base_chart/<int:ident>', delete),
-    ('GET', '/content/user/user_base_charts/<int:ident>',
-     chart_user_base_charts)
+    ("GET", "/content/user/base_chart/<int:ident>", get),
+    ("GET", "/content/user/<int:user>/base_chart", list_),
+    ("POST", "/content/user/base_chart", add),
+    ("PATCH", "/content/user/base_chart/<int:ident>", patch),
+    ("DELETE", "/content/user/base_chart/<int:ident>", delete),
+    ("GET", "/content/user/user_base_charts/<int:ident>", chart_user_base_charts),
 )

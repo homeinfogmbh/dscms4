@@ -7,7 +7,7 @@ from cmslib import Group
 from comcatlib import GroupMemberUser, User
 
 
-__all__ = ['GroupTree']
+__all__ = ["GroupTree"]
 
 
 class GroupTree:
@@ -20,31 +20,29 @@ class GroupTree:
     @property
     def children(self) -> Iterator[GroupTree]:
         """Yields children of this group."""
-        for group in Group.select(cascade=True).where(
-                Group.parent == self.group):
+        for group in Group.select(cascade=True).where(Group.parent == self.group):
             yield type(self)(group)
 
     @property
     def users(self) -> Iterator[User]:
         """Yields users of this group."""
         for group_member_user in GroupMemberUser.select(cascade=True).where(
-                GroupMemberUser.group == self.group):
+            GroupMemberUser.group == self.group
+        ):
             yield group_member_user.user
 
     def to_json(self, recursive: bool = True) -> dict:
         """Recursively converts the group content into a JSON-ish dict."""
-        json = self.group.to_json(parent=False, skip=('customer',))
+        json = self.group.to_json(parent=False, skip=("customer",))
 
         if recursive:
-            children = [
-                group.to_json(recursive=True) for group in self.children
-            ]
+            children = [group.to_json(recursive=True) for group in self.children]
         else:
             children = [
-                group.group.to_json(parent=False, skip=('customer',))
+                group.group.to_json(parent=False, skip=("customer",))
                 for group in self.children
             ]
 
-        json['children'] = children
-        json['users'] = [user.to_json() for user in self.users]
+        json["children"] = children
+        json["users"] = [user.to_json() for user in self.users]
         return json

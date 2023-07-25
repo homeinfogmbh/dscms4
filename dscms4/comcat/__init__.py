@@ -23,10 +23,10 @@ from dscms4.comcat import user
 from dscms4.comcat import errors
 
 
-__all__ = ['APPLICATION']
+__all__ = ["APPLICATION"]
 
 
-APPLICATION = Application('comcat')
+APPLICATION = Application("comcat")
 ROUTES = (
     *contact_emails.ROUTES,
     *content.ROUTES,
@@ -40,20 +40,20 @@ ROUTES = (
     *tenantcalendar.ROUTES,
     *tenantforum.ROUTES,
     *tenement.ROUTES,
-    *user.ROUTES
+    *user.ROUTES,
 )
 ERRORS = {
     **errors.ERRORS,
     **marketplace.ERRORS,
     **ccmessenger.ERRORS,
     **tenantcalendar.ERRORS,
-    **tenantforum.ERRORS
+    **tenantforum.ERRORS,
 }
 
 
 APPLICATION.add_routes(ROUTES)
 APPLICATION.register_error_handlers(ERRORS)
-LOG_FORMAT = '[%(levelname)s] %(name)s: %(message)s'
+LOG_FORMAT = "[%(levelname)s] %(name)s: %(message)s"
 
 
 @APPLICATION.before_first_request

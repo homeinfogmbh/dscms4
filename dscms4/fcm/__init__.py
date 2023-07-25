@@ -15,17 +15,13 @@ from dscms4.fcm.download import notify as notify_download
 from dscms4.fcm.news import notify as notify_news
 
 
-__all__ = [
-    'notify_base_chart',
-    'notify_customer_event',
-    'notify_customer_message'
-]
+__all__ = ["notify_base_chart", "notify_customer_event", "notify_customer_message"]
 
 
 def notify_base_chart(base_chart: BaseChart) -> Optional[BatchResponse]:
     """Notify via FCM about base chart-related changes."""
 
-    getLogger('dscms4').info('Notifying about chart: %s', base_chart)
+    getLogger("dscms4").info("Notifying about chart: %s", base_chart)
 
     if is_in_menu(base_chart, Menu.DOCUMENTS):
         return notify_download(base_chart)

@@ -11,11 +11,11 @@ from dscms4.comcat.functions import get_user_registrations
 from dscms4.comcat.functions import get_user_registration
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def list_() -> JSON:
     """Lists user registrations."""
 
@@ -23,38 +23,38 @@ def list_() -> JSON:
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 @require_json(dict)
 def accept(ident: int) -> JSONMessage:
     """Accept a registration."""
 
     user_registration = get_user_registration(ident, CUSTOMER.id)
-    tenement = get_tenement(request.json.get('tenement'), CUSTOMER.id)
+    tenement = get_tenement(request.json.get("tenement"), CUSTOMER.id)
 
     try:
         user, passwd = user_registration.confirm(tenement)
     except ValueError as error:
-        return JSONMessage('Invalid value.', error=str(error), status=400)
+        return JSONMessage("Invalid value.", error=str(error), status=400)
     except DuplicateUser:
-        return JSONMessage('User already exists.', status=400)
+        return JSONMessage("User already exists.", status=400)
 
     user.save()
     notify_user(user.email, passwd)
-    return JSONMessage('Added user.', id=user.id, status=201)
+    return JSONMessage("Added user.", id=user.id, status=201)
 
 
 @authenticated
-@authorized('comcat')
+@authorized("comcat")
 def deny(ident: int) -> JSONMessage:
     """Deny a registration."""
 
     user_registration = get_user_registration(ident, CUSTOMER.id)
     user_registration.delete_instance()
-    return JSONMessage('User registration denied.', status=200)
+    return JSONMessage("User registration denied.", status=200)
 
 
 ROUTES = [
-    ('GET', '/registration', list_),
-    ('POST', '/registration/<int:ident>', accept),
-    ('DELETE', '/registration/<int:ident>', deny)
+    ("GET", "/registration", list_),
+    ("POST", "/registration/<int:ident>", accept),
+    ("DELETE", "/registration/<int:ident>", deny),
 ]

@@ -15,43 +15,44 @@ from wsgilib import JSON, JSONMessage, require_json
 from dscms4.fcm import notify_base_chart
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def list_() -> JSON:
     """Lists IDs of charts of the respective customer."""
 
-    return JSON([
-        chart.to_json(mode=get_chart_mode()) for chart in get_charts(
-            CUSTOMER.id, CHART_TYPES, trashed=get_trashed_flag(CUSTOMER.id)
-        )
-    ])
+    return JSON(
+        [
+            chart.to_json(mode=get_chart_mode())
+            for chart in get_charts(
+                CUSTOMER.id, CHART_TYPES, trashed=get_trashed_flag(CUSTOMER.id)
+            )
+        ]
+    )
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def get_chart_(ident: int) -> JSON:
     """Returns the respective chart of the current customer."""
 
-    return JSON(get_chart(ident, CUSTOMER.id, CHART_TYPE).to_json(
-        mode=get_chart_mode()
-    ))
+    return JSON(
+        get_chart(ident, CUSTOMER.id, CHART_TYPE).to_json(mode=get_chart_mode())
+    )
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def get_base_chart_(ident: int) -> JSON:
     """Returns the respective chart by base chart of the current customer."""
 
-    return JSON(get_base_chart(ident, CUSTOMER.id).chart.to_json(
-        mode=get_chart_mode()
-    ))
+    return JSON(get_base_chart(ident, CUSTOMER.id).chart.to_json(mode=get_chart_mode()))
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 @require_json(dict)
 def add() -> JSONMessage:
     """Adds new charts."""
@@ -59,13 +60,12 @@ def add() -> JSONMessage:
     transaction = CHART_TYPE.from_json(request.json)
     transaction.commit()
     return JSONMessage(
-        'Chart added.', id=transaction.id, base_chart=transaction.base.id,
-        status=201
+        "Chart added.", id=transaction.id, base_chart=transaction.base.id, status=201
     )
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 @require_json(dict)
 def patch(ident: int) -> JSONMessage:
     """Patches a chart."""
@@ -74,23 +74,23 @@ def patch(ident: int) -> JSONMessage:
     transaction = chart.patch_json(request.json)
     transaction.commit()
     notify_base_chart(transaction.primary.base)
-    return JSONMessage('Chart patched.', status=200)
+    return JSONMessage("Chart patched.", status=200)
 
 
 @authenticated
-@authorized('dscms4')
+@authorized("dscms4")
 def delete(ident: int) -> JSONMessage:
     """Deletes the specified chart."""
 
     get_chart(ident, CUSTOMER.id, CHART_TYPE).delete_instance()
-    return JSONMessage('Chart deleted.', status=200)
+    return JSONMessage("Chart deleted.", status=200)
 
 
 ROUTES = [
-    ('GET', '/charts', list_),
-    ('GET', '/charts/<int:ident>', get_chart_),
-    ('GET', '/base-chart/<int:ident>', get_base_chart_),
-    ('POST', '/charts', add),
-    ('PATCH', '/charts/<int:ident>', patch),
-    ('DELETE', '/charts/<int:ident>', delete)
+    ("GET", "/charts", list_),
+    ("GET", "/charts/<int:ident>", get_chart_),
+    ("GET", "/base-chart/<int:ident>", get_base_chart_),
+    ("POST", "/charts", add),
+    ("PATCH", "/charts/<int:ident>", patch),
+    ("DELETE", "/charts/<int:ident>", delete),
 ]

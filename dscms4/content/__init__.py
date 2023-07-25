@@ -3,7 +3,7 @@
 from dscms4.content import deployment, group
 
 
-__all__ = ['ROUTES']
+__all__ = ["ROUTES"]
 
 
 ROUTES = (*deployment.ROUTES, *group.ROUTES)

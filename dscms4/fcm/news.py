@@ -9,11 +9,11 @@ from comcatlib import URLCode
 from comcatlib import multicast_base_chart
 
 
-__all__ = ['notify']
+__all__ = ["notify"]
 
 
 def notify(base_chart: BaseChart) -> BatchResponse:
     """Notify via FCM about news."""
 
-    getLogger('dscms4').info('Notifying about news chart: %s', base_chart)
+    getLogger("dscms4").info("Notifying about news chart: %s", base_chart)
     return multicast_base_chart(base_chart, URLCode.NEWS)
